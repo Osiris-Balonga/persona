@@ -14,6 +14,8 @@ const ethiopiaContext = { pools: [{ locale: 'et_ET', tier: 'local', weight: 1 }]
 const africaReviewedContexts = {
   CG: { pools: [{ locale: 'cg_CG', tier: 'local', weight: 1 }], fallback: 'local' },
   GH: { pools: [{ locale: 'gh_GH', tier: 'local', weight: 1 }], fallback: 'local' },
+  KE: { pools: [{ locale: 'ke_KE', tier: 'local', weight: 1 }], fallback: 'local' },
+  NA: { pools: [{ locale: 'na_NA', tier: 'local', weight: 1 }], fallback: 'local' },
   RW: { pools: [{ locale: 'rw_RW', tier: 'local', weight: 1 }], fallback: 'local' },
   SN: { pools: [{ locale: 'sn_SN', tier: 'local', weight: 1 }], fallback: 'local' },
   UG: { pools: [{ locale: 'ug_UG', tier: 'local', weight: 1 }], fallback: 'local' },

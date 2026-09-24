@@ -47,6 +47,12 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'UG')).toMatchObject({
       profileGeneration: 'available', names: { source: 'uganda-parliament-names', review: 'reviewed', fallback: null },
     })
+    expect(rows.find((row) => row.country === 'KE')).toMatchObject({
+      profileGeneration: 'available', names: { source: 'kenya-parliament-names', review: 'reviewed', fallback: null },
+    })
+    expect(rows.find((row) => row.country === 'NA')).toMatchObject({
+      profileGeneration: 'available', names: { source: 'namibia-parliament-names', review: 'reviewed', fallback: null },
+    })
     expect(rows.find((row) => row.country === 'CG')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(rows.find((row) => row.country === 'SN')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(validateGeographicData()).toEqual([])

@@ -140,6 +140,18 @@ export const geographicSources = {
     license: 'Public name-component facts (small sample)',
     edition: '2026-09-24',
   },
+  'kenya-parliament-names': {
+    title: 'Parliament of Kenya 13th National Assembly members by party, July 2025',
+    url: 'https://parliament.go.ke/sites/default/files/2025-07/List%20of%20Members%20by%20Parties%2013th%20Parliament%20as%20at%2002072025.pdf',
+    license: 'Public name-component facts (small sample)',
+    edition: '2025-07-02',
+  },
+  'namibia-parliament-names': {
+    title: 'Namibian Parliament 8th National Assembly public member roster',
+    url: 'https://www.parliament.na/8th-national-assembly-2025-2030/',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',
