@@ -39,4 +39,20 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(pitcairn).toMatchObject({ line1: 'Example Place', postalCode: 'PCRN 1ZZ' })
     expect(pitcairn.formatted).toContain('Adamstown\nPCRN 1ZZ')
   })
+
+  it('omits country postcode prefixes when a city has no verified postcode', () => {
+    const key = '0123456789abcdef'.repeat(4)
+    for (const [country, city, prefix] of [
+      ['HR', 'Zagreb', 'HR-'], ['LU', 'Luxembourg', 'L-'], ['MD', 'Chisinau', 'MD-'],
+    ] as const) {
+      const address = fictionalAddress(getCity(country, city)!, key)
+      expect(address.postalCode).toBeNull()
+      expect(address.formatted).toContain(city)
+      expect(address.formatted).not.toContain(prefix)
+    }
+    const lahore = fictionalAddress(getCity('PK', 'Lahore')!, key)
+    expect(lahore.postalCode).toBeNull()
+    expect(lahore.formatted).toContain('Lahore')
+    expect(lahore.formatted).not.toContain('Lahore-')
+  })
 })

@@ -66,6 +66,13 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: 'a42dceddd27373a2ce32353ccb26582992e6b5718f91aa48a8b3b826fd26fc58',
   },
+  'wikidata-europe-qlever-candidates': {
+    title: 'Wikidata Europe name candidates via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-24',
+    sha256: '170863c630bde60968af7b6d125083144bd735aeec08b9b66ef002186a018e5a',
+  },
   'st-helena-election-names': {
     title: 'St Helena Government 2025 general-election candidate name components',
     url: 'https://www.sainthelena.gov.sh/official-list-of-candidates-for-the-2025-general-election/',
