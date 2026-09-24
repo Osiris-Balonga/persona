@@ -16,13 +16,14 @@ describe('public Person v1 schema', () => {
     expect(Value.Check(PersonSchema, { ...example, address: { ...(example.address as object), region: undefined } })).toBe(false)
   })
 
-  it('accepts a complete given name without a family surname', () => {
-    const person = { ...example, firstName: 'Aye Aye Myint', lastName: null, fullName: 'Aye Aye Myint',
+  it('requires two display components while keeping the original complete name', () => {
+    const person = { ...example, firstName: 'Aye Aye', lastName: 'Myint', fullName: 'Aye Aye Myint',
       country: 'MM', city: 'Yangon', appearance: 'southeast-asian',
       address: { line1: '18 Example Road', city: 'Yangon', region: 'Yangon Region', postalCode: null,
         country: 'MM', formatted: '18 Example Road\nYangon\nMyanmar' },
       email: 'ayeayemyint.0123456789ab@example.test', phone: null, picture: null }
     expect(Value.Check(PersonSchema, person)).toBe(true)
+    expect(Value.Check(PersonSchema, { ...person, lastName: null })).toBe(false)
     expect(Value.Check(PersonSchema, { ...person, lastName: undefined })).toBe(false)
     expect(Value.Check(PersonSchema, { ...person, lastName: '' })).toBe(false)
   })
