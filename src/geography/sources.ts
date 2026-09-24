@@ -52,6 +52,13 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: '5ee1d1ce7fcd7550d336034d027550ca679b95190983c26b460266c58c4891be',
   },
+  'wikidata-africa-qlever-candidates': {
+    title: 'Wikidata Africa name candidates via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-24',
+    sha256: 'db878f5a1f9b4b1ca9165cc3a2b9b4938e9090866410973dd5ea7a524afa89d6',
+  },
   'georgia-name-statistics': {
     title: 'Georgian Public Service Development Agency name counts reported by Rustavi2',
     url: 'https://rustavi2.ge/ka/news/289258',
