@@ -1,7 +1,11 @@
 import { nameContextData } from './name-context-data.js'
 import { namePoolData } from './name-pool-data.js'
+import { myanmarGivenNames } from './surname-free-names.js'
+
+const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 
 export function nameContextForCountry(country: string) {
+  if (country === 'MM') return myanmarContext
   return nameContextData[country]
 }
 
@@ -20,11 +24,20 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     position -= pool.weight
     return position < 0
   })!
+  if (selected.locale === 'my_MM') {
+    const firstNames = myanmarGivenNames[gender]
+    const firstName = firstNames[keyPart(key, 12) % firstNames.length]
+    return { firstName, lastName: null, fullName: firstName, locale: selected.locale, fallback: selected.tier }
+  }
   const names = namePoolData[selected.locale]
   if (!names) throw new RangeError(`Missing name pool ${selected.locale}`)
   const firstNames = names[gender]
   const lastNames = gender === 'female' ? names.lastFemale : names.lastMale
   const firstName = firstNames[keyPart(key, 12) % firstNames.length]
   const lastName = lastNames[keyPart(key, 24) % lastNames.length]
-  return { firstName, lastName, locale: selected.locale, fallback: selected.tier }
+  if (country === 'ID') {
+    const givenName = `${firstName} ${lastName}`
+    return { firstName: givenName, lastName: null, fullName: givenName, locale: selected.locale, fallback: selected.tier }
+  }
+  return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
 }

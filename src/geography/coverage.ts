@@ -2,6 +2,7 @@ import { listCities } from './cities.js'
 import { listCountries } from './countries.js'
 import { nameContextForCountry } from './names.js'
 import { namePoolData } from './name-pool-data.js'
+import { myanmarGivenNames } from './surname-free-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 
@@ -53,9 +54,11 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback,
-        supplementarySources: country.code === 'GE'
-          ? ['geonames-country-info', 'georgia-name-statistics'] as const : ['geonames-country-info'] as const,
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(country.code === 'MM' ? 'burmese-name-frequencies' : 'faker'), fallback: nameFallback,
+        supplementarySources: country.code === 'MM' ? ['uk-myanmar-names'] as const
+          : country.code === 'ID' ? ['geonames-country-info', 'uk-indonesia-names'] as const
+            : country.code === 'GE' ? ['geonames-country-info', 'georgia-name-statistics'] as const
+              : ['geonames-country-info'] as const,
       } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
@@ -110,7 +113,7 @@ export function validateGeographicData(): string[] {
       const context = nameContextForCountry(country.code)
       if (!context || context.pools.length === 0) errors.push(`Missing name context ${country.code}`)
       for (const pool of context?.pools ?? []) {
-        const names = namePoolData[pool.locale]
+        const names = pool.locale === 'my_MM' ? myanmarGivenNames : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names || Object.values(names).some((part) => part.length === 0)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)
         }

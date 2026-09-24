@@ -9,6 +9,10 @@ describe('fictional contact values', () => {
     expect(fictionalEmail('Élodie', 'N’Diaye', key)).toBe(fictionalEmail('Élodie', 'N’Diaye', key))
   })
 
+  it('builds a stable address for a surname-free name without a fake surname', () => {
+    expect(fictionalEmail('Aye Aye Myint', null, key)).toBe('ayeayemyint.0123456789ab@example.test')
+  })
+
   it('uses only vetted non-working number ranges and otherwise returns null', () => {
     expect(fictionalPhone('US', 'Washington', key)).toMatch(/^\+120255501\d{2}$/)
     expect(fictionalPhone('US', 'New York City', key)).toBeNull()
