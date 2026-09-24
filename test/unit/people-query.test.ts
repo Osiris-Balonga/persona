@@ -33,6 +33,7 @@ describe('GET /people query contract', () => {
   it('rejects incompatible explicit filters', () => {
     expect(() => parse('age=14&ageGroup=adult')).toThrow(expect.objectContaining({ code: 'CONFLICTING_FILTERS', parameter: 'ageGroup' }))
     expect(() => parse('city=Brazzaville')).toThrow(expect.objectContaining({ code: 'CONFLICTING_FILTERS', parameter: 'city' }))
+    expect(() => parse('country=CG&city=Paris')).toThrow(expect.objectContaining({ code: 'UNSUPPORTED_VALUE', parameter: 'city' }))
   })
 
   it('rejects unknown or repeated parameters and bounded strings', () => {

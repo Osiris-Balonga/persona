@@ -12,6 +12,14 @@ The registry recognizes `AQ`, `BV`, `GS`, `HM`, `IO`, `TF`, and `UM` but marks r
 
 An unknown two-letter code or a recognized code marked unavailable returns HTTP 400 with `UNSUPPORTED_VALUE` and `parameter: "country"`. Malformed country syntax remains `INVALID_QUERY`.
 
+## City sample and coverage
+
+The city snapshot uses [GeoNames `cities1000.zip`](https://download.geonames.org/export/dump/cities1000.zip), extracted on 2026-09-24 under [CC BY 4.0](https://www.geonames.org/about.html). Credit: **GeoNames**. The archive SHA-256 and source edition are stored in `src/geography/sources.ts`. For each resident-eligible ISO code, the build keeps up to twelve most populous named populated places and adds the capital if it was outside that set. It removes duplicate city names within a code. `src/geography/city-data.ts` is a checked-in snapshot; `npm run data:refresh:cities -- <cities1000.zip> <YYYY-MM-DD>` rebuilds it from a downloaded archive. The source's [field definitions and inclusion criteria](https://download.geonames.org/export/dump/readme.txt) should be reviewed before updating the snapshot. A refresh must include a new source hash, provenance review, and the geographic validation checks.
+
+This is a bounded city sample, not a complete gazetteer. All 242 resident-eligible codes have at least one locality in the snapshot. Seven territories without permanent residents have none. A city filter must resolve against the selected country's sample; an unknown or mismatched city must fail rather than silently switch countries. GeoNames data is supplied as is, so the sample needs country-batch review before public beta use.
+
+`src/geography/coverage.ts` produces one coverage row per assigned ISO code. Each category records an ingestion status, source, fallback, and review state. `pending` means the API must not claim that category is ready for the code. `automated` means schema and provenance checks ran; it does not mean human review. The checked-in source manifest in `src/geography/sources.ts` records source, usage right, edition, and the GeoNames archive hash. `validateGeographicData()` rejects missing eligible cities, duplicate identifiers, invalid codes, and ingested data without a known source and usage right. Future name, address, distribution, and portrait batches must add their own source and coverage entries before they can be marked ingested. Regional fallbacks must be explicit in the corresponding coverage cell.
+
 ## Fictional telephone policy
 
 Telephone output is optional. A calling code is metadata for validation and presentation; it is never sufficient to invent a safe subscriber number. A country receives generated telephone numbers only after a country-specific, officially reserved fictional/test range has been reviewed and versioned. Otherwise `phone` is `null`. The API must not suggest that a format-valid random number is unassigned, reachable, or safe to call.
