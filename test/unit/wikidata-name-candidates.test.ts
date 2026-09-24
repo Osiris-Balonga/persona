@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { collectCandidates, summarizeCandidates } from '../../scripts/collect-wikidata-name-candidates.mjs'
+import { collectCandidates, formatCandidateReport, queryFor, summarizeCandidates } from '../../scripts/collect-wikidata-name-candidates.mjs'
 
 const row = (code: string, name: string, count: number, sex?: 'male' | 'female') => ({ code, name, count, sex })
 
@@ -68,5 +68,34 @@ describe('Wikidata name candidate review', () => {
     expect(Object.keys(report.failures)).toEqual(['CF', 'CG'])
     expect(report.countries.CI).toBeUndefined()
     expect(report.failures.CI).toBeUndefined()
+  })
+
+  it('uses an explicit English label join for QLever rather than the WDQS label service', () => {
+    const query = queryFor(['CF'], 'given', 'qlever')
+    expect(query).toContain('PREFIX wdt:')
+    expect(query).toContain('?name rdfs:label ?nameLabel')
+    expect(query).toContain('LANG(?nameLabel) = "en"')
+    expect(query).not.toContain('SERVICE wikibase:label')
+    expect(query).toContain('"CF"')
+  })
+
+  it('records QLever as the source of a fresh alternate-endpoint report', async () => {
+    const report = await collectCandidates(['CF'], null, async (_code: string, kind: string) =>
+      kind === 'given' ? [row('CF', 'Amina', 2, 'female')] : [row('CF', 'Kanda', 3)],
+    async () => {}, 'qlever')
+    expect(report.source).toBe('https://qlever.dev/api/wikidata')
+    expect(report.countries.CF.source).toBe(report.source)
+  })
+
+  it('writes a readable country-wise snapshot that round-trips without losing candidates', () => {
+    const report = { schemaVersion: 2, requestedCodes: ['GH', 'SN'], failures: {}, countries: {
+      GH: { female: [{ name: 'Ama', count: 2 }], male: [], family: [] },
+      SN: { female: [], male: [], family: [{ name: 'Diouf', count: 3 }] },
+    } }
+    const formatted = formatCandidateReport(report)
+    expect(JSON.parse(formatted)).toEqual(report)
+    expect(formatted.split('\n').length).toBeLessThan(15)
+    expect(formatted).toContain('\n    "GH": {')
+    expect(formatted).toContain('\n    "SN": {')
   })
 })
