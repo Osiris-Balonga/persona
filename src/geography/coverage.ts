@@ -72,6 +72,19 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
   ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
 }
 
+const pendingAsianNameReviewNotes: Record<string, string> = {
+  BN: 'Mixed-community and title labels need a coherent Brunei sample',
+  CC: 'No female citizenship-linked candidates; island-linked evidence needed',
+  KH: 'Female and second-name components need Khmer field validation',
+  LA: 'Locally plausible female and second components are sparse',
+  MN: 'Given and patronymic placement needs a Mongolian source review',
+  MO: 'Macau citizenship candidates are sparse; territory-linked evidence needed',
+  MY: 'Malay, Chinese and Indian components need coherent community pairing',
+  OM: 'Female and family labels are sparse and mixed with non-Omani candidates',
+  TJ: 'Tajik given names and feminine family forms need review',
+  TM: 'Turkmen given and gendered family forms need review',
+}
+
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
   ...Object.keys(europeIslandNames), 'SJ', 'VA', ...Object.keys(asiaReviewedNames), ...Object.keys(asiaWestNames),
@@ -116,6 +129,7 @@ export function listCoverage() {
           ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
         fallback: nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
+        reviewNote: pendingAsianNameReviewNotes[country.code] ?? null,
         supplementarySources: isEuropeGenderedCountry(country.code)
           ? ['wikidata-europe-gendered-families'] : country.code === 'FO' && isEuropeIslandCountry(country.code)
             ? ['faroe-name-statistics'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
