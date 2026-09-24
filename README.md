@@ -2,7 +2,7 @@
 
 Persona is an API for generating coherent fictional people for interface design, product development, and testing. A profile combines a name, age, location, contact details, and a synthetic portrait selected from a curated catalog.
 
-The API is under development. Its first release is planned as a private beta for invited developers.
+The API is under development. Its first release is planned as a public beta with no API key. A small group of developers will help evaluate it first.
 
 ## Principles
 
