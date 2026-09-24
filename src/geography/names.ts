@@ -5,6 +5,7 @@ import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
 import { europeReviewedNames, isEuropeReviewedCountry } from './europe-reviewed-names.js'
+import { europeGenderedNames, isEuropeGenderedCountry } from './europe-gendered-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
@@ -76,6 +77,7 @@ export function nameContextForCountry(country: string) {
   if (country === 'ET') return ethiopiaContext
   if (isAfricaReviewedCountry(country)) return africaReviewedContexts[country]
   if (isEuropeReviewedCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
+  if (isEuropeGenderedCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   return nameContextData[country]
 }
 
@@ -132,6 +134,13 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     const names = europeReviewedNames[country]
     const firstName = names[gender][keyPart(key, 12) % names[gender].length]
     const lastName = names.family[keyPart(key, 24) % names.family.length]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
+  }
+  if (isEuropeGenderedCountry(country)) {
+    const names = europeGenderedNames[country]
+    const firstName = names[gender][keyPart(key, 12) % names[gender].length]
+    const family = gender === 'female' ? names.familyFemale : names.familyMale
+    const lastName = family[keyPart(key, 24) % family.length]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   const names = namePoolData[selected.locale]
