@@ -1,6 +1,6 @@
 import type { City } from './cities.js'
 import { addressRules, cityPostalCodes } from './address-rules-data.js'
-import { nameContextForCountry } from './names.js'
+import { nameContextData } from './name-context-data.js'
 
 export function addressRule(country: string) {
   return addressRules[country]
@@ -13,13 +13,17 @@ export function postalCodeForCity(city: City): string | null {
 
 function streetLine(country: string, number: number): string {
   if (country === 'PN') return 'Example Place'
-  const locale = nameContextForCountry(country)?.pools[0]?.locale ?? 'en'
+  const locale = streetLanguageForCountry(country)
   if (locale.startsWith('fr')) return `${number} rue de l'Exemple`
   if (locale.startsWith('es')) return `Calle del Ejemplo ${number}`
   if (locale.startsWith('pt')) return `Rua do Exemplo, ${number}`
   if (locale.startsWith('de')) return `Beispielstraße ${number}`
   if (locale.startsWith('ja')) return `架空通り${number}番地`
   return `${number} Example Street`
+}
+
+export function streetLanguageForCountry(country: string): string {
+  return nameContextData[country]?.pools[0]?.locale.slice(0, 2) ?? 'en'
 }
 
 function formatAddress(format: string, components: Record<string, string>): string {
