@@ -79,6 +79,18 @@ describe('Wikidata name candidate review', () => {
     expect(query).toContain('"CF"')
   })
 
+  it('can collect birth-place candidates for territories without their own citizenship', async () => {
+    const query = queryFor(['LY', 'YT'], 'given', 'qlever', 'birthplace')
+    expect(query).toContain('?person wdt:P19/wdt:P131* ?country')
+    expect(query).not.toContain('wdt:P27')
+    expect(query).toContain('"LY" "YT"')
+    const report = await collectCandidates(['YT'], null, async (_code: string, kind: string) =>
+      kind === 'given' ? [row('YT', 'Aïcha', 2, 'female')] : [row('YT', 'Abdou', 3)],
+    async () => {}, 'qlever', 'birthplace')
+    expect(report.selection).toContain('P19/P131*')
+    expect(report.countries.YT.queries.family).toContain('wdt:P19/wdt:P131*')
+  })
+
   it('records QLever as the source of a fresh alternate-endpoint report', async () => {
     const report = await collectCandidates(['CF'], null, async (_code: string, kind: string) =>
       kind === 'given' ? [row('CF', 'Amina', 2, 'female')] : [row('CF', 'Kanda', 3)],

@@ -52,7 +52,8 @@ export function summarizeCandidates(givenRows, familyRows, codes, limit = 200) {
   return result
 }
 
-export function queryFor(codes, kind, engine = 'wikidata') {
+export function queryFor(codes, kind, engine = 'wikidata', basis = 'citizenship') {
+  if (!['citizenship', 'birthplace'].includes(basis)) throw new Error('Invalid country association basis')
   const values = codes.map((code) => `"${code}"`).join(' ')
   const property = kind === 'given' ? 'P735' : 'P734'
   const gender = kind === 'given' ? `?person wdt:P21 ?sex. VALUES ?sex { wd:${male} wd:${female} }` : ''
@@ -67,7 +68,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   return `${prefixes}SELECT ?iso ${selectGender}?nameLabel (COUNT(DISTINCT ?person) AS ?n) WHERE {
     VALUES ?iso { ${values} }
     ?country wdt:P297 ?iso.
-    ?person wdt:P27 ?country; wdt:${property} ?name.
+    ${basis === 'birthplace' ? '?person wdt:P19/wdt:P131* ?country' : '?person wdt:P27 ?country'}; wdt:${property} ?name.
     ${gender}
     ${labels}
   } GROUP BY ?iso ${selectGender}?nameLabel`
@@ -114,12 +115,15 @@ function argumentsFrom(argv) {
   if (codes.some((code) => !/^[A-Z]{2}$/u.test(code))) throw new Error('Invalid country code')
   const engine = options.engine ?? 'wikidata'
   if (!['wikidata', 'qlever'].includes(engine)) throw new Error('Invalid SPARQL engine')
-  return { codes, output: resolve(options.output), engine }
+  const basis = options.basis ?? 'citizenship'
+  if (!['citizenship', 'birthplace'].includes(basis)) throw new Error('Invalid country association basis')
+  return { codes, output: resolve(options.output), engine, basis }
 }
 
-export async function collectCandidates(codes, previous, fetchRows, save, engine = 'wikidata') {
+export async function collectCandidates(codes, previous, fetchRows, save, engine = 'wikidata', basis = 'citizenship') {
   if (previous && (previous.schemaVersion !== 2
-    || JSON.stringify(previous.requestedCodes) !== JSON.stringify(codes))) {
+    || JSON.stringify(previous.requestedCodes) !== JSON.stringify(codes)
+    || (previous.basis ?? 'citizenship') !== basis)) {
     throw new Error('Existing report has a different format or country list; choose another output path')
   }
   const report = previous ?? {
@@ -127,7 +131,8 @@ export async function collectCandidates(codes, previous, fetchRows, save, engine
     source: engine === 'qlever' ? qleverEndpoint : endpoint,
     license: 'CC0-1.0',
     requestedCodes: codes,
-    selection: 'P27 citizenship, P21 sex or gender, P735 given name, P734 family name; grouped counts',
+    ...(basis === 'birthplace' ? { basis } : {}),
+    selection: `${basis === 'birthplace' ? 'P19/P131* birth place hierarchy' : 'P27 citizenship'}, P21 sex or gender, P735 given name, P734 family name; grouped counts`,
     note: 'Candidate names require country-level QA before entering the runtime catalog; counts reflect Wikidata coverage, not population frequency.',
     countries: {},
     failures: {},
@@ -142,7 +147,7 @@ export async function collectCandidates(codes, previous, fetchRows, save, engine
         ...summarizeCandidates(givenRows, familyRows, [code])[code],
         retrievedAt: new Date().toISOString(),
         source: engine === 'qlever' ? qleverEndpoint : endpoint,
-        queries: { given: queryFor([code], 'given', engine), family: queryFor([code], 'family', engine) },
+        queries: { given: queryFor([code], 'given', engine, basis), family: queryFor([code], 'family', engine, basis) },
         sourceRowsSha256: createHash('sha256').update(JSON.stringify({ givenRows, familyRows })).digest('hex'),
       }
       delete report.failures[code]
@@ -178,13 +183,13 @@ async function saveReport(output, report) {
 }
 
 async function main() {
-  const { codes, output, engine } = argumentsFrom(process.argv.slice(2))
+  const { codes, output, engine, basis } = argumentsFrom(process.argv.slice(2))
   let previous = null
   try { previous = JSON.parse(await readFile(output, 'utf8')) }
   catch (error) { if (error.code !== 'ENOENT') throw error }
   const report = await collectCandidates(codes, previous,
-    async (code, kind) => parseBindings(await fetchBindings(queryFor([code], kind, engine), engine), kind),
-    (progress) => saveReport(output, progress), engine)
+    async (code, kind) => parseBindings(await fetchBindings(queryFor([code], kind, engine, basis), engine), kind),
+    (progress) => saveReport(output, progress), engine, basis)
   for (const code of codes) {
     if (report.countries[code]) process.stdout.write(`${code} ${JSON.stringify(report.countries[code].counts)}\n`)
     else if (report.failures[code]) process.stdout.write(`${code} FAILED ${report.failures[code]}\n`)
