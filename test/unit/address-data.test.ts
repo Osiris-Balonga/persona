@@ -54,6 +54,10 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(lahore.postalCode).toBeNull()
     expect(lahore.formatted).toContain('Lahore')
     expect(lahore.formatted).not.toContain('Lahore-')
+    const baku = fictionalAddress(getCity('AZ', 'Baku')!, key)
+    expect(baku.postalCode).toBeNull()
+    expect(baku.formatted).toContain('Baku')
+    expect(baku.formatted).not.toContain('AZ Baku')
   })
 
   it('removes dangling address separators when optional locality parts are absent', () => {
