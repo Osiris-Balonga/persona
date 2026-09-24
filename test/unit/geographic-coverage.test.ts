@@ -10,6 +10,7 @@ describe('geographic source coverage', () => {
       cities: { status: 'ingested', source: 'geonames' },
       names: { status: 'ingested', source: 'faker', fallback: 'language:fr' },
       addresses: { status: 'partial', source: 'libaddressinput-data', fallback: expect.stringContaining('global-format') },
+      distributions: { status: 'partial', source: 'persona-policy', fallback: 'uniform-country,uniform-appearance' },
     })
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },

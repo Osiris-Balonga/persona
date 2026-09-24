@@ -56,7 +56,8 @@ export function listCoverage() {
       names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback, supplementarySources: ['geonames-country-info'] } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
-      distributions: resident ? pending() : notApplicable(),
+      distributions: resident ? { ...partial('persona-policy'),
+        fallback: 'uniform-country,uniform-appearance', supplementarySources: ['geonames'] } : notApplicable(),
       portraits: resident ? pending() : notApplicable(),
     }
   })
@@ -84,7 +85,10 @@ export function validateGeographicData(): string[] {
     if (country.generation === 'unavailable' && cities.length > 0) errors.push(`Unexpected resident city ${country.code}`)
     const cityIds = new Set<number>()
     for (const city of cities) {
-      if (city.country !== country.code || !city.name.trim() || !Number.isSafeInteger(city.geonameId) || cityIds.has(city.geonameId)) {
+      if (city.country !== country.code || !city.name.trim() || !Number.isSafeInteger(city.geonameId)
+        || !Number.isSafeInteger(city.population) || city.population < 0
+        || city.latitude < -90 || city.latitude > 90 || city.longitude < -180 || city.longitude > 180
+        || cityIds.has(city.geonameId)) {
         errors.push(`Invalid city ${country.code}/${city.name}`)
       }
       cityIds.add(city.geonameId)

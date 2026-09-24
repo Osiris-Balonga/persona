@@ -2,7 +2,14 @@ import { countryData, registryEdition } from './country-data.js'
 
 export { registryEdition }
 
-export type Country = (typeof countryData)[number]
+export interface Country {
+  code: string
+  alpha3: string
+  numeric: string
+  name: string
+  callingCode: string | null
+  generation: 'eligible' | 'unavailable'
+}
 
 const byCode = new Map<string, Country>(countryData.map((country) => [country.code, country]))
 
