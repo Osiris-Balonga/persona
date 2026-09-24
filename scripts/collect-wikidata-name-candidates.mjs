@@ -119,6 +119,7 @@ export async function collectCandidates(codes, previous, fetchRows, save) {
     countries: {},
     failures: {},
   }
+  let consecutiveFailures = 0
   for (const code of codes) {
     if (report.countries[code]) continue
     try {
@@ -131,12 +132,18 @@ export async function collectCandidates(codes, previous, fetchRows, save) {
         sourceRowsSha256: createHash('sha256').update(JSON.stringify({ givenRows, familyRows })).digest('hex'),
       }
       delete report.failures[code]
+      consecutiveFailures = 0
       process.stderr.write(`Collected candidates for ${code}\n`)
     } catch (error) {
       report.failures[code] = error instanceof Error ? error.message : String(error)
+      consecutiveFailures++
       process.stderr.write(`Failed ${code}: ${report.failures[code]}\n`)
     }
     await save(report)
+    if (consecutiveFailures >= 2) {
+      process.stderr.write('Stopped after two consecutive country failures; rerun to retry.\n')
+      break
+    }
   }
   return report
 }
@@ -158,9 +165,10 @@ async function main() {
     (progress) => saveReport(output, progress))
   for (const code of codes) {
     if (report.countries[code]) process.stdout.write(`${code} ${JSON.stringify(report.countries[code].counts)}\n`)
-    else process.stdout.write(`${code} FAILED ${report.failures[code]}\n`)
+    else if (report.failures[code]) process.stdout.write(`${code} FAILED ${report.failures[code]}\n`)
+    else process.stdout.write(`${code} PENDING\n`)
   }
-  if (Object.keys(report.failures).length) process.exitCode = 1
+  if (codes.some((code) => !report.countries[code])) process.exitCode = 1
 }
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {

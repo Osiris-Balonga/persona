@@ -57,4 +57,16 @@ describe('Wikidata name candidate review', () => {
     expect(calls).toEqual(['CF:given'])
     expect(second.failures.CF).toContain('timeout')
   })
+
+  it('stops after repeated service failures and leaves untouched countries pending', async () => {
+    const calls: string[] = []
+    const report = await collectCandidates(['CF', 'CG', 'CI'], null, async (code: string) => {
+      calls.push(code)
+      throw new Error('query timeout')
+    }, async () => {})
+    expect(calls).toEqual(['CF', 'CG'])
+    expect(Object.keys(report.failures)).toEqual(['CF', 'CG'])
+    expect(report.countries.CI).toBeUndefined()
+    expect(report.failures.CI).toBeUndefined()
+  })
 })
