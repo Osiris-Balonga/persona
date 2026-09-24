@@ -25,6 +25,8 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(us.formatted).toContain(`Washington, District of Columbia ${us.postalCode}`)
     const cg = fictionalAddress(getCity('CG', 'Brazzaville')!, key)
     expect(cg).toMatchObject({ city: 'Brazzaville', postalCode: null, country: 'CG' })
+    expect(cg.line1).toContain("rue de l'Exemple")
+    expect(fictionalAddress(getCity('SN', 'Dakar')!, key).line1).toContain("rue de l'Exemple")
     expect(cg.formatted).not.toContain('null')
     expect(fictionalAddress(getCity('IN', 'Mumbai')!, key).formatted).not.toContain('%')
     const japan = fictionalAddress(getCity('JP', 'Tokyo')!, key)

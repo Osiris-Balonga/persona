@@ -7,7 +7,7 @@ import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { africaReviewedNames } from './africa-reviewed-names.js'
-import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
+import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
 
@@ -38,8 +38,7 @@ function addressCoverage(country: string): CoverageCell {
   if (rule.fallback) missing.push('global-format')
   if (rule.required.includes('S') && cities.some((city) => !city.region)) missing.push('region-unavailable')
   if (rule.required.includes('Z') && cities.some((city) => !postalCodeForCity(city))) missing.push('postal-code-unavailable')
-  const locale = nameContextForCountry(country)?.pools[0]?.locale ?? 'en'
-  if (!/^(en|fr|es|pt|de|ja)/.test(locale)) missing.push('global-street-style')
+  if (!/^(en|fr|es|pt|de|ja)$/.test(streetLanguageForCountry(country))) missing.push('global-street-style')
   return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
     fallback: missing.length ? missing.join(',') : null,
     supplementarySources: country === 'PN' ? ['upu-pitcairn']
