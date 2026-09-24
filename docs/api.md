@@ -21,7 +21,7 @@ The encoded query string is limited to 2,048 characters. Unknown or repeated par
 
 ### Selecting fields
 
-`fields` applies to each person in `results`; it never removes `results` or `meta`. Without `fields`, every public field in the [Person schema](../src/contracts/person.ts) is returned. Names are case-sensitive and may be separated by commas, with optional whitespace around each name. A field may be selected by its top-level name, such as `address` or `picture`, or by one supported nested path: `address.line1`, `address.city`, `address.postalCode`, `address.country`, or `picture.url`. A nested path returns only that property inside its parent object. If `picture` is `null`, selecting `picture.url` returns `"picture": null`; nullable values are not silently omitted.
+`fields` applies to each person in `results`; it never removes `results` or `meta`. Without `fields`, every public field in the [Person schema](../src/contracts/person.ts) is returned. Names are case-sensitive and may be separated by commas, with optional whitespace around each name. A field may be selected by its top-level name, such as `address` or `picture`, or by one supported nested path: `address.line1`, `address.city`, `address.region`, `address.postalCode`, `address.country`, `address.formatted`, or `picture.url`. A nested path returns only that property inside its parent object. If `picture` is `null`, selecting `picture.url` returns `"picture": null`; nullable values are not silently omitted.
 
 For example, `fields=firstName,city,picture.url` returns this shape for the illustrative person:
 

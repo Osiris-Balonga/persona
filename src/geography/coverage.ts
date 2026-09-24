@@ -2,6 +2,7 @@ import { listCities } from './cities.js'
 import { listCountries } from './countries.js'
 import { nameContextForCountry } from './names.js'
 import { namePoolData } from './name-pool-data.js'
+import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 
 type CoverageStatus = 'ingested' | 'partial' | 'pending' | 'not-applicable'
@@ -22,6 +23,20 @@ const partial = (source: Exclude<Source, null>): CoverageCell => ({
 const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback: null, review: 'pending' })
 const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending' })
 
+function addressCoverage(country: string): CoverageCell {
+  const rule = addressRule(country)
+  if (!rule) return pending()
+  const cities = listCities(country)
+  const missing: string[] = []
+  if (rule.fallback) missing.push('global-format')
+  if (rule.required.includes('S') && cities.some((city) => !city.region)) missing.push('region-unavailable')
+  if (rule.required.includes('Z') && cities.some((city) => !postalCodeForCity(city))) missing.push('postal-code-unavailable')
+  const locale = nameContextForCountry(country)?.pools[0]?.locale ?? 'en'
+  if (!/^(en|fr|es|pt|de|ja)/.test(locale)) missing.push('global-street-style')
+  return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
+    fallback: missing.length ? missing.join(',') : null }
+}
+
 export function listCoverage() {
   return listCountries().map((country) => {
     const resident = country.generation === 'eligible'
@@ -35,7 +50,7 @@ export function listCoverage() {
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? ingested('geonames') : resident ? pending() : notApplicable(),
       names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback } : pending(),
-      addresses: resident ? pending() : notApplicable(),
+      addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
       distributions: resident ? pending() : notApplicable(),
       portraits: resident ? pending() : notApplicable(),
@@ -69,7 +84,17 @@ export function validateGeographicData(): string[] {
         errors.push(`Invalid city ${country.code}/${city.name}`)
       }
       cityIds.add(city.geonameId)
+      const rule = addressRule(country.code)
+      const postalCode = postalCodeForCity(city)
+      if (postalCode && (!rule?.postalPattern || !new RegExp(`^(?:${rule.postalPattern})$`, 'i').test(postalCode))) {
+        errors.push(`Invalid postal code ${country.code}/${city.name}`)
+      }
+      const address = fictionalAddress(city, '0123456789abcdef'.repeat(4))
+      if (!address.formatted.includes(city.name) || address.formatted.includes('%') || address.country !== country.code) {
+        errors.push(`Incoherent address ${country.code}/${city.name}`)
+      }
     }
+    if (!addressRule(country.code)) errors.push(`Missing address rule ${country.code}`)
     if (country.generation === 'eligible') {
       const context = nameContextForCountry(country.code)
       if (!context || context.pools.length === 0) errors.push(`Missing name context ${country.code}`)

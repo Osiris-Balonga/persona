@@ -19,13 +19,13 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | `gender` | `male` or `female` |
 | `age`, `ageGroup`, `dateOfBirth` | Nonnegative integer; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
 | `appearance`, `country`, `city` | Nonempty appearance label; uppercase two-letter code from the registry; nonempty city |
-| `address` | `line1`, `city`, `country`, and `postalCode` (string or `null`) |
+| `address` | `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and country-ordered `formatted` |
 | `email`, `phone` | Email at `example.test`; phone string or `null` when no safe fictional number is available |
 | `picture` | Object with an HTTPS `url`, or `null` when no compatible approved portrait is available |
 
 All fields appear in the full representation. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
 
-Cities belong to their selected countries. Addresses use a country-appropriate format and a coherent city and postal code where applicable, but are fictional. Email addresses use a domain reserved for examples. Phone generation follows each country's format and uses non-assignable test ranges where available; limitations must be stated where no safe range is known. Persona does not present these values as real contact details.
+Cities belong to their selected countries. Addresses use the available country format and a city-linked postal code when verified; otherwise `postalCode` is `null`. They are fictional and not meant for delivery. Email addresses use a domain reserved for examples. Phone generation follows each country's format and uses non-assignable test ranges where available; limitations must be stated where no safe range is known. Persona does not present these values as real contact details.
 
 The supported geography is every country and territory in a versioned code registry. Data coverage is tracked per code, with explicit regional fallbacks where local sources are insufficient. A country does not imply a single appearance. A requested country and appearance are both respected, and names are selected from a cultural pool independently of the portrait.
 

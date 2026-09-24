@@ -9,6 +9,7 @@ describe('geographic source coverage', () => {
       registry: { status: 'ingested', source: 'iso-3166' },
       cities: { status: 'ingested', source: 'geonames' },
       names: { status: 'ingested', source: 'faker', fallback: 'language:fr' },
+      addresses: { status: 'partial', source: 'libaddressinput-data', fallback: expect.stringContaining('global-format') },
     })
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },

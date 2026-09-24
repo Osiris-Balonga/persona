@@ -5,9 +5,9 @@ import { unzipSync, strFromU8 } from 'fflate'
 import { countryData } from '../src/geography/country-data.ts'
 import { geographicSources } from '../src/geography/sources.ts'
 
-const [archivePath, edition] = process.argv.slice(2)
-if (!archivePath || !/^\d{4}-\d{2}-\d{2}$/.test(edition ?? '')) {
-  throw new Error('Usage: node scripts/refresh-city-data.mjs <cities1000.zip> <YYYY-MM-DD>')
+const [archivePath, edition, admin1Path] = process.argv.slice(2)
+if (!archivePath || !admin1Path || !/^\d{4}-\d{2}-\d{2}$/.test(edition ?? '')) {
+  throw new Error('Usage: node scripts/refresh-city-data.mjs <cities1000.zip> <YYYY-MM-DD> <admin1CodesASCII.txt>')
 }
 
 const archive = readFileSync(archivePath)
@@ -18,18 +18,31 @@ if (digest !== geographicSources.geonames.sha256 || edition !== geographicSource
 const members = unzipSync(archive, { filter: (file) => file.name === 'cities1000.txt' })
 const input = members['cities1000.txt']
 if (!input) throw new Error('GeoNames cities1000.txt is missing from archive')
+const adminInput = readFileSync(admin1Path)
+if (createHash('sha256').update(adminInput).digest('hex') !== geographicSources['geonames-admin1'].sha256) {
+  throw new Error('GeoNames admin1 archive differs from the reviewed source manifest')
+}
+const regions = new Map(adminInput.toString('utf8').split('\n').filter(Boolean).map((line) => {
+  const [code, name] = line.split('\t')
+  return [code, name]
+}))
 
 const eligible = new Set(countryData.filter((country) => country.generation === 'eligible').map((country) => country.code))
 const byCountry = new Map([...eligible].map((code) => [code, []]))
 for (const line of strFromU8(input).split('\n')) {
   if (!line) continue
   const columns = line.split('\t')
-  const [id, name, , , , , featureClass, featureCode, country, , admin1, , , , population] = columns
+  const [id, name, , , latitude, longitude, featureClass, featureCode, country, , admin1, , , , population] = columns
   if (!eligible.has(country) || featureClass !== 'P' || !/^PPL/.test(featureCode)) continue
   const geonameId = Number(id)
   const count = Number(population)
-  if (!Number.isSafeInteger(geonameId) || !Number.isSafeInteger(count) || !name.trim()) continue
-  byCountry.get(country).push({ geonameId, name: name.trim(), country, admin1, population: count, featureCode })
+  const lat = Number(latitude)
+  const lon = Number(longitude)
+  if (!Number.isSafeInteger(geonameId) || !Number.isSafeInteger(count) || !name.trim()
+    || lat < -90 || lat > 90 || lon < -180 || lon > 180) continue
+  byCountry.get(country).push({ geonameId, name: name.trim(), country, admin1,
+    region: regions.get(`${country}.${admin1}`) ?? null, latitude: lat, longitude: lon,
+    population: count, featureCode })
 }
 
 const selected = []
