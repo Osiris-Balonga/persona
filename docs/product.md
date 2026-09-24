@@ -6,7 +6,9 @@ Persona generates coherent fictional people for interface design, development, a
 
 A V1 person has an identity (`id`, `firstName`, `lastName`, `fullName`), a gender, a numeric `age`, a derived `ageGroup`, and a `dateOfBirth`. It has an appearance category and a location with a country, city, and structured address. It may include a fictional email and phone number and a URL for a reviewed synthetic portrait. The public schema will define exact formats, required fields, and nullability.
 
-The age group is calculated from the numeric age. A request may use `age=14` for an exact age or `ageGroup=teen` when the exact age is left to Persona. `age=teen` is invalid. The reference date `asOf` determines how age and date of birth agree; the group boundaries and date rules belong in the API contract.
+The age group is calculated from the numeric age: `child` is 0–12, `teen` is 13–17, `adult` is 18–64, and `senior` is 65 or older. A request may use `age=14` for an exact age or `ageGroup=teen` when the exact age is left to Persona. `age=teen` is invalid, and an explicit age and age group that disagree are rejected.
+
+`asOf` is a calendar date in `YYYY-MM-DD` format. When omitted, the API uses the current UTC date and returns that resolved date so the request can be replayed. Age changes on the calendar birthday at `asOf`; for a February 29 birth, the anniversary falls on March 1 in non-leap years. A birth date after `asOf` is invalid. The seed and resolved `asOf`, together with request parameters and data versions, determine a reproducible generated result.
 
 The full public object has a [V1 example](../examples/person-v1.json) and a versioned [TypeBox schema](../src/contracts/person.ts). Its fields have these shapes:
 
