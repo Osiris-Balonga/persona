@@ -53,6 +53,13 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'NA')).toMatchObject({
       profileGeneration: 'available', names: { source: 'namibia-parliament-names', review: 'reviewed', fallback: null },
     })
+    for (const [country, source] of [
+      ['TZ', 'tanzania-parliament-names'], ['ZM', 'zambia-parliament-names'], ['ZW', 'zimbabwe-parliament-names'],
+    ]) {
+      expect(rows.find((row) => row.country === country)).toMatchObject({
+        profileGeneration: 'available', names: { source, review: 'reviewed', fallback: null },
+      })
+    }
     expect(rows.find((row) => row.country === 'CG')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(rows.find((row) => row.country === 'SN')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(validateGeographicData()).toEqual([])

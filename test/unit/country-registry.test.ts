@@ -34,7 +34,7 @@ describe('versioned country and territory registry', () => {
         code: 'UNSUPPORTED_VALUE', parameter: 'country', statusCode: 400,
       }))
     }
-    for (const code of ['BT', 'CG', 'ET', 'GH', 'KE', 'MM', 'MW', 'NA', 'RW', 'SN', 'UG', 'ZA']) {
+    for (const code of ['BT', 'CG', 'ET', 'GH', 'KE', 'MM', 'MW', 'NA', 'RW', 'SN', 'TZ', 'UG', 'ZA', 'ZM', 'ZW']) {
       expect(parsePeopleQuery(new URLSearchParams(`country=${code}`)).country).toBe(code)
     }
   })
