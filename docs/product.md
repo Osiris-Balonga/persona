@@ -23,7 +23,7 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | `email`, `phone` | Email at `example.test`; phone string or `null` when no safe fictional number is available |
 | `picture` | Object with an HTTPS `url`, or `null` when no compatible approved portrait is available |
 
-All fields appear in the full representation. A future `fields` projection may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
+All fields appear in the full representation. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
 
 Cities belong to their selected countries. Addresses use a country-appropriate format and a coherent city and postal code where applicable, but are fictional. Email addresses use a domain reserved for examples. Phone generation follows each country's format and uses non-assignable test ranges where available; limitations must be stated where no safe range is known. Persona does not present these values as real contact details.
 

@@ -2,14 +2,14 @@ import { Type, type Static } from 'typebox'
 
 const CountryCode = Type.String({ pattern: '^[A-Z]{2}$' })
 
-const Address = Type.Object({
+export const AddressSchema = Type.Object({
   line1: Type.String({ minLength: 1 }),
   city: Type.String({ minLength: 1 }),
   postalCode: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
   country: CountryCode,
 }, { additionalProperties: false })
 
-const Picture = Type.Object({
+export const PictureSchema = Type.Object({
   url: Type.String({ format: 'uri', pattern: '^https://' }),
 }, { additionalProperties: false })
 
@@ -30,10 +30,10 @@ export const PersonSchema = Type.Object({
   appearance: Type.String({ minLength: 1 }),
   country: CountryCode,
   city: Type.String({ minLength: 1 }),
-  address: Address,
+  address: AddressSchema,
   email: Type.String({ format: 'email', pattern: '@example\\.test$' }),
   phone: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
-  picture: Type.Union([Picture, Type.Null()]),
+  picture: Type.Union([PictureSchema, Type.Null()]),
 }, { $id: 'urn:persona:schema:person:v1', additionalProperties: false })
 
 export type Person = Static<typeof PersonSchema>
