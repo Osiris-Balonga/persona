@@ -14,6 +14,7 @@ const ethiopiaContext = { pools: [{ locale: 'et_ET', tier: 'local', weight: 1 }]
 const africaReviewedContexts = {
   AO: { pools: [{ locale: 'ao_AO', tier: 'local', weight: 1 }], fallback: 'local' },
   BF: { pools: [{ locale: 'bf_BF', tier: 'local', weight: 1 }], fallback: 'local' },
+  BI: { pools: [{ locale: 'bi_BI', tier: 'local', weight: 1 }], fallback: 'local' },
   BJ: { pools: [{ locale: 'bj_BJ', tier: 'local', weight: 1 }], fallback: 'local' },
   BW: { pools: [{ locale: 'bw_BW', tier: 'local', weight: 1 }], fallback: 'local' },
   CD: { pools: [{ locale: 'cd_CD', tier: 'local', weight: 1 }], fallback: 'local' },
@@ -23,6 +24,7 @@ const africaReviewedContexts = {
   CV: { pools: [{ locale: 'cv_CV', tier: 'local', weight: 1 }], fallback: 'local' },
   DZ: { pools: [{ locale: 'dz_DZ', tier: 'local', weight: 1 }], fallback: 'local' },
   EG: { pools: [{ locale: 'eg_EG', tier: 'local', weight: 1 }], fallback: 'local' },
+  GA: { pools: [{ locale: 'ga_GA', tier: 'local', weight: 1 }], fallback: 'local' },
   GH: { pools: [{ locale: 'gh_GH', tier: 'local', weight: 1 }], fallback: 'local' },
   GM: { pools: [{ locale: 'gm_GM', tier: 'local', weight: 1 }], fallback: 'local' },
   GN: { pools: [{ locale: 'gn_GN', tier: 'local', weight: 1 }], fallback: 'local' },
