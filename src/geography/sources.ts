@@ -98,6 +98,24 @@ export const geographicSources = {
     license: 'Public naming guidance',
     edition: '2026-06-30',
   },
+  'congo-senate-names': {
+    title: 'Senate of the Republic of the Congo public member roster',
+    url: 'https://www.senat.cg/groupe-parlementaire-pct-et-allies.php',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'ghana-parliament-names': {
+    title: 'Parliament of Ghana public member names',
+    url: 'https://www.parliament.gh/members',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'senegal-presidency-names': {
+    title: 'Presidency of Senegal public appointment names',
+    url: 'https://www.presidence.sn/fr/actualites/conseil-2/',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',

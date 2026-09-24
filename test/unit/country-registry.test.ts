@@ -28,13 +28,13 @@ describe('versioned country and territory registry', () => {
     expect(() => parsePeopleQuery(new URLSearchParams('country=XX'))).toThrow(expect.objectContaining({
       code: 'UNSUPPORTED_VALUE', parameter: 'country', statusCode: 400,
     }))
-    for (const code of ['CG', 'PN']) {
+    for (const code of ['PN']) {
       expect(getCountry(code)?.generation).toBe('eligible')
       expect(() => parsePeopleQuery(new URLSearchParams(`country=${code}`))).toThrow(expect.objectContaining({
         code: 'UNSUPPORTED_VALUE', parameter: 'country', statusCode: 400,
       }))
     }
-    for (const code of ['BT', 'ET', 'MM', 'MW']) {
+    for (const code of ['BT', 'CG', 'ET', 'GH', 'MM', 'MW', 'SN']) {
       expect(parsePeopleQuery(new URLSearchParams(`country=${code}`)).country).toBe(code)
     }
   })

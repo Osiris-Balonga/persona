@@ -8,7 +8,7 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'CG')).toMatchObject({
       registry: { status: 'ingested', source: 'iso-3166' },
       cities: { status: 'ingested', source: 'geonames' },
-      names: { status: 'ingested', source: 'faker', fallback: 'language:fr' },
+      names: { status: 'ingested', source: 'congo-senate-names', fallback: null, review: 'reviewed' },
       addresses: { status: 'partial', source: 'libaddressinput-data', fallback: expect.stringContaining('global-format') },
       distributions: { status: 'partial', source: 'persona-policy', fallback: 'uniform-country,uniform-appearance' },
     })
@@ -33,9 +33,11 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'MW')).toMatchObject({
       profileGeneration: 'available', names: { review: 'reviewed' },
     })
-    expect(rows.find((row) => row.country === 'CG')).toMatchObject({
-      profileGeneration: 'pending-name-review', names: { review: 'automated' },
-    })
+    for (const country of ['CG', 'GH', 'SN']) {
+      expect(rows.find((row) => row.country === country)).toMatchObject({
+        profileGeneration: 'available', names: { review: 'reviewed' },
+      })
+    }
     expect(validateGeographicData()).toEqual([])
   })
 })

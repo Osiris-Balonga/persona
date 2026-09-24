@@ -4,12 +4,18 @@ import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
+import { africaReviewedNames } from './africa-reviewed-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const andorraContext = { pools: [{ locale: 'ad_AD', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const malawiContext = { pools: [{ locale: 'mw_MW', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const ethiopiaContext = { pools: [{ locale: 'et_ET', tier: 'local', weight: 1 }], fallback: 'local' } as const
+const africaReviewedContexts = {
+  CG: { pools: [{ locale: 'cg_CG', tier: 'local', weight: 1 }], fallback: 'local' },
+  GH: { pools: [{ locale: 'gh_GH', tier: 'local', weight: 1 }], fallback: 'local' },
+  SN: { pools: [{ locale: 'sn_SN', tier: 'local', weight: 1 }], fallback: 'local' },
+} as const
 
 export function nameContextForCountry(country: string) {
   if (country === 'MM') return myanmarContext
@@ -17,6 +23,7 @@ export function nameContextForCountry(country: string) {
   if (country === 'BT') return bhutanContext
   if (country === 'MW') return malawiContext
   if (country === 'ET') return ethiopiaContext
+  if (country === 'CG' || country === 'GH' || country === 'SN') return africaReviewedContexts[country]
   return nameContextData[country]
 }
 
@@ -61,6 +68,12 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     let paternalIndex = keyPart(key, 24) % maleNames.length
     if (maleNames[paternalIndex] === firstName) paternalIndex = (paternalIndex + 1) % maleNames.length
     const lastName = maleNames[paternalIndex]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
+  }
+  if (country === 'CG' || country === 'GH' || country === 'SN') {
+    const names = africaReviewedNames[country]
+    const firstName = names[gender][keyPart(key, 12) % names[gender].length]
+    const lastName = names.family[keyPart(key, 24) % names.family.length]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   if (selected.locale === 'ad_AD') {
