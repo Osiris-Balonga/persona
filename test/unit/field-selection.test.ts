@@ -49,6 +49,24 @@ describe('public field selection', () => {
     ])
   })
 
+  it('retains a null surname in a projected response', () => {
+    const response = structuredClone(fullResponse)
+    response.results[0].firstName = 'Aye Aye Myint'
+    response.results[0].lastName = null
+    response.results[0].fullName = 'Aye Aye Myint'
+    response.results[0].country = 'MM'
+    response.results[0].city = 'Yangon'
+    response.results[0].address = { line1: '18 Example Road', city: 'Yangon', region: 'Yangon Region',
+      postalCode: null, country: 'MM', formatted: '18 Example Road\nYangon\nMyanmar' }
+    response.results[0].email = 'ayeayemyint.0123456789ab@example.test'
+    response.results[0].phone = null
+    response.results[0].picture = null
+    response.results[0].appearance = 'southeast-asian'
+    const projected = projectPeopleResponse(response, fieldsFrom('fields=firstName,lastName,fullName'))
+    expect(projected.results).toEqual([{ firstName: 'Aye Aye Myint', lastName: null, fullName: 'Aye Aye Myint' }])
+    expect(Value.Check(ProjectedPeopleResponseSchema, projected)).toBe(true)
+  })
+
   it('rejects unknown, private, duplicate, and conflicting fields', () => {
     for (const fields of [
       'internalCatalogKey', 'picture.privateKey', 'address.foo', 'results',

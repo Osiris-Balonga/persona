@@ -37,4 +37,17 @@ describe('cultural name pools', () => {
     expect(namePoolData.ka_GE.female).not.toContain('გიორგი')
     expect(namePoolData.ka_GE.male).not.toContain('ნინო')
   })
+
+  it('keeps Burmese and Indonesian given names whole without inventing surnames', () => {
+    for (const country of ['MM', 'ID']) {
+      for (const gender of ['female', 'male'] as const) {
+        const name = selectName(country, gender, key)
+        expect(name).toEqual(selectName(country, gender, key))
+        expect(name.firstName.split(' ').length).toBeGreaterThanOrEqual(2)
+        expect(name.lastName).toBeNull()
+        expect(name.fullName).toBe(name.firstName)
+      }
+    }
+    expect(nameContextForCountry('MM').fallback).toBe('local')
+  })
 })

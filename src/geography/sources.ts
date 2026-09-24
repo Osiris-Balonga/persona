@@ -44,6 +44,24 @@ export const geographicSources = {
     license: 'Public name-frequency facts',
     edition: '2024-08-14',
   },
+  'burmese-name-frequencies': {
+    title: 'Burmese Names common male and female name counts',
+    url: 'https://burmesenames.wordpress.com/category/stats/',
+    license: 'Public common-name frequency facts (small sample)',
+    edition: '2014-06-07',
+  },
+  'uk-myanmar-names': {
+    title: 'HM Passport Office Myanmar naming guidance',
+    url: 'https://www.gov.uk/government/publications/myanmar-burma-knowledge-base-profile/myanmar-burma-knowledge-base-profile',
+    license: 'Public naming guidance',
+    edition: '2025-07-18',
+  },
+  'uk-indonesia-names': {
+    title: 'HM Passport Office Indonesia naming guidance',
+    url: 'https://www.gov.uk/government/publications/indonesia-knowledge-base-profile/indonesia-knowledge-base-profile',
+    license: 'Public naming guidance',
+    edition: '2026-07-01',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',
