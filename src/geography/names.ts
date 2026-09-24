@@ -15,6 +15,7 @@ const africaReviewedContexts = {
   CG: { pools: [{ locale: 'cg_CG', tier: 'local', weight: 1 }], fallback: 'local' },
   GH: { pools: [{ locale: 'gh_GH', tier: 'local', weight: 1 }], fallback: 'local' },
   SN: { pools: [{ locale: 'sn_SN', tier: 'local', weight: 1 }], fallback: 'local' },
+  ZA: { pools: [{ locale: 'za_ZA', tier: 'local', weight: 1 }], fallback: 'local' },
 } as const
 
 export function nameContextForCountry(country: string) {
@@ -23,7 +24,7 @@ export function nameContextForCountry(country: string) {
   if (country === 'BT') return bhutanContext
   if (country === 'MW') return malawiContext
   if (country === 'ET') return ethiopiaContext
-  if (country === 'CG' || country === 'GH' || country === 'SN') return africaReviewedContexts[country]
+  if (country === 'CG' || country === 'GH' || country === 'SN' || country === 'ZA') return africaReviewedContexts[country]
   return nameContextData[country]
 }
 
@@ -70,7 +71,7 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     const lastName = maleNames[paternalIndex]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
-  if (country === 'CG' || country === 'GH' || country === 'SN') {
+  if (country === 'CG' || country === 'GH' || country === 'SN' || country === 'ZA') {
     const names = africaReviewedNames[country]
     const firstName = names[gender][keyPart(key, 12) % names[gender].length]
     const lastName = names.family[keyPart(key, 24) % names.family.length]

@@ -65,7 +65,8 @@ export function listCoverage() {
             : country.code === 'ET' ? 'tesfa-ethiopian-names'
               : country.code === 'CG' ? 'congo-senate-names'
                 : country.code === 'GH' ? 'ghana-parliament-names'
-                  : country.code === 'SN' ? 'senegal-presidency-names' : 'faker'),
+                  : country.code === 'SN' ? 'senegal-presidency-names'
+                    : country.code === 'ZA' ? 'stats-sa-birth-names' : 'faker'),
         fallback: country.code === 'AD' ? 'language:es-family' : nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
         supplementarySources: country.code === 'MM' ? ['uk-myanmar-names'] as const
@@ -139,7 +140,7 @@ export function validateGeographicData(): string[] {
             : pool.locale === 'bt_BT' ? bhutanGivenNames
               : pool.locale === 'mw_MW' ? malawiNames
                 : pool.locale === 'et_ET' ? ethiopiaGivenNames
-                  : country.code === 'CG' || country.code === 'GH' || country.code === 'SN'
+                  : country.code === 'CG' || country.code === 'GH' || country.code === 'SN' || country.code === 'ZA'
                     ? africaReviewedNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {

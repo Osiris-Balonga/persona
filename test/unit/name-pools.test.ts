@@ -87,6 +87,21 @@ describe('cultural name pools', () => {
     }
   })
 
+  it('uses the published South African male, female, and family name sample', () => {
+    expect(nameContextForCountry('ZA')).toMatchObject({ fallback: 'local', pools: [{ locale: 'za_ZA', tier: 'local' }] })
+    const female = selectName('ZA', 'female', key)
+    const male = selectName('ZA', 'male', key)
+    expect(['Onalerona', 'Zanokuhle', 'Melokuhle', 'Lisakhanya', 'Lethabo', 'Nkanyezi', 'Lesedi', 'Omphile', 'Olwemihla'])
+      .toContain(female.firstName)
+    expect(['Lethabo', 'Lubanzi', 'Nkazimulo', 'Nkanyezi', 'Langelihle', 'Lesedi', 'Lethokuhle', 'Siphosethu', 'Leano'])
+      .toContain(male.firstName)
+    for (const name of [female, male]) {
+      expect(['Dlamini', 'Ndlovu', 'Nkosi', 'Khumalo', 'Sithole', 'Mkhize', 'Mokoena', 'Mthembu', 'Gumede', 'Ngcobo'])
+        .toContain(name.lastName)
+      expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+    }
+  })
+
   it('exposes Burmese and Indonesian name components without changing the complete name', () => {
     for (const country of ['MM', 'ID']) {
       for (const gender of ['female', 'male'] as const) {
