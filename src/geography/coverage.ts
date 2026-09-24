@@ -8,6 +8,7 @@ import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
+import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
 
 type CoverageStatus = 'ingested' | 'partial' | 'pending' | 'not-applicable'
 type Source = GeographicSource | null
@@ -54,6 +55,7 @@ export function listCoverage() {
     return {
       country: country.code,
       generation: country.generation,
+      profileGeneration: profileGenerationStatus(country),
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
@@ -62,6 +64,7 @@ export function listCoverage() {
           : country.code === 'MW' ? 'peace-corps-chichewa-names'
             : country.code === 'ET' ? 'tesfa-ethiopian-names' : 'faker'),
         fallback: country.code === 'AD' ? 'language:es-family' : nameFallback,
+        review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
         supplementarySources: country.code === 'MM' ? ['uk-myanmar-names'] as const
           : country.code === 'AD' ? ['faker'] as const
             : country.code === 'MW' ? ['ifla-malawi-names'] as const
@@ -122,6 +125,10 @@ export function validateGeographicData(): string[] {
     if (country.generation === 'eligible') {
       const context = nameContextForCountry(country.code)
       if (!context || context.pools.length === 0) errors.push(`Missing name context ${country.code}`)
+      if (hasReviewedNamePool(country.code)
+        && (!context || context.fallback !== 'local' || context.pools.some((pool) => pool.tier !== 'local'))) {
+        errors.push(`Reviewed name pool is not local ${country.code}`)
+      }
       for (const pool of context?.pools ?? []) {
         const names = pool.locale === 'my_MM' ? myanmarGivenNames
           : pool.locale === 'ad_AD' ? andorraGivenNames

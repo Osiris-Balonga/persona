@@ -5,16 +5,17 @@ import { appearanceCategories } from '../../src/geography/appearance.js'
 import { getCountry } from '../../src/geography/countries.js'
 import { getCity } from '../../src/geography/cities.js'
 import { chooseWeighted, resolveGeographicContext } from '../../src/geography/distribution.js'
+import { canGenerateProfile } from '../../src/geography/profile-availability.js'
 
 const versions = { dataVersion: '2026-09-24', catalogVersion: 'empty-v1' }
 const query = (value: string) => parsePeopleQuery(new URLSearchParams(value))
 
 describe('seeded geographic choices', () => {
   it('respects explicit country, city, and appearance independently', () => {
-    const filters = query('country=CG&city=Brazzaville&appearance=east-asian&seed=profile-demo&asOf=2026-09-24')
+    const filters = query('country=MW&city=Lilongwe&appearance=east-asian&seed=profile-demo&asOf=2026-09-24')
     const key = createGenerationContext(filters, versions).componentKey(0, 'geography')
     expect(resolveGeographicContext(filters, key)).toMatchObject({
-      country: { code: 'CG' }, city: { name: 'Brazzaville' }, appearance: 'east-asian',
+      country: { code: 'MW' }, city: { name: 'Lilongwe' }, appearance: 'east-asian',
     })
   })
 
@@ -24,8 +25,16 @@ describe('seeded geographic choices', () => {
     const person = resolveGeographicContext(filters, key)
     expect(resolveGeographicContext(filters, key)).toEqual(person)
     expect(getCountry(person.country.code)?.generation).toBe('eligible')
+    expect(canGenerateProfile(person.country)).toBe(true)
     expect(getCity(person.country.code, person.city.name)).toEqual(person.city)
     expect(appearanceCategories).toContain(person.appearance)
+  })
+
+  it('does not select or accept an unreviewed country for a beta profile', () => {
+    const filters = query('seed=profile-demo&asOf=2026-09-24')
+    const zeroKey = '0'.repeat(64)
+    expect(resolveGeographicContext(filters, zeroKey).country.code).toBe('BT')
+    expect(() => resolveGeographicContext({ country: 'CG' }, zeroKey)).toThrow(RangeError)
   })
 
   it('rejects invalid weights rather than silently biasing choices', () => {

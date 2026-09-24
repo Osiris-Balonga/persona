@@ -9,7 +9,7 @@ const cache = (query: string, explicitAsOf = true, statusCode = 200) =>
 
 describe('GET /people cache policy', () => {
   it('allows private revalidation only for seeded requests with an explicit reference date', () => {
-    const headers = cache('seed=school-demo&asOf=2026-09-24&country=CG')
+    const headers = cache('seed=school-demo&asOf=2026-09-24&country=MW')
 
     expect(headers['Cache-Control']).toBe('private, no-cache')
     expect(headers.ETag).toMatch(/^"persona-v1-[a-f0-9]{64}"$/)
@@ -19,12 +19,12 @@ describe('GET /people cache policy', () => {
   })
 
   it('varies the validator across representation inputs and versions', () => {
-    const base = 'seed=school-demo&asOf=2026-09-24&country=CG'
+    const base = 'seed=school-demo&asOf=2026-09-24&country=MW'
     const tag = cache(base).ETag
 
     expect(cache(`${base}&count=2`).ETag).not.toBe(tag)
     expect(cache(`${base}&fields=firstName`).ETag).not.toBe(tag)
-    expect(cache(base.replace('country=CG', 'country=FR')).ETag).not.toBe(tag)
+    expect(cache(base.replace('country=MW', 'country=ET')).ETag).not.toBe(tag)
     expect(cache(base, true, 200).ETag).toBe(tag)
     expect(peopleCacheHeaders(200, parse(base), true, { ...versions, dataVersion: 'geo-v2' }).ETag).not.toBe(tag)
     expect(peopleCacheHeaders(200, parse(base), true, { ...versions, catalogVersion: 'portraits-v2' }).ETag).not.toBe(tag)

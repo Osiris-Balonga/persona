@@ -11,13 +11,13 @@
 | `age` | Integer from 0 to 120; the server derives `ageGroup` |
 | `ageGroup` | `child`, `teen`, `adult`, or `senior`; must agree with `age` if both are supplied |
 | `appearance` | Lowercase hyphenated label, at most 64 characters; supported labels come from the versioned taxonomy |
-| `country` | Uppercase two-letter code; supported codes come from the versioned country and territory registry |
+| `country` | Uppercase two-letter code from the versioned registry; beta generation requires an available local name pool |
 | `city` | Nonempty city name, at most 100 characters; requires `country` |
 | `seed` | Optional opaque, nonblank string of at most 128 characters |
 | `asOf` | Valid `YYYY-MM-DD` date; defaults to the current UTC date |
 | `fields` | Optional comma-separated list of public person fields, at most 512 characters; omitted means every public field |
 
-The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry](geographic-data.md) validates assigned and eligible country codes, sampled city membership, and the versioned appearance vocabulary.
+The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry and beta availability policy](geographic-data.md) validate assigned codes, reviewed local name pools, sampled city membership, and the versioned appearance vocabulary.
 
 ### Selecting fields
 
@@ -34,9 +34,9 @@ For example, `fields=firstName,city,picture.url` returns this shape for the illu
 ```json
 {
   "results": [{
-    "firstName": "Grâce",
-    "city": "Brazzaville",
-    "picture": { "url": "https://images.example.test/portraits/v1/adult/female/black/central-african/p_0042.webp" }
+    "firstName": "Chikondi",
+    "city": "Lilongwe",
+    "picture": { "url": "https://images.example.test/portraits/v1/adult/female/black/southern-african/p_0042.webp" }
   }],
   "meta": {
     "count": 1,
@@ -53,7 +53,7 @@ An empty, unknown, internal, repeated, or conflicting selection returns HTTP 400
 Example request (the response file is illustrative until the generator is implemented):
 
 ```http
-GET /people?count=1&country=CG&city=Brazzaville&age=27&gender=female&appearance=central-african&seed=profile-demo&asOf=2026-09-24
+GET /people?count=1&country=MW&city=Lilongwe&age=27&gender=female&appearance=southern-african&seed=profile-demo&asOf=2026-09-24
 ```
 
 ## Responses and errors
@@ -76,4 +76,4 @@ Invalid input returns HTTP 400 with an `error` object containing a stable `code`
 {"error":{"code":"INVALID_QUERY","message":"age must be an integer","parameter":"age"}}
 ```
 
-`INVALID_QUERY` covers malformed, unknown, repeated, or out-of-range parameters. `CONFLICTING_FILTERS` covers incompatible constraints such as `age=14&ageGroup=adult` or `city` without `country`. `UNSUPPORTED_VALUE` covers an unassigned or resident-ineligible country code, a city outside that country's current sample, or an unknown appearance label. Rate limiting will use HTTP 429 and `Retry-After`; its exact policy belongs to the public-beta security work.
+`INVALID_QUERY` covers malformed, unknown, repeated, or out-of-range parameters. `CONFLICTING_FILTERS` covers incompatible constraints such as `age=14&ageGroup=adult` or `city` without `country`. `UNSUPPORTED_VALUE` covers an unassigned country, one without permanent residents, one pending a reviewed local name pool, a city outside its current sample, or an unknown appearance label. Rate limiting will use HTTP 429 and `Retry-After`; its exact policy belongs to the public-beta security work.

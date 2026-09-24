@@ -10,13 +10,13 @@ describe('GET /people query contract', () => {
   })
 
   it('preserves explicit filters and derives the age group from numeric age', () => {
-    expect(parse('count=20&gender=female&age=14&country=CG&city=Brazzaville&seed=school-demo&asOf=2026-09-24&fields=firstName,city,picture.url')).toEqual({
+    expect(parse('count=20&gender=female&age=14&country=MW&city=Lilongwe&seed=school-demo&asOf=2026-09-24&fields=firstName,city,picture.url')).toEqual({
       count: 20,
       gender: 'female',
       age: 14,
       ageGroup: 'teen',
-      country: 'CG',
-      city: 'Brazzaville',
+      country: 'MW',
+      city: 'Lilongwe',
       seed: 'school-demo',
       asOf: '2026-09-24',
       fields: ['firstName', 'city', 'picture.url'],
@@ -33,14 +33,14 @@ describe('GET /people query contract', () => {
   it('rejects incompatible explicit filters', () => {
     expect(() => parse('age=14&ageGroup=adult')).toThrow(expect.objectContaining({ code: 'CONFLICTING_FILTERS', parameter: 'ageGroup' }))
     expect(() => parse('city=Brazzaville')).toThrow(expect.objectContaining({ code: 'CONFLICTING_FILTERS', parameter: 'city' }))
-    expect(() => parse('country=CG&city=Paris')).toThrow(expect.objectContaining({ code: 'UNSUPPORTED_VALUE', parameter: 'city' }))
+    expect(() => parse('country=MW&city=Paris')).toThrow(expect.objectContaining({ code: 'UNSUPPORTED_VALUE', parameter: 'city' }))
   })
 
   it('rejects unknown or repeated parameters and bounded strings', () => {
     for (const query of ['limit=2', 'count=1&count=2', `seed=${'s'.repeat(129)}`]) {
       expect(() => parse(query)).toThrow(PeopleQueryError)
     }
-    expect(() => parse('country=CG&appearance=martian')).toThrow(expect.objectContaining({ code: 'UNSUPPORTED_VALUE', parameter: 'appearance' }))
-    expect(parse('country=CG&appearance=east-asian').appearance).toBe('east-asian')
+    expect(() => parse('country=MW&appearance=martian')).toThrow(expect.objectContaining({ code: 'UNSUPPORTED_VALUE', parameter: 'appearance' }))
+    expect(parse('country=MW&appearance=east-asian').appearance).toBe('east-asian')
   })
 })

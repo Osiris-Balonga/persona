@@ -2,6 +2,7 @@ import type { PeopleQuery } from '../people-query.js'
 import { appearanceCategories, isAppearance } from './appearance.js'
 import { getCity, listCities } from './cities.js'
 import { getCountry, listCountries } from './countries.js'
+import { canGenerateProfile } from './profile-availability.js'
 
 export function chooseWeighted<T>(items: readonly { value: T; weight: number }[], draw: number): T {
   if (!Number.isSafeInteger(draw) || draw < 0 || items.length === 0
@@ -25,10 +26,10 @@ export function resolveGeographicContext(
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid generation key')
   const draw = (offset: number) => Number.parseInt(key.slice(offset, offset + 12), 16)
   const country = query.country === undefined
-    ? chooseWeighted(listCountries().filter((entry) => entry.generation === 'eligible')
+    ? chooseWeighted(listCountries().filter(canGenerateProfile)
       .map((value) => ({ value, weight: 1 })), draw(0))
     : getCountry(query.country)
-  if (!country || country.generation !== 'eligible') throw new RangeError('Unavailable resident country')
+  if (!country || !canGenerateProfile(country)) throw new RangeError('Unavailable beta profile country')
 
   const city = query.city === undefined
     ? chooseWeighted(listCities(country.code).map((value) => ({
