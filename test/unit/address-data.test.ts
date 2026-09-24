@@ -55,4 +55,15 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(lahore.formatted).toContain('Lahore')
     expect(lahore.formatted).not.toContain('Lahore-')
   })
+
+  it('removes dangling address separators when optional locality parts are absent', () => {
+    const key = '0123456789abcdef'.repeat(4)
+    const dhaka = fictionalAddress(getCity('BD', 'Dhaka')!, key)
+    const quezon = fictionalAddress(getCity('PH', 'Quezon City')!, key)
+    expect(dhaka.postalCode).toBeNull()
+    expect(dhaka.formatted).toContain('Dhaka')
+    expect(dhaka.formatted).not.toContain('Dhaka -')
+    expect(quezon.formatted).toContain('Quezon City')
+    expect(quezon.formatted).not.toContain('\n,')
+  })
 })
