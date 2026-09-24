@@ -58,6 +58,12 @@ export const geographicSources = {
     license: 'Public postal format guidance (range fact)',
     edition: '2026-09-24',
   },
+  'persona-policy': {
+    title: 'Persona V1 editorial selection policy',
+    url: 'https://github.com/Osiris-Balonga/persona/blob/dev/docs/geographic-data.md',
+    license: 'Project-owned selection rule',
+    edition: 'v1',
+  },
   nanpa: {
     title: 'NANPA 555 line numbers',
     url: 'https://nanpa.com/numbering/555-line-numbers',

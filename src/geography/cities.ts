@@ -1,7 +1,16 @@
 import { cityData, cityEdition } from './city-data.js'
 
 export { cityEdition }
-export type City = (typeof cityData)[number]
+export interface City {
+  geonameId: number
+  name: string
+  country: string
+  admin1: string
+  region: string | null
+  latitude: number
+  longitude: number
+  population: number
+}
 
 const byCountry = new Map<string, City[]>()
 for (const city of cityData) {
