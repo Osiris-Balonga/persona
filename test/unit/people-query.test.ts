@@ -40,5 +40,7 @@ describe('GET /people query contract', () => {
     for (const query of ['limit=2', 'count=1&count=2', `seed=${'s'.repeat(129)}`]) {
       expect(() => parse(query)).toThrow(PeopleQueryError)
     }
+    expect(() => parse('country=CG&appearance=martian')).toThrow(expect.objectContaining({ code: 'UNSUPPORTED_VALUE', parameter: 'appearance' }))
+    expect(parse('country=CG&appearance=east-asian').appearance).toBe('east-asian')
   })
 })

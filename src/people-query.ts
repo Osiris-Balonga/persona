@@ -3,6 +3,7 @@ import type { Person } from './contracts/person.js'
 import { parseFieldSelection, type FieldPath } from './field-selection.js'
 import { getCountry } from './geography/countries.js'
 import { getCity } from './geography/cities.js'
+import { isAppearance } from './geography/appearance.js'
 
 export interface PeopleQuery {
   count: number
@@ -91,6 +92,9 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   const appearance = boundedString(params.get('appearance'), 'appearance', 64)
   if (appearance !== undefined && !/^[a-z]+(?:-[a-z]+)*$/.test(appearance)) {
     throw new PeopleQueryError('INVALID_QUERY', 'appearance', 'appearance must be a lowercase slug')
+  }
+  if (appearance !== undefined && !isAppearance(appearance)) {
+    throw new PeopleQueryError('UNSUPPORTED_VALUE', 'appearance', 'Unknown appearance category')
   }
   const country = params.get('country')
   if (country !== null && !/^[A-Z]{2}$/.test(country)) {

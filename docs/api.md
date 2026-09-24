@@ -17,7 +17,7 @@
 | `asOf` | Valid `YYYY-MM-DD` date; defaults to the current UTC date |
 | `fields` | Optional comma-separated list of public person fields, at most 512 characters; omitted means every public field |
 
-The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [country registry](geographic-data.md) validates assigned and eligible country codes; the appearance taxonomy will validate membership after its data is added.
+The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry](geographic-data.md) validates assigned and eligible country codes, sampled city membership, and the versioned appearance vocabulary.
 
 ### Selecting fields
 
@@ -70,4 +70,4 @@ Invalid input returns HTTP 400 with an `error` object containing a stable `code`
 {"error":{"code":"INVALID_QUERY","message":"age must be an integer","parameter":"age"}}
 ```
 
-`INVALID_QUERY` covers malformed, unknown, repeated, or out-of-range parameters. `CONFLICTING_FILTERS` covers incompatible constraints such as `age=14&ageGroup=adult`, `city` without `country`, or a city assigned to another country. `UNSUPPORTED_VALUE` covers an unassigned or resident-ineligible country code; city and appearance membership will use it after their datasets exist. Rate limiting will use HTTP 429 and `Retry-After`; its exact policy belongs to the public-beta security work.
+`INVALID_QUERY` covers malformed, unknown, repeated, or out-of-range parameters. `CONFLICTING_FILTERS` covers incompatible constraints such as `age=14&ageGroup=adult` or `city` without `country`. `UNSUPPORTED_VALUE` covers an unassigned or resident-ineligible country code, a city outside that country's current sample, or an unknown appearance label. Rate limiting will use HTTP 429 and `Retry-After`; its exact policy belongs to the public-beta security work.
