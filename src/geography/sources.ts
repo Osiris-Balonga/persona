@@ -170,6 +170,24 @@ export const geographicSources = {
     license: 'Public name-component facts (small sample)',
     edition: '2026-09-24',
   },
+  'botswana-parliament-names': {
+    title: 'Parliament of Botswana public members roster',
+    url: 'https://parliament.gov.bw/members.php',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'lesotho-parliament-names': {
+    title: 'National Assembly of Lesotho public members roster',
+    url: 'https://nationalassembly.parliament.ls/members/',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'seychelles-parliament-names': {
+    title: 'National Assembly of Seychelles 8th Assembly and Women’s Parliamentary Caucus',
+    url: 'https://www.nationalassembly.sc/members-8th-assembly',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',

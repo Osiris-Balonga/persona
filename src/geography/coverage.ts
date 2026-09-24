@@ -31,10 +31,12 @@ const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback
 const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending', supplementarySources: [] })
 
 const nameSourceByCountry: Record<string, GeographicSource> = {
-  AD: 'andorra-civil-names', BT: 'bhutan-naming-study', CG: 'congo-senate-names',
+  AD: 'andorra-civil-names', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
+  CG: 'congo-senate-names',
   ET: 'tesfa-ethiopian-names', GH: 'ghana-parliament-names', KE: 'kenya-parliament-names',
-  MM: 'burmese-name-frequencies', MW: 'peace-corps-chichewa-names', NA: 'namibia-parliament-names',
-  RW: 'rwanda-vital-names', SN: 'senegal-presidency-names', TZ: 'tanzania-parliament-names',
+  LS: 'lesotho-parliament-names', MM: 'burmese-name-frequencies', MW: 'peace-corps-chichewa-names',
+  NA: 'namibia-parliament-names', RW: 'rwanda-vital-names', SC: 'seychelles-parliament-names',
+  SN: 'senegal-presidency-names', TZ: 'tanzania-parliament-names',
   UG: 'uganda-parliament-names', ZA: 'stats-sa-birth-names', ZM: 'zambia-parliament-names',
   ZW: 'zimbabwe-parliament-names',
 }

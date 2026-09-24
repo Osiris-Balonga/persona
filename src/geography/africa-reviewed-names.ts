@@ -1,5 +1,10 @@
 // Narrow, source-backed compatibility samples; provenance and limits in docs/geographic-data.md.
 export const africaReviewedNames = {
+  BW: {
+    female: ['Unity', 'Beauty', 'Talita', 'Phildah', 'Peggy', 'Annah'],
+    male: ['Duma', 'Dithapelo', 'Dumelang', 'Wynter', 'Polson', 'Mokwaledi'],
+    family: ['Dow', 'Manake', 'Monnakgotla', 'Keorapetse', 'Saleshando', 'Mmolotsi', 'Kedikilwe'],
+  },
   CG: {
     female: ['Pascaline', 'Simone', 'Hortense', 'Charlotte', 'Jeanne'],
     male: ['Daniel', 'Théophile', 'Michel', 'Pascal', 'Guillaume'],
@@ -15,6 +20,11 @@ export const africaReviewedNames = {
     male: ['David', 'Paul', 'Tom', 'Elisha', 'Joshua'],
     family: ['Odinga', 'Ochieng', 'Opondo', 'Odhiambo', 'Oduor', 'Omondi', 'Owino'],
   },
+  LS: {
+    female: ['Matumelo', 'Mamoipone', 'Likeleli', 'Mathato', 'Manthabiseng'],
+    male: ['Tello', 'Thabo', 'Motlatsi', 'Moshoeshoe', 'Tseliso'],
+    family: ['Sekatle', 'Senauoane', 'Monare', 'Phafoli', 'Phohleli', 'Kibane', 'Maqelepo', 'Fako'],
+  },
   NA: {
     female: ['Saara', 'Emma', 'Alexia', 'Lucia', 'Hilma', 'Selma'],
     male: ['Phillipus', 'Paulus', 'Immanuel', 'Veikko', 'Salomon', 'Willem'],
@@ -24,6 +34,11 @@ export const africaReviewedNames = {
     female: ['Aline', 'Judith', 'Jeanne', 'Emma'],
     male: ['Anastase', 'Théogène', 'Venuste', 'Jean Claude'],
     family: ['Ineza', 'Uwase', 'Ishimwe', 'Irakoze', 'Iganze', 'Mugisha', 'Hirwa', 'Igiraneza'],
+  },
+  SC: {
+    female: ['Audrey', 'Denise', 'Azarel', 'Sandra', 'Sylvanne', 'Valdana'],
+    male: ['Egbert', 'Bernard', 'Alvin', 'Andy', 'Churchill', 'Trevor'],
+    family: ['Vidot', 'Clarisse', 'Ernesta', 'Sultan', 'Lemiel', 'Georges', 'Labonte', 'Gill'],
   },
   SN: {
     female: ['Aminata', 'Awa', 'Aïssatou', 'Fatou'],

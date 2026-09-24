@@ -55,6 +55,7 @@ describe('geographic source coverage', () => {
     })
     for (const [country, source] of [
       ['TZ', 'tanzania-parliament-names'], ['ZM', 'zambia-parliament-names'], ['ZW', 'zimbabwe-parliament-names'],
+      ['BW', 'botswana-parliament-names'], ['LS', 'lesotho-parliament-names'], ['SC', 'seychelles-parliament-names'],
     ]) {
       expect(rows.find((row) => row.country === country)).toMatchObject({
         profileGeneration: 'available', names: { source, review: 'reviewed', fallback: null },
