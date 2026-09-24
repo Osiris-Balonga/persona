@@ -1,6 +1,7 @@
 import { resolveAgeConstraint, resolveAsOf, type AgeGroup } from './age.js'
 import type { Person } from './contracts/person.js'
 import { parseFieldSelection, type FieldPath } from './field-selection.js'
+import { getCountry } from './geography/countries.js'
 
 export interface PeopleQuery {
   count: number
@@ -19,7 +20,7 @@ export class PeopleQueryError extends Error {
   readonly statusCode = 400
 
   constructor(
-    readonly code: 'INVALID_QUERY' | 'CONFLICTING_FILTERS',
+    readonly code: 'INVALID_QUERY' | 'CONFLICTING_FILTERS' | 'UNSUPPORTED_VALUE',
     readonly parameter: string,
     message: string,
   ) {
@@ -93,6 +94,12 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   const country = params.get('country')
   if (country !== null && !/^[A-Z]{2}$/.test(country)) {
     throw new PeopleQueryError('INVALID_QUERY', 'country', 'country must be a two-letter uppercase code')
+  }
+  if (country !== null) {
+    const entry = getCountry(country)
+    if (entry === undefined || entry.generation === 'unavailable') {
+      throw new PeopleQueryError('UNSUPPORTED_VALUE', 'country', 'country is not available for resident profiles')
+    }
   }
   const city = boundedString(params.get('city'), 'city', 100)?.trim()
   if (city !== undefined && country === null) {

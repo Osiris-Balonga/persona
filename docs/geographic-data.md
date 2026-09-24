@@ -1,0 +1,19 @@
+# Geographic data
+
+## Country and territory registry
+
+The V1 registry is a snapshot dated 2026-09-24 of the 249 assigned ISO 3166-1 alpha-2 codes. It also records the alpha-3 and numeric codes, an English name, a generation eligibility flag, and a telephone calling code when the source has one. The snapshot is regenerated with `npm run data:refresh:countries`; the two pinned source packages are development dependencies, so the API does not depend on a live external country service.
+
+The assigned-code and English-name input is [`iso-3166` 4.4.0](https://github.com/wooorm/iso-3166), an MIT-licensed compilation. The [ISO 3166 Maintenance Agency](https://www.iso.org/iso-3166-country-codes.html) maintains the authoritative assignments; this project does not claim that the community package is an official ISO feed. The telephone input is [`libphonenumber-js` 1.13.14](https://github.com/catamphetamine/libphonenumber-js), which derives numbering metadata from [Google's libphonenumber](https://github.com/google/libphonenumber); the latter draws heavily on [ITU E.164 numbering information](https://www.itu.int/oth/T0202.aspx?parent=T0202). This is a dated mapping, not a promise that a prefix alone makes a valid or unassigned telephone number.
+
+The snapshot has calling codes for 242 of the 249 ISO entries. `AQ`, `BV`, `GS`, `HM`, `PN`, `TF`, and `UM` have no entry in the pinned telephone metadata and carry `callingCode: null`. `PN` remains eligible for a resident profile, but its phone is `null` until a verified test range and numbering rule are available. Shared prefixes remain shared: for example, `US` and `PR` both have `+1`, while `CG` has `+242`.
+
+The registry recognizes `AQ`, `BV`, `GS`, `HM`, `IO`, `TF`, and `UM` but marks resident-profile generation unavailable. These places lack a permanent resident population, so inventing a resident city or address would be misleading. Primary references include the [British Indian Ocean Territory profile](https://www.gov.uk/government/publications/british-indian-ocean-territory-knowledge-base-profile/british-indian-ocean-territory-knowledge-base-profile), the [UK overseas territories paper](https://assets.publishing.service.gov.uk/media/69b1718558d4ef5adaf0e46a/UK_Overseas_Territories_Information_paper.pdf), [Australian Antarctic information on Heard Island](https://www.antarctica.gov.au/about-antarctica/history/stations/heard-island-and-mcdonald-islands/), and the [French overseas ministry's TAAF profile](https://www.outre-mer.gouv.fr/territoires/terres-australes-et-antarctiques-francaises). An eligible code means it can enter the later data and generation pipeline; it does not assert full local name, city, address, or portrait coverage today.
+
+An unknown two-letter code or a recognized code marked unavailable returns HTTP 400 with `UNSUPPORTED_VALUE` and `parameter: "country"`. Malformed country syntax remains `INVALID_QUERY`.
+
+## Fictional telephone policy
+
+Telephone output is optional. A calling code is metadata for validation and presentation; it is never sufficient to invent a safe subscriber number. A country receives generated telephone numbers only after a country-specific, officially reserved fictional/test range has been reviewed and versioned. Otherwise `phone` is `null`. The API must not suggest that a format-valid random number is unassigned, reachable, or safe to call.
+
+Two candidate sources for later country batches are [NANPA's reserved 555-0100 through 555-0199 block](https://nanpa.com/numbering/555-line-numbers) and [Ofcom's UK drama ranges](https://www.ofcom.org.uk/phones-and-broadband/phone-numbers/numbers-for-drama). Each batch must tie a reserved range to the correct national or area prefix and test an E.164-formatted output. No arbitrary subscriber numbers will be emitted for other countries.
