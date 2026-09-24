@@ -109,8 +109,8 @@ async function main() {
   const givenRows = []
   const familyRows = []
   const queries = []
-  for (let offset = 0; offset < codes.length; offset += 6) {
-    const batch = codes.slice(offset, offset + 6)
+  for (let offset = 0; offset < codes.length; offset += 3) {
+    const batch = codes.slice(offset, offset + 3)
     const given = queryFor(batch, 'given')
     const family = queryFor(batch, 'family')
     queries.push({ codes: batch, given, family })
