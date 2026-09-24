@@ -13,6 +13,7 @@ import { asiaReviewedNames, isAsiaReviewedCountry } from './asia-reviewed-names.
 import { asiaWestNames, isAsiaWestCountry } from './asia-west-names.js'
 import { asiaEastNames, isAsiaEastCountry } from './asia-east-names.js'
 import { asiaCentralNames, isAsiaCentralCountry } from './asia-central-names.js'
+import { asiaAdditionalNames, isAsiaAdditionalCountry } from './asia-additional-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -74,7 +75,7 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
   ...Object.keys(europeIslandNames), 'SJ', 'VA', ...Object.keys(asiaReviewedNames), ...Object.keys(asiaWestNames),
-  ...Object.keys(asiaEastNames), ...Object.keys(asiaCentralNames),
+  ...Object.keys(asiaEastNames), ...Object.keys(asiaCentralNames), ...Object.keys(asiaAdditionalNames),
   'AZ', 'BN', 'BT', 'CC', 'ID', 'KG', 'KH', 'KZ', 'LA', 'MM', 'MN', 'MO', 'MV', 'MY', 'OM', 'QA',
   'SG', 'TH', 'TJ', 'TM', 'UZ',
 ])
@@ -109,7 +110,7 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code) || isAsiaCentralCountry(country.code)
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code) || isAsiaCentralCountry(country.code) || isAsiaAdditionalCountry(country.code)
         ? 'wikidata-asia-qlever-candidates' : isEuropeIslandCountry(country.code)
         ? 'wikidata-europe-birthplace-candidates' : isEuropeReviewedCountry(country.code) || isEuropeGenderedCountry(country.code)
           ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
@@ -187,7 +188,8 @@ export function validateGeographicData(): string[] {
                           : isAsiaReviewedCountry(country.code) ? asiaReviewedNames[country.code]
                             : isAsiaWestCountry(country.code) ? asiaWestNames[country.code]
                               : isAsiaEastCountry(country.code) ? asiaEastNames[country.code]
-                                : isAsiaCentralCountry(country.code) ? asiaCentralNames[country.code] : namePoolData[pool.locale]
+                                : isAsiaCentralCountry(country.code) ? asiaCentralNames[country.code]
+                                  : isAsiaAdditionalCountry(country.code) ? asiaAdditionalNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)

@@ -11,6 +11,7 @@ import { asiaReviewedNames, isAsiaReviewedCountry } from './asia-reviewed-names.
 import { asiaWestNames, isAsiaWestCountry } from './asia-west-names.js'
 import { asiaEastNames, isAsiaEastCountry } from './asia-east-names.js'
 import { asiaCentralNames, isAsiaCentralCountry } from './asia-central-names.js'
+import { asiaAdditionalNames, isAsiaAdditionalCountry } from './asia-additional-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
@@ -88,6 +89,7 @@ export function nameContextForCountry(country: string) {
   if (isAsiaWestCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   if (isAsiaEastCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   if (isAsiaCentralCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
+  if (isAsiaAdditionalCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   return nameContextData[country]
 }
 
@@ -182,6 +184,12 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     const firstName = names[gender][keyPart(key, 12) % names[gender].length]
     const family = gender === 'female' ? names.familyFemale : names.familyMale
     const lastName = family[keyPart(key, 24) % family.length]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
+  }
+  if (isAsiaAdditionalCountry(country)) {
+    const names = asiaAdditionalNames[country]
+    const firstName = names[gender][keyPart(key, 12) % names[gender].length]
+    const lastName = names.family[keyPart(key, 24) % names.family.length]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   const names = namePoolData[selected.locale]
