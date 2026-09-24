@@ -66,4 +66,11 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(quezon.formatted).toContain('Quezon City')
     expect(quezon.formatted).not.toContain('\n,')
   })
+
+  it('avoids repeating a city when the country format already prints its matching region', () => {
+    const dubai = fictionalAddress(getCity('AE', 'Dubai')!, '0123456789abcdef'.repeat(4))
+    expect(dubai.city).toBe('Dubai')
+    expect(dubai.region).toBe('Dubai')
+    expect(dubai.formatted).toBe('132 Example Street\nDubai')
+  })
 })
