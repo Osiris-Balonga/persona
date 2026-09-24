@@ -1,0 +1,35 @@
+{
+  "results": [
+    {
+      "id": "per_7f31c2a4",
+      "firstName": "Grâce",
+      "lastName": "Mbemba",
+      "fullName": "Grâce Mbemba",
+      "gender": "female",
+      "age": 27,
+      "ageGroup": "adult",
+      "dateOfBirth": "1999-04-05",
+      "appearance": "central-african",
+      "country": "CG",
+      "city": "Brazzaville",
+      "address": {
+        "line1": "18 rue des Manguiers",
+        "city": "Brazzaville",
+        "postalCode": null,
+        "country": "CG"
+      },
+      "email": "grace.mbemba@example.test",
+      "phone": null,
+      "picture": {
+        "url": "https://images.example.test/portraits/v1/adult/female/black/central-african/p_0042.webp"
+      }
+    }
+  ],
+  "meta": {
+    "count": 1,
+    "asOf": "2026-09-24",
+    "seed": "profile-demo",
+    "dataVersion": "v1",
+    "catalogVersion": "v1"
+  }
+}
