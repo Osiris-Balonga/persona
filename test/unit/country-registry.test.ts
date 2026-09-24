@@ -34,7 +34,7 @@ describe('versioned country and territory registry', () => {
         code: 'UNSUPPORTED_VALUE', parameter: 'country', statusCode: 400,
       }))
     }
-    for (const code of ['AO', 'BF', 'BJ', 'BT', 'BW', 'CD', 'CG', 'CI', 'CM', 'DZ', 'EG', 'ET', 'GH', 'GM', 'GN', 'KE', 'LR', 'LS', 'MA', 'ML', 'MM', 'MW', 'NA', 'NG', 'RW', 'SC', 'SL', 'SN', 'TG', 'TN', 'TZ', 'UG', 'ZA', 'ZM', 'ZW']) {
+    for (const code of ['AO', 'BF', 'BJ', 'BT', 'BW', 'CD', 'CG', 'CI', 'CM', 'CV', 'DZ', 'EG', 'ET', 'GH', 'GM', 'GN', 'GQ', 'KE', 'LR', 'LS', 'MA', 'MG', 'ML', 'MM', 'MW', 'MZ', 'NA', 'NG', 'RW', 'SC', 'SL', 'SN', 'TG', 'TN', 'TZ', 'UG', 'ZA', 'ZM', 'ZW']) {
       expect(parsePeopleQuery(new URLSearchParams(`country=${code}`)).country).toBe(code)
     }
   })

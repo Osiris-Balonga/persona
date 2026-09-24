@@ -41,7 +41,8 @@ export function fictionalAddress(city: City, key: string) {
   const line1 = rule.format.includes('%C') ? street : `${city.name} ${street}`
   const region = rule.format.includes('%S') ? city.region : null
   const postalCode = postalCodeForCity(city)
-  const format = postalCode === null ? rule.format.replace(/〒\s*%Z/g, '') : rule.format
+  const countryFormat = city.country === 'MZ' ? rule.format.replace(/%C%S/g, '%C, %S') : rule.format
+  const format = postalCode === null ? countryFormat.replace(/〒\s*%Z/g, '') : countryFormat
   const formatted = formatAddress(format, {
     A: line1, C: city.name, S: region ?? '', Z: postalCode ?? '',
   })

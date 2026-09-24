@@ -106,7 +106,7 @@ describe('cultural name pools', () => {
     const pools = africaReviewedNames as unknown as Record<string, {
       female: readonly string[]; male: readonly string[]; family: readonly string[]
     }>
-    for (const country of ['AO', 'BF', 'BJ', 'CD', 'CI', 'CM', 'DZ', 'EG', 'GM', 'GN', 'LR', 'MA', 'ML', 'NG', 'RW', 'SL', 'TG', 'TN']) {
+    for (const country of ['AO', 'BF', 'BJ', 'CD', 'CI', 'CM', 'CV', 'DZ', 'EG', 'GM', 'GN', 'GQ', 'LR', 'MA', 'MG', 'ML', 'MZ', 'NG', 'RW', 'SL', 'TG', 'TN']) {
       expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local' })
       const pool = pools[country]
       expect(pool).toBeDefined()
