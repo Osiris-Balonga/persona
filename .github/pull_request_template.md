@@ -9,6 +9,7 @@ Link the issue and describe the expected behavior.
 ## Verification
 
 - Checks run and results:
+- For behavior changes, failing test observed before implementation:
 - Relevant manual checks, if any:
 
 ## Risks
