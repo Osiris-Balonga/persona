@@ -2,7 +2,8 @@ import { listCities } from './cities.js'
 import { listCountries } from './countries.js'
 import { nameContextForCountry } from './names.js'
 import { namePoolData } from './name-pool-data.js'
-import { myanmarGivenNames } from './surname-free-names.js'
+import { andorraGivenNames } from './andorra-names.js'
+import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 
@@ -54,9 +55,12 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(country.code === 'MM' ? 'burmese-name-frequencies' : 'faker'), fallback: nameFallback,
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(country.code === 'MM' ? 'burmese-name-frequencies'
+        : country.code === 'AD' ? 'andorra-civil-names' : country.code === 'BT' ? 'bhutan-naming-study' : 'faker'),
+        fallback: country.code === 'AD' ? 'language:es-family' : nameFallback,
         supplementarySources: country.code === 'MM' ? ['uk-myanmar-names'] as const
-          : country.code === 'ID' ? ['geonames-country-info', 'uk-indonesia-names'] as const
+          : country.code === 'AD' ? ['faker'] as const
+            : country.code === 'ID' ? ['geonames-country-info', 'uk-indonesia-names'] as const
             : country.code === 'GE' ? ['geonames-country-info', 'georgia-name-statistics'] as const
               : ['geonames-country-info'] as const,
       } : pending(),
@@ -113,8 +117,11 @@ export function validateGeographicData(): string[] {
       const context = nameContextForCountry(country.code)
       if (!context || context.pools.length === 0) errors.push(`Missing name context ${country.code}`)
       for (const pool of context?.pools ?? []) {
-        const names = pool.locale === 'my_MM' ? myanmarGivenNames : namePoolData[pool.locale]
-        if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names || Object.values(names).some((part) => part.length === 0)) {
+        const names = pool.locale === 'my_MM' ? myanmarGivenNames
+          : pool.locale === 'ad_AD' ? andorraGivenNames
+            : pool.locale === 'bt_BT' ? bhutanGivenNames : namePoolData[pool.locale]
+        if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
+          || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)
         }
       }

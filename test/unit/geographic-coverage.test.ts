@@ -18,6 +18,12 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'PN')).toMatchObject({
       addresses: { supplementarySources: ['upu-pitcairn'] },
     })
+    expect(rows.find((row) => row.country === 'AD')?.names).toMatchObject({
+      source: 'andorra-civil-names', fallback: 'language:es-family', supplementarySources: ['faker'],
+    })
+    expect(rows.find((row) => row.country === 'BT')?.names).toMatchObject({
+      source: 'bhutan-naming-study', fallback: null,
+    })
     expect(validateGeographicData()).toEqual([])
   })
 })

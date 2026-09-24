@@ -1,11 +1,16 @@
 import { nameContextData } from './name-context-data.js'
 import { namePoolData } from './name-pool-data.js'
-import { myanmarGivenNames } from './surname-free-names.js'
+import { andorraGivenNames } from './andorra-names.js'
+import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
+const andorraContext = { pools: [{ locale: 'ad_AD', tier: 'local', weight: 1 }], fallback: 'local' } as const
+const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
 
 export function nameContextForCountry(country: string) {
   if (country === 'MM') return myanmarContext
+  if (country === 'AD') return andorraContext
+  if (country === 'BT') return bhutanContext
   return nameContextData[country]
 }
 
@@ -28,6 +33,19 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     const firstNames = myanmarGivenNames[gender]
     const firstName = firstNames[keyPart(key, 12) % firstNames.length]
     return { firstName, lastName: null, fullName: firstName, locale: selected.locale, fallback: selected.tier }
+  }
+  if (selected.locale === 'bt_BT') {
+    const first = bhutanGivenNames.first[keyPart(key, 12) % bhutanGivenNames.first.length]
+    const secondNames = gender === 'female' ? bhutanGivenNames.femaleSecond : bhutanGivenNames.maleSecond
+    const firstName = `${first} ${secondNames[keyPart(key, 24) % secondNames.length]}`
+    return { firstName, lastName: null, fullName: firstName, locale: selected.locale, fallback: selected.tier }
+  }
+  if (selected.locale === 'ad_AD') {
+    const firstNames = andorraGivenNames[gender]
+    const lastNames = gender === 'female' ? namePoolData.es.lastFemale : namePoolData.es.lastMale
+    const firstName = firstNames[keyPart(key, 12) % firstNames.length]
+    const lastName = lastNames[keyPart(key, 24) % lastNames.length]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   const names = namePoolData[selected.locale]
   if (!names) throw new RangeError(`Missing name pool ${selected.locale}`)
