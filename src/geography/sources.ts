@@ -122,6 +122,24 @@ export const geographicSources = {
     license: 'Public aggregate name-frequency facts (small sample)',
     edition: '2024',
   },
+  'rwanda-vital-names': {
+    title: 'National Institute of Statistics of Rwanda Vital Statistics Report 2024, Annex 1',
+    url: 'https://www.statistics.gov.rw/sites/default/files/documents/2025-04/Rwanda%20Vital%20Statistics%20Report%202024_N.pdf',
+    license: 'Public aggregate name-frequency facts (small sample)',
+    edition: '2024',
+  },
+  'rwanda-parliament-names': {
+    title: 'Parliament of Rwanda public deputy profiles',
+    url: 'https://www.parliament.gov.rw/chamber-of-deputies-2/member-profile/deputies-profiles',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'uganda-parliament-names': {
+    title: 'Parliament of Uganda public member roster',
+    url: 'https://mpsdb.parliament.go.ug/',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',

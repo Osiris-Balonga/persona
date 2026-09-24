@@ -41,6 +41,12 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'ZA')).toMatchObject({
       profileGeneration: 'available', names: { source: 'stats-sa-birth-names', fallback: null, review: 'reviewed' },
     })
+    expect(rows.find((row) => row.country === 'RW')).toMatchObject({
+      profileGeneration: 'available', names: { source: 'rwanda-vital-names', review: 'reviewed', fallback: null },
+    })
+    expect(rows.find((row) => row.country === 'UG')).toMatchObject({
+      profileGeneration: 'available', names: { source: 'uganda-parliament-names', review: 'reviewed', fallback: null },
+    })
     expect(rows.find((row) => row.country === 'CG')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(rows.find((row) => row.country === 'SN')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(validateGeographicData()).toEqual([])

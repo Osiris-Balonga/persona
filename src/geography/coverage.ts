@@ -6,7 +6,7 @@ import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
-import { africaReviewedNames } from './africa-reviewed-names.js'
+import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -29,6 +29,18 @@ const partial = (source: Exclude<Source, null>): CoverageCell => ({
 })
 const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback: null, review: 'pending', supplementarySources: [] })
 const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending', supplementarySources: [] })
+
+const nameSourceByCountry: Record<string, GeographicSource> = {
+  AD: 'andorra-civil-names', BT: 'bhutan-naming-study', CG: 'congo-senate-names',
+  ET: 'tesfa-ethiopian-names', GH: 'ghana-parliament-names', MM: 'burmese-name-frequencies',
+  MW: 'peace-corps-chichewa-names', RW: 'rwanda-vital-names', SN: 'senegal-presidency-names',
+  UG: 'uganda-parliament-names', ZA: 'stats-sa-birth-names',
+}
+const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
+  AD: ['faker'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
+  GH: ['faker'], ID: ['geonames-country-info', 'uk-indonesia-names'], MM: ['uk-myanmar-names'],
+  MW: ['ifla-malawi-names'], RW: ['rwanda-parliament-names'], SN: ['faker'],
+}
 
 function addressCoverage(country: string): CoverageCell {
   const rule = addressRule(country)
@@ -59,24 +71,10 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(country.code === 'MM' ? 'burmese-name-frequencies'
-        : country.code === 'AD' ? 'andorra-civil-names' : country.code === 'BT' ? 'bhutan-naming-study'
-          : country.code === 'MW' ? 'peace-corps-chichewa-names'
-            : country.code === 'ET' ? 'tesfa-ethiopian-names'
-              : country.code === 'CG' ? 'congo-senate-names'
-                : country.code === 'GH' ? 'ghana-parliament-names'
-                  : country.code === 'SN' ? 'senegal-presidency-names'
-                    : country.code === 'ZA' ? 'stats-sa-birth-names' : 'faker'),
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(nameSourceByCountry[country.code] ?? 'faker'),
         fallback: country.code === 'AD' ? 'language:es-family' : nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
-        supplementarySources: country.code === 'MM' ? ['uk-myanmar-names'] as const
-          : country.code === 'AD' ? ['faker'] as const
-            : country.code === 'MW' ? ['ifla-malawi-names'] as const
-              : country.code === 'ET' ? ['uk-ethiopia-names'] as const
-                : country.code === 'GH' || country.code === 'SN' ? ['faker'] as const
-            : country.code === 'ID' ? ['geonames-country-info', 'uk-indonesia-names'] as const
-            : country.code === 'GE' ? ['geonames-country-info', 'georgia-name-statistics'] as const
-              : ['geonames-country-info'] as const,
+        supplementarySources: nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
       } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
@@ -140,8 +138,7 @@ export function validateGeographicData(): string[] {
             : pool.locale === 'bt_BT' ? bhutanGivenNames
               : pool.locale === 'mw_MW' ? malawiNames
                 : pool.locale === 'et_ET' ? ethiopiaGivenNames
-                  : country.code === 'CG' || country.code === 'GH' || country.code === 'SN' || country.code === 'ZA'
-                    ? africaReviewedNames[country.code] : namePoolData[pool.locale]
+                  : isAfricaReviewedCountry(country.code) ? africaReviewedNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)
