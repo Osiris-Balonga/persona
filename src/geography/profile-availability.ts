@@ -1,7 +1,7 @@
 import type { Country } from './countries.js'
 
 // Source-backed local samples reviewed for the initial beta; see docs/geographic-data.md.
-const reviewedNameCodes = new Set(['BT', 'CG', 'ET', 'GH', 'KE', 'MM', 'MW', 'NA', 'RW', 'SN', 'TZ', 'UG', 'ZA', 'ZM', 'ZW'])
+const reviewedNameCodes = new Set(['BT', 'BW', 'CG', 'ET', 'GH', 'KE', 'LS', 'MM', 'MW', 'NA', 'RW', 'SC', 'SN', 'TZ', 'UG', 'ZA', 'ZM', 'ZW'])
 
 export function hasReviewedNamePool(code: string): boolean {
   return reviewedNameCodes.has(code)
