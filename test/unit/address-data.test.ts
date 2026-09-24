@@ -30,5 +30,8 @@ describe('country address metadata and city-linked postcodes', () => {
     const japan = fictionalAddress(getCity('JP', 'Tokyo')!, key)
     expect(japan.formatted).toContain(japan.city)
     expect(japan.formatted).not.toContain('〒')
+    const pitcairn = fictionalAddress(getCity('PN', 'Adamstown')!, key)
+    expect(pitcairn).toMatchObject({ line1: 'Example Place', postalCode: 'PCRN 1ZZ' })
+    expect(pitcairn.formatted).toContain('Adamstown\nPCRN 1ZZ')
   })
 })

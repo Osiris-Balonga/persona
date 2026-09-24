@@ -7,10 +7,12 @@ export function addressRule(country: string) {
 }
 
 export function postalCodeForCity(city: City): string | null {
+  if (city.country === 'PN' && city.name === 'Adamstown') return 'PCRN 1ZZ'
   return cityPostalCodes[city.geonameId] ?? null
 }
 
 function streetLine(country: string, number: number): string {
+  if (country === 'PN') return 'Example Place'
   const locale = nameContextForCountry(country)?.pools[0]?.locale ?? 'en'
   if (locale.startsWith('fr')) return `${number} rue de l'Exemple`
   if (locale.startsWith('es')) return `Calle del Ejemplo ${number}`

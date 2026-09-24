@@ -34,6 +34,8 @@ City-linked postal examples come from [GeoNames' postal extract](https://downloa
 
 The street line uses clearly illustrative words such as “Example” or “Exemple”, with a stable building number. The structured address includes `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and `formatted` in the country's published field order. It is intended for mockups and tests, not delivery or geocoding. A nullable postal code signals missing city-linked evidence, including in countries where a deliverable address would normally require one. The data snapshot and coverage matrix make that limitation visible rather than returning a mismatched value.
 
+Pitcairn is an explicit exception: the [Universal Postal Union](https://www.upu.int/UPU/media/upu/PostalEntitiesFiles/addressingUnit/pcnEn.pdf) documents `PCRN 1ZZ` as the single postcode for the territory. Its illustrative line omits a building number. The exception is recorded separately from the GeoNames postal extract so it is not presented as a city match found there.
+
 ## Fictional telephone policy
 
 Telephone output is optional. A calling code is metadata for validation and presentation; it is never sufficient to invent a safe subscriber number. A country receives generated telephone numbers only after a country-specific, officially reserved fictional/test range has been reviewed and versioned. Otherwise `phone` is `null`. The API must not suggest that a format-valid random number is unassigned, reachable, or safe to call.
