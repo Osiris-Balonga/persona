@@ -77,7 +77,7 @@ describe('cultural name pools', () => {
 
   it('uses country-specific pools without unreviewed secondary-language pools', () => {
     expect(nameContextForCountry('BR').pools.map((pool) => pool.locale)).toEqual(['pt_BR'])
-    expect(nameContextForCountry('BE').pools.map((pool) => pool.locale)).toEqual(['nl_BE', 'fr_BE'])
+    expect(nameContextForCountry('BE').pools.map((pool) => pool.locale)).toEqual(['be_BE'])
   })
 
   it('keeps the Georgian local given-name pools distinct by gender', () => {
@@ -298,16 +298,6 @@ describe('cultural name pools', () => {
     }
     expect(nameContextForCountry('MM').fallback).toBe('local')
     expect([...myanmarGivenNames.female, ...myanmarGivenNames.male].every((name) => name.includes(' '))).toBe(true)
-  })
-
-  it('uses Andorran civil-registry given names with an explicit family-name fallback', () => {
-    expect(nameContextForCountry('AD').fallback).toBe('local')
-    const female = selectName('AD', 'female', key)
-    const male = selectName('AD', 'male', key)
-    expect(['Laia', 'Carlota', 'Emma', 'Martina', 'Aina', 'Laura']).toContain(female.firstName)
-    expect(['Marc', 'Eric', 'Jan', 'Daniel', 'Jordi', 'Martí']).toContain(male.firstName)
-    expect(female.lastName).toBeTruthy()
-    expect(male.fullName).toBe(`${male.firstName} ${male.lastName}`)
   })
 
   it('exposes Bhutanese two-part given names as two display components', () => {

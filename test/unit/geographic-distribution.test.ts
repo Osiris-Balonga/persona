@@ -33,7 +33,7 @@ describe('seeded geographic choices', () => {
   it('does not select or accept an unreviewed country for a beta profile', () => {
     const filters = query('seed=profile-demo&asOf=2026-09-24')
     const zeroKey = '0'.repeat(64)
-    expect(resolveGeographicContext(filters, zeroKey).country.code).toBe('AO')
+    expect(resolveGeographicContext(filters, zeroKey).country.code).toBe('AD')
     expect(() => resolveGeographicContext({ country: 'PN' }, zeroKey)).toThrow(RangeError)
   })
 

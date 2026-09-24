@@ -1,13 +1,12 @@
 import { nameContextData } from './name-context-data.js'
 import { namePoolData } from './name-pool-data.js'
-import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
+import { europeReviewedNames, isEuropeReviewedCountry } from './europe-reviewed-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
-const andorraContext = { pools: [{ locale: 'ad_AD', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const malawiContext = { pools: [{ locale: 'mw_MW', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const ethiopiaContext = { pools: [{ locale: 'et_ET', tier: 'local', weight: 1 }], fallback: 'local' } as const
@@ -72,11 +71,11 @@ const africaReviewedContexts = {
 
 export function nameContextForCountry(country: string) {
   if (country === 'MM') return myanmarContext
-  if (country === 'AD') return andorraContext
   if (country === 'BT') return bhutanContext
   if (country === 'MW') return malawiContext
   if (country === 'ET') return ethiopiaContext
   if (isAfricaReviewedCountry(country)) return africaReviewedContexts[country]
+  if (isEuropeReviewedCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   return nameContextData[country]
 }
 
@@ -129,11 +128,10 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     const lastName = names.family[keyPart(key, 24) % names.family.length]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
-  if (selected.locale === 'ad_AD') {
-    const firstNames = andorraGivenNames[gender]
-    const lastNames = gender === 'female' ? namePoolData.es.lastFemale : namePoolData.es.lastMale
-    const firstName = firstNames[keyPart(key, 12) % firstNames.length]
-    const lastName = lastNames[keyPart(key, 24) % lastNames.length]
+  if (isEuropeReviewedCountry(country)) {
+    const names = europeReviewedNames[country]
+    const firstName = names[gender][keyPart(key, 12) % names[gender].length]
+    const lastName = names.family[keyPart(key, 24) % names.family.length]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   const names = namePoolData[selected.locale]

@@ -2,11 +2,11 @@ import { listCities } from './cities.js'
 import { listCountries } from './countries.js'
 import { nameContextForCountry } from './names.js'
 import { namePoolData } from './name-pool-data.js'
-import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
+import { europeReviewedNames, isEuropeReviewedCountry } from './europe-reviewed-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -31,7 +31,7 @@ const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback
 const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending', supplementarySources: [] })
 
 const nameSourceByCountry: Record<string, GeographicSource> = {
-  AD: 'andorra-civil-names', AO: 'wikidata-africa-name-batch', BF: 'wikidata-africa-name-batch',
+  AO: 'wikidata-africa-name-batch', BF: 'wikidata-africa-name-batch',
   BI: 'wikidata-africa-qlever-candidates', BJ: 'wikidata-africa-name-batch', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
   CD: 'wikidata-africa-name-batch', CF: 'wikidata-africa-qlever-candidates', CG: 'congo-senate-names',
   CI: 'wikidata-africa-qlever-candidates', CM: 'wikidata-africa-qlever-candidates',
@@ -54,7 +54,7 @@ const nameSourceByCountry: Record<string, GeographicSource> = {
   YT: 'insee-mayotte-given-names', ZW: 'wikidata-africa-qlever-candidates',
 }
 const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
-  AD: ['faker'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
+  AD: ['andorra-civil-names'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
   GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'],
   DJ: ['wikidata-africa-birthplace-candidates'], ER: ['wikidata-africa-birthplace-candidates'], GW: ['wikidata-africa-birthplace-candidates'],
   KE: ['kenya-parliament-names'], KM: ['wikidata-africa-birthplace-candidates'], LY: ['wikidata-africa-birthplace-candidates'], MM: ['uk-myanmar-names'], MR: ['wikidata-africa-birthplace-candidates'], MW: ['ifla-malawi-names'],
@@ -65,7 +65,9 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
   ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
 }
 
-const africaAddressReviewedCodes = new Set([...Object.keys(africaReviewedNames), 'ET', 'MW'])
+const addressReviewedCodes = new Set([
+  ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames),
+])
 
 function addressCoverage(country: string): CoverageCell {
   const rule = addressRule(country)
@@ -78,7 +80,7 @@ function addressCoverage(country: string): CoverageCell {
   if (!/^(en|fr|es|pt|de|ja)$/.test(streetLanguageForCountry(country))) missing.push('global-street-style')
   return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
     fallback: missing.length ? missing.join(',') : null,
-    review: africaAddressReviewedCodes.has(country) ? 'reviewed' as const : 'automated' as const,
+    review: addressReviewedCodes.has(country) ? 'reviewed' as const : 'automated' as const,
     supplementarySources: country === 'PN' ? ['upu-pitcairn']
       : cities.some((city) => postalCodeForCity(city)) ? ['geonames-postal'] : [],
   }
@@ -97,8 +99,9 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(nameSourceByCountry[country.code] ?? 'faker'),
-        fallback: country.code === 'AD' ? 'language:es-family' : nameFallback,
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(isEuropeReviewedCountry(country.code)
+        ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
+        fallback: nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
         supplementarySources: nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
       } : pending(),
@@ -160,11 +163,11 @@ export function validateGeographicData(): string[] {
       }
       for (const pool of context?.pools ?? []) {
         const names = pool.locale === 'my_MM' ? myanmarGivenNames
-          : pool.locale === 'ad_AD' ? andorraGivenNames
-            : pool.locale === 'bt_BT' ? bhutanGivenNames
+          : pool.locale === 'bt_BT' ? bhutanGivenNames
               : pool.locale === 'mw_MW' ? malawiNames
                 : pool.locale === 'et_ET' ? ethiopiaGivenNames
-                  : isAfricaReviewedCountry(country.code) ? africaReviewedNames[country.code] : namePoolData[pool.locale]
+                  : isAfricaReviewedCountry(country.code) ? africaReviewedNames[country.code]
+                    : isEuropeReviewedCountry(country.code) ? europeReviewedNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)

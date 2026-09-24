@@ -19,7 +19,7 @@ describe('geographic source coverage', () => {
       addresses: { supplementarySources: ['upu-pitcairn'] },
     })
     expect(rows.find((row) => row.country === 'AD')?.names).toMatchObject({
-      source: 'andorra-civil-names', fallback: 'language:es-family', supplementarySources: ['faker'],
+      source: 'wikidata-europe-qlever-candidates', fallback: null, supplementarySources: ['andorra-civil-names'],
     })
     expect(rows.find((row) => row.country === 'BT')?.names).toMatchObject({
       source: 'bhutan-naming-study', fallback: null,
