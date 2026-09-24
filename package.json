@@ -12,6 +12,7 @@
     "data:refresh:countries": "node scripts/refresh-country-data.mjs",
     "data:refresh:cities": "node scripts/refresh-city-data.mjs",
     "data:refresh:names": "node scripts/refresh-name-data.mjs",
+    "data:candidates:names": "node scripts/collect-wikidata-name-candidates.mjs",
     "data:refresh:addresses": "node scripts/refresh-address-data.mjs",
     "data:fetch:address-metadata": "node scripts/fetch-address-metadata.mjs",
     "data:audit": "tsx scripts/audit-geographic-data.ts",
