@@ -8,6 +8,53 @@ import { africaReviewedNames } from '../../src/geography/africa-reviewed-names.j
 const key = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
 describe('cultural name pools', () => {
+  it('uses reviewed two-field pools for the remaining mainland and island Africa batch', () => {
+    for (const country of ['DJ', 'ER', 'GW', 'KM', 'MR', 'NE', 'ST', 'SZ', 'TD'] as const) {
+      const pool = africaReviewedNames[country]
+      expect(pool.female.length).toBeGreaterThanOrEqual(15)
+      expect(pool.male.length).toBeGreaterThanOrEqual(30)
+      expect(pool.family.length).toBeGreaterThanOrEqual(20)
+      for (const field of ['female', 'male', 'family'] as const) {
+        expect(new Set(pool[field]).size).toBe(pool[field].length)
+      }
+      expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local', pools: [{ tier: 'local' }] })
+      for (const gender of ['female', 'male'] as const) {
+        const name = selectName(country, gender, key)
+        expect(pool[gender]).toContain(name.firstName)
+        expect(pool.family).toContain(name.lastName)
+        expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+      }
+    }
+    expect(africaReviewedNames.NE.female).not.toContain('Oma township')
+    expect(africaReviewedNames.NE.female).not.toContain('Abdoulaye')
+    expect(africaReviewedNames.DJ.male).not.toContain('France')
+  })
+  it('uses adult St Helena election name components with a two-field display', () => {
+    const pool = africaReviewedNames.SH
+    expect(pool.female.length).toBeGreaterThanOrEqual(10)
+    expect(pool.male.length).toBeGreaterThanOrEqual(25)
+    expect(pool.family.length).toBeGreaterThanOrEqual(20)
+    expect(nameContextForCountry('SH').fallback).toBe('local')
+    for (const gender of ['female', 'male'] as const) {
+      const name = selectName('SH', gender, key)
+      expect(pool[gender]).toContain(name.firstName)
+      expect(pool.family).toContain(name.lastName)
+      expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+    }
+  })
+  it('uses documented Sahrawi name components for Western Sahara', () => {
+    const pool = africaReviewedNames.EH
+    expect(pool.female.length).toBeGreaterThanOrEqual(20)
+    expect(pool.male.length).toBeGreaterThanOrEqual(20)
+    expect(pool.family.length).toBeGreaterThanOrEqual(20)
+    expect(nameContextForCountry('EH').fallback).toBe('local')
+    for (const gender of ['female', 'male'] as const) {
+      const name = selectName('EH', gender, key)
+      expect(pool[gender]).toContain(name.firstName)
+      expect(pool.family).toContain(name.lastName)
+      expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+    }
+  })
   it('has an explicit local, language, or global path for each resident-eligible code', () => {
     for (const country of listCountries().filter((entry) => entry.generation === 'eligible')) {
       const context = nameContextForCountry(country.code)
