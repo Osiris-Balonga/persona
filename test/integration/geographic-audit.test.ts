@@ -6,15 +6,16 @@ import { europeGenderedNames } from '../../src/geography/europe-gendered-names.j
 import { europeIslandNames } from '../../src/geography/europe-island-names.js'
 import { asiaReviewedNames } from '../../src/geography/asia-reviewed-names.js'
 import { asiaWestNames } from '../../src/geography/asia-west-names.js'
+import { asiaEastNames } from '../../src/geography/asia-east-names.js'
 import { africaReviewedNames } from '../../src/geography/africa-reviewed-names.js'
 
 describe('geographic catalog audit', () => {
   it('records reviewed Asian name and address samples without hiding partial formats', () => {
     const rows = listCoverage().filter((row) => Object.hasOwn(asiaReviewedNames, row.country)
-      || Object.hasOwn(asiaWestNames, row.country))
-    expect(rows).toHaveLength(22)
+      || Object.hasOwn(asiaWestNames, row.country) || Object.hasOwn(asiaEastNames, row.country))
+    expect(rows).toHaveLength(29)
     expect(rows.every((row) => row.names.review === 'reviewed' && row.addresses.review === 'reviewed')).toBe(true)
-    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(19)
+    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(26)
   })
   it('labels reviewed Europe address examples while retaining unresolved format gaps', () => {
     const rows = listCoverage().filter((row) => Object.hasOwn(europeReviewedNames, row.country)
@@ -37,8 +38,8 @@ describe('geographic catalog audit', () => {
   })
   it('samples every resident-eligible ISO code and lists gaps without claiming manual review', () => {
     const report = auditGeographicData()
-    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.4', registryCodes: 249, eligibleCodes: 242,
-      unavailableCodes: 7, profileEligibleCodes: 132, pendingNameReviewCodes: 110, sampledCodes: 242, errors: [] })
+    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.5', registryCodes: 249, eligibleCodes: 242,
+      unavailableCodes: 7, profileEligibleCodes: 139, pendingNameReviewCodes: 103, sampledCodes: 242, errors: [] })
     expect(report.gaps.find((row) => row.country === 'CG')?.categories).toContain('addresses:partial')
     expect(report.gaps.find((row) => row.country === 'PN')?.categories).toContain('phone:pending')
     expect(report.gaps.some((row) => row.country === 'AQ')).toBe(false)

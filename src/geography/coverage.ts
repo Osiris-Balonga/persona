@@ -11,6 +11,7 @@ import { europeGenderedNames, isEuropeGenderedCountry } from './europe-gendered-
 import { europeIslandNames, isEuropeIslandCountry } from './europe-island-names.js'
 import { asiaReviewedNames, isAsiaReviewedCountry } from './asia-reviewed-names.js'
 import { asiaWestNames, isAsiaWestCountry } from './asia-west-names.js'
+import { asiaEastNames, isAsiaEastCountry } from './asia-east-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -72,6 +73,7 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
   ...Object.keys(europeIslandNames), 'SJ', 'VA', ...Object.keys(asiaReviewedNames), ...Object.keys(asiaWestNames),
+  ...Object.keys(asiaEastNames),
 ])
 
 function addressCoverage(country: string): CoverageCell {
@@ -104,7 +106,7 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code)
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code)
         ? 'wikidata-asia-qlever-candidates' : isEuropeIslandCountry(country.code)
         ? 'wikidata-europe-birthplace-candidates' : isEuropeReviewedCountry(country.code) || isEuropeGenderedCountry(country.code)
           ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
@@ -180,7 +182,8 @@ export function validateGeographicData(): string[] {
                       : isEuropeGenderedCountry(country.code) ? europeGenderedNames[country.code]
                         : isEuropeIslandCountry(country.code) ? europeIslandNames[country.code]
                           : isAsiaReviewedCountry(country.code) ? asiaReviewedNames[country.code]
-                            : isAsiaWestCountry(country.code) ? asiaWestNames[country.code] : namePoolData[pool.locale]
+                            : isAsiaWestCountry(country.code) ? asiaWestNames[country.code]
+                              : isAsiaEastCountry(country.code) ? asiaEastNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)

@@ -39,11 +39,14 @@ export function fictionalAddress(city: City, key: string) {
   if (!rule) throw new RangeError(`No address rule for ${city.country}`)
   const number = Number.parseInt(key.slice(0, 12), 16) % 199 + 1
   const street = streetLine(city.country, number)
-  const cityIsMatchingRegion = rule.format.includes('%S') && city.region === city.name
+  const cityIsMatchingRegion = rule.format.includes('%S')
+    && city.region?.replace(/\s*\([^)]*\)$/, '') === city.name
   const line1 = rule.format.includes('%C') || cityIsMatchingRegion ? street : `${city.name} ${street}`
   const region = rule.format.includes('%S') ? city.region : null
   const postalCode = postalCodeForCity(city)
-  const countryFormat = city.country === 'MZ' ? rule.format.replace(/%C%S/g, '%C, %S') : rule.format
+  const countryFormat = cityIsMatchingRegion && rule.format.includes('%C')
+    ? rule.format.replace('%S', '')
+    : rule.format.replace(/%S%C/g, '%S, %C').replace(/%C%S/g, '%C, %S')
   const format = postalCode === null
     ? countryFormat.replace(/(?<!%)[A-Z]{1,3}-%Z|-%Z|〒\s*%Z|%Z/g, '') : countryFormat
   const formatted = formatAddress(format, {
