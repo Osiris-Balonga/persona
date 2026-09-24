@@ -8,7 +8,7 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'CG')).toMatchObject({
       registry: { status: 'ingested', source: 'iso-3166' },
       cities: { status: 'ingested', source: 'geonames' },
-      names: { status: 'pending', source: null },
+      names: { status: 'ingested', source: 'faker', fallback: 'language:fr' },
     })
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },
