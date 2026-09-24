@@ -42,7 +42,7 @@ describe('geographic source coverage', () => {
       profileGeneration: 'available', names: { source: 'stats-sa-birth-names', fallback: null, review: 'reviewed' },
     })
     expect(rows.find((row) => row.country === 'RW')).toMatchObject({
-      profileGeneration: 'available', names: { source: 'rwanda-vital-names', review: 'reviewed', fallback: null },
+      profileGeneration: 'available', names: { source: 'wikidata-names', review: 'reviewed', fallback: null },
     })
     expect(rows.find((row) => row.country === 'UG')).toMatchObject({
       profileGeneration: 'available', names: { source: 'uganda-parliament-names', review: 'reviewed', fallback: null },

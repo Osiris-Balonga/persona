@@ -102,6 +102,27 @@ describe('cultural name pools', () => {
     expect(africaReviewedNames.SN.male).toContain('Cheikh')
   })
 
+  it('provides broad local, two-field pools for the reviewed west and central Africa batch', () => {
+    const pools = africaReviewedNames as unknown as Record<string, {
+      female: readonly string[]; male: readonly string[]; family: readonly string[]
+    }>
+    for (const country of ['AO', 'BF', 'BJ', 'CD', 'RW']) {
+      expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local' })
+      const pool = pools[country]
+      expect(pool).toBeDefined()
+      for (const field of ['female', 'male', 'family'] as const) {
+        expect(pool[field].length).toBeGreaterThanOrEqual(50)
+        expect(new Set(pool[field]).size).toBe(pool[field].length)
+      }
+      for (const gender of ['female', 'male'] as const) {
+        const name = selectName(country, gender, key)
+        expect(pool[gender]).toContain(name.firstName)
+        expect(pool.family).toContain(name.lastName)
+        expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+      }
+    }
+  })
+
   it('uses the published South African male, female, and family name sample', () => {
     expect(nameContextForCountry('ZA')).toMatchObject({ fallback: 'local', pools: [{ locale: 'za_ZA', tier: 'local' }] })
     const female = selectName('ZA', 'female', key)
@@ -117,11 +138,8 @@ describe('cultural name pools', () => {
     }
   })
 
-  it('keeps Rwandan and Ugandan given and second name components local', () => {
+  it('keeps Ugandan given and second name components local', () => {
     const samples = {
-      RW: { female: ['Aline', 'Judith', 'Jeanne', 'Emma'],
-        male: ['Anastase', 'Théogène', 'Venuste', 'Jean Claude'],
-        family: ['Ineza', 'Uwase', 'Ishimwe', 'Irakoze', 'Iganze', 'Mugisha', 'Hirwa', 'Igiraneza'] },
       UG: { female: ['Jesca', 'Susan', 'Lillian', 'Dorcus', 'Jane', 'Judith', 'Agnes', 'Hellen'],
         male: ['Cuthbert', 'Julius', 'Francis', 'Patrick', 'Ronald'],
         family: ['Ababiku', 'Abeja', 'Aber', 'Abigaba', 'Acen', 'Acon', 'Adome', 'Aeku', 'Afidra'] },

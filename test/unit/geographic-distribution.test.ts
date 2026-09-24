@@ -33,8 +33,8 @@ describe('seeded geographic choices', () => {
   it('does not select or accept an unreviewed country for a beta profile', () => {
     const filters = query('seed=profile-demo&asOf=2026-09-24')
     const zeroKey = '0'.repeat(64)
-    expect(resolveGeographicContext(filters, zeroKey).country.code).toBe('BT')
-    expect(() => resolveGeographicContext({ country: 'CD' }, zeroKey)).toThrow(RangeError)
+    expect(resolveGeographicContext(filters, zeroKey).country.code).toBe('AO')
+    expect(() => resolveGeographicContext({ country: 'CF' }, zeroKey)).toThrow(RangeError)
   })
 
   it('rejects invalid weights rather than silently biasing choices', () => {
