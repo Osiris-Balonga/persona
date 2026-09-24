@@ -24,4 +24,9 @@ describe('cultural name pools', () => {
     expect(one.lastName.length).toBeGreaterThan(0)
     expect(one.locale).toBeTruthy()
   })
+
+  it('uses country-specific pools without unreviewed secondary-language pools', () => {
+    expect(nameContextForCountry('BR').pools.map((pool) => pool.locale)).toEqual(['pt_BR'])
+    expect(nameContextForCountry('BE').pools.map((pool) => pool.locale)).toEqual(['nl_BE', 'fr_BE'])
+  })
 })
