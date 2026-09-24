@@ -15,7 +15,7 @@ A possible object key is `portraits/v1/teen/male/black/west-african/p_0001.webp`
 
 An import must verify WebP format, dimensions, metadata, duplicate hashes, and a strict size limit below 50,000 bytes. Only reviewed and approved IDs are selectable and readable. Selection uses the compatible IDs in the manifest with a stable seeded algorithm and catalog version; it never guesses that every number up to a folder maximum exists. When enough candidates exist, a multi-person response should avoid repeated portraits. Missing coverage has an explicit API outcome rather than silently substituting an incompatible image.
 
-Versioned portrait URLs may be cached. Withdrawal must deny future Worker reads and purge cached copies; replacing an asset uses a new key or catalog version. The catalog and delivery path can be built with test fixtures. Producing the actual synthetic portraits requires separate project-owner authorization.
+Approved versioned portrait URLs use `Cache-Control: public, max-age=300, must-revalidate`; missing and withdrawn assets use `no-store`. Withdrawal first removes approval, then purges the exact public URL from Cloudflare's global cache, and finally verifies that a new request is denied. Use a normal URL cache key and a globally purgeable CDN path; deleting an entry from a Worker's local Cache API is insufficient. Replacing an asset uses a new key or catalog version. Previously fetched browser copies may remain fresh for up to five minutes. The [HTTP contract](api.md#replay-and-http-caching) defines person-response caching. The catalog and delivery path can be built with test fixtures. Producing the actual synthetic portraits requires separate project-owner authorization.
 
 ## Development
 

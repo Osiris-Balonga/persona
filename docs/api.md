@@ -54,6 +54,16 @@ GET /people?count=1&country=CG&city=Brazzaville&age=27&gender=female&appearance=
 
 A successful response has `results` and `meta`. `meta.count` is the number of returned people; `meta.asOf` is the resolved date used for age calculations. `meta.seed` is the supplied seed or `null` for an unseeded request. `meta.dataVersion` and `meta.catalogVersion` identify the inputs needed for replay. The versioned [response schema](../src/contracts/people.ts) bounds the result list to 100 people.
 
+### Replay and HTTP caching
+
+A seeded request can be replayed when its `asOf`, filters, `seed`, `dataVersion`, `catalogVersion`, and generation algorithm version are unchanged. The V1 derivation hashes a fixed-order JSON array with SHA-256. It contains the algorithm version, seed, resolved `asOf`, both data versions, and all generation filters (`gender`, `age`, `ageGroup`, `appearance`, `country`, `city`); absent filters occupy `null` slots. A separate key for each zero-based person index and named component (for example, `identity` or `portrait`) is derived from that array. `count` and `fields` do not enter component keys, so requesting more people or fewer response fields cannot shift existing choices. The implementation is in [replay.ts](../src/replay.ts); algorithm changes require a version change. Dataset or catalog changes require their respective version to change and appear in `meta`.
+
+Without `seed`, the server will draw fresh request entropy once and report `meta.seed: null`. Two such `GET` requests may return different people. HTTP `GET` remains safe and idempotent: repeating it does not request a server state change; idempotence does not require identical response bytes. This follows the [HTTP semantics specification](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2).
+
+Successful responses with both an explicit `seed` and an explicit `asOf` use `Cache-Control: private, no-cache` and an `ETag` derived from all generation inputs, `count`, `fields`, both data versions, and the generation algorithm version. A private cache may store them but must revalidate before reuse; shared caches must not store them. Responses without either explicit input, errors, and `429` responses use `Cache-Control: no-store`. The route will apply these headers and conditional revalidation when generation is implemented. These directives follow [HTTP caching semantics](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2).
+
+Approved portrait URLs include a catalog version and use `Cache-Control: public, max-age=300, must-revalidate`. A missing or withdrawn portrait response uses `no-store`. On withdrawal, the catalog entry must be disabled, the Worker must deny further reads, and the exact public URL must be purged from Cloudflare's global cache. A CDN cache key must remain the normal URL so that [purge by URL](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/) works; a local Worker Cache API deletion does not perform a global purge. Browser copies already fetched may remain until their five-minute freshness period ends. The Worker and withdrawal workflow are tracked separately from this contract.
+
 Invalid input returns HTTP 400 with an `error` object containing a stable `code`, a safe `message`, and, when relevant, `parameter`:
 
 ```json
