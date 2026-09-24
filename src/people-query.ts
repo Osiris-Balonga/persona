@@ -2,6 +2,7 @@ import { resolveAgeConstraint, resolveAsOf, type AgeGroup } from './age.js'
 import type { Person } from './contracts/person.js'
 import { parseFieldSelection, type FieldPath } from './field-selection.js'
 import { getCountry } from './geography/countries.js'
+import { getCity } from './geography/cities.js'
 
 export interface PeopleQuery {
   count: number
@@ -104,6 +105,9 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   const city = boundedString(params.get('city'), 'city', 100)?.trim()
   if (city !== undefined && country === null) {
     throw new PeopleQueryError('CONFLICTING_FILTERS', 'city', 'city requires country')
+  }
+  if (city !== undefined && country !== null && getCity(country, city) === undefined) {
+    throw new PeopleQueryError('UNSUPPORTED_VALUE', 'city', 'city is not available for the selected country')
   }
   const seed = boundedString(params.get('seed'), 'seed', 128)
   const fieldsValue = boundedString(params.get('fields'), 'fields', 512)
