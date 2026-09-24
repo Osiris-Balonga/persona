@@ -5,6 +5,7 @@ import { namePoolData } from './name-pool-data.js'
 import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
+import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 
@@ -58,11 +59,13 @@ export function listCoverage() {
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
       names: !resident ? notApplicable() : nameContext ? { ...ingested(country.code === 'MM' ? 'burmese-name-frequencies'
         : country.code === 'AD' ? 'andorra-civil-names' : country.code === 'BT' ? 'bhutan-naming-study'
-          : country.code === 'MW' ? 'peace-corps-chichewa-names' : 'faker'),
+          : country.code === 'MW' ? 'peace-corps-chichewa-names'
+            : country.code === 'ET' ? 'tesfa-ethiopian-names' : 'faker'),
         fallback: country.code === 'AD' ? 'language:es-family' : nameFallback,
         supplementarySources: country.code === 'MM' ? ['uk-myanmar-names'] as const
           : country.code === 'AD' ? ['faker'] as const
             : country.code === 'MW' ? ['ifla-malawi-names'] as const
+              : country.code === 'ET' ? ['uk-ethiopia-names'] as const
             : country.code === 'ID' ? ['geonames-country-info', 'uk-indonesia-names'] as const
             : country.code === 'GE' ? ['geonames-country-info', 'georgia-name-statistics'] as const
               : ['geonames-country-info'] as const,
@@ -123,7 +126,8 @@ export function validateGeographicData(): string[] {
         const names = pool.locale === 'my_MM' ? myanmarGivenNames
           : pool.locale === 'ad_AD' ? andorraGivenNames
             : pool.locale === 'bt_BT' ? bhutanGivenNames
-              : pool.locale === 'mw_MW' ? malawiNames : namePoolData[pool.locale]
+              : pool.locale === 'mw_MW' ? malawiNames
+                : pool.locale === 'et_ET' ? ethiopiaGivenNames : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)

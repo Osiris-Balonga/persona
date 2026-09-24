@@ -3,17 +3,20 @@ import { namePoolData } from './name-pool-data.js'
 import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
 import { malawiNames } from './malawi-names.js'
+import { ethiopiaGivenNames } from './ethiopia-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const andorraContext = { pools: [{ locale: 'ad_AD', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const malawiContext = { pools: [{ locale: 'mw_MW', tier: 'local', weight: 1 }], fallback: 'local' } as const
+const ethiopiaContext = { pools: [{ locale: 'et_ET', tier: 'local', weight: 1 }], fallback: 'local' } as const
 
 export function nameContextForCountry(country: string) {
   if (country === 'MM') return myanmarContext
   if (country === 'AD') return andorraContext
   if (country === 'BT') return bhutanContext
   if (country === 'MW') return malawiContext
+  if (country === 'ET') return ethiopiaContext
   return nameContextData[country]
 }
 
@@ -49,6 +52,15 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
   if (selected.locale === 'mw_MW') {
     const firstName = malawiNames.given[keyPart(key, 12) % malawiNames.given.length]
     const lastName = malawiNames.family[keyPart(key, 24) % malawiNames.family.length]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
+  }
+  if (selected.locale === 'et_ET') {
+    const firstNames = ethiopiaGivenNames[gender]
+    const firstName = firstNames[keyPart(key, 12) % firstNames.length]
+    const maleNames = ethiopiaGivenNames.male
+    let paternalIndex = keyPart(key, 24) % maleNames.length
+    if (maleNames[paternalIndex] === firstName) paternalIndex = (paternalIndex + 1) % maleNames.length
+    const lastName = maleNames[paternalIndex]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   if (selected.locale === 'ad_AD') {

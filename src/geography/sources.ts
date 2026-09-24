@@ -86,6 +86,18 @@ export const geographicSources = {
     license: 'Public clan-name facts (small sample)',
     edition: '1996',
   },
+  'tesfa-ethiopian-names': {
+    title: 'Tesfa Alliance Ethiopian male and female given-name examples',
+    url: 'https://tesfaalliance.org/names.php',
+    license: 'Public given-name facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'uk-ethiopia-names': {
+    title: 'HM Passport Office Ethiopia naming guidance',
+    url: 'https://www.gov.uk/government/publications/ethiopia-knowledge-base-profile/ethiopia-knowledge-base-profile',
+    license: 'Public naming guidance',
+    edition: '2026-06-30',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',

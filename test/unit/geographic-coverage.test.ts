@@ -27,6 +27,9 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'MW')?.names).toMatchObject({
       source: 'peace-corps-chichewa-names', fallback: null, supplementarySources: ['ifla-malawi-names'],
     })
+    expect(rows.find((row) => row.country === 'ET')?.names).toMatchObject({
+      source: 'tesfa-ethiopian-names', fallback: null, supplementarySources: ['uk-ethiopia-names'],
+    })
     expect(validateGeographicData()).toEqual([])
   })
 })
