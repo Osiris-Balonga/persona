@@ -141,6 +141,25 @@ describe('cultural name pools', () => {
     }
   })
 
+  it('supports separate first and second names for Libya and Mayotte', () => {
+    const pools = africaReviewedNames as unknown as Record<string, {
+      female: readonly string[]; male: readonly string[]; family: readonly string[]
+    }>
+    for (const code of ['LY', 'YT']) {
+      const pool = pools[code]
+      expect(nameContextForCountry(code)).toMatchObject({ fallback: 'local' })
+      for (const field of ['female', 'male', 'family'] as const) {
+        expect(pool[field].length).toBeGreaterThanOrEqual(50)
+        expect(new Set(pool[field]).size).toBe(pool[field].length)
+      }
+      for (const gender of ['female', 'male'] as const) {
+        const name = selectName(code, gender, key)
+        expect(pool[gender]).toContain(name.firstName)
+        expect(pool.family).toContain(name.lastName)
+      }
+    }
+  })
+
   it('broadens the existing East and Southern Africa pools while preserving local examples', () => {
     const pools = africaReviewedNames as unknown as Record<string, {
       female: readonly string[]; male: readonly string[]; family: readonly string[]
