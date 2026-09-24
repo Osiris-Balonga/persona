@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { summarizeCandidates } from '../../scripts/collect-wikidata-name-candidates.mjs'
+import { collectCandidates, summarizeCandidates } from '../../scripts/collect-wikidata-name-candidates.mjs'
 
 const row = (code: string, name: string, count: number, sex?: 'male' | 'female') => ({ code, name, count, sex })
 
@@ -29,5 +29,32 @@ describe('Wikidata name candidate review', () => {
     )
     expect(report.LS).toMatchObject({ counts: { female: 1, male: 0, family: 1 },
       female: [{ name: 'Mamoipone', count: 2 }], male: [], family: [{ name: 'Senauoane', count: 1 }] })
+  })
+
+  it('saves each country, resumes completed work, and reports failures without discarding results', async () => {
+    const calls: string[] = []
+    const snapshots: Array<{ completed: string[]; failed: string[] }> = []
+    const fetchRows = async (code: string, kind: string) => {
+      calls.push(`${code}:${kind}`)
+      if (code === 'CF') throw new Error('query timeout')
+      return kind === 'given' ? [row(code, 'Amina', 2, 'female'), row(code, 'Amadou', 3, 'male')]
+        : [row(code, 'Diallo', 4)]
+    }
+    const save = async (report: { countries: Record<string, unknown>; failures: Record<string, string> }) => {
+      snapshots.push({ completed: Object.keys(report.countries), failed: Object.keys(report.failures) })
+    }
+    const first = await collectCandidates(['GH', 'CF', 'SN'], null, fetchRows, save)
+    expect(first.countries.GH.counts).toEqual({ female: 1, male: 1, family: 1 })
+    expect(first.countries.SN.counts).toEqual({ female: 1, male: 1, family: 1 })
+    expect(first.failures.CF).toContain('timeout')
+    expect(snapshots).toEqual([
+      { completed: ['GH'], failed: [] },
+      { completed: ['GH'], failed: ['CF'] },
+      { completed: ['GH', 'SN'], failed: ['CF'] },
+    ])
+    calls.length = 0
+    const second = await collectCandidates(['GH', 'CF', 'SN'], first, fetchRows, save)
+    expect(calls).toEqual(['CF:given'])
+    expect(second.failures.CF).toContain('timeout')
   })
 })
