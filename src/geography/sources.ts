@@ -38,6 +38,13 @@ export const geographicSources = {
     license: 'MIT',
     edition: '10.6.0',
   },
+  'wikidata-names': {
+    title: 'Wikidata aggregate name-component candidates by citizenship',
+    url: 'https://query.wikidata.org/',
+    license: 'CC0-1.0',
+    edition: '2026-09-24',
+    sha256: 'da3dec79e6ec5a0f412b9d94f9360712fa74cff856cca7be56440f9d0afff503',
+  },
   'georgia-name-statistics': {
     title: 'Georgian Public Service Development Agency name counts reported by Rustavi2',
     url: 'https://rustavi2.ge/ka/news/289258',

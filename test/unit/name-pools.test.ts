@@ -3,6 +3,7 @@ import { nameContextForCountry, selectName } from '../../src/geography/names.js'
 import { namePoolData } from '../../src/geography/name-pool-data.js'
 import { listCountries } from '../../src/geography/countries.js'
 import { myanmarGivenNames } from '../../src/geography/surname-free-names.js'
+import { africaReviewedNames } from '../../src/geography/africa-reviewed-names.js'
 
 const key = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
@@ -64,17 +65,11 @@ describe('cultural name pools', () => {
     expect(male.firstName).not.toBe(male.lastName)
   })
 
-  it('uses reviewed local samples for Congo, Ghana, and Senegal', () => {
+  it('uses the reviewed local sample for Congo', () => {
     const samples = {
       CG: { female: ['Pascaline', 'Simone', 'Hortense', 'Charlotte', 'Jeanne'],
         male: ['Daniel', 'Théophile', 'Michel', 'Pascal', 'Guillaume'],
         family: ['Adoua', 'Mahinga', 'Okoula', 'Ngoto', 'Assassa', 'Banvidi'] },
-      GH: { female: ['Akosua', 'Abena', 'Ama', 'Akua', 'Yaa'],
-        male: ['Kofi', 'Kwame', 'Kwabena', 'Kwasi', 'Kwadwo'],
-        family: ['Mensah', 'Asante', 'Osei', 'Boakye', 'Ofori', 'Asamoah'] },
-      SN: { female: ['Aminata', 'Awa', 'Aïssatou', 'Fatou'],
-        male: ['Abdoulaye', 'Cheikh', 'Ahmadou', 'Mamadou'],
-        family: ['Wane', 'Diouf', 'Fall', 'Gueye', 'Ndiaye', 'Sy'] },
     } as const
     for (const [country, pool] of Object.entries(samples)) {
       expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local', pools: [{ tier: 'local' }] })
@@ -85,6 +80,26 @@ describe('cultural name pools', () => {
         expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
       }
     }
+  })
+
+  it('keeps the Ghana and Senegal name pools broad, distinct, and two-field compatible', () => {
+    for (const country of ['GH', 'SN']) {
+      const pool = africaReviewedNames[country]
+      for (const field of ['female', 'male', 'family'] as const) {
+        expect(pool[field].length).toBeGreaterThanOrEqual(50)
+        expect(new Set(pool[field]).size).toBe(pool[field].length)
+      }
+      for (const gender of ['female', 'male'] as const) {
+        const name = selectName(country, gender, key)
+        expect(pool[gender]).toContain(name.firstName)
+        expect(pool.family).toContain(name.lastName)
+        expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+      }
+    }
+    expect(africaReviewedNames.GH.female).toContain('Akosua')
+    expect(africaReviewedNames.GH.male).toContain('Kofi')
+    expect(africaReviewedNames.SN.female).toContain('Aïssatou')
+    expect(africaReviewedNames.SN.male).toContain('Cheikh')
   })
 
   it('uses the published South African male, female, and family name sample', () => {
