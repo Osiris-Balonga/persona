@@ -12,6 +12,8 @@ For each behavior change, write a focused test first and confirm that it fails f
 
 Use plausible fixtures and assert product behavior rather than duplicating implementation details. Cover meaningful boundaries and failure modes without repeating the same scenario at every scope. State the checks actually run in the pull request.
 
+Run `npm run test:unit` for isolated rules and `npm run test:integration` for application boundaries. `npm run test:e2e` is reserved for complete API flows; that suite has no tests yet. Run `npm run typecheck` and `npm run build` before opening a pull request. CI runs the suites that currently contain tests.
+
 ## Repository content
 
 Keep code, tests, assets, and durable product or contributor documentation in the repository. Track planning work in GitHub Issues and Projects. Do not commit local reports, drafts, generated builds, secrets, or unreviewed assets. Record the provenance and usage rights of added datasets and images.

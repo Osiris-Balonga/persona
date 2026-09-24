@@ -12,3 +12,14 @@ The API is under development. Its first release is planned as a public beta with
 - Use clearly fictional contact details and addresses.
 
 Development happens on `dev`. Production changes are promoted to `main` through a pull request from `dev`. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Local development
+
+The API foundation currently exposes `GET /health`. Person generation is under development.
+
+```sh
+npm ci
+npm run dev
+```
+
+The server reads `PORT` from the environment and defaults to `3000`. Run `npm run build` and `npm start` for the compiled application.
