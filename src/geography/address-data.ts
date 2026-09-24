@@ -48,7 +48,7 @@ export function fictionalAddress(city: City, key: string) {
     ? rule.format.replace('%S', '')
     : rule.format.replace(/%S%C/g, '%S, %C').replace(/%C%S/g, '%C, %S')
   const format = postalCode === null
-    ? countryFormat.replace(/(?<!%)[A-Z]{1,3}-%Z|-%Z|〒\s*%Z|%Z/g, '') : countryFormat
+    ? countryFormat.replace(/(?<!%)[A-Z]{1,3}[ -]%Z|-%Z|〒\s*%Z|%Z/g, '') : countryFormat
   const formatted = formatAddress(format, {
     A: line1, C: city.name, S: region ?? '', Z: postalCode ?? '',
   })
