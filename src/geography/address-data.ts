@@ -28,7 +28,8 @@ export function streetLanguageForCountry(country: string): string {
 
 function formatAddress(format: string, components: Record<string, string>): string {
   return format.replace(/%[A-Z]|%n/g, (marker) => marker === '%n' ? '\n' : components[marker[1]] ?? '')
-    .split('\n').map((line) => line.replace(/\s+,/g, ',').replace(/,\s*$/g, '').replace(/\s{2,}/g, ' ').trim())
+    .split('\n').map((line) => line.replace(/\s+,/g, ',').replace(/^\s*[,/-]\s*/g, '')
+      .replace(/\s*[,/-]\s*$/g, '').replace(/\s{2,}/g, ' ').trim())
     .filter(Boolean).join('\n')
 }
 
