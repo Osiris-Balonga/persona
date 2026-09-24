@@ -8,6 +8,7 @@ import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
 import { europeReviewedNames, isEuropeReviewedCountry } from './europe-reviewed-names.js'
 import { europeGenderedNames, isEuropeGenderedCountry } from './europe-gendered-names.js'
+import { europeIslandNames, isEuropeIslandCountry } from './europe-island-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -68,6 +69,7 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
 
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
+  ...Object.keys(europeIslandNames),
 ])
 
 function addressCoverage(country: string): CoverageCell {
@@ -100,12 +102,14 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(isEuropeReviewedCountry(country.code) || isEuropeGenderedCountry(country.code)
-        ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(isEuropeIslandCountry(country.code)
+        ? 'wikidata-europe-birthplace-candidates' : isEuropeReviewedCountry(country.code) || isEuropeGenderedCountry(country.code)
+          ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
         fallback: nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
         supplementarySources: isEuropeGenderedCountry(country.code)
-          ? ['wikidata-europe-gendered-families'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
+          ? ['wikidata-europe-gendered-families'] : country.code === 'FO' && isEuropeIslandCountry(country.code)
+            ? ['faroe-name-statistics'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
       } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
@@ -170,7 +174,8 @@ export function validateGeographicData(): string[] {
                 : pool.locale === 'et_ET' ? ethiopiaGivenNames
                   : isAfricaReviewedCountry(country.code) ? africaReviewedNames[country.code]
                     : isEuropeReviewedCountry(country.code) ? europeReviewedNames[country.code]
-                      : isEuropeGenderedCountry(country.code) ? europeGenderedNames[country.code] : namePoolData[pool.locale]
+                      : isEuropeGenderedCountry(country.code) ? europeGenderedNames[country.code]
+                        : isEuropeIslandCountry(country.code) ? europeIslandNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)
