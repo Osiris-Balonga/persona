@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const endpoint = 'https://query.wikidata.org/sparql'
+const qleverEndpoint = 'https://qlever.dev/api/wikidata'
 const userAgent = 'PersonaProject/0.1 (geographic data research; github.com/Osiris-Balonga/persona)'
 const male = 'Q6581097'
 const female = 'Q6581072'
@@ -51,26 +52,36 @@ export function summarizeCandidates(givenRows, familyRows, codes, limit = 200) {
   return result
 }
 
-function queryFor(codes, kind) {
+export function queryFor(codes, kind, engine = 'wikidata') {
   const values = codes.map((code) => `"${code}"`).join(' ')
   const property = kind === 'given' ? 'P735' : 'P734'
   const gender = kind === 'given' ? `?person wdt:P21 ?sex. VALUES ?sex { wd:${male} wd:${female} }` : ''
   const selectGender = kind === 'given' ? '?sex ' : ''
-  return `SELECT ?iso ${selectGender}?nameLabel (COUNT(DISTINCT ?person) AS ?n) WHERE {
+  const prefixes = engine === 'qlever' ? `PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+` : ''
+  const labels = engine === 'qlever'
+    ? '?name rdfs:label ?nameLabel. FILTER(LANG(?nameLabel) = "en")'
+    : 'SERVICE wikibase:label { bd:serviceParam wikibase:language "en,fr". }'
+  return `${prefixes}SELECT ?iso ${selectGender}?nameLabel (COUNT(DISTINCT ?person) AS ?n) WHERE {
     VALUES ?iso { ${values} }
     ?country wdt:P297 ?iso.
     ?person wdt:P27 ?country; wdt:${property} ?name.
     ${gender}
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "en,fr". }
+    ${labels}
   } GROUP BY ?iso ${selectGender}?nameLabel`
 }
 
-async function fetchBindings(query) {
-  const url = `${endpoint}?format=json&query=${encodeURIComponent(query)}`
+async function fetchBindings(query, engine) {
+  const qlever = engine === 'qlever'
+  const url = qlever ? qleverEndpoint : `${endpoint}?format=json&query=${encodeURIComponent(query)}`
   for (let attempt = 0; attempt < 2; attempt++) {
     const response = await fetch(url, {
-      headers: { Accept: 'application/sparql-results+json', 'User-Agent': userAgent },
-      signal: AbortSignal.timeout(60_000),
+      ...(qlever ? { method: 'POST', body: query } : {}),
+      headers: { Accept: 'application/sparql-results+json', 'User-Agent': userAgent,
+        ...(qlever ? { 'Content-Type': 'application/sparql-query' } : {}) },
+      signal: AbortSignal.timeout(qlever ? 45_000 : 60_000),
     })
     if (response.ok) return (await response.json()).results.bindings
     if (response.status !== 429 || attempt === 1) throw new Error(`Wikidata query failed: HTTP ${response.status}`)
@@ -101,17 +112,19 @@ function argumentsFrom(argv) {
   }
   const codes = [...new Set(options.countries.split(',').map((code) => code.trim().toUpperCase()))]
   if (codes.some((code) => !/^[A-Z]{2}$/u.test(code))) throw new Error('Invalid country code')
-  return { codes, output: resolve(options.output) }
+  const engine = options.engine ?? 'wikidata'
+  if (!['wikidata', 'qlever'].includes(engine)) throw new Error('Invalid SPARQL engine')
+  return { codes, output: resolve(options.output), engine }
 }
 
-export async function collectCandidates(codes, previous, fetchRows, save) {
+export async function collectCandidates(codes, previous, fetchRows, save, engine = 'wikidata') {
   if (previous && (previous.schemaVersion !== 2
     || JSON.stringify(previous.requestedCodes) !== JSON.stringify(codes))) {
     throw new Error('Existing report has a different format or country list; choose another output path')
   }
   const report = previous ?? {
     schemaVersion: 2,
-    source: endpoint,
+    source: engine === 'qlever' ? qleverEndpoint : endpoint,
     license: 'CC0-1.0',
     requestedCodes: codes,
     selection: 'P27 citizenship, P21 sex or gender, P735 given name, P734 family name; grouped counts',
@@ -128,7 +141,8 @@ export async function collectCandidates(codes, previous, fetchRows, save) {
       report.countries[code] = {
         ...summarizeCandidates(givenRows, familyRows, [code])[code],
         retrievedAt: new Date().toISOString(),
-        queries: { given: queryFor([code], 'given'), family: queryFor([code], 'family') },
+        source: engine === 'qlever' ? qleverEndpoint : endpoint,
+        queries: { given: queryFor([code], 'given', engine), family: queryFor([code], 'family', engine) },
         sourceRowsSha256: createHash('sha256').update(JSON.stringify({ givenRows, familyRows })).digest('hex'),
       }
       delete report.failures[code]
@@ -148,21 +162,29 @@ export async function collectCandidates(codes, previous, fetchRows, save) {
   return report
 }
 
+export function formatCandidateReport(report) {
+  const metadata = Object.entries(report).filter(([key]) => key !== 'countries')
+    .map(([key, value]) => `  ${JSON.stringify(key)}: ${JSON.stringify(value)}`)
+  const countries = Object.entries(report.countries)
+    .map(([code, value]) => `    ${JSON.stringify(code)}: ${JSON.stringify(value)}`)
+  return `{\n${metadata.join(',\n')},\n  "countries": {\n${countries.join(',\n')}\n  }\n}\n`
+}
+
 async function saveReport(output, report) {
   await mkdir(dirname(output), { recursive: true })
   const temporary = `${output}.tmp`
-  await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+  await writeFile(temporary, formatCandidateReport(report), 'utf8')
   await rename(temporary, output)
 }
 
 async function main() {
-  const { codes, output } = argumentsFrom(process.argv.slice(2))
+  const { codes, output, engine } = argumentsFrom(process.argv.slice(2))
   let previous = null
   try { previous = JSON.parse(await readFile(output, 'utf8')) }
   catch (error) { if (error.code !== 'ENOENT') throw error }
   const report = await collectCandidates(codes, previous,
-    async (code, kind) => parseBindings(await fetchBindings(queryFor([code], kind)), kind),
-    (progress) => saveReport(output, progress))
+    async (code, kind) => parseBindings(await fetchBindings(queryFor([code], kind, engine), engine), kind),
+    (progress) => saveReport(output, progress), engine)
   for (const code of codes) {
     if (report.countries[code]) process.stdout.write(`${code} ${JSON.stringify(report.countries[code].counts)}\n`)
     else if (report.failures[code]) process.stdout.write(`${code} FAILED ${report.failures[code]}\n`)

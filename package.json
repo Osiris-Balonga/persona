@@ -16,6 +16,7 @@
     "data:refresh:addresses": "node scripts/refresh-address-data.mjs",
     "data:fetch:address-metadata": "node scripts/fetch-address-metadata.mjs",
     "data:audit": "tsx scripts/audit-geographic-data.ts",
+    "data:audit:names": "node scripts/audit-name-candidates.mjs",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run --project unit --project integration",
