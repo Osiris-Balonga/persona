@@ -5,8 +5,10 @@ const CountryCode = Type.String({ pattern: '^[A-Z]{2}$' })
 export const AddressSchema = Type.Object({
   line1: Type.String({ minLength: 1 }),
   city: Type.String({ minLength: 1 }),
+  region: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
   postalCode: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
   country: CountryCode,
+  formatted: Type.String({ minLength: 1 }),
 }, { additionalProperties: false })
 
 export const PictureSchema = Type.Object({

@@ -37,8 +37,8 @@ function projectPerson(person: Person, fields: readonly FieldPath[]): ProjectedP
 
   for (const field of fields) {
     if (field === 'address') {
-      const { line1, city, postalCode, country } = person.address
-      result.address = { line1, city, postalCode, country }
+      const { line1, city, region, postalCode, country, formatted } = person.address
+      result.address = { line1, city, region, postalCode, country, formatted }
     } else if (field.startsWith('address.')) {
       const key = field.slice('address.'.length) as keyof Person['address']
       const address = (result.address ?? {}) as Record<string, unknown>

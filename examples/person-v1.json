@@ -13,8 +13,10 @@
   "address": {
     "line1": "18 rue des Manguiers",
     "city": "Brazzaville",
+    "region": null,
     "postalCode": null,
-    "country": "CG"
+    "country": "CG",
+    "formatted": "18 rue des Manguiers\nBrazzaville"
   },
   "email": "grace.mbemba@example.test",
   "phone": null,

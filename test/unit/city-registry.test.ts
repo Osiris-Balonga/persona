@@ -10,6 +10,7 @@ describe('versioned city registry', () => {
       expect(cities.length > 0).toBe(country.generation === 'eligible')
       expect(cities.every((city) => city.country === country.code && city.name.length > 0)).toBe(true)
       expect(new Set(cities.map((city) => city.geonameId)).size).toBe(cities.length)
+      expect(cities.every((city) => city.latitude >= -90 && city.latitude <= 90 && city.longitude >= -180 && city.longitude <= 180)).toBe(true)
     }
   })
 
@@ -18,6 +19,7 @@ describe('versioned city registry', () => {
     expect(getCity('PN', 'Adamstown')).toMatchObject({ country: 'PN', name: 'Adamstown' })
     expect(getCity('GB', 'London')).toMatchObject({ country: 'GB', name: 'London' })
     expect(getCity('US', 'London')).toBeUndefined()
+    expect(getCity('US', 'Washington')).toMatchObject({ region: 'District of Columbia' })
     expect(listCities('AQ')).toEqual([])
   })
 })

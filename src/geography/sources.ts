@@ -18,6 +18,13 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: '56fb681d6daf41f0fad2e8ee3431082399f3b321daea102fcf25c02bfa8bb370',
   },
+  'geonames-admin1': {
+    title: 'GeoNames admin1CodesASCII.txt',
+    url: 'https://download.geonames.org/export/dump/admin1CodesASCII.txt',
+    license: 'CC BY 4.0',
+    edition: '2026-09-24',
+    sha256: '1da92a6323a5fec3176f3f743bf4cf4040fd56a876da55e46fbca23c863aa60a',
+  },
   'geonames-country-info': {
     title: 'GeoNames countryInfo.txt language tags',
     url: 'https://download.geonames.org/export/dump/countryInfo.txt',
@@ -30,6 +37,20 @@ export const geographicSources = {
     url: 'https://github.com/faker-js/faker',
     license: 'MIT',
     edition: '10.6.0',
+  },
+  'libaddressinput-data': {
+    title: 'Google Address Data Service country metadata',
+    url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',
+    license: 'CC BY 4.0',
+    edition: '2026-09-24',
+    sha256: '5022ba62bdbaa1e5b10593ba9cbc02022e4f9ec7a8bef0ec937aaac357bac49c',
+  },
+  'geonames-postal': {
+    title: 'GeoNames postal allCountries.zip',
+    url: 'https://download.geonames.org/export/zip/allCountries.zip',
+    license: 'CC BY 4.0',
+    edition: '2026-09-24',
+    sha256: '40cc0fcac59639c4fe6c666363bd9e314c006a1a883c8a63c2b78b1ce430c2ba',
   },
   nanpa: {
     title: 'NANPA 555 line numbers',

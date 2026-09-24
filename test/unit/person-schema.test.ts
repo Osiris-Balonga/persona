@@ -12,6 +12,8 @@ describe('public Person v1 schema', () => {
     expect(PersonSchema.$id).toBe('urn:persona:schema:person:v1')
     expect(Value.Check(PersonSchema, example)).toBe(true)
     expect(Value.Check(PersonSchema, { ...example, picture: null })).toBe(true)
+    expect(Value.Check(PersonSchema, { ...example, address: { ...(example.address as object), region: null, formatted: '18 rue des Manguiers\nBrazzaville' } })).toBe(true)
+    expect(Value.Check(PersonSchema, { ...example, address: { ...(example.address as object), region: undefined } })).toBe(false)
   })
 
   it('rejects a non-numeric age and an impossible birth date', () => {
