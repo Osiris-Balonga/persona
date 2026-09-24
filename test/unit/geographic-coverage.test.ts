@@ -45,16 +45,17 @@ describe('geographic source coverage', () => {
       profileGeneration: 'available', names: { source: 'wikidata-names', review: 'reviewed', fallback: null },
     })
     expect(rows.find((row) => row.country === 'UG')).toMatchObject({
-      profileGeneration: 'available', names: { source: 'uganda-parliament-names', review: 'reviewed', fallback: null },
+      profileGeneration: 'available', names: { source: 'wikidata-africa-qlever-candidates', review: 'reviewed', fallback: null },
     })
     expect(rows.find((row) => row.country === 'KE')).toMatchObject({
-      profileGeneration: 'available', names: { source: 'kenya-parliament-names', review: 'reviewed', fallback: null },
+      profileGeneration: 'available', names: { source: 'wikidata-africa-qlever-candidates', review: 'reviewed', fallback: null },
     })
     expect(rows.find((row) => row.country === 'NA')).toMatchObject({
       profileGeneration: 'available', names: { source: 'namibia-parliament-names', review: 'reviewed', fallback: null },
     })
     for (const [country, source] of [
-      ['TZ', 'tanzania-parliament-names'], ['ZM', 'zambia-parliament-names'], ['ZW', 'zimbabwe-parliament-names'],
+      ['TZ', 'wikidata-africa-qlever-candidates'], ['ZM', 'wikidata-africa-qlever-candidates'],
+      ['ZW', 'wikidata-africa-qlever-candidates'],
       ['BW', 'botswana-parliament-names'], ['LS', 'lesotho-parliament-names'], ['SC', 'seychelles-parliament-names'],
     ]) {
       expect(rows.find((row) => row.country === country)).toMatchObject({
