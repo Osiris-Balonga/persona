@@ -15,4 +15,9 @@ export const africaReviewedNames = {
     male: ['Abdoulaye', 'Cheikh', 'Ahmadou', 'Mamadou'],
     family: ['Wane', 'Diouf', 'Fall', 'Gueye', 'Ndiaye', 'Sy'],
   },
+  ZA: {
+    female: ['Onalerona', 'Zanokuhle', 'Melokuhle', 'Lisakhanya', 'Lethabo', 'Nkanyezi', 'Lesedi', 'Omphile', 'Olwemihla'],
+    male: ['Lethabo', 'Lubanzi', 'Nkazimulo', 'Nkanyezi', 'Langelihle', 'Lesedi', 'Lethokuhle', 'Siphosethu', 'Leano'],
+    family: ['Dlamini', 'Ndlovu', 'Nkosi', 'Khumalo', 'Sithole', 'Mkhize', 'Mokoena', 'Mthembu', 'Gumede', 'Ngcobo'],
+  },
 } as const

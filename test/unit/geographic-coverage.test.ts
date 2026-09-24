@@ -38,6 +38,9 @@ describe('geographic source coverage', () => {
         profileGeneration: 'available', names: { review: 'reviewed' },
       })
     }
+    expect(rows.find((row) => row.country === 'ZA')).toMatchObject({
+      profileGeneration: 'available', names: { source: 'stats-sa-birth-names', fallback: null, review: 'reviewed' },
+    })
     expect(rows.find((row) => row.country === 'CG')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(rows.find((row) => row.country === 'SN')?.addresses.fallback ?? '').not.toContain('global-street-style')
     expect(validateGeographicData()).toEqual([])

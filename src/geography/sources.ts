@@ -116,6 +116,12 @@ export const geographicSources = {
     license: 'Public name-component facts (small sample)',
     edition: '2026-09-24',
   },
+  'stats-sa-birth-names': {
+    title: 'Statistics South Africa Recorded Live Births 2024, Table 12',
+    url: 'https://www.statssa.gov.za/publications/P0305/P03052024.pdf',
+    license: 'Public aggregate name-frequency facts (small sample)',
+    edition: '2024',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',
