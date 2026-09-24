@@ -33,17 +33,17 @@ const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: n
 const nameSourceByCountry: Record<string, GeographicSource> = {
   AD: 'andorra-civil-names', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
   CG: 'congo-senate-names',
-  ET: 'tesfa-ethiopian-names', GH: 'ghana-parliament-names', KE: 'kenya-parliament-names',
+  ET: 'tesfa-ethiopian-names', GH: 'wikidata-names', KE: 'kenya-parliament-names',
   LS: 'lesotho-parliament-names', MM: 'burmese-name-frequencies', MW: 'peace-corps-chichewa-names',
   NA: 'namibia-parliament-names', RW: 'rwanda-vital-names', SC: 'seychelles-parliament-names',
-  SN: 'senegal-presidency-names', TZ: 'tanzania-parliament-names',
+  SN: 'wikidata-names', TZ: 'tanzania-parliament-names',
   UG: 'uganda-parliament-names', ZA: 'stats-sa-birth-names', ZM: 'zambia-parliament-names',
   ZW: 'zimbabwe-parliament-names',
 }
 const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
   AD: ['faker'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
-  GH: ['faker'], ID: ['geonames-country-info', 'uk-indonesia-names'], MM: ['uk-myanmar-names'],
-  MW: ['ifla-malawi-names'], RW: ['rwanda-parliament-names'], SN: ['faker'],
+  GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'], MM: ['uk-myanmar-names'],
+  MW: ['ifla-malawi-names'], RW: ['rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
 }
 
 function addressCoverage(country: string): CoverageCell {
