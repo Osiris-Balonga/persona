@@ -3,9 +3,11 @@ import { listCoverage } from '../../src/geography/coverage.js'
 import { selectName } from '../../src/geography/names.js'
 import { asiaEastNames } from '../../src/geography/asia-east-names.js'
 import { asiaCentralNames } from '../../src/geography/asia-central-names.js'
+import { asiaAdditionalNames } from '../../src/geography/asia-additional-names.js'
 
 const codes = ['AE', 'AF', 'AM', 'AZ', 'BD', 'BH', 'CN', 'GE', 'HK', 'IL', 'IN', 'IQ', 'IR', 'JO', 'JP',
-  'KG', 'KP', 'KR', 'KW', 'KZ', 'LB', 'LK', 'NP', 'PH', 'PK', 'PS', 'SA', 'SY', 'TR', 'TW', 'UZ', 'VN', 'YE']
+  'ID', 'KG', 'KP', 'KR', 'KW', 'KZ', 'LB', 'LK', 'MV', 'NP', 'PH', 'PK', 'PS', 'QA', 'SA', 'SG',
+  'SY', 'TH', 'TR', 'TW', 'UZ', 'VN', 'YE']
 const key = '1234567890abcdef'.repeat(4)
 
 describe('reviewed Asian name pools', () => {
@@ -19,6 +21,11 @@ describe('reviewed Asian name pools', () => {
     const names = asiaCentralNames[code]
     expect(names.familyFemale.every((name) => /(ova|eva|yeva|yewa|yowa|qyzy|kyzy)$/i.test(name))).toBe(true)
     expect(names.familyMale.every((name) => /(ov|ev|yev|ýew|uly)$/i.test(name))).toBe(true)
+  })
+  it('removes visibly misplaced labels in the final Asian batch', () => {
+    expect(asiaAdditionalNames.MV.female).not.toContain('Mohamed')
+    expect(asiaAdditionalNames.QA.family).not.toContain('House of Thani')
+    expect(asiaAdditionalNames.TH.family).not.toContain('Balenciaga')
   })
   it.each(codes)('%s uses a locally reviewed pool with two display fields', (code) => {
     const female = selectName(code, 'female', key)
