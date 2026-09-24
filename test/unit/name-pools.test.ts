@@ -49,6 +49,21 @@ describe('cultural name pools', () => {
     }
   })
 
+  it('uses Ethiopian given names and a paternal given-name component', () => {
+    expect(nameContextForCountry('ET')).toMatchObject({ fallback: 'local', pools: [{ locale: 'et_ET', tier: 'local' }] })
+    for (const gender of ['female', 'male'] as const) {
+      const name = selectName('ET', gender, key)
+      expect(gender === 'female'
+        ? ['Abeba', 'Almaz', 'Birtukan', 'Tigist', 'Tseday']
+        : ['Abebe', 'Bekele', 'Tesfaye', 'Aklilu', 'Dawit']).toContain(name.firstName)
+      expect(['Abebe', 'Bekele', 'Tesfaye', 'Aklilu', 'Dawit']).toContain(name.lastName)
+      expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+    }
+    const zeroKey = '0'.repeat(64)
+    const male = selectName('ET', 'male', zeroKey)
+    expect(male.firstName).not.toBe(male.lastName)
+  })
+
   it('exposes Burmese and Indonesian name components without changing the complete name', () => {
     for (const country of ['MM', 'ID']) {
       for (const gender of ['female', 'male'] as const) {
