@@ -39,6 +39,16 @@ describe('cultural name pools', () => {
     expect(namePoolData.ka_GE.male).not.toContain('ნინო')
   })
 
+  it('uses a small local Malawian pool instead of the global English fallback', () => {
+    expect(nameContextForCountry('MW')).toMatchObject({ fallback: 'local', pools: [{ locale: 'mw_MW', tier: 'local' }] })
+    for (const gender of ['female', 'male'] as const) {
+      const name = selectName('MW', gender, key)
+      expect(['Chikondi', 'Chimwemwe', 'Mtendere', 'Ufulu', 'Mphatso']).toContain(name.firstName)
+      expect(['Banda', 'Phiri', 'Nkhoma', 'Chisale']).toContain(name.lastName)
+      expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+    }
+  })
+
   it('exposes Burmese and Indonesian name components without changing the complete name', () => {
     for (const country of ['MM', 'ID']) {
       for (const gender of ['female', 'male'] as const) {

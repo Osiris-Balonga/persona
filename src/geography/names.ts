@@ -2,15 +2,18 @@ import { nameContextData } from './name-context-data.js'
 import { namePoolData } from './name-pool-data.js'
 import { andorraGivenNames } from './andorra-names.js'
 import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
+import { malawiNames } from './malawi-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const andorraContext = { pools: [{ locale: 'ad_AD', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
+const malawiContext = { pools: [{ locale: 'mw_MW', tier: 'local', weight: 1 }], fallback: 'local' } as const
 
 export function nameContextForCountry(country: string) {
   if (country === 'MM') return myanmarContext
   if (country === 'AD') return andorraContext
   if (country === 'BT') return bhutanContext
+  if (country === 'MW') return malawiContext
   return nameContextData[country]
 }
 
@@ -42,6 +45,11 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
     const secondNames = gender === 'female' ? bhutanGivenNames.femaleSecond : bhutanGivenNames.maleSecond
     const lastName = secondNames[keyPart(key, 24) % secondNames.length]
     return { firstName: first, lastName, fullName: `${first} ${lastName}`, locale: selected.locale, fallback: selected.tier }
+  }
+  if (selected.locale === 'mw_MW') {
+    const firstName = malawiNames.given[keyPart(key, 12) % malawiNames.given.length]
+    const lastName = malawiNames.family[keyPart(key, 24) % malawiNames.family.length]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   if (selected.locale === 'ad_AD') {
     const firstNames = andorraGivenNames[gender]

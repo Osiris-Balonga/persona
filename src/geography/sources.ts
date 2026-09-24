@@ -74,6 +74,18 @@ export const geographicSources = {
     license: 'Public naming convention and short name facts',
     edition: '2017',
   },
+  'peace-corps-chichewa-names': {
+    title: 'Learning Chichewa, Book 1: given-name examples',
+    url: 'https://eric.ed.gov/?id=ED206157',
+    license: 'Public given-name facts (small sample)',
+    edition: '1980',
+  },
+  'ifla-malawi-names': {
+    title: 'IFLA Names of Persons: Malawi clan-name examples',
+    url: 'https://www.ifla.org/g/cataloguing/names-of-persons/',
+    license: 'Public clan-name facts (small sample)',
+    edition: '1996',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',
