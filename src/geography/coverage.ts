@@ -65,6 +65,8 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
   ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
 }
 
+const africaAddressReviewedCodes = new Set([...Object.keys(africaReviewedNames), 'ET', 'MW'])
+
 function addressCoverage(country: string): CoverageCell {
   const rule = addressRule(country)
   if (!rule) return pending()
@@ -76,6 +78,7 @@ function addressCoverage(country: string): CoverageCell {
   if (!/^(en|fr|es|pt|de|ja)$/.test(streetLanguageForCountry(country))) missing.push('global-street-style')
   return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
     fallback: missing.length ? missing.join(',') : null,
+    review: africaAddressReviewedCodes.has(country) ? 'reviewed' as const : 'automated' as const,
     supplementarySources: country === 'PN' ? ['upu-pitcairn']
       : cities.some((city) => postalCodeForCity(city)) ? ['geonames-postal'] : [],
   }
