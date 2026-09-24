@@ -69,7 +69,7 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
 
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
-  ...Object.keys(europeIslandNames),
+  ...Object.keys(europeIslandNames), 'SJ', 'VA',
 ])
 
 function addressCoverage(country: string): CoverageCell {

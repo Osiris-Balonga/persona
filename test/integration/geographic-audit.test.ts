@@ -13,6 +13,9 @@ describe('geographic catalog audit', () => {
     expect(rows).toHaveLength(50)
     expect(rows.every((row) => row.addresses.review === 'reviewed')).toBe(true)
     expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(44)
+    const pendingNameRows = listCoverage().filter((row) => ['SJ', 'VA'].includes(row.country))
+    expect(pendingNameRows.map((row) => row.addresses.review)).toEqual(['reviewed', 'reviewed'])
+    expect(pendingNameRows.map((row) => row.names.review)).toEqual(['automated', 'automated'])
   })
   it('records the reviewed Africa address examples and retains explicit partial fallbacks', () => {
     const rows = listCoverage().filter((row) => Object.hasOwn(africaReviewedNames, row.country)
@@ -25,7 +28,7 @@ describe('geographic catalog audit', () => {
   })
   it('samples every resident-eligible ISO code and lists gaps without claiming manual review', () => {
     const report = auditGeographicData()
-    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.1', registryCodes: 249, eligibleCodes: 242,
+    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.2', registryCodes: 249, eligibleCodes: 242,
       unavailableCodes: 7, profileEligibleCodes: 110, pendingNameReviewCodes: 132, sampledCodes: 242, errors: [] })
     expect(report.gaps.find((row) => row.country === 'CG')?.categories).toContain('addresses:partial')
     expect(report.gaps.find((row) => row.country === 'PN')?.categories).toContain('phone:pending')
