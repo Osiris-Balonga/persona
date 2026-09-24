@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -104,33 +104,63 @@ function argumentsFrom(argv) {
   return { codes, output: resolve(options.output) }
 }
 
-async function main() {
-  const { codes, output } = argumentsFrom(process.argv.slice(2))
-  const givenRows = []
-  const familyRows = []
-  const queries = []
-  for (let offset = 0; offset < codes.length; offset += 3) {
-    const batch = codes.slice(offset, offset + 3)
-    const given = queryFor(batch, 'given')
-    const family = queryFor(batch, 'family')
-    queries.push({ codes: batch, given, family })
-    givenRows.push(...parseBindings(await fetchBindings(given), 'given'))
-    familyRows.push(...parseBindings(await fetchBindings(family), 'family'))
-    process.stderr.write(`Collected candidates for ${batch.join(', ')}\n`)
+export async function collectCandidates(codes, previous, fetchRows, save) {
+  if (previous && (previous.schemaVersion !== 2
+    || JSON.stringify(previous.requestedCodes) !== JSON.stringify(codes))) {
+    throw new Error('Existing report has a different format or country list; choose another output path')
   }
-  const report = {
+  const report = previous ?? {
+    schemaVersion: 2,
     source: endpoint,
     license: 'CC0-1.0',
-    retrievedAt: new Date().toISOString(),
+    requestedCodes: codes,
     selection: 'P27 citizenship, P21 sex or gender, P735 given name, P734 family name; grouped counts',
-    queries,
-    sourceRowsSha256: createHash('sha256').update(JSON.stringify({ givenRows, familyRows })).digest('hex'),
     note: 'Candidate names require country-level QA before entering the runtime catalog; counts reflect Wikidata coverage, not population frequency.',
-    countries: summarizeCandidates(givenRows, familyRows, codes),
+    countries: {},
+    failures: {},
   }
+  for (const code of codes) {
+    if (report.countries[code]) continue
+    try {
+      const givenRows = await fetchRows(code, 'given')
+      const familyRows = await fetchRows(code, 'family')
+      report.countries[code] = {
+        ...summarizeCandidates(givenRows, familyRows, [code])[code],
+        retrievedAt: new Date().toISOString(),
+        queries: { given: queryFor([code], 'given'), family: queryFor([code], 'family') },
+        sourceRowsSha256: createHash('sha256').update(JSON.stringify({ givenRows, familyRows })).digest('hex'),
+      }
+      delete report.failures[code]
+      process.stderr.write(`Collected candidates for ${code}\n`)
+    } catch (error) {
+      report.failures[code] = error instanceof Error ? error.message : String(error)
+      process.stderr.write(`Failed ${code}: ${report.failures[code]}\n`)
+    }
+    await save(report)
+  }
+  return report
+}
+
+async function saveReport(output, report) {
   await mkdir(dirname(output), { recursive: true })
-  await writeFile(output, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
-  for (const code of codes) process.stdout.write(`${code} ${JSON.stringify(report.countries[code].counts)}\n`)
+  const temporary = `${output}.tmp`
+  await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+  await rename(temporary, output)
+}
+
+async function main() {
+  const { codes, output } = argumentsFrom(process.argv.slice(2))
+  let previous = null
+  try { previous = JSON.parse(await readFile(output, 'utf8')) }
+  catch (error) { if (error.code !== 'ENOENT') throw error }
+  const report = await collectCandidates(codes, previous,
+    async (code, kind) => parseBindings(await fetchBindings(queryFor([code], kind)), kind),
+    (progress) => saveReport(output, progress))
+  for (const code of codes) {
+    if (report.countries[code]) process.stdout.write(`${code} ${JSON.stringify(report.countries[code].counts)}\n`)
+    else process.stdout.write(`${code} FAILED ${report.failures[code]}\n`)
+  }
+  if (Object.keys(report.failures).length) process.exitCode = 1
 }
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
