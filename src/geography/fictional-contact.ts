@@ -7,9 +7,9 @@ function emailPart(value: string): string {
   return value.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '') || 'person'
 }
 
-export function fictionalEmail(firstName: string, lastName: string | null, key: string): string {
+export function fictionalEmail(firstName: string, lastName: string, key: string): string {
   indexFromKey(key, 1)
-  const name = lastName === null ? emailPart(firstName) : `${emailPart(firstName)}.${emailPart(lastName)}`
+  const name = `${emailPart(firstName)}.${emailPart(lastName)}`
   return `${name}.${key.slice(0, 12)}@example.test`
 }
 

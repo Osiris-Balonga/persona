@@ -31,14 +31,17 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
   })!
   if (selected.locale === 'my_MM') {
     const firstNames = myanmarGivenNames[gender]
-    const firstName = firstNames[keyPart(key, 12) % firstNames.length]
-    return { firstName, lastName: null, fullName: firstName, locale: selected.locale, fallback: selected.tier }
+    const fullName = firstNames[keyPart(key, 12) % firstNames.length]
+    const boundary = fullName.lastIndexOf(' ')
+    const firstName = fullName.slice(0, boundary)
+    const lastName = fullName.slice(boundary + 1)
+    return { firstName, lastName, fullName, locale: selected.locale, fallback: selected.tier }
   }
   if (selected.locale === 'bt_BT') {
     const first = bhutanGivenNames.first[keyPart(key, 12) % bhutanGivenNames.first.length]
     const secondNames = gender === 'female' ? bhutanGivenNames.femaleSecond : bhutanGivenNames.maleSecond
-    const firstName = `${first} ${secondNames[keyPart(key, 24) % secondNames.length]}`
-    return { firstName, lastName: null, fullName: firstName, locale: selected.locale, fallback: selected.tier }
+    const lastName = secondNames[keyPart(key, 24) % secondNames.length]
+    return { firstName: first, lastName, fullName: `${first} ${lastName}`, locale: selected.locale, fallback: selected.tier }
   }
   if (selected.locale === 'ad_AD') {
     const firstNames = andorraGivenNames[gender]
@@ -53,9 +56,5 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
   const lastNames = gender === 'female' ? names.lastFemale : names.lastMale
   const firstName = firstNames[keyPart(key, 12) % firstNames.length]
   const lastName = lastNames[keyPart(key, 24) % lastNames.length]
-  if (country === 'ID') {
-    const givenName = `${firstName} ${lastName}`
-    return { firstName: givenName, lastName: null, fullName: givenName, locale: selected.locale, fallback: selected.tier }
-  }
   return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
 }

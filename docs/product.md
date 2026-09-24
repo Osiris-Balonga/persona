@@ -15,7 +15,7 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | Field | V1 shape |
 | --- | --- |
 | `id` | Nonempty identifier prefixed with `per_` |
-| `firstName`, `lastName`, `fullName` | `firstName` and `fullName` are nonempty; `lastName` is a nonempty family name or `null` when none is used |
+| `firstName`, `lastName`, `fullName` | Three nonempty strings; `fullName` combines the first and last display components |
 | `gender` | `male` or `female` |
 | `age`, `ageGroup`, `dateOfBirth` | Nonnegative integer; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
 | `appearance`, `country`, `city` | Nonempty appearance label; uppercase two-letter code from the registry; nonempty city |
@@ -25,7 +25,7 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 
 All fields appear in the full representation. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
 
-`firstName` may contain the complete multiword given name. When `lastName` is `null`, `fullName` equals `firstName`; the API does not manufacture a family surname or split an indivisible given name.
+`firstName` and `lastName` are always populated so developers can use them in ordinary two-field forms. Some naming traditions do not use an inherited family surname; in those cases, `lastName` is a second display component of a plausible complete name, not a claim about ancestry. `firstName` can contain more than one word.
 
 Cities belong to their selected countries. Addresses use the available country format and a city-linked postal code when verified; otherwise `postalCode` is `null`. They are fictional and not meant for delivery. Email addresses use a domain reserved for examples. Phone generation follows each country's format and uses non-assignable test ranges where available; limitations must be stated where no safe range is known. Persona does not present these values as real contact details.
 

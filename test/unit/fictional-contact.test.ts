@@ -9,8 +9,8 @@ describe('fictional contact values', () => {
     expect(fictionalEmail('Élodie', 'N’Diaye', key)).toBe(fictionalEmail('Élodie', 'N’Diaye', key))
   })
 
-  it('builds a stable address for a surname-free name without a fake surname', () => {
-    expect(fictionalEmail('Aye Aye Myint', null, key)).toBe('ayeayemyint.0123456789ab@example.test')
+  it('builds a stable address from the two displayed components of a Burmese name', () => {
+    expect(fictionalEmail('Aye Aye', 'Myint', key)).toBe('ayeaye.myint.0123456789ab@example.test')
   })
 
   it('uses only vetted non-working number ranges and otherwise returns null', () => {

@@ -43,7 +43,7 @@ export function auditGeographicData() {
       if (geography.country.code !== row.country || geography.city.country !== row.country
         || address.country !== row.country || address.city !== geography.city.name
         || !address.formatted.includes(geography.city.name)
-        || !name.firstName || name.fullName !== (name.lastName === null ? name.firstName : `${name.firstName} ${name.lastName}`)
+        || !name.firstName || !name.lastName || name.fullName !== `${name.firstName} ${name.lastName}`
         || !email.endsWith('@example.test')
         || phone !== null && (!country?.callingCode || !phone.startsWith(country.callingCode))) {
         errors.push(`Incoherent controlled sample ${row.country}/${gender}`)

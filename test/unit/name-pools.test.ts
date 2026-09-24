@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { nameContextForCountry, selectName } from '../../src/geography/names.js'
 import { namePoolData } from '../../src/geography/name-pool-data.js'
 import { listCountries } from '../../src/geography/countries.js'
+import { myanmarGivenNames } from '../../src/geography/surname-free-names.js'
 
 const key = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
@@ -38,17 +39,18 @@ describe('cultural name pools', () => {
     expect(namePoolData.ka_GE.male).not.toContain('ნინო')
   })
 
-  it('keeps Burmese and Indonesian given names whole without inventing surnames', () => {
+  it('exposes Burmese and Indonesian name components without changing the complete name', () => {
     for (const country of ['MM', 'ID']) {
       for (const gender of ['female', 'male'] as const) {
         const name = selectName(country, gender, key)
         expect(name).toEqual(selectName(country, gender, key))
-        expect(name.firstName.split(' ').length).toBeGreaterThanOrEqual(2)
-        expect(name.lastName).toBeNull()
-        expect(name.fullName).toBe(name.firstName)
+        expect(name.firstName).toBeTruthy()
+        expect(name.lastName).toBeTruthy()
+        expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
       }
     }
     expect(nameContextForCountry('MM').fallback).toBe('local')
+    expect([...myanmarGivenNames.female, ...myanmarGivenNames.male].every((name) => name.includes(' '))).toBe(true)
   })
 
   it('uses Andorran civil-registry given names with an explicit family-name fallback', () => {
@@ -61,16 +63,16 @@ describe('cultural name pools', () => {
     expect(male.fullName).toBe(`${male.firstName} ${male.lastName}`)
   })
 
-  it('forms Bhutanese two-part given names without a family surname', () => {
+  it('exposes Bhutanese two-part given names as two display components', () => {
     expect(nameContextForCountry('BT').fallback).toBe('local')
     for (const gender of ['female', 'male'] as const) {
       const name = selectName('BT', gender, key)
       expect(name).toEqual(selectName('BT', gender, key))
-      expect(name.lastName).toBeNull()
-      expect(name.firstName.split(' ')).toHaveLength(2)
-      expect(name.fullName).toBe(name.firstName)
+      expect(name.firstName).toBeTruthy()
+      expect(name.lastName).toBeTruthy()
+      expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
       expect(gender === 'female' ? ['Chöden', 'Wangmo', 'Zangmo'] : ['Dorjé', 'Wangyal', 'Jamtsho'])
-        .toContain(name.firstName.split(' ')[1])
+        .toContain(name.lastName)
     }
   })
 })
