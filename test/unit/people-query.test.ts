@@ -19,7 +19,7 @@ describe('GET /people query contract', () => {
       city: 'Brazzaville',
       seed: 'school-demo',
       asOf: '2026-09-24',
-      fields: 'firstName,city,picture.url',
+      fields: ['firstName', 'city', 'picture.url'],
     })
   })
 

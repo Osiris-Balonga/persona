@@ -1,5 +1,5 @@
 import { Type, type Static } from 'typebox'
-import { PersonSchema } from './person.js'
+import { AddressSchema, PersonSchema, PictureSchema } from './person.js'
 
 export const PeopleResponseSchema = Type.Object({
   results: Type.Array(PersonSchema, { minItems: 1, maxItems: 100 }),
@@ -13,6 +13,19 @@ export const PeopleResponseSchema = Type.Object({
 }, { $id: 'urn:persona:schema:people-response:v1', additionalProperties: false })
 
 export type PeopleResponse = Static<typeof PeopleResponseSchema>
+
+const ProjectedPersonSchema = Type.Object({
+  ...Type.Partial(PersonSchema).properties,
+  address: Type.Optional(Type.Partial(AddressSchema)),
+  picture: Type.Optional(Type.Union([Type.Partial(PictureSchema), Type.Null()])),
+}, { additionalProperties: false })
+
+export const ProjectedPeopleResponseSchema = Type.Object({
+  results: Type.Array(ProjectedPersonSchema, { minItems: 1, maxItems: 100 }),
+  meta: PeopleResponseSchema.properties.meta,
+}, { $id: 'urn:persona:schema:projected-people-response:v1', additionalProperties: false })
+
+export type ProjectedPeopleResponse = Static<typeof ProjectedPeopleResponseSchema>
 
 export const PeopleErrorSchema = Type.Object({
   error: Type.Object({

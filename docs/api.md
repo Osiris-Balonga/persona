@@ -15,9 +15,34 @@
 | `city` | Nonempty city name, at most 100 characters; requires `country` |
 | `seed` | Optional opaque, nonblank string of at most 128 characters |
 | `asOf` | Valid `YYYY-MM-DD` date; defaults to the current UTC date |
-| `fields` | Optional, nonblank selection string of at most 512 characters; field names and nested selection are defined separately |
+| `fields` | Optional comma-separated list of public person fields, at most 512 characters; omitted means every public field |
 
 The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The country registry and appearance taxonomy will validate membership after their datasets are added.
+
+### Selecting fields
+
+`fields` applies to each person in `results`; it never removes `results` or `meta`. Without `fields`, every public field in the [Person schema](../src/contracts/person.ts) is returned. Names are case-sensitive and may be separated by commas, with optional whitespace around each name. A field may be selected by its top-level name, such as `address` or `picture`, or by one supported nested path: `address.line1`, `address.city`, `address.postalCode`, `address.country`, or `picture.url`. A nested path returns only that property inside its parent object. If `picture` is `null`, selecting `picture.url` returns `"picture": null`; nullable values are not silently omitted.
+
+For example, `fields=firstName,city,picture.url` returns this shape for the illustrative person:
+
+```json
+{
+  "results": [{
+    "firstName": "Grâce",
+    "city": "Brazzaville",
+    "picture": { "url": "https://images.example.test/portraits/v1/adult/female/black/central-african/p_0042.webp" }
+  }],
+  "meta": {
+    "count": 1,
+    "asOf": "2026-09-24",
+    "seed": "profile-demo",
+    "dataVersion": "v1",
+    "catalogVersion": "v1"
+  }
+}
+```
+
+An empty, unknown, internal, repeated, or conflicting selection returns HTTP 400 with `INVALID_QUERY` and `parameter: "fields"`. Selecting both a parent and its nested field, such as `picture,picture.url`, is conflicting. Selection runs after a complete person has been generated, so adding or removing fields cannot change the retained values for the same seed and versioned inputs. The [projected response schema](../src/contracts/people.ts) describes the partial result; the full response schema remains valid when `fields` is omitted.
 
 Example request (the response file is illustrative until the generator is implemented):
 

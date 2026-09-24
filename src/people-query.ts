@@ -1,5 +1,6 @@
 import { resolveAgeConstraint, resolveAsOf, type AgeGroup } from './age.js'
 import type { Person } from './contracts/person.js'
+import { parseFieldSelection, type FieldPath } from './field-selection.js'
 
 export interface PeopleQuery {
   count: number
@@ -11,7 +12,7 @@ export interface PeopleQuery {
   country?: string
   city?: string
   seed?: string
-  fields?: string
+  fields?: readonly FieldPath[]
 }
 
 export class PeopleQueryError extends Error {
@@ -98,7 +99,15 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     throw new PeopleQueryError('CONFLICTING_FILTERS', 'city', 'city requires country')
   }
   const seed = boundedString(params.get('seed'), 'seed', 128)
-  const fields = boundedString(params.get('fields'), 'fields', 512)
+  const fieldsValue = boundedString(params.get('fields'), 'fields', 512)
+  let fields: readonly FieldPath[] | undefined
+  if (fieldsValue !== undefined) {
+    try {
+      fields = parseFieldSelection(fieldsValue)
+    } catch (error) {
+      throw new PeopleQueryError('INVALID_QUERY', 'fields', (error as Error).message)
+    }
+  }
 
   let asOf: string
   try {
