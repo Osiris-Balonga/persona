@@ -34,7 +34,7 @@ describe('seeded geographic choices', () => {
     const filters = query('seed=profile-demo&asOf=2026-09-24')
     const zeroKey = '0'.repeat(64)
     expect(resolveGeographicContext(filters, zeroKey).country.code).toBe('AO')
-    expect(() => resolveGeographicContext({ country: 'NE' }, zeroKey)).toThrow(RangeError)
+    expect(() => resolveGeographicContext({ country: 'PN' }, zeroKey)).toThrow(RangeError)
   })
 
   it('rejects invalid weights rather than silently biasing choices', () => {

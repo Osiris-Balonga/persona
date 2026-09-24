@@ -66,6 +66,24 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: 'a42dceddd27373a2ce32353ccb26582992e6b5718f91aa48a8b3b826fd26fc58',
   },
+  'st-helena-election-names': {
+    title: 'St Helena Government 2025 general-election candidate name components',
+    url: 'https://www.sainthelena.gov.sh/official-list-of-candidates-for-the-2025-general-election/',
+    license: 'Public candidate name-component facts',
+    edition: '2025',
+  },
+  'st-helena-election-names-2021': {
+    title: 'St Helena Government 2021 general-election candidate name components',
+    url: 'https://www.sainthelena.gov.sh/official-list-of-candidates-for-the-2021-general-election/',
+    license: 'Public candidate name-component facts',
+    edition: '2021',
+  },
+  'sahrawi-womens-union-names': {
+    title: 'Sahrawi Women Union preparatory committee name components in Arabic',
+    url: 'https://spsrasd.info/ar/2026/01/26/13930.html',
+    license: 'Public committee name-component facts',
+    edition: '2026-01-26',
+  },
   'insee-reunion-given-names': {
     title: 'Insee departmental given names, Réunion 974, births 2000–2025',
     url: 'https://www.insee.fr/fr/statistiques/8595130',
