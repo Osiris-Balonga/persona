@@ -5,6 +5,7 @@ Persona is an API for generating coherent fictional people for interface design,
 The API is under development. Its first release is planned as a public beta with no API key. A small group of developers will help evaluate it first.
 
 See the [V1 product definition](docs/product.md) for the approved scope.
+The planned HTTP request and response formats are in the [API contract](docs/api.md).
 
 ## Principles
 
