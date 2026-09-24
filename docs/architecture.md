@@ -1,0 +1,22 @@
+# Beta architecture
+
+Persona exposes a public, keyless HTTP API for generating coherent fictional people. The beta is intentionally small: a Node.js 24 and TypeScript service using Fastify and TypeBox, versioned read-only data files, and a curated portrait catalog. Fastify keeps the HTTP layer direct while TypeBox lets request and response schemas drive validation and serialization. We can add a larger application framework when the service grows enough to need it.
+
+## Hosting and delivery
+
+- Deploy the API on the existing Hostinger Business plan after checking its available resources, Node.js runtime, health checks, and rollback path. If shared-plan capacity or operations prove insufficient, move the service to a paid Render web service.
+- Keep the API accessible over HTTPS without credentials. Bound request size, `count`, response size, and generation cost; apply rate limits using a trusted client IP. Define CORS, safe errors, and restrained logs before opening the beta.
+- Keep datasets and the portrait manifest versioned so a result can record the data versions used. Reproducing a result requires the same request parameters, `seed`, `asOf`, and data and catalog versions. The HTTP cache policy must distinguish replayable responses from requests whose randomness or date is not fixed.
+- Store approved WebP portraits in the private Cloudflare R2 bucket `persona-portraits`. Serve them through a read-only Cloudflare Worker bound to R2. The bucket has neither an enabled `r2.dev` endpoint nor a public custom domain. The Worker must check the approved manifest before returning an object; a public portrait URL is shareable, not confidential.
+
+## Portrait catalog
+
+A possible object key is `portraits/v1/teen/male/black/west-african/p_0001.webp`. The path helps operators browse the bucket, but it is not the source of truth for selection. The versioned manifest lists approved IDs and object keys with age group, gender, appearance group, visual region, review status, usage rights, and SHA-256. Visual region describes reviewed image metadata and must not be inferred from a person's nationality.
+
+An import must verify WebP format, dimensions, metadata, duplicate hashes, and a strict size limit below 50,000 bytes. Only reviewed and approved IDs are selectable and readable. Selection uses the compatible IDs in the manifest with a stable seeded algorithm and catalog version; it never guesses that every number up to a folder maximum exists. When enough candidates exist, a multi-person response should avoid repeated portraits. Missing coverage has an explicit API outcome rather than silently substituting an incompatible image.
+
+Versioned portrait URLs may be cached. Withdrawal must deny future Worker reads and purge cached copies; replacing an asset uses a new key or catalog version. The catalog and delivery path can be built with test fixtures. Producing the actual synthetic portraits requires separate project-owner authorization.
+
+## Development
+
+Change behavior with a focused failing test first, then implement and refactor. Keep unit, integration, and end-to-end suites independently runnable, with realistic fixtures and tests aimed at distinct risks. Work enters `dev` through a pull request from a short-lived branch; production promotion is a pull request from `dev` to `main`.
