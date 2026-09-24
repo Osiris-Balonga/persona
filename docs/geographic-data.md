@@ -38,6 +38,12 @@ The street line uses clearly illustrative words such as “Example” or “Exem
 
 Pitcairn is an explicit exception: the [Universal Postal Union](https://www.upu.int/UPU/media/upu/PostalEntitiesFiles/addressingUnit/pcnEn.pdf) documents `PCRN 1ZZ` as the single postcode for the territory. Its illustrative line omits a building number. The exception is recorded separately from the GeoNames postal extract so it is not presented as a city match found there.
 
+## Catalog validation and audit
+
+The refresh scripts check pinned source hashes before generating snapshots. ISO records are unique by code. The city build keeps one entry per case-folded name and country, retaining the more populous candidate in its bounded sample. Name arrays remove exact duplicate strings before even sampling. Postal examples are keyed by GeoNames city ID and retain the nearest full-format match within 25 km. Every ingested coverage cell has a licensed source in the manifest; additional inputs such as language tags, administrative names, postal codes, and the UPU Pitcairn exception are listed separately.
+
+Run `npm run data:audit` for a concise status or `npm run data:audit -- --json` for every per-code gap. The audit checks all 249 registry codes, generates controlled male and female geographic/contact samples for all 242 resident-eligible codes, validates city/country relationships and address output, and fails on malformed samples or missing source rights. It lists partial data and review work without marking machine-checked names or addresses as culturally reviewed. The HTTP and portrait audit is tracked in the public-beta Epic after those components exist.
+
 ## Fictional telephone policy
 
 Telephone output is optional. A calling code is metadata for validation and presentation; it is never sufficient to invent a safe subscriber number. A country receives generated telephone numbers only after a country-specific, officially reserved fictional/test range has been reviewed and versioned. Otherwise `phone` is `null`. The API must not suggest that a format-valid random number is unassigned, reachable, or safe to call.
