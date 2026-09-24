@@ -73,6 +73,13 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: '170863c630bde60968af7b6d125083144bd735aeec08b9b66ef002186a018e5a',
   },
+  'wikidata-europe-gendered-families': {
+    title: 'Wikidata Europe family-name candidates grouped by gender via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-24',
+    sha256: '28641da72c5b85e1c9a5ae1d2b3170f6862fed88596cd8be9b88cf3af44ca62c',
+  },
   'st-helena-election-names': {
     title: 'St Helena Government 2025 general-election candidate name components',
     url: 'https://www.sainthelena.gov.sh/official-list-of-candidates-for-the-2025-general-election/',
