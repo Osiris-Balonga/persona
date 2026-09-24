@@ -21,6 +21,10 @@ describe('geographic catalog audit', () => {
     expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(35)
     const asiaCodes = ['AE','AF','AM','AZ','BD','BH','BN','BT','CC','CN','GE','HK','ID','IL','IN','IQ','IR','JO','JP','KG','KH','KP','KR','KW','KZ','LA','LB','LK','MM','MN','MO','MV','MY','NP','OM','PH','PK','PS','QA','SA','SG','SY','TH','TJ','TM','TR','TW','UZ','VN','YE']
     expect(listCoverage().filter((row) => asiaCodes.includes(row.country) && row.addresses.review === 'reviewed')).toHaveLength(50)
+    const pending = listCoverage().filter((row) => asiaCodes.includes(row.country)
+      && row.profileGeneration === 'pending-name-review')
+    expect(pending.map((row) => row.country)).toEqual(['BN', 'CC', 'KH', 'LA', 'MN', 'MO', 'MY', 'OM', 'TJ', 'TM'])
+    expect(pending.every((row) => typeof row.names.reviewNote === 'string' && row.names.reviewNote.length > 0)).toBe(true)
   })
   it('labels reviewed Europe address examples while retaining unresolved format gaps', () => {
     const rows = listCoverage().filter((row) => Object.hasOwn(europeReviewedNames, row.country)
@@ -43,7 +47,7 @@ describe('geographic catalog audit', () => {
   })
   it('samples every resident-eligible ISO code and lists gaps without claiming manual review', () => {
     const report = auditGeographicData()
-    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.8', registryCodes: 249, eligibleCodes: 242,
+    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.9', registryCodes: 249, eligibleCodes: 242,
       unavailableCodes: 7, profileEligibleCodes: 148, pendingNameReviewCodes: 94, sampledCodes: 242, errors: [] })
     expect(report.gaps.find((row) => row.country === 'CG')?.categories).toContain('addresses:partial')
     expect(report.gaps.find((row) => row.country === 'PN')?.categories).toContain('phone:pending')
