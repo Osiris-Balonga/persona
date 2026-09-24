@@ -50,4 +50,27 @@ describe('cultural name pools', () => {
     }
     expect(nameContextForCountry('MM').fallback).toBe('local')
   })
+
+  it('uses Andorran civil-registry given names with an explicit family-name fallback', () => {
+    expect(nameContextForCountry('AD').fallback).toBe('local')
+    const female = selectName('AD', 'female', key)
+    const male = selectName('AD', 'male', key)
+    expect(['Laia', 'Carlota', 'Emma', 'Martina', 'Aina', 'Laura']).toContain(female.firstName)
+    expect(['Marc', 'Eric', 'Jan', 'Daniel', 'Jordi', 'Martí']).toContain(male.firstName)
+    expect(female.lastName).toBeTruthy()
+    expect(male.fullName).toBe(`${male.firstName} ${male.lastName}`)
+  })
+
+  it('forms Bhutanese two-part given names without a family surname', () => {
+    expect(nameContextForCountry('BT').fallback).toBe('local')
+    for (const gender of ['female', 'male'] as const) {
+      const name = selectName('BT', gender, key)
+      expect(name).toEqual(selectName('BT', gender, key))
+      expect(name.lastName).toBeNull()
+      expect(name.firstName.split(' ')).toHaveLength(2)
+      expect(name.fullName).toBe(name.firstName)
+      expect(gender === 'female' ? ['Chöden', 'Wangmo', 'Zangmo'] : ['Dorjé', 'Wangyal', 'Jamtsho'])
+        .toContain(name.firstName.split(' ')[1])
+    }
+  })
 })

@@ -62,6 +62,18 @@ export const geographicSources = {
     license: 'Public naming guidance',
     edition: '2026-07-01',
   },
+  'andorra-civil-names': {
+    title: 'Andorra civil registry 2013 common newborn names',
+    url: 'https://www.govern.ad/ca/w/el-registre-civil-publica-la-memoria-de-funcionament-2013-1',
+    license: 'Public name-frequency facts (small sample)',
+    edition: '2013',
+  },
+  'bhutan-naming-study': {
+    title: 'Karma Phuntsho, Naming Culture: Part 2 of 3',
+    url: 'https://texts.mandala.library.virginia.edu/shanti_texts/node_embed/39441',
+    license: 'Public naming convention and short name facts',
+    edition: '2017',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',
