@@ -52,6 +52,12 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: '40cc0fcac59639c4fe6c666363bd9e314c006a1a883c8a63c2b78b1ce430c2ba',
   },
+  'upu-pitcairn': {
+    title: 'UPU Pitcairn postcode and address format',
+    url: 'https://www.upu.int/UPU/media/upu/PostalEntitiesFiles/addressingUnit/pcnEn.pdf',
+    license: 'Public postal format guidance (range fact)',
+    edition: '2026-09-24',
+  },
   nanpa: {
     title: 'NANPA 555 line numbers',
     url: 'https://nanpa.com/numbering/555-line-numbers',

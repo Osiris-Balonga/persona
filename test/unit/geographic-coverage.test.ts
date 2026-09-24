@@ -14,6 +14,9 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },
     })
+    expect(rows.find((row) => row.country === 'PN')).toMatchObject({
+      addresses: { supplementarySources: ['upu-pitcairn'] },
+    })
     expect(validateGeographicData()).toEqual([])
   })
 })

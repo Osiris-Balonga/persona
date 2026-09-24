@@ -12,16 +12,17 @@ type CoverageCell = {
   source: Source
   fallback: string | null
   review: 'pending' | 'automated'
+  supplementarySources: readonly GeographicSource[]
 }
 
 const ingested = (source: Exclude<Source, null>): CoverageCell => ({
-  status: 'ingested', source, fallback: null, review: 'automated',
+  status: 'ingested', source, fallback: null, review: 'automated', supplementarySources: [],
 })
 const partial = (source: Exclude<Source, null>): CoverageCell => ({
-  status: 'partial', source, fallback: null, review: 'automated',
+  status: 'partial', source, fallback: null, review: 'automated', supplementarySources: [],
 })
-const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback: null, review: 'pending' })
-const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending' })
+const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback: null, review: 'pending', supplementarySources: [] })
+const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending', supplementarySources: [] })
 
 function addressCoverage(country: string): CoverageCell {
   const rule = addressRule(country)
@@ -34,7 +35,10 @@ function addressCoverage(country: string): CoverageCell {
   const locale = nameContextForCountry(country)?.pools[0]?.locale ?? 'en'
   if (!/^(en|fr|es|pt|de|ja)/.test(locale)) missing.push('global-street-style')
   return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
-    fallback: missing.length ? missing.join(',') : null }
+    fallback: missing.length ? missing.join(',') : null,
+    supplementarySources: country === 'PN' ? ['upu-pitcairn']
+      : cities.some((city) => postalCodeForCity(city)) ? ['geonames-postal'] : [],
+  }
 }
 
 export function listCoverage() {
@@ -48,8 +52,8 @@ export function listCoverage() {
       generation: country.generation,
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
-      cities: resident && listCities(country.code).length > 0 ? ingested('geonames') : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback } : pending(),
+      cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
+      names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback, supplementarySources: ['geonames-country-info'] } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
       distributions: resident ? pending() : notApplicable(),
@@ -111,6 +115,9 @@ export function validateGeographicData(): string[] {
       if (typeof cell !== 'object' || cell === null || !('status' in cell)) continue
       if ((cell.status === 'ingested' || cell.status === 'partial') && (!cell.source || !geographicSources[cell.source as GeographicSource])) {
         errors.push(`Unlicensed ${category} data for ${row.country}`)
+      }
+      for (const source of cell.supplementarySources ?? []) {
+        if (!geographicSources[source as GeographicSource]) errors.push(`Unlicensed ${category} supplementary data for ${row.country}`)
       }
     }
   }
