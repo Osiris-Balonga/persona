@@ -102,11 +102,11 @@ describe('cultural name pools', () => {
     expect(africaReviewedNames.SN.male).toContain('Cheikh')
   })
 
-  it('provides broad local, two-field pools for the reviewed west and central Africa batch', () => {
+  it('provides broad local, two-field pools for the reviewed Africa batches', () => {
     const pools = africaReviewedNames as unknown as Record<string, {
       female: readonly string[]; male: readonly string[]; family: readonly string[]
     }>
-    for (const country of ['AO', 'BF', 'BJ', 'CD', 'CI', 'CM', 'GM', 'GN', 'LR', 'ML', 'NG', 'RW', 'SL', 'TG']) {
+    for (const country of ['AO', 'BF', 'BJ', 'CD', 'CI', 'CM', 'DZ', 'EG', 'GM', 'GN', 'LR', 'MA', 'ML', 'NG', 'RW', 'SL', 'TG', 'TN']) {
       expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local' })
       const pool = pools[country]
       expect(pool).toBeDefined()
