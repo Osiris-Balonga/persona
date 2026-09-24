@@ -54,6 +54,9 @@ for (const country of countryData) {
     if (!match || pools.some((pool) => pool.locale === match.locale)) continue
     pools.push({ ...match, weight: index === 0 ? 4 : index === 1 ? 2 : 1 })
   }
+  if (pools.some((pool) => pool.tier === 'local')) {
+    pools.splice(0, pools.length, ...pools.filter((pool) => pool.tier === 'local'))
+  }
   if (pools.length === 0) pools.push({ locale: 'en', tier: 'global', weight: 1 })
   for (const pool of pools) usedLocales.add(pool.locale)
   const fallback = pools.some((pool) => pool.tier === 'global') ? 'global'
