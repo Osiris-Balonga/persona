@@ -152,6 +152,24 @@ export const geographicSources = {
     license: 'Public name-component facts (small sample)',
     edition: '2026-09-24',
   },
+  'tanzania-parliament-names': {
+    title: 'Parliament of Tanzania public member profiles with stated sex',
+    url: 'https://polis.parliament.go.tz/members',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'zambia-parliament-names': {
+    title: 'National Assembly of Zambia public members list',
+    url: 'https://www.parliament.gov.zm/members-of-parliament',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
+  'zimbabwe-parliament-names': {
+    title: 'Parliament of Zimbabwe public ministers and officials names',
+    url: 'https://www.parlzim.gov.zw/ministers/',
+    license: 'Public name-component facts (small sample)',
+    edition: '2026-09-24',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',

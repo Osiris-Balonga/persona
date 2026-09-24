@@ -18,8 +18,11 @@ const africaReviewedContexts = {
   NA: { pools: [{ locale: 'na_NA', tier: 'local', weight: 1 }], fallback: 'local' },
   RW: { pools: [{ locale: 'rw_RW', tier: 'local', weight: 1 }], fallback: 'local' },
   SN: { pools: [{ locale: 'sn_SN', tier: 'local', weight: 1 }], fallback: 'local' },
+  TZ: { pools: [{ locale: 'tz_TZ', tier: 'local', weight: 1 }], fallback: 'local' },
   UG: { pools: [{ locale: 'ug_UG', tier: 'local', weight: 1 }], fallback: 'local' },
   ZA: { pools: [{ locale: 'za_ZA', tier: 'local', weight: 1 }], fallback: 'local' },
+  ZM: { pools: [{ locale: 'zm_ZM', tier: 'local', weight: 1 }], fallback: 'local' },
+  ZW: { pools: [{ locale: 'zw_ZW', tier: 'local', weight: 1 }], fallback: 'local' },
 } as const
 
 export function nameContextForCountry(country: string) {

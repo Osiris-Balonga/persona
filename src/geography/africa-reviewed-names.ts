@@ -30,6 +30,11 @@ export const africaReviewedNames = {
     male: ['Abdoulaye', 'Cheikh', 'Ahmadou', 'Mamadou'],
     family: ['Wane', 'Diouf', 'Fall', 'Gueye', 'Ndiaye', 'Sy'],
   },
+  TZ: {
+    female: ['Ashatu', 'Tulia', 'Suma', 'Agnes', 'Ummy'],
+    male: ['Anthony', 'George', 'Omary', 'Mussa', 'Daniel'],
+    family: ['Kijaji', 'Gekul', 'Mwalimu', 'Ishengoma', 'Ackson', 'Mavunde', 'Mkuchika', 'Kipanga'],
+  },
   UG: {
     female: ['Jesca', 'Susan', 'Lillian', 'Dorcus', 'Jane', 'Judith', 'Agnes', 'Hellen'],
     male: ['Cuthbert', 'Julius', 'Francis', 'Patrick', 'Ronald'],
@@ -39,6 +44,16 @@ export const africaReviewedNames = {
     female: ['Onalerona', 'Zanokuhle', 'Melokuhle', 'Lisakhanya', 'Lethabo', 'Nkanyezi', 'Lesedi', 'Omphile', 'Olwemihla'],
     male: ['Lethabo', 'Lubanzi', 'Nkazimulo', 'Nkanyezi', 'Langelihle', 'Lesedi', 'Lethokuhle', 'Siphosethu', 'Leano'],
     family: ['Dlamini', 'Ndlovu', 'Nkosi', 'Khumalo', 'Sithole', 'Mkhize', 'Mokoena', 'Mthembu', 'Gumede', 'Ngcobo'],
+  },
+  ZM: {
+    female: ['Pauline', 'Christine', 'Olive', 'Clarissa', 'Stella', 'Melissa', 'Rosemary'],
+    male: ['Clement', 'Elijah', 'Daniel', 'Martin', 'Christopher', 'Raphael', 'Emmanuel'],
+    family: ['Banda', 'Biyete', 'Bwalya', 'Chanda', 'Chiboola', 'Chibuye', 'Chirambo'],
+  },
+  ZW: {
+    female: ['Monica', 'Emily', 'Sheillah', 'Yeukai', 'Chido', 'Tsitsi'],
+    male: ['Mthuli', 'John', 'Tongai', 'David', 'Joshua', 'Benjamin'],
+    family: ['Muchinguri-Kashiri', 'Mutsvangwa', 'Moyo', 'Shava', 'Mnangagwa', 'Chikomo', 'Ncube', 'Zhou'],
   },
 } as const
 
