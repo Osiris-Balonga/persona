@@ -35,17 +35,20 @@ const nameSourceByCountry: Record<string, GeographicSource> = {
   BJ: 'wikidata-africa-name-batch', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
   CD: 'wikidata-africa-name-batch', CG: 'congo-senate-names',
   CI: 'wikidata-africa-qlever-candidates', CM: 'wikidata-africa-qlever-candidates',
-  ET: 'tesfa-ethiopian-names', GH: 'wikidata-names', GN: 'wikidata-africa-qlever-candidates', KE: 'kenya-parliament-names',
+  ET: 'tesfa-ethiopian-names', GH: 'wikidata-names', GN: 'wikidata-africa-qlever-candidates', KE: 'wikidata-africa-qlever-candidates',
   LS: 'lesotho-parliament-names', ML: 'wikidata-africa-qlever-candidates', MM: 'burmese-name-frequencies', MW: 'peace-corps-chichewa-names',
   NA: 'namibia-parliament-names', RW: 'wikidata-names', SC: 'seychelles-parliament-names',
-  SN: 'wikidata-names', TG: 'wikidata-africa-qlever-candidates', TZ: 'tanzania-parliament-names',
-  UG: 'uganda-parliament-names', ZA: 'stats-sa-birth-names', ZM: 'zambia-parliament-names',
-  ZW: 'zimbabwe-parliament-names',
+  SN: 'wikidata-names', TG: 'wikidata-africa-qlever-candidates', TZ: 'wikidata-africa-qlever-candidates',
+  UG: 'wikidata-africa-qlever-candidates', ZA: 'stats-sa-birth-names', ZM: 'wikidata-africa-qlever-candidates',
+  ZW: 'wikidata-africa-qlever-candidates',
 }
 const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
   AD: ['faker'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
-  GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'], MM: ['uk-myanmar-names'],
-  MW: ['ifla-malawi-names'], RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
+  GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'],
+  KE: ['kenya-parliament-names'], MM: ['uk-myanmar-names'], MW: ['ifla-malawi-names'],
+  RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
+  TZ: ['tanzania-parliament-names'], UG: ['uganda-parliament-names'],
+  ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
 }
 
 function addressCoverage(country: string): CoverageCell {
