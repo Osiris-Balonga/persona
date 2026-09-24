@@ -1,4 +1,4 @@
-// GeoNames countryInfo.txt (CC BY 4.0) and @faker-js/faker 10.6.0 (MIT); see docs/geographic-data.md.
+// GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.
 export type NameContext = { pools: readonly { locale: string; tier: 'local' | 'language' | 'global'; weight: number }[]; fallback: 'local' | 'language' | 'global' }
 export const nameContextData: Record<string, NameContext> = {
   "AD": {"pools":[{"locale":"en","tier":"global","weight":1}],"fallback":"global"},

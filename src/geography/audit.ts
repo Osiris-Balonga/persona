@@ -5,8 +5,9 @@ import { listCountries, registryEdition } from './countries.js'
 import { resolveGeographicContext } from './distribution.js'
 import { fictionalEmail, fictionalPhone } from './fictional-contact.js'
 import { selectName } from './names.js'
+import { geographicDataVersion } from './data-version.js'
 
-const versions = { dataVersion: registryEdition, catalogVersion: 'empty-v1' }
+const versions = { dataVersion: geographicDataVersion, catalogVersion: 'empty-v1' }
 const reviewedCategories = ['names', 'addresses'] as const
 const dataCategories = ['names', 'addresses', 'phone', 'distributions'] as const
 
@@ -51,6 +52,7 @@ export function auditGeographicData() {
   }
 
   return {
+    dataVersion: geographicDataVersion,
     registryCodes: countries.length,
     eligibleCodes: countries.filter((country) => country.generation === 'eligible').length,
     unavailableCodes: countries.filter((country) => country.generation === 'unavailable').length,

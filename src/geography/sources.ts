@@ -38,6 +38,12 @@ export const geographicSources = {
     license: 'MIT',
     edition: '10.6.0',
   },
+  'georgia-name-statistics': {
+    title: 'Georgian Public Service Development Agency name counts reported by Rustavi2',
+    url: 'https://rustavi2.ge/ka/news/289258',
+    license: 'Public name-frequency facts',
+    edition: '2024-08-14',
+  },
   'libaddressinput-data': {
     title: 'Google Address Data Service country metadata',
     url: 'https://github.com/google/libaddressinput/wiki/AddressValidationMetadata',

@@ -53,7 +53,10 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback, supplementarySources: ['geonames-country-info'] } : pending(),
+      names: !resident ? notApplicable() : nameContext ? { ...ingested('faker'), fallback: nameFallback,
+        supplementarySources: country.code === 'GE'
+          ? ['geonames-country-info', 'georgia-name-statistics'] as const : ['geonames-country-info'] as const,
+      } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
       distributions: resident ? { ...partial('persona-policy'),

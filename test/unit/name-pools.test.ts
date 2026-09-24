@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { nameContextForCountry, selectName } from '../../src/geography/names.js'
+import { namePoolData } from '../../src/geography/name-pool-data.js'
 import { listCountries } from '../../src/geography/countries.js'
 
 const key = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
@@ -28,5 +29,12 @@ describe('cultural name pools', () => {
   it('uses country-specific pools without unreviewed secondary-language pools', () => {
     expect(nameContextForCountry('BR').pools.map((pool) => pool.locale)).toEqual(['pt_BR'])
     expect(nameContextForCountry('BE').pools.map((pool) => pool.locale)).toEqual(['nl_BE', 'fr_BE'])
+  })
+
+  it('keeps the Georgian local given-name pools distinct by gender', () => {
+    expect(namePoolData.ka_GE.female).toContain('ნინო')
+    expect(namePoolData.ka_GE.male).toContain('გიორგი')
+    expect(namePoolData.ka_GE.female).not.toContain('გიორგი')
+    expect(namePoolData.ka_GE.male).not.toContain('ნინო')
   })
 })
