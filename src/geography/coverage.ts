@@ -40,6 +40,7 @@ const nameSourceByCountry: Record<string, GeographicSource> = {
   ET: 'tesfa-ethiopian-names', GA: 'wikidata-africa-qlever-candidates', GH: 'wikidata-names', GM: 'wikidata-africa-qlever-candidates',
   GN: 'wikidata-africa-qlever-candidates', GQ: 'wikidata-africa-qlever-candidates', KE: 'wikidata-africa-qlever-candidates',
   LR: 'wikidata-africa-qlever-candidates', LS: 'lesotho-parliament-names',
+  LY: 'wikidata-africa-qlever-candidates',
   MA: 'wikidata-africa-qlever-candidates', MG: 'wikidata-africa-qlever-candidates', ML: 'wikidata-africa-qlever-candidates', MM: 'burmese-name-frequencies',
   MU: 'wikidata-africa-qlever-candidates', MW: 'peace-corps-chichewa-names',
   MZ: 'wikidata-africa-qlever-candidates',
@@ -50,14 +51,15 @@ const nameSourceByCountry: Record<string, GeographicSource> = {
   SO: 'wikidata-africa-qlever-candidates', SS: 'wikidata-africa-qlever-candidates',
   TG: 'wikidata-africa-qlever-candidates', TN: 'wikidata-africa-qlever-candidates', TZ: 'wikidata-africa-qlever-candidates',
   UG: 'wikidata-africa-qlever-candidates', ZA: 'stats-sa-birth-names', ZM: 'wikidata-africa-qlever-candidates',
-  ZW: 'wikidata-africa-qlever-candidates',
+  YT: 'insee-mayotte-given-names', ZW: 'wikidata-africa-qlever-candidates',
 }
 const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
   AD: ['faker'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
   GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'],
-  KE: ['kenya-parliament-names'], MM: ['uk-myanmar-names'], MW: ['ifla-malawi-names'],
+  KE: ['kenya-parliament-names'], LY: ['wikidata-africa-birthplace-candidates'], MM: ['uk-myanmar-names'], MW: ['ifla-malawi-names'],
   RE: ['insee-reunion-family-names'], RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
   TZ: ['tanzania-parliament-names'], UG: ['uganda-parliament-names'],
+  YT: ['wikidata-africa-birthplace-candidates', 'mayotte-election-names'],
   ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
 }
 

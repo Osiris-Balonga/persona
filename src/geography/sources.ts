@@ -59,12 +59,32 @@ export const geographicSources = {
     edition: '2026-09-24',
     sha256: 'db878f5a1f9b4b1ca9165cc3a2b9b4938e9090866410973dd5ea7a524afa89d6',
   },
+  'wikidata-africa-birthplace-candidates': {
+    title: 'Wikidata Africa name candidates by birth place via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-24',
+    sha256: 'a42dceddd27373a2ce32353ccb26582992e6b5718f91aa48a8b3b826fd26fc58',
+  },
   'insee-reunion-given-names': {
     title: 'Insee departmental given names, Réunion 974, births 2000–2025',
     url: 'https://www.insee.fr/fr/statistiques/8595130',
     license: 'Licence Ouverte / Open Licence',
     edition: '2025',
     sha256: '0d69c7083016e3e4e72457d6aa43a452cbae97d09b821f0736d74c32e76cf55c',
+  },
+  'insee-mayotte-given-names': {
+    title: 'Insee departmental given names, Mayotte 976, births 2012–2025',
+    url: 'https://www.insee.fr/fr/statistiques/8595130',
+    license: 'Licence Ouverte / Open Licence',
+    edition: '2025',
+    sha256: '0d69c7083016e3e4e72457d6aa43a452cbae97d09b821f0736d74c32e76cf55c',
+  },
+  'mayotte-election-names': {
+    title: 'Mayotte 2021 elected departmental councillor name components',
+    url: 'https://www.archives-resultats-elections.interieur.gouv.fr/resultats/departementales-2021/976/CD976.php',
+    license: 'Public officeholder name-component facts',
+    edition: '2021',
   },
   'insee-reunion-family-names': {
     title: 'Insee departmental family names, Réunion 9D, births 1891–2000',
