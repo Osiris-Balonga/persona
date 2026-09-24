@@ -11,7 +11,7 @@ type CoverageCell = {
   status: CoverageStatus
   source: Source
   fallback: string | null
-  review: 'pending' | 'automated'
+  review: 'pending' | 'automated' | 'reviewed'
   supplementarySources: readonly GeographicSource[]
 }
 
