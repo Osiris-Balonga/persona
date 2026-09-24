@@ -43,6 +43,7 @@ const nameSourceByCountry: Record<string, GeographicSource> = {
   MA: 'wikidata-africa-qlever-candidates', MG: 'wikidata-africa-qlever-candidates', ML: 'wikidata-africa-qlever-candidates', MM: 'burmese-name-frequencies', MW: 'peace-corps-chichewa-names',
   MZ: 'wikidata-africa-qlever-candidates',
   NA: 'namibia-parliament-names', NG: 'wikidata-africa-qlever-candidates',
+  RE: 'insee-reunion-given-names',
   RW: 'wikidata-names', SC: 'seychelles-parliament-names', SL: 'wikidata-africa-qlever-candidates',
   SN: 'wikidata-names', TG: 'wikidata-africa-qlever-candidates', TN: 'wikidata-africa-qlever-candidates', TZ: 'wikidata-africa-qlever-candidates',
   UG: 'wikidata-africa-qlever-candidates', ZA: 'stats-sa-birth-names', ZM: 'wikidata-africa-qlever-candidates',
@@ -52,7 +53,7 @@ const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = 
   AD: ['faker'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
   GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'],
   KE: ['kenya-parliament-names'], MM: ['uk-myanmar-names'], MW: ['ifla-malawi-names'],
-  RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
+  RE: ['insee-reunion-family-names'], RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
   TZ: ['tanzania-parliament-names'], UG: ['uganda-parliament-names'],
   ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
 }

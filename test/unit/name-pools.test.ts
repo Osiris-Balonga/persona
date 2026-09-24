@@ -123,6 +123,24 @@ describe('cultural name pools', () => {
     }
   })
 
+  it('uses departmental civil-registration names for La Réunion', () => {
+    const pool = (africaReviewedNames as unknown as Record<string, {
+      female: readonly string[]; male: readonly string[]; family: readonly string[]
+    }>).RE
+    expect(nameContextForCountry('RE')).toMatchObject({ fallback: 'local' })
+    expect(pool.female).toHaveLength(50)
+    expect(pool.male).toHaveLength(50)
+    expect(pool.family).toHaveLength(100)
+    expect(pool.female).toContain('Marie')
+    expect(pool.male).toContain('Lucas')
+    expect(pool.family).toContain('Payet')
+    for (const gender of ['female', 'male'] as const) {
+      const name = selectName('RE', gender, key)
+      expect(pool[gender]).toContain(name.firstName)
+      expect(pool.family).toContain(name.lastName)
+    }
+  })
+
   it('broadens the existing East and Southern Africa pools while preserving local examples', () => {
     const pools = africaReviewedNames as unknown as Record<string, {
       female: readonly string[]; male: readonly string[]; family: readonly string[]

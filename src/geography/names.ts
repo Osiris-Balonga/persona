@@ -38,6 +38,7 @@ const africaReviewedContexts = {
   MZ: { pools: [{ locale: 'mz_MZ', tier: 'local', weight: 1 }], fallback: 'local' },
   NA: { pools: [{ locale: 'na_NA', tier: 'local', weight: 1 }], fallback: 'local' },
   NG: { pools: [{ locale: 'ng_NG', tier: 'local', weight: 1 }], fallback: 'local' },
+  RE: { pools: [{ locale: 're_RE', tier: 'local', weight: 1 }], fallback: 'local' },
   RW: { pools: [{ locale: 'rw_RW', tier: 'local', weight: 1 }], fallback: 'local' },
   SC: { pools: [{ locale: 'sc_SC', tier: 'local', weight: 1 }], fallback: 'local' },
   SL: { pools: [{ locale: 'sl_SL', tier: 'local', weight: 1 }], fallback: 'local' },
