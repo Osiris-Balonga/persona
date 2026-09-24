@@ -32,12 +32,12 @@ const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: n
 
 const nameSourceByCountry: Record<string, GeographicSource> = {
   AD: 'andorra-civil-names', AO: 'wikidata-africa-name-batch', BF: 'wikidata-africa-name-batch',
-  BJ: 'wikidata-africa-name-batch', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
+  BI: 'wikidata-africa-qlever-candidates', BJ: 'wikidata-africa-name-batch', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
   CD: 'wikidata-africa-name-batch', CG: 'congo-senate-names',
   CI: 'wikidata-africa-qlever-candidates', CM: 'wikidata-africa-qlever-candidates',
   CV: 'wikidata-africa-qlever-candidates',
   DZ: 'wikidata-africa-qlever-candidates', EG: 'wikidata-africa-qlever-candidates',
-  ET: 'tesfa-ethiopian-names', GH: 'wikidata-names', GM: 'wikidata-africa-qlever-candidates',
+  ET: 'tesfa-ethiopian-names', GA: 'wikidata-africa-qlever-candidates', GH: 'wikidata-names', GM: 'wikidata-africa-qlever-candidates',
   GN: 'wikidata-africa-qlever-candidates', GQ: 'wikidata-africa-qlever-candidates', KE: 'wikidata-africa-qlever-candidates',
   LR: 'wikidata-africa-qlever-candidates', LS: 'lesotho-parliament-names',
   MA: 'wikidata-africa-qlever-candidates', MG: 'wikidata-africa-qlever-candidates', ML: 'wikidata-africa-qlever-candidates', MM: 'burmese-name-frequencies', MW: 'peace-corps-chichewa-names',
