@@ -2,6 +2,7 @@ import { auditGeographicData } from '../src/geography/audit.js'
 
 const report = auditGeographicData()
 const summary = {
+  dataVersion: report.dataVersion,
   registryCodes: report.registryCodes,
   eligibleCodes: report.eligibleCodes,
   unavailableCodes: report.unavailableCodes,

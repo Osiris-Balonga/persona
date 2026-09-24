@@ -31,6 +31,14 @@ const languageVariants = {
   ta: 'ta_IN', uz: 'uz_UZ_latin', yo: 'yo_NG', zh: 'zh_CN', zu: 'zu_ZA',
 }
 
+// Public Service Development Agency counts reported in 2024; see docs/geographic-data.md.
+const reviewedGivenNames = {
+  ka_GE: {
+    female: ['ნინო', 'მარიამ', 'ანა', 'თამარ', 'მარიამი', 'მაია', 'ნანა', 'ელენე', 'ნათია', 'მანანა'],
+    male: ['გიორგი', 'დავით', 'ალექსანდრე', 'ლუკა', 'ნიკოლოზ', 'ირაკლი', 'ზურაბ', 'საბა', 'ლევან', 'დავითი'],
+  },
+}
+
 function matchLocale(tag, country) {
   const exact = tag.replace('-', '_')
   if (tag.includes('-') && hasNames(exact)) {
@@ -75,9 +83,10 @@ for (const locale of [...usedLocales].sort()) {
   const { first_name: first, last_name: last } = allLocales[locale].person
   const genericFirst = first.generic ?? []
   const genericLast = last.generic ?? []
+  const reviewedFirst = reviewedGivenNames[locale]
   poolData[locale] = {
-    female: sample(first.female ?? genericFirst),
-    male: sample(first.male ?? genericFirst),
+    female: sample(reviewedFirst?.female ?? first.female ?? genericFirst),
+    male: sample(reviewedFirst?.male ?? first.male ?? genericFirst),
     lastFemale: sample(last.female ?? genericLast),
     lastMale: sample(last.male ?? genericLast),
   }
@@ -86,7 +95,7 @@ for (const locale of [...usedLocales].sort()) {
   }
 }
 
-const header = `// GeoNames countryInfo.txt (CC BY 4.0) and @faker-js/faker 10.6.0 (MIT); see docs/geographic-data.md.\n`
+const header = `// GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.\n`
 const compactEntries = (records) => ['{',
   ...Object.entries(records).map(([key, value]) => `  ${JSON.stringify(key)}: ${JSON.stringify(value)},`),
   '}'].join('\n')
