@@ -7,21 +7,21 @@ const parse = (value: string) => parsePeopleQuery(new URLSearchParams(value))
 
 describe('versioned generation identity', () => {
   it('repeats component keys for the same seeded request regardless of query order', () => {
-    const first = createGenerationContext(parse('seed=school-demo&asOf=2026-09-24&country=CG&age=14'), versions)
-    const reordered = createGenerationContext(parse('age=14&country=CG&asOf=2026-09-24&seed=school-demo'), versions)
+    const first = createGenerationContext(parse('seed=school-demo&asOf=2026-09-24&country=MW&age=14'), versions)
+    const reordered = createGenerationContext(parse('age=14&country=MW&asOf=2026-09-24&seed=school-demo'), versions)
 
     expect(first.componentKey(0, 'identity')).toBe(reordered.componentKey(0, 'identity'))
     expect(first.componentKey(0, 'identity')).toMatch(/^[a-f0-9]{64}$/)
   })
 
   it('separates seed, date, filter, versions, person index, and component', () => {
-    const baseQuery = 'seed=school-demo&asOf=2026-09-24&country=CG'
+    const baseQuery = 'seed=school-demo&asOf=2026-09-24&country=MW'
     const base = createGenerationContext(parse(baseQuery), versions)
     const key = base.componentKey(0, 'identity')
 
     expect(createGenerationContext(parse(baseQuery.replace('school-demo', 'site-demo')), versions).componentKey(0, 'identity')).not.toBe(key)
     expect(createGenerationContext(parse(baseQuery.replace('2026-09-24', '2026-09-25')), versions).componentKey(0, 'identity')).not.toBe(key)
-    expect(createGenerationContext(parse(baseQuery.replace('country=CG', 'country=FR')), versions).componentKey(0, 'identity')).not.toBe(key)
+    expect(createGenerationContext(parse(baseQuery.replace('country=MW', 'country=ET')), versions).componentKey(0, 'identity')).not.toBe(key)
     expect(createGenerationContext(parse(baseQuery), { ...versions, dataVersion: 'geo-v2' }).componentKey(0, 'identity')).not.toBe(key)
     expect(createGenerationContext(parse(baseQuery), { ...versions, catalogVersion: 'portraits-v2' }).componentKey(0, 'identity')).not.toBe(key)
     expect(base.componentKey(1, 'identity')).not.toBe(key)

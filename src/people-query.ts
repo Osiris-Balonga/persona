@@ -2,6 +2,7 @@ import { resolveAgeConstraint, resolveAsOf, type AgeGroup } from './age.js'
 import type { Person } from './contracts/person.js'
 import { parseFieldSelection, type FieldPath } from './field-selection.js'
 import { getCountry } from './geography/countries.js'
+import { canGenerateProfile } from './geography/profile-availability.js'
 import { getCity } from './geography/cities.js'
 import { isAppearance } from './geography/appearance.js'
 
@@ -102,8 +103,8 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   }
   if (country !== null) {
     const entry = getCountry(country)
-    if (entry === undefined || entry.generation === 'unavailable') {
-      throw new PeopleQueryError('UNSUPPORTED_VALUE', 'country', 'country is not available for resident profiles')
+    if (entry === undefined || !canGenerateProfile(entry)) {
+      throw new PeopleQueryError('UNSUPPORTED_VALUE', 'country', 'country is not available for beta profiles')
     }
   }
   const city = boundedString(params.get('city'), 'city', 100)?.trim()

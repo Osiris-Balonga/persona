@@ -6,6 +6,8 @@ const summary = {
   registryCodes: report.registryCodes,
   eligibleCodes: report.eligibleCodes,
   unavailableCodes: report.unavailableCodes,
+  profileEligibleCodes: report.profileEligibleCodes,
+  pendingNameReviewCodes: report.pendingNameReviewCodes,
   sampledCodes: report.sampledCodes,
   gapCodes: report.gaps.length,
   errors: report.errors,

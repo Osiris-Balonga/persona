@@ -31,10 +31,10 @@ describe('public field selection', () => {
 
     expect(projected).toEqual({
       results: [{
-        firstName: 'Grâce',
-        city: 'Brazzaville',
+        firstName: 'Chikondi',
+        city: 'Lilongwe',
         picture: { url: fullResponse.results[0].picture.url },
-        address: { city: 'Brazzaville' },
+        address: { city: 'Lilongwe' },
       }],
       meta: fullResponse.meta,
     })

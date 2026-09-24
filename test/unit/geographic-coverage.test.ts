@@ -30,6 +30,12 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'ET')?.names).toMatchObject({
       source: 'tesfa-ethiopian-names', fallback: null, supplementarySources: ['uk-ethiopia-names'],
     })
+    expect(rows.find((row) => row.country === 'MW')).toMatchObject({
+      profileGeneration: 'available', names: { review: 'reviewed' },
+    })
+    expect(rows.find((row) => row.country === 'CG')).toMatchObject({
+      profileGeneration: 'pending-name-review', names: { review: 'automated' },
+    })
     expect(validateGeographicData()).toEqual([])
   })
 })

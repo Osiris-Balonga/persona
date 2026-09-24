@@ -29,7 +29,7 @@ All fields appear in the full representation. The [field selection contract](api
 
 Cities belong to their selected countries. Addresses use the available country format and a city-linked postal code when verified; otherwise `postalCode` is `null`. They are fictional and not meant for delivery. Email addresses use a domain reserved for examples. Phone generation follows each country's format and uses non-assignable test ranges where available; limitations must be stated where no safe range is known. Persona does not present these values as real contact details.
 
-The supported geography is every country and territory in a versioned code registry. Data coverage is tracked per code, with explicit regional fallbacks where local sources are insufficient. A country does not imply a single appearance. A requested country and appearance are both respected, and names are selected from a cultural pool independently of the portrait.
+The versioned registry recognizes every assigned country and territory code. Beta profile generation is enabled for resident codes only after a local name-pool review; other codes remain visible as pending or unavailable in the coverage matrix. A country does not imply a single appearance. A requested available country and appearance are both respected, and names are selected independently of the portrait.
 
 ## Requests and reproducibility
 
