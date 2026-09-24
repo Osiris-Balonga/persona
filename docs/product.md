@@ -33,7 +33,7 @@ The supported geography is every country and territory in a versioned code regis
 
 `GET /people` will accept a bounded `count` and filters for gender, numeric age, age group, appearance, country, and city. A `fields` query parameter will select public response fields, including nested fields such as `picture.url`. Unknown or internal fields will be rejected. Selecting fewer fields must not change the retained values for the same generated person.
 
-`seed` and `asOf`, together with the request parameters and the versions of the datasets and portrait catalog, make a response reproducible. Without a seed, responses may differ. The API will define request limits, errors, cache behavior, and rate limits before the public beta opens.
+`seed` and `asOf`, together with the request parameters and the versions of the datasets and portrait catalog, make a response reproducible. Without a seed, responses may differ. The [HTTP contract](api.md) defines request limits, errors, replay, and cache behavior; rate limits will be fixed before the public beta opens.
 
 Portraits come from a pre-generated, reviewed catalog; requests do not generate images. The catalog uses approved metadata for age group, gender, and appearance. An absent compatible portrait has an explicit outcome. Producing the actual images remains gated by separate authorization from the project owner.
 
