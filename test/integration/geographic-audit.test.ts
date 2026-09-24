@@ -4,8 +4,8 @@ import { auditGeographicData } from '../../src/geography/audit.js'
 describe('geographic catalog audit', () => {
   it('samples every resident-eligible ISO code and lists gaps without claiming manual review', () => {
     const report = auditGeographicData()
-    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-24.24', registryCodes: 249, eligibleCodes: 242,
-      unavailableCodes: 7, profileEligibleCodes: 42, pendingNameReviewCodes: 200, sampledCodes: 242, errors: [] })
+    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-24.25', registryCodes: 249, eligibleCodes: 242,
+      unavailableCodes: 7, profileEligibleCodes: 47, pendingNameReviewCodes: 195, sampledCodes: 242, errors: [] })
     expect(report.gaps.find((row) => row.country === 'CG')?.categories).toContain('addresses:partial')
     expect(report.gaps.find((row) => row.country === 'PN')?.categories).toContain('phone:pending')
     expect(report.gaps.some((row) => row.country === 'AQ')).toBe(false)
