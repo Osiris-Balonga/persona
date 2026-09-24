@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { listCoverage } from '../../src/geography/coverage.js'
 import { selectName } from '../../src/geography/names.js'
 
-const codes = ['AM', 'BD', 'GE', 'IL', 'IN', 'IR', 'LK', 'NP', 'PH', 'PK', 'TR']
+const codes = ['AE', 'AF', 'AM', 'BD', 'BH', 'GE', 'IL', 'IN', 'IQ', 'IR', 'JO', 'KW', 'LB',
+  'LK', 'NP', 'PH', 'PK', 'PS', 'SA', 'SY', 'TR', 'YE']
 const key = '1234567890abcdef'.repeat(4)
 
 describe('reviewed Asian name pools', () => {
