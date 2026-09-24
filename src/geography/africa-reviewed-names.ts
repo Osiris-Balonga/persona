@@ -10,6 +10,16 @@ export const africaReviewedNames = {
     male: ['Kofi', 'Kwame', 'Kwabena', 'Kwasi', 'Kwadwo'],
     family: ['Mensah', 'Asante', 'Osei', 'Boakye', 'Ofori', 'Asamoah'],
   },
+  KE: {
+    female: ['Ruth', 'Lilian', 'Eve', 'Millie', 'Christine'],
+    male: ['David', 'Paul', 'Tom', 'Elisha', 'Joshua'],
+    family: ['Odinga', 'Ochieng', 'Opondo', 'Odhiambo', 'Oduor', 'Omondi', 'Owino'],
+  },
+  NA: {
+    female: ['Saara', 'Emma', 'Alexia', 'Lucia', 'Hilma', 'Selma'],
+    male: ['Phillipus', 'Paulus', 'Immanuel', 'Veikko', 'Salomon', 'Willem'],
+    family: ['Kuugongelwa-Amadhila', 'Kantema', 'Manombe-Ncube', 'Iipumbu', 'Iita', 'Nekundi', 'Katamelo'],
+  },
   RW: {
     female: ['Aline', 'Judith', 'Jeanne', 'Emma'],
     male: ['Anastase', 'Théogène', 'Venuste', 'Jean Claude'],

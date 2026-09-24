@@ -122,6 +122,26 @@ describe('cultural name pools', () => {
     }
   })
 
+  it('uses reviewed Kenyan and Namibian name components', () => {
+    const samples = {
+      KE: { female: ['Ruth', 'Lilian', 'Eve', 'Millie', 'Christine'],
+        male: ['David', 'Paul', 'Tom', 'Elisha', 'Joshua'],
+        family: ['Odinga', 'Ochieng', 'Opondo', 'Odhiambo', 'Oduor', 'Omondi', 'Owino'] },
+      NA: { female: ['Saara', 'Emma', 'Alexia', 'Lucia', 'Hilma', 'Selma'],
+        male: ['Phillipus', 'Paulus', 'Immanuel', 'Veikko', 'Salomon', 'Willem'],
+        family: ['Kuugongelwa-Amadhila', 'Kantema', 'Manombe-Ncube', 'Iipumbu', 'Iita', 'Nekundi', 'Katamelo'] },
+    } as const
+    for (const [country, pool] of Object.entries(samples)) {
+      expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local', pools: [{ tier: 'local' }] })
+      for (const gender of ['female', 'male'] as const) {
+        const name = selectName(country, gender, key)
+        expect(pool[gender]).toContain(name.firstName)
+        expect(pool.family).toContain(name.lastName)
+        expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
+      }
+    }
+  })
+
   it('exposes Burmese and Indonesian name components without changing the complete name', () => {
     for (const country of ['MM', 'ID']) {
       for (const gender of ['female', 'male'] as const) {
