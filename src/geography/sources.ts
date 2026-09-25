@@ -94,6 +94,20 @@ export const geographicSources = {
     edition: '2026-09-25',
     sha256: 'd6e92036ef467d5e5ba43c767a9a15e5914857c489c882b3f06b932644868ca8',
   },
+  'wikidata-north-america-qlever-candidates': {
+    title: 'Wikidata North America and Caribbean name candidates via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-25',
+    sha256: 'ff94dd0962bec588d768d6ccafc42bfaeff3cd92a7c34e223c80335d7c82271a',
+  },
+  'wikidata-north-america-birthplace-candidates': {
+    title: 'Wikidata North American territory name candidates by birth place via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-25',
+    sha256: '3204de1275952be70033181a5b2073f4bfe3dd9dca15df97294823ff62c9d35a',
+  },
   'faroe-name-statistics': {
     title: 'Statistics Faroe Islands 2024 resident given names',
     url: 'https://hagstova.fo/fo/tidindi/jakup-og-maria-vanligastu-novnini-i-foroyum',

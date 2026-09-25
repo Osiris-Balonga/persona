@@ -14,6 +14,8 @@ import { asiaWestNames, isAsiaWestCountry } from './asia-west-names.js'
 import { asiaEastNames, isAsiaEastCountry } from './asia-east-names.js'
 import { asiaCentralNames, isAsiaCentralCountry } from './asia-central-names.js'
 import { asiaAdditionalNames, isAsiaAdditionalCountry } from './asia-additional-names.js'
+import { northAmericaReviewedNames, isNorthAmericaReviewedCountry } from './north-america-reviewed-names.js'
+import { northAmericaTerritoryNames, isNorthAmericaTerritoryCountry } from './north-america-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -84,13 +86,27 @@ const pendingAsianNameReviewNotes: Record<string, string> = {
   TJ: 'Tajik given names and feminine family forms need review',
   TM: 'Turkmen given and gendered family forms need review',
 }
+const pendingNorthAmericaNameReviewNotes: Record<string, string> = {
+  AI: 'Only five female birth-place candidates; local given-name evidence needed',
+  BL: 'Two female birth-place candidates; local given and family pools needed',
+  BQ: 'No country- or birth-place-linked name candidates',
+  KY: 'Fifteen female birth-place candidates; local sample needs wider validation',
+  MF: 'Six female birth-place candidates; local sample too sparse',
+  MS: 'Twelve female birth-place candidates; local sample too sparse',
+  PM: 'Six female birth-place candidates; local sample too sparse',
+  SX: 'Eight female birth-place candidates; local sample too sparse',
+  TC: 'Three female birth-place candidates; local sample too sparse',
+  VG: 'Five female birth-place candidates; local sample too sparse',
+}
 
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
   ...Object.keys(europeIslandNames), 'SJ', 'VA', ...Object.keys(asiaReviewedNames), ...Object.keys(asiaWestNames),
   ...Object.keys(asiaEastNames), ...Object.keys(asiaCentralNames), ...Object.keys(asiaAdditionalNames),
+  ...Object.keys(northAmericaReviewedNames), ...Object.keys(northAmericaTerritoryNames),
   'AZ', 'BN', 'BT', 'CC', 'ID', 'KG', 'KH', 'KZ', 'LA', 'MM', 'MN', 'MO', 'MV', 'MY', 'OM', 'QA',
   'SG', 'TH', 'TJ', 'TM', 'UZ',
+  'AI', 'BL', 'BQ', 'KY', 'MF', 'MS', 'PM', 'SX', 'TC', 'VG',
 ])
 
 function addressCoverage(country: string): CoverageCell {
@@ -123,13 +139,16 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code) || isAsiaCentralCountry(country.code) || isAsiaAdditionalCountry(country.code)
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(isNorthAmericaReviewedCountry(country.code)
+        ? 'wikidata-north-america-qlever-candidates' : isNorthAmericaTerritoryCountry(country.code)
+          ? 'wikidata-north-america-birthplace-candidates' : isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code) || isAsiaCentralCountry(country.code) || isAsiaAdditionalCountry(country.code)
         ? 'wikidata-asia-qlever-candidates' : isEuropeIslandCountry(country.code)
         ? 'wikidata-europe-birthplace-candidates' : isEuropeReviewedCountry(country.code) || isEuropeGenderedCountry(country.code)
           ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
         fallback: nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
-        reviewNote: pendingAsianNameReviewNotes[country.code] ?? null,
+        reviewNote: pendingAsianNameReviewNotes[country.code]
+          ?? pendingNorthAmericaNameReviewNotes[country.code] ?? null,
         supplementarySources: isEuropeGenderedCountry(country.code)
           ? ['wikidata-europe-gendered-families'] : country.code === 'FO' && isEuropeIslandCountry(country.code)
             ? ['faroe-name-statistics'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
@@ -203,7 +222,9 @@ export function validateGeographicData(): string[] {
                             : isAsiaWestCountry(country.code) ? asiaWestNames[country.code]
                               : isAsiaEastCountry(country.code) ? asiaEastNames[country.code]
                                 : isAsiaCentralCountry(country.code) ? asiaCentralNames[country.code]
-                                  : isAsiaAdditionalCountry(country.code) ? asiaAdditionalNames[country.code] : namePoolData[pool.locale]
+                                  : isAsiaAdditionalCountry(country.code) ? asiaAdditionalNames[country.code]
+                                    : isNorthAmericaReviewedCountry(country.code) ? northAmericaReviewedNames[country.code]
+                                      : isNorthAmericaTerritoryCountry(country.code) ? northAmericaTerritoryNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)

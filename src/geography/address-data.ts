@@ -8,6 +8,7 @@ export function addressRule(country: string) {
 
 export function postalCodeForCity(city: City): string | null {
   if (city.country === 'PN' && city.name === 'Adamstown') return 'PCRN 1ZZ'
+  if (city.country === 'CR' && city.geonameId === 3621849) return null
   return cityPostalCodes[city.geonameId] ?? null
 }
 
@@ -48,7 +49,7 @@ export function fictionalAddress(city: City, key: string) {
     ? rule.format.replace('%S', '')
     : rule.format.replace(/%S%C/g, '%S, %C').replace(/%C%S/g, '%C, %S')
   const format = postalCode === null
-    ? countryFormat.replace(/(?<!%)[A-Z]{1,3}[ -]%Z|-%Z|〒\s*%Z|%Z/g, '') : countryFormat
+    ? countryFormat.replace(/(?<!%)[A-Z]{1,3}[ -]?%Z|-%Z|〒\s*%Z|%Z/g, '') : countryFormat
   const formatted = formatAddress(format, {
     A: line1, C: city.name, S: region ?? '', Z: postalCode ?? '',
   })

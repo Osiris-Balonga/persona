@@ -12,6 +12,8 @@ import { asiaWestNames, isAsiaWestCountry } from './asia-west-names.js'
 import { asiaEastNames, isAsiaEastCountry } from './asia-east-names.js'
 import { asiaCentralNames, isAsiaCentralCountry } from './asia-central-names.js'
 import { asiaAdditionalNames, isAsiaAdditionalCountry } from './asia-additional-names.js'
+import { northAmericaReviewedNames, isNorthAmericaReviewedCountry } from './north-america-reviewed-names.js'
+import { northAmericaTerritoryNames, isNorthAmericaTerritoryCountry } from './north-america-territory-names.js'
 
 const myanmarContext = { pools: [{ locale: 'my_MM', tier: 'local', weight: 1 }], fallback: 'local' } as const
 const bhutanContext = { pools: [{ locale: 'bt_BT', tier: 'local', weight: 1 }], fallback: 'local' } as const
@@ -90,6 +92,9 @@ export function nameContextForCountry(country: string) {
   if (isAsiaEastCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   if (isAsiaCentralCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
   if (isAsiaAdditionalCountry(country)) return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
+  if (isNorthAmericaReviewedCountry(country) || isNorthAmericaTerritoryCountry(country)) {
+    return { pools: [{ locale: `${country.toLowerCase()}_${country}`, tier: 'local', weight: 1 }], fallback: 'local' } as const
+  }
   return nameContextData[country]
 }
 
@@ -188,6 +193,13 @@ export function selectName(country: string, gender: 'male' | 'female', key: stri
   }
   if (isAsiaAdditionalCountry(country)) {
     const names = asiaAdditionalNames[country]
+    const firstName = names[gender][keyPart(key, 12) % names[gender].length]
+    const lastName = names.family[keyPart(key, 24) % names.family.length]
+    return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }
+  }
+  if (isNorthAmericaReviewedCountry(country) || isNorthAmericaTerritoryCountry(country)) {
+    const names = isNorthAmericaReviewedCountry(country)
+      ? northAmericaReviewedNames[country] : northAmericaTerritoryNames[country]
     const firstName = names[gender][keyPart(key, 12) % names[gender].length]
     const lastName = names.family[keyPart(key, 24) % names.family.length]
     return { firstName, lastName, fullName: `${firstName} ${lastName}`, locale: selected.locale, fallback: selected.tier }

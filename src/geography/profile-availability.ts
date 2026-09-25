@@ -7,6 +7,8 @@ import { isAsiaWestCountry } from './asia-west-names.js'
 import { isAsiaEastCountry } from './asia-east-names.js'
 import { isAsiaCentralCountry } from './asia-central-names.js'
 import { isAsiaAdditionalCountry } from './asia-additional-names.js'
+import { isNorthAmericaReviewedCountry } from './north-america-reviewed-names.js'
+import { isNorthAmericaTerritoryCountry } from './north-america-territory-names.js'
 
 // Source-backed local samples reviewed for the initial beta; see docs/geographic-data.md.
 const reviewedNameCodes = new Set(['AO', 'BF', 'BI', 'BJ', 'BT', 'BW', 'CD', 'CF', 'CG', 'CI', 'CM', 'CV', 'DJ', 'DZ', 'EG', 'EH', 'ER', 'ET', 'GA', 'GH', 'GM', 'GN', 'GQ', 'GW', 'KE', 'KM', 'LR', 'LS', 'LY', 'MA', 'MG', 'ML', 'MM', 'MR', 'MU', 'MW', 'MZ', 'NA', 'NE', 'NG', 'RE', 'RW', 'SC', 'SD', 'SH', 'SL', 'SN', 'SO', 'SS', 'ST', 'SZ', 'TD', 'TG', 'TN', 'TZ', 'UG', 'YT', 'ZA', 'ZM', 'ZW'])
@@ -15,6 +17,7 @@ export function hasReviewedNamePool(code: string): boolean {
   return reviewedNameCodes.has(code) || isEuropeReviewedCountry(code) || isEuropeGenderedCountry(code)
     || isEuropeIslandCountry(code) || isAsiaReviewedCountry(code) || isAsiaWestCountry(code)
     || isAsiaEastCountry(code) || isAsiaCentralCountry(code) || isAsiaAdditionalCountry(code)
+    || isNorthAmericaReviewedCountry(code) || isNorthAmericaTerritoryCountry(code)
 }
 
 export function profileGenerationStatus(country: Country): 'available' | 'pending-name-review' | 'unavailable' {
