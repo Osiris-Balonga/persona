@@ -1,6 +1,6 @@
 # HTTP API contract
 
-`GET /people` is the planned V1 endpoint. The query parser and response schemas are implemented; person generation and the route itself will be added after the remaining data and engine work. The [illustrative response](../examples/people-response-v1.json) contains one [V1 Person](../examples/person-v1.json). Its `example.test` image URL is a placeholder, not a published portrait.
+`GET /people` is the planned V1 endpoint. The query parser, response schemas, and profile generation core are implemented; portrait selection and the HTTP route will follow. The [illustrative response](../examples/people-response-v1.json) contains one [V1 Person](../examples/person-v1.json). Its `example.test` image URL is a placeholder, not a published portrait.
 
 ## Query parameters
 
@@ -18,6 +18,8 @@
 | `fields` | Optional comma-separated list of public person fields, at most 512 characters; omitted means every public field |
 
 The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry and beta availability policy](geographic-data.md) validate assigned codes, reviewed local name pools, sampled city membership, and the versioned appearance vocabulary.
+
+The generation core resolves shared country, city, appearance, gender, and numeric age choices before names or contact details. Without an age filter it selects uniformly among integer ages 0–120; with `ageGroup` it selects uniformly within that group's numeric bounds. These are reproducible editorial rules, not demographic estimates. A birth date is then chosen so the numeric age is correct at `asOf`, including around leap days. The generated email uses the reserved `.test` domain ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)); phone stays `null` outside verified fictional ranges. The core produces the public fields except `picture`, which awaits the approved portrait selector.
 
 ### Selecting fields
 
