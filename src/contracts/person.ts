@@ -21,7 +21,7 @@ export const PersonSchema = Type.Object({
   lastName: Type.String({ minLength: 1 }),
   fullName: Type.String({ minLength: 1 }),
   gender: Type.Union([Type.Literal('male'), Type.Literal('female')]),
-  age: Type.Integer({ minimum: 0 }),
+  age: Type.Integer({ minimum: 6, maximum: 120 }),
   ageGroup: Type.Union([
     Type.Literal('child'),
     Type.Literal('teen'),

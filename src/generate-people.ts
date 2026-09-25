@@ -9,8 +9,23 @@ export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCata
   const versions = { dataVersion: geographicDataVersion, catalogVersion: catalog.version }
   const context = createGenerationContext(query, versions)
   const usedPortraits = new Set<string>()
+  const nameCounts = new Map<string, number>()
   const results = Array.from({ length: query.count }, (_, index) => {
-    const person = generatePersonWithoutPortrait(query, context, index)
+    let person = generatePersonWithoutPortrait(query, context, index)
+    let nameKey = `${person.country}\u0000${person.fullName}`
+    let repetitions = nameCounts.get(nameKey) ?? 0
+    // Keep a fresh seeded choice; otherwise prefer the least-used reviewed name.
+    for (let attempt = 1; attempt <= 32 && repetitions > 0; attempt++) {
+      const candidate = generatePersonWithoutPortrait(query, context, index, attempt)
+      const candidateKey = `${candidate.country}\u0000${candidate.fullName}`
+      const candidateRepetitions = nameCounts.get(candidateKey) ?? 0
+      if (candidateRepetitions < repetitions) {
+        person = candidate
+        nameKey = candidateKey
+        repetitions = candidateRepetitions
+      }
+    }
+    nameCounts.set(nameKey, repetitions + 1)
     const picture = selectPortrait(catalog, person, context.componentKey(index, 'portrait'), usedPortraits)
     return { ...person, picture }
   })

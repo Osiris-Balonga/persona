@@ -30,7 +30,7 @@ describe('GET /people', () => {
       const first = await app.inject({ method: 'GET', url: `${base}&count=2` })
       expect(first.statusCode).toBe(200)
       expect(first.headers['cache-control']).toBe('private, no-cache')
-      expect(first.headers.etag).toMatch(/^"persona-v1-/)
+      expect(first.headers.etag).toMatch(/^"persona-v2-/)
       const body = first.json()
       expect(Value.Check(PeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)
@@ -43,6 +43,28 @@ describe('GET /people', () => {
       expect(unchanged.statusCode).toBe(304)
       expect(unchanged.body).toBe('')
       expect(unchanged.headers['cache-control']).toBe('private, no-cache')
+    } finally { await app.close() }
+  })
+
+  it('keeps bulk identities distinct where possible and respects the minimum age', async () => {
+    const app = buildApp()
+    try {
+      const base = '/people?country=MW&seed=diversity&asOf=2026-09-24'
+      const response = await app.inject({ method: 'GET', url: `${base}&count=100` })
+      expect(response.statusCode).toBe(200)
+      const people = response.json().results
+      expect(people).toHaveLength(100)
+      expect(people.every((person: { age: number }) => person.age >= 6 && person.age <= 120)).toBe(true)
+      expect(new Set(people.map((person: { id: string }) => person.id)).size).toBe(100)
+      const counts = new Map<string, number>()
+      for (const person of people) counts.set(person.fullName, (counts.get(person.fullName) ?? 0) + 1)
+      expect(counts.size).toBe(20)
+      expect(Math.max(...counts.values())).toBeLessThanOrEqual(5)
+      const first = (await app.inject({ method: 'GET', url: `${base}&count=1` })).json().results[0]
+      expect(people[0]).toEqual(first)
+      const invalid = await app.inject({ method: 'GET', url: '/people?age=5' })
+      expect(invalid.statusCode).toBe(400)
+      expect(invalid.json().error).toMatchObject({ code: 'INVALID_QUERY', parameter: 'age' })
     } finally { await app.close() }
   })
 

@@ -21,6 +21,8 @@ describe('age and reference date', () => {
 
   it('rejects ages that are negative or not integers', () => {
     expect(() => ageGroupForAge(-1)).toThrow('Invalid age')
+    expect(() => ageGroupForAge(5)).toThrow('Invalid age')
+    expect(() => ageGroupForAge(121)).toThrow('Invalid age')
     expect(() => ageGroupForAge(14.5)).toThrow('Invalid age')
   })
 
