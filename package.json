@@ -17,6 +17,7 @@
     "data:fetch:address-metadata": "node scripts/fetch-address-metadata.mjs",
     "data:audit": "tsx scripts/audit-geographic-data.ts",
     "data:audit:portraits": "tsx scripts/audit-portrait-catalog.ts",
+    "portraits:prepare": "tsx scripts/prepare-portrait-import.ts",
     "data:audit:names": "node scripts/audit-name-candidates.mjs",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -38,6 +39,7 @@
     "fflate": "0.8.3",
     "iso-3166": "4.4.0",
     "libphonenumber-js": "1.13.14",
+    "sharp": "^0.35.4",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.1"
