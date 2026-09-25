@@ -1,6 +1,6 @@
 # HTTP API contract
 
-`GET /people` is the planned V1 endpoint. The query parser, response schemas, and profile generation core are implemented; portrait selection and the HTTP route will follow. The [illustrative response](../examples/people-response-v1.json) contains one [V1 Person](../examples/person-v1.json). Its `example.test` image URL is a placeholder, not a published portrait.
+`GET /people` is the V1 endpoint. The [illustrative response](../examples/people-response-v1.json) contains one [V1 Person](../examples/person-v1.json). Its `example.test` image URL is a placeholder, not a published portrait. The production portrait catalog is empty pending authorization and image review, so live responses currently return `picture: null`.
 
 ## Query parameters
 
@@ -19,7 +19,7 @@
 
 The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry and beta availability policy](geographic-data.md) validate assigned codes, reviewed local name pools, sampled city membership, and the versioned appearance vocabulary.
 
-The generation core resolves shared country, city, appearance, gender, and numeric age choices before names or contact details. Without an age filter it selects uniformly among integer ages 0–120; with `ageGroup` it selects uniformly within that group's numeric bounds. These are reproducible editorial rules, not demographic estimates. A birth date is then chosen so the numeric age is correct at `asOf`, including around leap days. The generated email uses the reserved `.test` domain ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)); phone stays `null` outside verified fictional ranges. The core produces the public fields except `picture`, which awaits the approved portrait selector.
+The generator resolves shared country, city, appearance, gender, and numeric age choices before names or contact details. Without an age filter it selects uniformly among integer ages 0–120; with `ageGroup` it selects uniformly within that group's numeric bounds. These are reproducible editorial rules, not demographic estimates. A birth date is then chosen so the numeric age is correct at `asOf`, including around leap days. The generated email uses the reserved `.test` domain ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)); phone stays `null` outside verified fictional ranges. An approved compatible portrait is selected when the catalog contains one; otherwise `picture` is `null`.
 
 ### Selecting fields
 
@@ -52,7 +52,7 @@ For example, `fields=firstName,city,picture.url` returns this shape for the illu
 
 An empty, unknown, internal, repeated, or conflicting selection returns HTTP 400 with `INVALID_QUERY` and `parameter: "fields"`. Selecting both a parent and its nested field, such as `picture,picture.url`, is conflicting. Selection runs after a complete person has been generated, so adding or removing fields cannot change the retained values for the same seed and versioned inputs. The [projected response schema](../src/contracts/people.ts) describes the partial result; the full response schema remains valid when `fields` is omitted.
 
-Example request (the response file is illustrative until the generator is implemented):
+Example request:
 
 ```http
 GET /people?count=1&country=MW&city=Lilongwe&age=27&gender=female&appearance=southern-african&seed=profile-demo&asOf=2026-09-24
@@ -66,9 +66,9 @@ A successful response has `results` and `meta`. `meta.count` is the number of re
 
 A seeded request can be replayed when its `asOf`, filters, `seed`, `dataVersion`, `catalogVersion`, and generation algorithm version are unchanged. The V1 derivation hashes a fixed-order JSON array with SHA-256. It contains the algorithm version, seed, resolved `asOf`, both data versions, and all generation filters (`gender`, `age`, `ageGroup`, `appearance`, `country`, `city`); absent filters occupy `null` slots. A separate key for each zero-based person index and named component (for example, `identity` or `portrait`) is derived from that array. `count` and `fields` do not enter component keys, so requesting more people or fewer response fields cannot shift existing choices. The implementation is in [replay.ts](../src/replay.ts); algorithm changes require a version change. Dataset or catalog changes require their respective version to change and appear in `meta`.
 
-Without `seed`, the server will draw fresh request entropy once and report `meta.seed: null`. Two such `GET` requests may return different people. HTTP `GET` remains safe and idempotent: repeating it does not request a server state change; idempotence does not require identical response bytes. This follows the [HTTP semantics specification](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2).
+Without `seed`, the server draws fresh request entropy once and reports `meta.seed: null`. Two such `GET` requests may return different people. HTTP `GET` remains safe and idempotent: repeating it does not request a server state change; idempotence does not require identical response bytes. This follows the [HTTP semantics specification](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2).
 
-Successful responses with both an explicit `seed` and an explicit `asOf` use `Cache-Control: private, no-cache` and an `ETag` derived from all generation inputs, `count`, `fields`, both data versions, and the generation algorithm version. A private cache may store them but must revalidate before reuse; shared caches must not store them. Responses without either explicit input, errors, and `429` responses use `Cache-Control: no-store`. The route will apply these headers and conditional revalidation when generation is implemented. These directives follow [HTTP caching semantics](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2).
+Successful responses with both an explicit `seed` and an explicit `asOf` use `Cache-Control: private, no-cache` and an `ETag` derived from all generation inputs, `count`, `fields`, both data versions, and the generation algorithm version. Matching conditional requests receive HTTP 304. A private cache may store them but must revalidate before reuse; shared caches must not store them. Responses without either explicit input and errors use `Cache-Control: no-store`; the response hook also applies this to future `429` responses. These directives follow [HTTP caching semantics](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2).
 
 Approved portrait URLs include a catalog version and use `Cache-Control: public, max-age=300, must-revalidate`. A missing or withdrawn portrait response uses `no-store`. On withdrawal, the catalog entry must be disabled, the Worker must deny further reads, and the exact public URL must be purged from Cloudflare's global cache. A CDN cache key must remain the normal URL so that [purge by URL](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/) works; a local Worker Cache API deletion does not perform a global purge. Browser copies already fetched may remain until their five-minute freshness period ends. The Worker and withdrawal workflow are tracked separately from this contract.
 
