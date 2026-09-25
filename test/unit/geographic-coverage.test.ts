@@ -52,6 +52,7 @@ describe('geographic source coverage', () => {
     for (const [country, source] of [
       ['FR', 'arcep-fictional-numbers'], ['DE', 'bnetza-drama-numbers'],
       ['IE', 'comreg-drama-numbers'], ['SE', 'pts-fictional-numbers'],
+      ['NO', 'nkom-fictional-numbers'],
     ]) {
       expect(rows.find((row) => row.country === country)?.phone).toMatchObject({ status: 'ingested', source })
     }

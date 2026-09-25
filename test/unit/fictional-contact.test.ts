@@ -88,4 +88,10 @@ describe('fictional contact values', () => {
       expect(listCities(country).every((sampled) => fictionalPhone(country, sampled.name, key) !== null), country).toBe(true)
     }
   })
+
+  it('uses Norway’s blocked TV and film range for every sampled Norwegian city', () => {
+    expect(fictionalPhone('NO', 'Oslo', key)).toMatch(/^\+476805\d{4}$/)
+    expect(fictionalPhone('NO', 'Unknown city', key)).toBeNull()
+    expect(listCities('NO').every((city) => fictionalPhone('NO', city.name, key) !== null)).toBe(true)
+  })
 })

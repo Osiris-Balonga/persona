@@ -64,5 +64,6 @@ export function fictionalPhone(country: string, city: string, key: string): stri
   if (country === 'DE') return `+4917139200${String(index % 100).padStart(2, '0')}`
   if (country === 'IE') return `+353890110${String(index % 1_000).padStart(3, '0')}`
   if (country === 'SE') return `+467017406${String(5 + index % 95).padStart(2, '0')}`
+  if (country === 'NO') return `+476805${String(index).padStart(4, '0')}`
   return null
 }

@@ -435,6 +435,12 @@ export const geographicSources = {
     license: 'Public numbering guidance (range fact)',
     edition: '2024-05-14',
   },
+  'nkom-fictional-numbers': {
+    title: 'Nkom blocked TV and film production numbers',
+    url: 'https://nkom.no/telefoni-og-telefonnummer/telefonnummer-og-den-norske-nummerplan/alle-nummerserier-for-norske-telefonnumre',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2026-09-25',
+  },
 } as const
 
 export type GeographicSource = keyof typeof geographicSources

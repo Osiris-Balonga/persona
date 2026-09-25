@@ -192,7 +192,8 @@ export function listCoverage() {
                 : country.code === 'FR' ? ingested('arcep-fictional-numbers')
                   : country.code === 'DE' ? ingested('bnetza-drama-numbers')
                     : country.code === 'IE' ? ingested('comreg-drama-numbers')
-                      : country.code === 'SE' ? ingested('pts-fictional-numbers') : pending(),
+                      : country.code === 'SE' ? ingested('pts-fictional-numbers')
+                        : country.code === 'NO' ? ingested('nkom-fictional-numbers') : pending(),
       distributions: resident ? { ...partial('persona-policy'),
         fallback: 'uniform-country,uniform-appearance', supplementarySources: ['geonames'] } : notApplicable(),
       portraits: resident ? pending() : notApplicable(),
