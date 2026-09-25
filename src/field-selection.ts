@@ -4,6 +4,8 @@ import type { PeopleResponse, ProjectedPeopleResponse } from './contracts/people
 export type FieldPath = keyof Person | `address.${keyof Person['address']}` | 'picture.url'
 
 const publicFields = new Set(Object.keys(PersonSchema.properties))
+export const defaultPersonFields = Object.keys(PersonSchema.properties)
+  .filter((field) => field !== 'ageGroup' && field !== 'appearance') as FieldPath[]
 const nestedFields = new Map<string, Set<string>>([
   ['address', new Set(Object.keys(AddressSchema.properties))],
   ['picture', new Set(Object.keys(PictureSchema.properties))],
@@ -56,7 +58,7 @@ function projectPerson(person: Person, fields: readonly FieldPath[]): ProjectedP
 
 export function projectPeopleResponse(
   response: PeopleResponse,
-  fields: readonly FieldPath[] = Object.keys(PersonSchema.properties) as FieldPath[],
+  fields: readonly FieldPath[] = defaultPersonFields,
 ): ProjectedPeopleResponse {
   const { count, asOf, seed, dataVersion, catalogVersion } = response.meta
   return {

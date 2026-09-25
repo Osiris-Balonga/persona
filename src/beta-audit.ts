@@ -2,6 +2,7 @@ import Value from 'typebox/value'
 import { buildApp } from './app.js'
 import { isAgeProfileConsistent } from './age.js'
 import { PeopleResponseSchema } from './contracts/people.js'
+import { PersonSchema } from './contracts/person.js'
 import { listCountries } from './geography/countries.js'
 import { getCity } from './geography/cities.js'
 import { listCoverage } from './geography/coverage.js'
@@ -23,7 +24,8 @@ export async function auditBetaHttp() {
       if (status === 'available') available.push(code)
       else if (status === 'pending-name-review') pendingNameReview.push(code)
       else unavailable.push(code)
-      const url = `/people?country=${code}&count=2&age=27&gender=female&appearance=east-asian&seed=beta-audit&asOf=${asOf}`
+      const baseUrl = `/people?country=${code}&count=2&age=27&gender=female&appearance=east-asian&seed=beta-audit&asOf=${asOf}`
+      const url = `${baseUrl}&fields=${Object.keys(PersonSchema.properties).join(',')}`
       const response = await app.inject({ method: 'GET', url })
       if (status !== 'available') {
         if (response.statusCode !== 400 || response.json().error?.code !== 'UNSUPPORTED_VALUE') {
@@ -55,7 +57,7 @@ export async function auditBetaHttp() {
       }
       const replay = await app.inject({ method: 'GET', url })
       if (replay.statusCode !== 200 || replay.body !== response.body) errors.push(`${code}: seeded replay changed`)
-      const projected = await app.inject({ method: 'GET', url: `${url}&fields=firstName,address.city,picture.url` })
+      const projected = await app.inject({ method: 'GET', url: `${baseUrl}&fields=firstName,address.city,picture.url` })
       if (projected.statusCode !== 200 || projected.json().meta.count !== 2 ||
         projected.json().results.some((person: { firstName: string; address: { city: string }; picture: unknown }, index: number) =>
           person.firstName !== body.results[index].firstName || person.address.city !== body.results[index].city ||

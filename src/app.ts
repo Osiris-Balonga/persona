@@ -102,7 +102,7 @@ export function buildApp(options: AppOptions = {}) {
         if (validators.includes(headers.ETag) || validators.includes('*')) return reply.code(304).send()
       }
       const response = generatePeopleResponse(query, catalog)
-      return query.fields === undefined ? response : projectPeopleResponse(response, query.fields)
+      return projectPeopleResponse(response, query.fields)
     } catch (error) {
       if (error instanceof PeopleQueryError) {
         return reply.code(error.statusCode).send({ error: {

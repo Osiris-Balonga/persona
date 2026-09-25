@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import Value from 'typebox/value'
 import { buildApp } from '../../src/app.js'
-import { PeopleResponseSchema } from '../../src/contracts/people.js'
+import { DefaultPeopleResponseSchema } from '../../src/contracts/people.js'
 import type { PortraitCatalog } from '../../src/portraits/catalog.js'
 import { listCountries } from '../../src/geography/countries.js'
 import { canGenerateProfile } from '../../src/geography/profile-availability.js'
@@ -18,7 +18,7 @@ describe('GET /people', () => {
         const response = await app.inject({ method: 'GET', url: `/people?country=${country.code}&seed=coverage&asOf=2026-09-24` })
         expect(response.statusCode, country.code).toBe(200)
         const body = response.json()
-        expect(Value.Check(PeopleResponseSchema, body), country.code).toBe(true)
+        expect(Value.Check(DefaultPeopleResponseSchema, body), country.code).toBe(true)
         expect(body.results[0].country, country.code).toBe(country.code)
       }
     } finally { await app.close() }
@@ -30,12 +30,14 @@ describe('GET /people', () => {
       const first = await app.inject({ method: 'GET', url: `${base}&count=2` })
       expect(first.statusCode).toBe(200)
       expect(first.headers['cache-control']).toBe('private, no-cache')
-      expect(first.headers.etag).toMatch(/^"persona-v2-/)
+      expect(first.headers.etag).toMatch(/^"persona-v3-/)
       const body = first.json()
-      expect(Value.Check(PeopleResponseSchema, body)).toBe(true)
+      expect(Value.Check(DefaultPeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)
       expect(body.results[0]).toMatchObject({ country: 'MW', city: 'Lilongwe', age: 14,
-        ageGroup: 'teen', gender: 'female', appearance: 'east-asian', picture: null })
+        gender: 'female', picture: null, address: { line1: null } })
+      expect(body.results[0]).not.toHaveProperty('ageGroup')
+      expect(body.results[0]).not.toHaveProperty('appearance')
       expect(body.results[0].id).not.toBe(body.results[1].id)
       expect((await app.inject({ method: 'GET', url: `${base}&count=2` })).json()).toEqual(body)
       const unchanged = await app.inject({ method: 'GET', url: `${base}&count=2`,

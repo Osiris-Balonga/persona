@@ -11,12 +11,12 @@
   "country": "MW",
   "city": "Lilongwe",
   "address": {
-    "line1": "18 Example Street",
+    "line1": null,
     "city": "Lilongwe",
-    "region": "Central Region",
+    "region": null,
     "postalCode": null,
     "country": "MW",
-    "formatted": "18 Example Street\nLilongwe"
+    "formatted": "Lilongwe"
   },
   "email": "chikondi.banda@example.test",
   "phone": null,
