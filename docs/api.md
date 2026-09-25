@@ -78,4 +78,4 @@ Invalid input returns HTTP 400 with an `error` object containing a stable `code`
 {"error":{"code":"INVALID_QUERY","message":"age must be an integer","parameter":"age"}}
 ```
 
-`INVALID_QUERY` covers malformed, unknown, repeated, or out-of-range parameters. `CONFLICTING_FILTERS` covers incompatible constraints such as `age=14&ageGroup=adult` or `city` without `country`. `UNSUPPORTED_VALUE` covers an unassigned country, one without permanent residents, one pending a reviewed local name pool, a city outside its current sample, or an unknown appearance label. Rate limiting will use HTTP 429 and `Retry-After`; its exact policy belongs to the public-beta security work.
+`INVALID_QUERY` covers malformed, unknown, repeated, or out-of-range parameters. `CONFLICTING_FILTERS` covers incompatible constraints such as `age=14&ageGroup=adult` or `city` without `country`. `UNSUPPORTED_VALUE` covers an unassigned country, one without permanent residents, one pending a reviewed local name pool, a city outside its current sample, or an unknown appearance label. The [developer guide](developer-api.md#errors-and-limits) documents the 429 policy and request boundaries.
