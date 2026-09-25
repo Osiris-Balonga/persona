@@ -6,6 +6,7 @@ The API is under development. Its first release is planned as a public beta with
 
 See the [V1 product definition](docs/product.md) for the approved scope.
 Portraits follow a [human review and import procedure](docs/portrait-review.md); no production images are approved yet.
+The [private Worker delivery path](docs/portrait-delivery.md) is prepared with an empty production catalog.
 The [beta coverage audit](docs/beta-coverage.md) lists the available and pending country codes and current data gaps.
 Start with the [developer API guide](docs/developer-api.md); the full request and response rules are in the [API contract](docs/api.md).
 
