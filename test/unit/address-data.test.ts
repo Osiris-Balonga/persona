@@ -108,7 +108,8 @@ describe('country address metadata and city-linked postcodes', () => {
     const dubai = fictionalAddress(getCity('AE', 'Dubai')!, '0123456789abcdef'.repeat(4))
     expect(dubai.city).toBe('Dubai')
     expect(dubai.region).toBe('Dubai')
-    expect(dubai.formatted).toBe('Dubai')
+    expect(dubai.formatted).toContain(dubai.line1)
+    expect(dubai.formatted.split('Dubai')).toHaveLength(2)
     for (const code of ['CN', 'KP', 'KR'] as const) {
       const address = fictionalAddress(getCity(code, { CN: 'Shanghai', KP: 'Pyongyang', KR: 'Seoul' }[code])!, '0123456789abcdef'.repeat(4))
       expect(address.formatted.split(address.city)).toHaveLength(2)

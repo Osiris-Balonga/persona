@@ -19,6 +19,11 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'FR')?.addresses).toMatchObject({
       fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),
     })
+    expect(rows.find((row) => row.country === 'JP')?.addresses).toMatchObject({
+      fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),
+    })
+    expect(rows.find((row) => row.country === 'BT')?.addresses.fallback).toContain('synthetic-street')
+    expect(rows.find((row) => row.country === 'BN')?.addresses.fallback).toContain('street-unavailable')
     expect(rows.find((row) => row.country === 'SJ')?.addresses.fallback).toContain('street-unavailable')
     expect(rows.find((row) => row.country === 'AU')?.phone).toMatchObject({ status: 'ingested', source: 'acma-fictional-numbers' })
     expect(rows.find((row) => row.country === 'CA')?.phone).toMatchObject({ status: 'ingested', source: 'crtc-fictional-numbers' })
