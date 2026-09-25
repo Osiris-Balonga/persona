@@ -10,7 +10,7 @@ const base = '/people?country=MW&city=Lilongwe&age=14&gender=female&appearance=e
 
 describe('GET /people', () => {
   it('returns a valid person for every beta-available country code', async () => {
-    const app = buildApp()
+    const app = buildApp({ rateLimitMax: 300 })
     try {
       const countries = listCountries().filter(canGenerateProfile)
       expect(countries.length).toBeGreaterThan(200)
