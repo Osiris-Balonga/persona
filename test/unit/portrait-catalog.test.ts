@@ -1,0 +1,56 @@
+import { describe, expect, it } from 'vitest'
+import { portraitCoverage, portraitCoverageMatrix, selectPortrait, validatePortraitCatalog } from '../../src/portraits/catalog.js'
+
+const asset = (id: string, overrides: Record<string, unknown> = {}) => ({
+  id,
+  objectKey: `portraits/v1/teen/female/black/west-african/${id}.webp`,
+  catalogVersion: 'v1', ageGroup: 'teen' as const, gender: 'female' as const,
+  visualGroup: 'black', appearance: 'west-african' as const,
+  rights: 'project-owned synthetic image', sha256: `${'a'.repeat(63)}${id.slice(-1)}`,
+  reviewStatus: 'approved' as const,
+  ...overrides,
+})
+
+const catalog = (assets: ReturnType<typeof asset>[]) => ({
+  version: 'v1', publicBaseUrl: 'https://images.example.test', assets,
+})
+
+const profile = { ageGroup: 'teen' as const, gender: 'female' as const, appearance: 'west-african' as const }
+const key = '0123456789abcdef'.repeat(4)
+
+describe('approved portrait catalog', () => {
+  it('selects only a compatible approved ID and avoids repeats while candidates remain', () => {
+    const manifest = catalog([asset('p_0001'), asset('p_0002'), asset('p_0003', {
+      gender: 'male', objectKey: 'portraits/v1/teen/male/black/west-african/p_0003.webp',
+    }),
+      asset('p_0004', { reviewStatus: 'withdrawn' })])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    const used = new Set<string>()
+    const first = selectPortrait(manifest, profile, key, used)
+    const second = selectPortrait(manifest, profile, key, used)
+    expect(first?.url).toMatch(/^https:\/\/images\.example\.test\/portraits\/v1\/teen\/female\/black\/west-african\/p_000[12]\.webp$/)
+    expect(second?.url).not.toBe(first?.url)
+    expect(selectPortrait(manifest, { ...profile, appearance: 'east-asian' }, key)).toBeNull()
+    expect(selectPortrait(manifest, profile, key)).toEqual(first)
+  })
+
+  it('reports groups below the minimum of two approved candidates', () => {
+    const one = catalog([asset('p_0001')])
+    expect(portraitCoverage(one, profile)).toEqual({ approved: 1, minimum: 2, ready: false })
+    expect(portraitCoverage(catalog([asset('p_0001'), asset('p_0002')]), profile).ready).toBe(true)
+    const rows = portraitCoverageMatrix(catalog([asset('p_0001'), asset('p_0002')]))
+    expect(rows).toHaveLength(96)
+    expect(rows.filter((row) => row.ready)).toEqual([{ ...profile, approved: 2, minimum: 2, ready: true }])
+  })
+
+  it('rejects duplicate IDs, hashes, and mismatched object keys', () => {
+    const invalid = catalog([asset('p_0001'), asset('p_0001', { objectKey: 'portraits/v1/adult/female/black/west-african/p_0001.webp' })])
+    expect(validatePortraitCatalog(invalid).length).toBeGreaterThan(0)
+  })
+
+  it('keeps the production manifest empty until images are approved', async () => {
+    const { portraitCatalog } = await import('../../src/portraits/manifest.js')
+    expect(portraitCatalog.assets).toEqual([])
+    expect(selectPortrait(portraitCatalog, profile, key)).toBeNull()
+  })
+})
