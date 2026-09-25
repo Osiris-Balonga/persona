@@ -6,7 +6,7 @@ export interface DataVersions {
   catalogVersion: string
 }
 
-const generationVersion = 'v2'
+const generationVersion = 'v3'
 
 function digest(parts: readonly unknown[]): string {
   return createHash('sha256').update(JSON.stringify(parts)).digest('hex')

@@ -15,7 +15,7 @@
 | `city` | Nonempty city name, at most 100 characters; requires `country` |
 | `seed` | Optional opaque, nonblank string of at most 128 characters |
 | `asOf` | Valid `YYYY-MM-DD` date; defaults to the current UTC date |
-| `fields` | Optional comma-separated list of public person fields, at most 512 characters; omitted means every public field |
+| `fields` | Optional comma-separated list of public person fields, at most 512 characters; omitted means standard fields (excluding `ageGroup` and `appearance`) |
 
 The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry and beta availability policy](geographic-data.md) validate assigned codes, reviewed local name pools, sampled city membership, and the versioned appearance vocabulary.
 
@@ -23,7 +23,7 @@ The generator resolves shared country, city, appearance, gender, and numeric age
 
 ### Selecting fields
 
-`fields` applies to each person in `results`; it never removes `results` or `meta`. Without `fields`, every public field in the [Person schema](../src/contracts/person.ts) is returned. Names are case-sensitive and may be separated by commas, with optional whitespace around each name. A field may be selected by its top-level name, such as `address` or `picture`, or by one supported nested path: `address.line1`, `address.city`, `address.region`, `address.postalCode`, `address.country`, `address.formatted`, or `picture.url`. A nested path returns only that property inside its parent object. If `picture` is `null`, selecting `picture.url` returns `"picture": null`; nullable values are not silently omitted. `firstName` and `lastName` are always nonempty in the full response.
+`fields` applies to each person in `results`; it never removes `results` or `meta`. Without `fields`, the response omits `ageGroup` and `appearance`; request them explicitly with `fields` when needed. They remain internal generation and portrait-matching values. Names are case-sensitive and may be separated by commas, with optional whitespace around each name. A field may be selected by its top-level name, such as `address` or `picture`, or by one supported nested path: `address.line1`, `address.city`, `address.region`, `address.postalCode`, `address.country`, `address.formatted`, or `picture.url`. A nested path returns only that property inside its parent object. If `picture` is `null`, selecting `picture.url` returns `"picture": null`; nullable values are not silently omitted. `firstName` and `lastName` are always nonempty in the default response. `address.line1` is `null` until a reviewed street source is available; `address.formatted` uses newline characters, shown as `\n` in JSON.
 
 For a Burmese name, `fields=firstName,lastName,fullName` selects these values from a response:
 

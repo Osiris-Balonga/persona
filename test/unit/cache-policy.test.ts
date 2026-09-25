@@ -12,7 +12,7 @@ describe('GET /people cache policy', () => {
     const headers = cache('seed=school-demo&asOf=2026-09-24&country=MW')
 
     expect(headers['Cache-Control']).toBe('private, no-cache')
-    expect(headers.ETag).toMatch(/^"persona-v2-[a-f0-9]{64}"$/)
+    expect(headers.ETag).toMatch(/^"persona-v3-[a-f0-9]{64}"$/)
     expect(cache('asOf=2026-09-24')['Cache-Control']).toBe('no-store')
     expect(cache('seed=school-demo', false)['Cache-Control']).toBe('no-store')
     expect(cache('seed=school-demo&asOf=2026-09-24', true, 429)).toEqual({ 'Cache-Control': 'no-store' })

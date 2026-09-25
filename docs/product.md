@@ -19,11 +19,11 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | `gender` | `male` or `female` |
 | `age`, `ageGroup`, `dateOfBirth` | Integer from 6 to 120; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
 | `appearance`, `country`, `city` | Nonempty appearance label; uppercase two-letter code from the registry; nonempty city |
-| `address` | `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and country-ordered `formatted` |
+| `address` | nullable `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and country-ordered `formatted` |
 | `email`, `phone` | Email at `example.test`; phone string or `null` when no safe fictional number is available |
 | `picture` | Object with an HTTPS `url`, or `null` when no compatible approved portrait is available |
 
-All fields appear in the full representation. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
+The default response omits the derived `ageGroup` and internal portrait-matching `appearance`; either can be requested explicitly with `fields`. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
 
 `firstName` and `lastName` are always populated so developers can use them in ordinary two-field forms. Some naming traditions do not use an inherited family surname; in those cases, `lastName` is a second display component of a plausible complete name, not a claim about ancestry. `firstName` can contain more than one word.
 

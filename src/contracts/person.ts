@@ -3,7 +3,7 @@ import { Type, type Static } from 'typebox'
 const CountryCode = Type.String({ pattern: '^[A-Z]{2}$' })
 
 export const AddressSchema = Type.Object({
-  line1: Type.String({ minLength: 1 }),
+  line1: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
   city: Type.String({ minLength: 1 }),
   region: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
   postalCode: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),

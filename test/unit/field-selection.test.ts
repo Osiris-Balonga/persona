@@ -11,14 +11,17 @@ const fullResponse = JSON.parse(
 const fieldsFrom = (query: string) => parsePeopleQuery(new URLSearchParams(query)).fields
 
 describe('public field selection', () => {
-  it('returns the full public person by default and excludes internal properties', () => {
+  it('returns standard fields by default and excludes internal properties', () => {
     const response = structuredClone(fullResponse)
     response.results[0].internalCatalogKey = 'private-key'
     response.results[0].address.internalSource = 'private-address'
     response.results[0].picture.internalSource = 'private-portrait'
     const projected = projectPeopleResponse(response)
 
-    expect(projected).toEqual(fullResponse)
+    const expected = structuredClone(fullResponse)
+    delete expected.results[0].ageGroup
+    delete expected.results[0].appearance
+    expect(projected).toEqual(expected)
     expect(projected.results[0]).not.toHaveProperty('internalCatalogKey')
     expect(projected.results[0].address).not.toHaveProperty('internalSource')
     expect(projected.results[0].picture).not.toHaveProperty('internalSource')

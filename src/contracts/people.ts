@@ -14,6 +14,11 @@ export const PeopleResponseSchema = Type.Object({
 
 export type PeopleResponse = Static<typeof PeopleResponseSchema>
 
+export const DefaultPeopleResponseSchema = Type.Object({
+  results: Type.Array(Type.Omit(PersonSchema, ['ageGroup', 'appearance']), { minItems: 1, maxItems: 100 }),
+  meta: PeopleResponseSchema.properties.meta,
+}, { $id: 'urn:persona:schema:default-people-response:v1', additionalProperties: false })
+
 const ProjectedPersonSchema = Type.Object({
   ...Type.Partial(PersonSchema).properties,
   address: Type.Optional(Type.Partial(AddressSchema)),

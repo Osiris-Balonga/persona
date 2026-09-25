@@ -18,7 +18,7 @@ describe('geographic catalog audit', () => {
       || Object.hasOwn(asiaCentralNames, row.country) || Object.hasOwn(asiaAdditionalNames, row.country))
     expect(rows).toHaveLength(38)
     expect(rows.every((row) => row.names.review === 'reviewed' && row.addresses.review === 'reviewed')).toBe(true)
-    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(35)
+    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(38)
     const asiaCodes = ['AE','AF','AM','AZ','BD','BH','BN','BT','CC','CN','GE','HK','ID','IL','IN','IQ','IR','JO','JP','KG','KH','KP','KR','KW','KZ','LA','LB','LK','MM','MN','MO','MV','MY','NP','OM','PH','PK','PS','QA','SA','SG','SY','TH','TJ','TM','TR','TW','UZ','VN','YE']
     expect(listCoverage().filter((row) => asiaCodes.includes(row.country) && row.addresses.review === 'reviewed')).toHaveLength(50)
     const pending = listCoverage().filter((row) => asiaCodes.includes(row.country)
@@ -31,7 +31,7 @@ describe('geographic catalog audit', () => {
       || Object.hasOwn(europeGenderedNames, row.country) || Object.hasOwn(europeIslandNames, row.country))
     expect(rows).toHaveLength(50)
     expect(rows.every((row) => row.addresses.review === 'reviewed')).toBe(true)
-    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(44)
+    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(50)
     const pendingNameRows = listCoverage().filter((row) => ['SJ', 'VA'].includes(row.country))
     expect(pendingNameRows.map((row) => row.addresses.review)).toEqual(['reviewed', 'reviewed'])
     expect(pendingNameRows.map((row) => row.names.review)).toEqual(['automated', 'automated'])
@@ -41,13 +41,13 @@ describe('geographic catalog audit', () => {
       || ['ET', 'MW'].includes(row.country))
     expect(rows).toHaveLength(58)
     expect(rows.every((row) => row.addresses.review === 'reviewed')).toBe(true)
-    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(36)
+    expect(rows.filter((row) => row.addresses.status === 'partial')).toHaveLength(58)
     expect(rows.filter((row) => row.addresses.status === 'partial'
       && !row.addresses.fallback)).toEqual([])
   })
   it('samples every resident-eligible ISO code and lists gaps without claiming manual review', () => {
     const report = auditGeographicData()
-    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.12', registryCodes: 249, eligibleCodes: 242,
+    expect(report).toMatchObject({ dataVersion: 'geo-2026-09-25.13', registryCodes: 249, eligibleCodes: 242,
       unavailableCodes: 7, profileEligibleCodes: 209, pendingNameReviewCodes: 33, sampledCodes: 242, errors: [] })
     expect(report.gaps.find((row) => row.country === 'CG')?.categories).toContain('addresses:partial')
     expect(report.gaps.find((row) => row.country === 'PN')?.categories).toContain('phone:pending')
