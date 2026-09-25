@@ -2,6 +2,8 @@ import type { City } from './cities.js'
 import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
 import { ethiopiaGivenNames } from './ethiopia-names.js'
 import { malawiNames } from './malawi-names.js'
+import { drawStreet } from './street-random.js'
+import { europeanStreetLineForCity, hasSyntheticEuropeanStreet } from './europe-street-data.js'
 
 type StreetStyle = 'french' | 'english' | 'portuguese' | 'spanish' | 'arabic' | 'somali' | 'swahili' | 'malagasy'
 
@@ -26,15 +28,8 @@ export function hasSyntheticAfricanStreet(country: string): boolean {
   return Object.hasOwn(africanStreetStyles, country)
 }
 
-function draw(key: string, salt: string, range: number): number {
-  let hash = 2166136261
-  for (const character of `${salt}:${key}`) {
-    hash = Math.imul(hash ^ character.charCodeAt(0), 16777619) >>> 0
-  }
-  hash = Math.imul(hash ^ (hash >>> 16), 0x7feb352d) >>> 0
-  hash = Math.imul(hash ^ (hash >>> 15), 0x846ca68b) >>> 0
-  hash = (hash ^ (hash >>> 16)) >>> 0
-  return hash % range
+export function hasSyntheticStreet(country: string): boolean {
+  return hasSyntheticAfricanStreet(country) || hasSyntheticEuropeanStreet(country)
 }
 
 function streetNames(country: string): readonly string[] {
@@ -65,16 +60,16 @@ function streetLabel(style: StreetStyle, name: string, variant: number): string 
 
 export function streetLineForCity(city: City, key: string): string | null {
   const style = africanStreetStyles[city.country]
-  if (!style) return null
+  if (!style) return europeanStreetLineForCity(city, key)
   const names = streetNames(city.country)
   if (!names.length) return null
-  const family = names[draw(key, `street-name:${city.country}`, names.length)]
+  const family = names[drawStreet(key, `street-name:${city.country}`, names.length)]
   const given = givenNames(city.country)
-  const first = given[draw(key, `street-given:${city.country}`, given.length)]
-  const name = draw(key, `street-person:${city.country}`, 3) === 0 || first === family
+  const first = given[drawStreet(key, `street-given:${city.country}`, given.length)]
+  const name = drawStreet(key, `street-person:${city.country}`, 3) === 0 || first === family
     ? family : `${first} ${family}`
-  const variant = draw(key, `street-form:${city.country}`, 3)
-  const number = draw(key, `building:${city.country}`, 240) + 1
+  const variant = drawStreet(key, `street-form:${city.country}`, 3)
+  const number = drawStreet(key, `building:${city.country}`, 240) + 1
   const street = streetLabel(style, name, variant)
   return style === 'english' ? `${number} ${street}` : `${number}, ${street}`
 }

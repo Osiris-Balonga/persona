@@ -16,6 +16,10 @@ describe('geographic source coverage', () => {
       fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),
     })
     expect(rows.find((row) => row.country === 'MW')?.addresses.supplementarySources).toContain('persona-policy')
+    expect(rows.find((row) => row.country === 'FR')?.addresses).toMatchObject({
+      fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),
+    })
+    expect(rows.find((row) => row.country === 'SJ')?.addresses.fallback).toContain('street-unavailable')
     expect(rows.find((row) => row.country === 'AU')?.phone).toMatchObject({ status: 'ingested', source: 'acma-fictional-numbers' })
     expect(rows.find((row) => row.country === 'CA')?.phone).toMatchObject({ status: 'ingested', source: 'crtc-fictional-numbers' })
     expect(rows.find((row) => row.country === 'US')?.phone).toMatchObject({ status: 'ingested', source: 'nanpa' })

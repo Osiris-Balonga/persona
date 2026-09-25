@@ -21,7 +21,7 @@ import { oceaniaTerritoryNames, isOceaniaTerritoryCountry } from './oceania-terr
 import { southAmericaReviewedNames, isSouthAmericaReviewedCountry } from './south-america-reviewed-names.js'
 import { southAmericaTerritoryNames, isSouthAmericaTerritoryCountry } from './south-america-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
-import { hasSyntheticAfricanStreet } from './street-data.js'
+import { hasSyntheticStreet } from './street-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
 
@@ -138,11 +138,11 @@ function addressCoverage(country: string): CoverageCell {
   if (rule.fallback) missing.push('global-format')
   if (rule.required.includes('S') && cities.some((city) => !city.region)) missing.push('region-unavailable')
   if (rule.required.includes('Z') && cities.some((city) => !postalCodeForCity(city))) missing.push('postal-code-unavailable')
-  if (hasSyntheticAfricanStreet(country)) missing.push('synthetic-street')
+  if (hasSyntheticStreet(country)) missing.push('synthetic-street')
   else missing.push('street-unavailable')
   const supplementarySources: GeographicSource[] = country === 'PN' ? ['upu-pitcairn'] : country === 'FK' ? ['upu-falkland']
     : cities.some((city) => postalCodeForCity(city)) ? ['geonames-postal'] : []
-  if (hasSyntheticAfricanStreet(country)) supplementarySources.push('persona-policy')
+  if (hasSyntheticStreet(country)) supplementarySources.push('persona-policy')
   return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
     fallback: missing.length ? missing.join(',') : null,
     review: addressReviewedCodes.has(country) ? 'reviewed' as const : 'automated' as const,

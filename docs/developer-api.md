@@ -6,7 +6,7 @@ Persona's public beta has one generation endpoint: `GET /people`. It needs no AP
 curl -i 'http://localhost:3000/people?country=MW&city=Lilongwe&age=27&count=2&seed=demo&asOf=2026-09-24&fields=firstName,lastName,age,ageGroup,address.city,picture.url'
 ```
 
-Production requests must use HTTPS. There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture` is currently `null` because no portrait has been approved. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for the African batch and remains `null` in other continents; it does not certify a deliverable address.
+Production requests must use HTTPS. There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture` is currently `null` because no portrait has been approved. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for the African and profile-enabled European batches and remains `null` elsewhere; it does not certify a deliverable address.
 
 ## Inputs
 
