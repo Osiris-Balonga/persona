@@ -122,6 +122,20 @@ export const geographicSources = {
     edition: '2026-09-25',
     sha256: '1d53617a2bf92d3af624e70dd978a43aeef91131a8ec81bd7ded656d4b5be37e',
   },
+  'wikidata-south-america-qlever-candidates': {
+    title: 'Wikidata South America name candidates via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-25',
+    sha256: 'eed673c6594b61d1c9bd4df671600d11b714afeafe2085dc81323ea2b25ed152',
+  },
+  'wikidata-south-america-birthplace-candidates': {
+    title: 'Wikidata South American territory name candidates by birth place via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-25',
+    sha256: '7c25edcc56b820f7c20880897ae94ddb6724b2cebf8ef6380a515efc35f00a2e',
+  },
   'faroe-name-statistics': {
     title: 'Statistics Faroe Islands 2024 resident given names',
     url: 'https://hagstova.fo/fo/tidindi/jakup-og-maria-vanligastu-novnini-i-foroyum',
@@ -342,6 +356,12 @@ export const geographicSources = {
     url: 'https://www.upu.int/UPU/media/upu/PostalEntitiesFiles/addressingUnit/pcnEn.pdf',
     license: 'Public postal format guidance (range fact)',
     edition: '2026-09-24',
+  },
+  'upu-falkland': {
+    title: 'UPU Falkland Islands single postcode and address format',
+    url: 'https://www.upu.int/UPU/media/upu/PostalEntitiesFiles/addressingUnit/flkEn.pdf',
+    license: 'Public postal format guidance (single-code fact)',
+    edition: '2026-09-25',
   },
   'persona-policy': {
     title: 'Persona V1 editorial selection policy',

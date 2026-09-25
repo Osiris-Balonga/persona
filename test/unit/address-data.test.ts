@@ -17,6 +17,8 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(postalCodeForCity(paris)).toMatch(/^75\d{3}$/)
     expect(postalCodeForCity(getCity('CG', 'Brazzaville')!)).toBeNull()
     expect(postalCodeForCity(getCity('AU', 'Sydney')!)).toBe('2000')
+    expect(postalCodeForCity(getCity('FK', 'Stanley')!)).toBe('FIQQ 1ZZ')
+    expect(postalCodeForCity(getCity('BR', 'São Paulo')!)).toBeNull()
   })
 
   it('keeps address components and country order coherent without inventing a postcode', () => {
@@ -39,6 +41,11 @@ describe('country address metadata and city-linked postcodes', () => {
     const pitcairn = fictionalAddress(getCity('PN', 'Adamstown')!, key)
     expect(pitcairn).toMatchObject({ line1: 'Example Place', postalCode: 'PCRN 1ZZ' })
     expect(pitcairn.formatted).toContain('Adamstown\nPCRN 1ZZ')
+    const saoPaulo = fictionalAddress(getCity('BR', 'São Paulo')!, key)
+    expect(saoPaulo.formatted).toContain('São Paulo-SP')
+    expect(saoPaulo.formatted).not.toContain('01000-000')
+    const falklands = fictionalAddress(getCity('FK', 'Stanley')!, key)
+    expect(falklands.formatted).toContain('Stanley\nFIQQ 1ZZ')
   })
 
   it('omits country postcode prefixes when a city has no verified postcode', () => {

@@ -18,7 +18,7 @@ describe('North American and Caribbean geographic review', () => {
   })
 
   it('keeps the worldwide geographic audit coherent', () => {
-    expect(auditGeographicData()).toMatchObject({ profileEligibleCodes: 195,
-      pendingNameReviewCodes: 47, sampledCodes: 242, errors: [] })
+    expect(auditGeographicData()).toMatchObject({ profileEligibleCodes: 209,
+      pendingNameReviewCodes: 33, sampledCodes: 242, errors: [] })
   })
 })
