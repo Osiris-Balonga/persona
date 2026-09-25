@@ -13,9 +13,9 @@ describe('geographic source coverage', () => {
       distributions: { status: 'partial', source: 'persona-policy', fallback: 'uniform-country,uniform-appearance' },
     })
     expect(rows.find((row) => row.country === 'CG')?.addresses).toMatchObject({
-      fallback: expect.stringContaining('street-unavailable'), supplementarySources: expect.arrayContaining(['congo-street-sample']),
+      fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),
     })
-    expect(rows.find((row) => row.country === 'MW')?.addresses.supplementarySources).toContain('malawi-street-sample')
+    expect(rows.find((row) => row.country === 'MW')?.addresses.supplementarySources).toContain('persona-policy')
     expect(rows.find((row) => row.country === 'AU')?.phone).toMatchObject({ status: 'ingested', source: 'acma-fictional-numbers' })
     expect(rows.find((row) => row.country === 'CA')?.phone).toMatchObject({ status: 'ingested', source: 'crtc-fictional-numbers' })
     expect(rows.find((row) => row.country === 'US')?.phone).toMatchObject({ status: 'ingested', source: 'nanpa' })

@@ -28,9 +28,9 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(us.formatted).toContain(`Washington, District of Columbia ${us.postalCode}`)
     const cg = fictionalAddress(getCity('CG', 'Brazzaville')!, key)
     expect(cg).toMatchObject({ city: 'Brazzaville', postalCode: null, country: 'CG' })
-    expect(cg.line1).toMatch(/^(?:\d{1,3}, )?(?:Rue Lékana|Rue Likouala|Rue Nkéni)$/)
+    expect(cg.line1).toMatch(/^\d{1,3}, (?:Rue|Avenue|Boulevard) .+$/)
     expect(cg.formatted).toContain(cg.line1!)
-    expect(fictionalAddress(getCity('SN', 'Dakar')!, key).line1).toBeNull()
+    expect(fictionalAddress(getCity('SN', 'Dakar')!, key).line1).toMatch(/^\d{1,3}, (?:Rue|Avenue|Boulevard) .+$/)
     expect(cg.formatted).not.toContain('null')
     const mozambique = fictionalAddress(getCity('MZ', 'Maputo')!, key)
     expect(mozambique).toMatchObject({ city: 'Maputo', region: 'Maputo City', postalCode: null })
@@ -49,24 +49,19 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(falklands.formatted).toContain('Stanley\nFIQQ 1ZZ')
   })
 
-  it('uses verified Lilongwe roads with a locally plausible area and varies the line by seed', () => {
+  it('uses a Malawian street form and varies the line by seed', () => {
     const lilongwe = getCity('MW', 'Lilongwe')!
     const samples = Array.from({ length: 12 }, (_, index) => fictionalAddress(lilongwe, index.toString(16).padEnd(64, '0')))
-    expect(samples.every((address) => /^(?:Area 13, Presidential Way|Area 10, Chayamba Road|Area 4, Mzimba Street)$/.test(address.line1 ?? ''))).toBe(true)
+    expect(samples.every((address) => /^\d{1,3} .+ (?:Road|Street|Avenue)$/.test(address.line1 ?? ''))).toBe(true)
     expect(new Set(samples.map((address) => address.line1)).size).toBeGreaterThan(1)
     expect(samples.every((address) => address.formatted.startsWith(`${address.line1}\n`))).toBe(true)
   })
 
-  it('keeps additional Congo street samples tied to their actual city', () => {
+  it('keeps synthetic Congo lines in the French street form across cities', () => {
     const key = 'fedcba9876543210'.repeat(4)
-    for (const [city, road] of [
-      ['Nkayi', 'Avenue de la République'],
-      ['Impfondo', 'Avenue Denis Sassou Nguesso'],
-      ['Owando', 'Avenue des Écoles'],
-      ['Sibiti', 'Avenue Secra'],
-    ] as const) {
+    for (const city of ['Nkayi', 'Impfondo', 'Owando', 'Sibiti'] as const) {
       const address = fictionalAddress(getCity('CG', city)!, key)
-      expect(address.line1).toMatch(new RegExp(`^\\d{1,3}, ${road}$`, 'i'))
+      expect(address.line1).toMatch(/^\d{1,3}, (?:Rue|Avenue|Boulevard) .+$/)
       expect(address.formatted).toContain(`${address.line1}\n${city}`)
     }
   })

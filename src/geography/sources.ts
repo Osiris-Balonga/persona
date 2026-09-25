@@ -405,30 +405,6 @@ export const geographicSources = {
     license: 'Public numbering guidance (area-code fact)',
     edition: '2026-09-25',
   },
-  'congo-street-sample': {
-    title: 'Banque Congolaise de l’Habitat agency street names',
-    url: 'https://www.bch.cg/agences/',
-    license: 'Public street-name facts (small sample)',
-    edition: '2026-09-25',
-  },
-  'congo-postal-bank-streets': {
-    title: 'Banque Postale du Congo agency street names',
-    url: 'https://banquepostale.cg/agences/',
-    license: 'Public street-name facts (small sample)',
-    edition: '2026-09-25',
-  },
-  'congo-mtn-streets': {
-    title: 'MTN Congo store street names',
-    url: 'https://www.mtn.cg/stores/',
-    license: 'Public street-name facts (small sample)',
-    edition: '2026-09-25',
-  },
-  'malawi-street-sample': {
-    title: 'Lilongwe City Council roads and area sample',
-    url: 'https://www.lcc.mw/wp-content/uploads/2023/11/Traffic-Roads-and-Safety-By-laws-2023-DRAFT.pdf',
-    license: 'Public street-name facts (small sample)',
-    edition: '2023',
-  },
 } as const
 
 export type GeographicSource = keyof typeof geographicSources

@@ -35,7 +35,7 @@ describe('GET /people', () => {
       expect(Value.Check(DefaultPeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)
       expect(body.results[0]).toMatchObject({ country: 'MW', city: 'Lilongwe', age: 14,
-        gender: 'female', picture: null, address: { line1: expect.stringMatching(/^Area \d+, /) } })
+        gender: 'female', picture: null, address: { line1: expect.stringMatching(/^\d{1,3} .+ (?:Road|Street|Avenue)$/) } })
       expect(body.results[0]).not.toHaveProperty('ageGroup')
       expect(body.results[0]).not.toHaveProperty('appearance')
       expect(body.results[0].id).not.toBe(body.results[1].id)
