@@ -8,7 +8,7 @@
 | --- | --- |
 | `count` | Integer from 1 to 100; defaults to 1 |
 | `gender` | `male` or `female` |
-| `age` | Integer from 0 to 120; the server derives `ageGroup` |
+| `age` | Integer from 6 to 120; the server derives `ageGroup` |
 | `ageGroup` | `child`, `teen`, `adult`, or `senior`; must agree with `age` if both are supplied |
 | `appearance` | Lowercase hyphenated label, at most 64 characters; supported labels come from the versioned taxonomy |
 | `country` | Uppercase two-letter code from the versioned registry; beta generation requires an available local name pool |
@@ -19,7 +19,7 @@
 
 The encoded query string is limited to 2,048 characters. Unknown or repeated parameters are rejected. Explicit country, appearance, gender, and age constraints take precedence over probabilistic selection. The [geographic registry and beta availability policy](geographic-data.md) validate assigned codes, reviewed local name pools, sampled city membership, and the versioned appearance vocabulary.
 
-The generator resolves shared country, city, appearance, gender, and numeric age choices before names or contact details. Without an age filter it selects uniformly among integer ages 0–120; with `ageGroup` it selects uniformly within that group's numeric bounds. These are reproducible editorial rules, not demographic estimates. A birth date is then chosen so the numeric age is correct at `asOf`, including around leap days. The generated email uses the reserved `.test` domain ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)); phone stays `null` outside verified fictional ranges. An approved compatible portrait is selected when the catalog contains one; otherwise `picture` is `null`.
+The generator resolves shared country, city, appearance, gender, and numeric age choices before names or contact details. Without an age filter it selects uniformly among integer ages 6–120; with `ageGroup` it selects uniformly within that group's numeric bounds. Within one response, repeated full names for the same country are retried with bounded independent draws; a small reviewed name pool can still cause repetitions. These are reproducible editorial rules, not demographic estimates. A birth date is then chosen so the numeric age is correct at `asOf`, including around leap days. The generated email uses the reserved `.test` domain ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)); phone stays `null` outside verified fictional ranges. An approved compatible portrait is selected when the catalog contains one; otherwise `picture` is `null`.
 
 ### Selecting fields
 

@@ -11,7 +11,7 @@ type GenerationContext = ReturnType<typeof createGenerationContext>
 type AgeGroup = Person['ageGroup']
 
 const ageRanges: Record<AgeGroup, readonly [number, number]> = {
-  child: [0, 12], teen: [13, 17], adult: [18, 64], senior: [65, 120],
+  child: [6, 12], teen: [13, 17], adult: [18, 64], senior: [65, 120],
 }
 
 function draw(key: string, range: number): number {
@@ -45,18 +45,18 @@ function birthDateForAge(age: number, asOf: string, key: string): string {
 export function resolveAbstractPerson(query: PeopleQuery, context: GenerationContext, index: number) {
   const geography = resolveGeographicContext(query, context.componentKey(index, 'geography'))
   const gender = query.gender ?? (draw(context.componentKey(index, 'gender'), 2) === 0 ? 'female' : 'male')
-  const [minimum, maximum] = query.ageGroup === undefined ? [0, 120] : ageRanges[query.ageGroup]
+  const [minimum, maximum] = query.ageGroup === undefined ? [6, 120] : ageRanges[query.ageGroup]
   const age = query.age ?? minimum + draw(context.componentKey(index, 'age'), maximum - minimum + 1)
   const nameContext = nameContextForCountry(geography.country.code)
   if (!nameContext) throw new RangeError('Country has no name context')
   return { ...geography, nameContext, gender, age, ageGroup: ageGroupForAge(age) }
 }
 
-export function generatePersonWithoutPortrait(query: PeopleQuery, context: GenerationContext, index: number): Omit<Person, 'picture'> {
+export function generatePersonWithoutPortrait(query: PeopleQuery, context: GenerationContext, index: number, nameAttempt = 0): Omit<Person, 'picture'> {
   const resolved = resolveAbstractPerson(query, context, index)
   const country = resolved.country.code
   const city = resolved.city.name
-  const name = selectName(country, resolved.gender, context.componentKey(index, 'identity'))
+  const name = selectName(country, resolved.gender, context.componentKey(index, nameAttempt === 0 ? 'identity' : `identity-${nameAttempt}`))
   return {
     id: `per_${context.componentKey(index, 'id').slice(0, 24)}`,
     firstName: name.firstName,
