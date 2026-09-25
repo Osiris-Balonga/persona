@@ -9,6 +9,11 @@ describe('GET /people query contract', () => {
     expect(parse('')).toEqual({ count: 1, asOf: '2026-09-25' })
   })
 
+  it('accepts an explicit zero-filled phone mode and rejects unsupported values', () => {
+    expect(parse('phoneMode=zero').phoneMode).toBe('zero')
+    expect(() => parse('phoneMode=reserved')).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'phoneMode' }))
+  })
+
   it('preserves explicit filters and derives the age group from numeric age', () => {
     expect(parse('count=20&gender=female&age=14&country=MW&city=Lilongwe&seed=school-demo&asOf=2026-09-24&fields=firstName,city,picture.url')).toEqual({
       count: 20,

@@ -1,4 +1,6 @@
 import { getCity } from './cities.js'
+import { getCountry } from './countries.js'
+import { mobilePhoneExamples } from './phone-example-data.js'
 
 const nanpAreas: Record<string, Readonly<Record<string, string>>> = {
   US: {
@@ -38,7 +40,7 @@ export function fictionalEmail(firstName: string, lastName: string, key: string)
   return `${name}.${key.slice(0, 12)}@example.test`
 }
 
-export function fictionalPhone(country: string, city: string, key: string): string | null {
+export function fictionalPhone(country: string, city: string, key: string, mode?: 'zero'): string | null {
   const index = indexFromKey(key, 10_000)
   if (!getCity(country, city)) return null
   if (country === 'US' || country === 'CA') {
@@ -65,5 +67,14 @@ export function fictionalPhone(country: string, city: string, key: string): stri
   if (country === 'IE') return `+353890110${String(index % 1_000).padStart(3, '0')}`
   if (country === 'SE') return `+467017406${String(5 + index % 95).padStart(2, '0')}`
   if (country === 'NO') return `+476805${String(index).padStart(4, '0')}`
-  return null
+  const example = mobilePhoneExamples[country]
+  const callingCode = getCountry(country)?.callingCode
+  if (!example || !callingCode) return null
+  const prefixLength = Math.max(2, example.length - 7)
+  const prefix = example.slice(0, prefixLength)
+  const suffixLength = example.length - prefixLength
+  if (mode === 'zero') return `${callingCode}${prefix}${'0'.repeat(suffixLength)}`
+  const digits = Array.from({ length: suffixLength }, (_, position) =>
+    String(Number.parseInt(key.slice(12 + position * 2, 14 + position * 2), 16) % 10)).join('')
+  return `${callingCode}${prefix}${digits}`
 }

@@ -4,10 +4,10 @@ import { fictionalPhone } from '../../src/geography/fictional-contact.js'
 import { listCities } from '../../src/geography/cities.js'
 
 describe('geographic source coverage', () => {
-  it('marks phone coverage only when every sampled city has a reserved-range result', () => {
+  it('marks phone coverage when every sampled city has a number', () => {
     const key = '0123456789abcdef'.repeat(4)
     for (const row of listCoverage().filter((entry) => entry.generation === 'eligible')) {
-      const hasPhone = row.phone.status === 'ingested'
+      const hasPhone = row.phone.status === 'ingested' || row.phone.status === 'partial'
       for (const city of listCities(row.country)) {
         expect(fictionalPhone(row.country, city.name, key) !== null, `${row.country}/${city.name}`).toBe(hasPhone)
       }
@@ -56,7 +56,7 @@ describe('geographic source coverage', () => {
     ]) {
       expect(rows.find((row) => row.country === country)?.phone).toMatchObject({ status: 'ingested', source })
     }
-    expect(rows.find((row) => row.country === 'CG')?.phone.status).toBe('pending')
+    expect(rows.find((row) => row.country === 'CG')?.phone).toMatchObject({ status: 'partial', source: 'libphonenumber-js', fallback: 'local-format-unreserved' })
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },
     })

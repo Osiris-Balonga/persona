@@ -6,7 +6,7 @@ export interface DataVersions {
   catalogVersion: string
 }
 
-const generationVersion = 'v3'
+const generationVersion = 'v4'
 
 function digest(parts: readonly unknown[]): string {
   return createHash('sha256').update(JSON.stringify(parts)).digest('hex')
@@ -55,6 +55,7 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     ...generationInputs(query, versions, query.seed),
     query.count,
     query.fields ?? null,
+    query.phoneMode ?? null,
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

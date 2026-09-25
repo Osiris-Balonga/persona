@@ -9,6 +9,23 @@ import { canGenerateProfile } from '../../src/geography/profile-availability.js'
 const base = '/people?country=MW&city=Lilongwe&age=14&gender=female&appearance=east-asian&seed=route-demo&asOf=2026-09-24'
 
 describe('GET /people', () => {
+  it('supports local-format and zero-filled phone output without changing the person', async () => {
+    const app = buildApp()
+    try {
+      const url = '/people?country=CG&city=Brazzaville&seed=phone-mode&asOf=2026-09-24'
+      const normal = await app.inject({ method: 'GET', url })
+      const zero = await app.inject({ method: 'GET', url: `${url}&phoneMode=zero` })
+      expect(normal.statusCode).toBe(200)
+      expect(zero.statusCode).toBe(200)
+      const normalPerson = normal.json().results[0]
+      const zeroPerson = zero.json().results[0]
+      expect(normalPerson.phone).toMatch(/^\+24206\d{7}$/)
+      expect(zeroPerson.phone).toBe('+242060000000')
+      expect({ ...normalPerson, phone: null }).toEqual({ ...zeroPerson, phone: null })
+      expect(normal.headers.etag).not.toBe(zero.headers.etag)
+    } finally { await app.close() }
+  })
+
   it('returns a valid person for every beta-available country code', async () => {
     const app = buildApp({ rateLimitMax: 300 })
     try {
@@ -30,7 +47,7 @@ describe('GET /people', () => {
       const first = await app.inject({ method: 'GET', url: `${base}&count=2` })
       expect(first.statusCode).toBe(200)
       expect(first.headers['cache-control']).toBe('private, no-cache')
-      expect(first.headers.etag).toMatch(/^"persona-v3-/)
+      expect(first.headers.etag).toMatch(/^"persona-v4-/)
       const body = first.json()
       expect(Value.Check(DefaultPeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)

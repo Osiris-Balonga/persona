@@ -30,7 +30,7 @@ describe('generation core', () => {
       expect(result.ageGroup).toBe(age <= 12 ? 'child' : age <= 17 ? 'teen' : age < 65 ? 'adult' : 'senior')
       expect(result.fullName).toBe(`${result.firstName} ${result.lastName}`)
       expect(result.email).toMatch(/@example\.test$/)
-      expect(result.phone).toBeNull()
+      expect(result.phone).toMatch(/^\+265\d{9}$/)
       expect(result.address.country).toBe('MW')
       expect(result.address.city).toBe(result.city)
       expect(result).not.toHaveProperty('picture')
