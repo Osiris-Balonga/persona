@@ -16,6 +16,8 @@ import { asiaCentralNames, isAsiaCentralCountry } from './asia-central-names.js'
 import { asiaAdditionalNames, isAsiaAdditionalCountry } from './asia-additional-names.js'
 import { northAmericaReviewedNames, isNorthAmericaReviewedCountry } from './north-america-reviewed-names.js'
 import { northAmericaTerritoryNames, isNorthAmericaTerritoryCountry } from './north-america-territory-names.js'
+import { oceaniaReviewedNames, isOceaniaReviewedCountry } from './oceania-reviewed-names.js'
+import { oceaniaTerritoryNames, isOceaniaTerritoryCountry } from './oceania-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity, streetLanguageForCountry } from './address-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
@@ -98,15 +100,30 @@ const pendingNorthAmericaNameReviewNotes: Record<string, string> = {
   TC: 'Three female birth-place candidates; local sample too sparse',
   VG: 'Five female birth-place candidates; local sample too sparse',
 }
+const pendingOceaniaNameReviewNotes: Record<string, string> = {
+  CX: 'No country- or birth-place-linked name candidates',
+  KI: 'Female given-name candidates too sparse for a coherent local pool',
+  MH: 'Female and second-name candidates need wider Marshallese evidence',
+  MP: 'Birth-place female candidates too sparse for a local pool',
+  NF: 'Female and male candidates too sparse for a local pool',
+  NU: 'Female and second-name candidates too sparse for a local pool',
+  PN: 'Small resident population and very sparse male and family candidates',
+  TK: 'Only two female and one male birth-place candidates',
+  TO: 'Female given-name candidates need wider Tongan evidence',
+  TV: 'Only five female citizenship candidates and one birth-place candidate',
+  WF: 'Female and family candidates too sparse for a local pool',
+}
 
 const addressReviewedCodes = new Set([
   ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
   ...Object.keys(europeIslandNames), 'SJ', 'VA', ...Object.keys(asiaReviewedNames), ...Object.keys(asiaWestNames),
   ...Object.keys(asiaEastNames), ...Object.keys(asiaCentralNames), ...Object.keys(asiaAdditionalNames),
   ...Object.keys(northAmericaReviewedNames), ...Object.keys(northAmericaTerritoryNames),
+  ...Object.keys(oceaniaReviewedNames), ...Object.keys(oceaniaTerritoryNames),
   'AZ', 'BN', 'BT', 'CC', 'ID', 'KG', 'KH', 'KZ', 'LA', 'MM', 'MN', 'MO', 'MV', 'MY', 'OM', 'QA',
   'SG', 'TH', 'TJ', 'TM', 'UZ',
   'AI', 'BL', 'BQ', 'KY', 'MF', 'MS', 'PM', 'SX', 'TC', 'VG',
+  'CX', 'KI', 'MH', 'MP', 'NF', 'NU', 'PN', 'TK', 'TO', 'TV', 'WF',
 ])
 
 function addressCoverage(country: string): CoverageCell {
@@ -139,7 +156,9 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(isNorthAmericaReviewedCountry(country.code)
+      names: !resident ? notApplicable() : nameContext ? { ...ingested(isOceaniaReviewedCountry(country.code)
+        ? 'wikidata-oceania-qlever-candidates' : isOceaniaTerritoryCountry(country.code)
+          ? 'wikidata-oceania-birthplace-candidates' : isNorthAmericaReviewedCountry(country.code)
         ? 'wikidata-north-america-qlever-candidates' : isNorthAmericaTerritoryCountry(country.code)
           ? 'wikidata-north-america-birthplace-candidates' : isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code) || isAsiaCentralCountry(country.code) || isAsiaAdditionalCountry(country.code)
         ? 'wikidata-asia-qlever-candidates' : isEuropeIslandCountry(country.code)
@@ -148,7 +167,8 @@ export function listCoverage() {
         fallback: nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
         reviewNote: pendingAsianNameReviewNotes[country.code]
-          ?? pendingNorthAmericaNameReviewNotes[country.code] ?? null,
+          ?? pendingNorthAmericaNameReviewNotes[country.code]
+          ?? pendingOceaniaNameReviewNotes[country.code] ?? null,
         supplementarySources: isEuropeGenderedCountry(country.code)
           ? ['wikidata-europe-gendered-families'] : country.code === 'FO' && isEuropeIslandCountry(country.code)
             ? ['faroe-name-statistics'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
@@ -224,7 +244,9 @@ export function validateGeographicData(): string[] {
                                 : isAsiaCentralCountry(country.code) ? asiaCentralNames[country.code]
                                   : isAsiaAdditionalCountry(country.code) ? asiaAdditionalNames[country.code]
                                     : isNorthAmericaReviewedCountry(country.code) ? northAmericaReviewedNames[country.code]
-                                      : isNorthAmericaTerritoryCountry(country.code) ? northAmericaTerritoryNames[country.code] : namePoolData[pool.locale]
+                                      : isNorthAmericaTerritoryCountry(country.code) ? northAmericaTerritoryNames[country.code]
+                                        : isOceaniaReviewedCountry(country.code) ? oceaniaReviewedNames[country.code]
+                                          : isOceaniaTerritoryCountry(country.code) ? oceaniaTerritoryNames[country.code] : namePoolData[pool.locale]
         if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
           || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)

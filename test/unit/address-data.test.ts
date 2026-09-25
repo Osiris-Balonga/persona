@@ -16,6 +16,7 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(postalCodeForCity(washington)).toMatch(/^\d{5}$/)
     expect(postalCodeForCity(paris)).toMatch(/^75\d{3}$/)
     expect(postalCodeForCity(getCity('CG', 'Brazzaville')!)).toBeNull()
+    expect(postalCodeForCity(getCity('AU', 'Sydney')!)).toBe('2000')
   })
 
   it('keeps address components and country order coherent without inventing a postcode', () => {
