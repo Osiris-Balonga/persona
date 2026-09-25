@@ -23,6 +23,10 @@ describe('geographic source coverage', () => {
       fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),
     })
     expect(rows.find((row) => row.country === 'BT')?.addresses.fallback).toContain('synthetic-street')
+    expect(rows.find((row) => row.country === 'BR')?.addresses.fallback).toContain('synthetic-street')
+    expect(rows.find((row) => row.country === 'CA')?.addresses.fallback).toContain('synthetic-street')
+    expect(rows.find((row) => row.country === 'AU')?.addresses.fallback).toContain('synthetic-street')
+    expect(rows.find((row) => row.country === 'PF')?.addresses.fallback).toContain('synthetic-street')
     expect(rows.find((row) => row.country === 'BN')?.addresses.fallback).toContain('street-unavailable')
     expect(rows.find((row) => row.country === 'SJ')?.addresses.fallback).toContain('street-unavailable')
     expect(rows.find((row) => row.country === 'AU')?.phone).toMatchObject({ status: 'ingested', source: 'acma-fictional-numbers' })

@@ -5,6 +5,8 @@ import { malawiNames } from './malawi-names.js'
 import { drawStreet } from './street-random.js'
 import { europeanStreetLineForCity, hasSyntheticEuropeanStreet } from './europe-street-data.js'
 import { asianStreetLineForCity, hasSyntheticAsianStreet } from './asia-street-data.js'
+import { americanStreetLineForCity, hasSyntheticAmericanStreet } from './america-street-data.js'
+import { oceanianStreetLineForCity, hasSyntheticOceanianStreet } from './oceania-street-data.js'
 
 type StreetStyle = 'french' | 'english' | 'portuguese' | 'spanish' | 'arabic' | 'somali' | 'swahili' | 'malagasy'
 
@@ -30,7 +32,9 @@ export function hasSyntheticAfricanStreet(country: string): boolean {
 }
 
 export function hasSyntheticStreet(country: string): boolean {
-  return hasSyntheticAfricanStreet(country) || hasSyntheticEuropeanStreet(country) || hasSyntheticAsianStreet(country)
+  return hasSyntheticAfricanStreet(country) || hasSyntheticEuropeanStreet(country)
+    || hasSyntheticAsianStreet(country) || hasSyntheticAmericanStreet(country)
+    || hasSyntheticOceanianStreet(country)
 }
 
 function streetNames(country: string): readonly string[] {
@@ -62,6 +66,7 @@ function streetLabel(style: StreetStyle, name: string, variant: number): string 
 export function streetLineForCity(city: City, key: string): string | null {
   const style = africanStreetStyles[city.country]
   if (!style) return europeanStreetLineForCity(city, key) ?? asianStreetLineForCity(city, key)
+    ?? americanStreetLineForCity(city, key) ?? oceanianStreetLineForCity(city, key)
   const names = streetNames(city.country)
   if (!names.length) return null
   const family = names[drawStreet(key, `street-name:${city.country}`, names.length)]
