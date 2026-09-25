@@ -21,7 +21,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - run: npm run typecheck:worker
       - run: npm run test:unit
       - run: npm run test:integration
       - run: npm run test:e2e
       - run: npm run build
+      - run: npm run build:worker
