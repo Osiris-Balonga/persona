@@ -21,6 +21,7 @@ import { oceaniaTerritoryNames, isOceaniaTerritoryCountry } from './oceania-terr
 import { southAmericaReviewedNames, isSouthAmericaReviewedCountry } from './south-america-reviewed-names.js'
 import { southAmericaTerritoryNames, isSouthAmericaTerritoryCountry } from './south-america-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
+import { hasReviewedStreet } from './street-data.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
 
@@ -137,12 +138,15 @@ function addressCoverage(country: string): CoverageCell {
   if (rule.fallback) missing.push('global-format')
   if (rule.required.includes('S') && cities.some((city) => !city.region)) missing.push('region-unavailable')
   if (rule.required.includes('Z') && cities.some((city) => !postalCodeForCity(city))) missing.push('postal-code-unavailable')
-  missing.push('street-unavailable')
+  if (cities.some((city) => !hasReviewedStreet(city))) missing.push('street-unavailable')
+  const supplementarySources: GeographicSource[] = country === 'PN' ? ['upu-pitcairn'] : country === 'FK' ? ['upu-falkland']
+    : cities.some((city) => postalCodeForCity(city)) ? ['geonames-postal'] : []
+  if (country === 'CG') supplementarySources.push('congo-street-sample', 'congo-postal-bank-streets', 'congo-mtn-streets')
+  if (country === 'MW') supplementarySources.push('malawi-street-sample')
   return { ...(missing.length ? partial('libaddressinput-data') : ingested('libaddressinput-data')),
     fallback: missing.length ? missing.join(',') : null,
     review: addressReviewedCodes.has(country) ? 'reviewed' as const : 'automated' as const,
-    supplementarySources: country === 'PN' ? ['upu-pitcairn'] : country === 'FK' ? ['upu-falkland']
-      : cities.some((city) => postalCodeForCity(city)) ? ['geonames-postal'] : [],
+    supplementarySources,
   }
 }
 
@@ -179,7 +183,10 @@ export function listCoverage() {
             ? ['faroe-name-statistics'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
       } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
-      phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom') : country.code === 'US' ? partial('nanpa') : pending(),
+      phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom')
+        : country.code === 'AU' ? ingested('acma-fictional-numbers')
+          : country.code === 'CA' ? { ...ingested('crtc-fictional-numbers'), supplementarySources: ['cnac-area-codes'] }
+            : country.code === 'US' ? { ...ingested('nanpa'), supplementarySources: ['nanpa-area-codes'] } : pending(),
       distributions: resident ? { ...partial('persona-policy'),
         fallback: 'uniform-country,uniform-appearance', supplementarySources: ['geonames'] } : notApplicable(),
       portraits: resident ? pending() : notApplicable(),

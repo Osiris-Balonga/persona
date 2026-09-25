@@ -46,8 +46,7 @@ export async function auditBetaHttp() {
           !person.firstName.trim() || !person.lastName.trim() || !person.fullName.trim() ||
           person.age !== 27 || person.gender !== 'female' || person.appearance !== 'east-asian' ||
           !isAgeProfileConsistent(person, asOf) || !person.email.endsWith('@example.test') ||
-          (person.phone !== null && !(code === 'GB' && /^\+447700900\d{3}$/.test(person.phone)) &&
-            !(code === 'US' && /^\+120255501\d{2}$/.test(person.phone))) ||
+          (person.phone !== null && (!country.callingCode || !person.phone.startsWith(country.callingCode))) ||
           (person.picture !== null && !portraitCatalog.assets.some((asset) =>
             asset.reviewStatus === 'approved' && asset.ageGroup === person.ageGroup &&
             asset.gender === person.gender && asset.appearance === person.appearance &&

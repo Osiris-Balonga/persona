@@ -381,6 +381,54 @@ export const geographicSources = {
     license: 'Public numbering guidance (range fact)',
     edition: '2026-09-24',
   },
+  'acma-fictional-numbers': {
+    title: 'ACMA phone numbers for creative works',
+    url: 'https://www.acma.gov.au/phone-numbers-use-tv-shows-films-and-creative-works',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2026-09-25',
+  },
+  'crtc-fictional-numbers': {
+    title: 'CRTC decision 2017-203 on Canadian 555 numbers',
+    url: 'https://crtc.gc.ca/eng/archive/2017/2017-203.htm',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2017-06-20',
+  },
+  'cnac-area-codes': {
+    title: 'Canadian Numbering Administrator exchange area listing',
+    url: 'https://cnac.ca/reference_data/canadian_exchange_area_listing.htm',
+    license: 'Public numbering guidance (area-code fact)',
+    edition: '2026-09-25',
+  },
+  'nanpa-area-codes': {
+    title: 'NANPA United States area-code maps',
+    url: 'https://www.nanpa.com/resources/area-code-maps',
+    license: 'Public numbering guidance (area-code fact)',
+    edition: '2026-09-25',
+  },
+  'congo-street-sample': {
+    title: 'Banque Congolaise de l’Habitat agency street names',
+    url: 'https://www.bch.cg/agences/',
+    license: 'Public street-name facts (small sample)',
+    edition: '2026-09-25',
+  },
+  'congo-postal-bank-streets': {
+    title: 'Banque Postale du Congo agency street names',
+    url: 'https://banquepostale.cg/agences/',
+    license: 'Public street-name facts (small sample)',
+    edition: '2026-09-25',
+  },
+  'congo-mtn-streets': {
+    title: 'MTN Congo store street names',
+    url: 'https://www.mtn.cg/stores/',
+    license: 'Public street-name facts (small sample)',
+    edition: '2026-09-25',
+  },
+  'malawi-street-sample': {
+    title: 'Lilongwe City Council roads and area sample',
+    url: 'https://www.lcc.mw/wp-content/uploads/2023/11/Traffic-Roads-and-Safety-By-laws-2023-DRAFT.pdf',
+    license: 'Public street-name facts (small sample)',
+    edition: '2023',
+  },
 } as const
 
 export type GeographicSource = keyof typeof geographicSources

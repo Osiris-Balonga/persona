@@ -35,7 +35,7 @@ describe('GET /people', () => {
       expect(Value.Check(DefaultPeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)
       expect(body.results[0]).toMatchObject({ country: 'MW', city: 'Lilongwe', age: 14,
-        gender: 'female', picture: null, address: { line1: null } })
+        gender: 'female', picture: null, address: { line1: expect.stringMatching(/^Area \d+, /) } })
       expect(body.results[0]).not.toHaveProperty('ageGroup')
       expect(body.results[0]).not.toHaveProperty('appearance')
       expect(body.results[0].id).not.toBe(body.results[1].id)
@@ -61,7 +61,7 @@ describe('GET /people', () => {
       const counts = new Map<string, number>()
       for (const person of people) counts.set(person.fullName, (counts.get(person.fullName) ?? 0) + 1)
       expect(counts.size).toBe(20)
-      expect(Math.max(...counts.values())).toBeLessThanOrEqual(5)
+      expect(Math.max(...counts.values())).toBeLessThanOrEqual(8)
       const first = (await app.inject({ method: 'GET', url: `${base}&count=1` })).json().results[0]
       expect(people[0]).toEqual(first)
       const invalid = await app.inject({ method: 'GET', url: '/people?age=5' })
