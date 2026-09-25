@@ -22,6 +22,7 @@ import { southAmericaReviewedNames, isSouthAmericaReviewedCountry } from './sout
 import { southAmericaTerritoryNames, isSouthAmericaTerritoryCountry } from './south-america-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { hasSyntheticStreet } from './street-data.js'
+import { nanpTerritoryAreas } from './fictional-contact.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
 
@@ -186,7 +187,12 @@ export function listCoverage() {
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom')
         : country.code === 'AU' ? ingested('acma-fictional-numbers')
           : country.code === 'CA' ? { ...ingested('crtc-fictional-numbers'), supplementarySources: ['cnac-area-codes'] }
-            : country.code === 'US' ? { ...ingested('nanpa'), supplementarySources: ['nanpa-area-codes'] } : pending(),
+            : country.code === 'US' ? { ...ingested('nanpa'), supplementarySources: ['nanpa-area-codes'] }
+              : nanpTerritoryAreas[country.code] ? { ...ingested('nanpa'), supplementarySources: ['nanpa-territory-areas'] }
+                : country.code === 'FR' ? ingested('arcep-fictional-numbers')
+                  : country.code === 'DE' ? ingested('bnetza-drama-numbers')
+                    : country.code === 'IE' ? ingested('comreg-drama-numbers')
+                      : country.code === 'SE' ? ingested('pts-fictional-numbers') : pending(),
       distributions: resident ? { ...partial('persona-policy'),
         fallback: 'uniform-country,uniform-appearance', supplementarySources: ['geonames'] } : notApplicable(),
       portraits: resident ? pending() : notApplicable(),

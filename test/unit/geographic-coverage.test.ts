@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { listCoverage, validateGeographicData } from '../../src/geography/coverage.js'
+import { fictionalPhone } from '../../src/geography/fictional-contact.js'
+import { listCities } from '../../src/geography/cities.js'
 
 describe('geographic source coverage', () => {
+  it('marks phone coverage only when every sampled city has a reserved-range result', () => {
+    const key = '0123456789abcdef'.repeat(4)
+    for (const row of listCoverage().filter((entry) => entry.generation === 'eligible')) {
+      const hasPhone = row.phone.status === 'ingested'
+      for (const city of listCities(row.country)) {
+        expect(fictionalPhone(row.country, city.name, key) !== null, `${row.country}/${city.name}`).toBe(hasPhone)
+      }
+    }
+  })
   it('tracks each assigned code and makes incomplete product data explicit', () => {
     const rows = listCoverage()
     expect(rows).toHaveLength(249)
@@ -32,6 +43,19 @@ describe('geographic source coverage', () => {
     expect(rows.find((row) => row.country === 'AU')?.phone).toMatchObject({ status: 'ingested', source: 'acma-fictional-numbers' })
     expect(rows.find((row) => row.country === 'CA')?.phone).toMatchObject({ status: 'ingested', source: 'crtc-fictional-numbers' })
     expect(rows.find((row) => row.country === 'US')?.phone).toMatchObject({ status: 'ingested', source: 'nanpa' })
+    for (const country of ['AG', 'AI', 'AS', 'BB', 'BM', 'BS', 'DM', 'DO', 'GD', 'GU', 'JM', 'KN',
+      'KY', 'LC', 'MP', 'MS', 'PR', 'SX', 'TC', 'TT', 'VC', 'VG', 'VI']) {
+      expect(rows.find((row) => row.country === country)?.phone).toMatchObject({
+        status: 'ingested', source: 'nanpa', supplementarySources: ['nanpa-territory-areas'],
+      })
+    }
+    for (const [country, source] of [
+      ['FR', 'arcep-fictional-numbers'], ['DE', 'bnetza-drama-numbers'],
+      ['IE', 'comreg-drama-numbers'], ['SE', 'pts-fictional-numbers'],
+    ]) {
+      expect(rows.find((row) => row.country === country)?.phone).toMatchObject({ status: 'ingested', source })
+    }
+    expect(rows.find((row) => row.country === 'CG')?.phone.status).toBe('pending')
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },
     })

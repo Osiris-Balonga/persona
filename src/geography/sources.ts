@@ -405,6 +405,36 @@ export const geographicSources = {
     license: 'Public numbering guidance (area-code fact)',
     edition: '2026-09-25',
   },
+  'nanpa-territory-areas': {
+    title: 'NANPA country and territory NPA map',
+    url: 'https://www.nanpa.com/resources/area-code-map/territories',
+    license: 'Public numbering guidance (area-code fact)',
+    edition: '2026-09-25',
+  },
+  'arcep-fictional-numbers': {
+    title: 'ARCEP national numbering plan, audiovisual numbers',
+    url: 'https://en.arcep.fr/uploads/tx_gsavis/25-2215.pdf',
+    license: 'Public numbering decision (range fact)',
+    edition: '2026-01-01',
+  },
+  'bnetza-drama-numbers': {
+    title: 'Bundesnetzagentur drama numbers, notice 148/2021',
+    url: 'https://www.bundesnetzagentur.de/DE/Fachthemen/Telekommunikation/Nummerierung/_DL/mittlg148_2021.pdf?__blob=publicationFile&v=1',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2021-04-14',
+  },
+  'comreg-drama-numbers': {
+    title: 'ComReg numbering conditions, drama mobile range',
+    url: 'https://www.comreg.ie/media/2024/04/ComReg-15136R4.pdf',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2024-04',
+  },
+  'pts-fictional-numbers': {
+    title: 'PTS phone numbers for books and films',
+    url: 'https://pts.se/internet-och-telefoni/telefonnummer-och-adressering/telefonnummer-till-bocker-och-filmer/',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2024-05-14',
+  },
 } as const
 
 export type GeographicSource = keyof typeof geographicSources

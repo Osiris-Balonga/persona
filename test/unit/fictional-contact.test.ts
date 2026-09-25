@@ -60,4 +60,32 @@ describe('fictional contact values', () => {
       expect(listCities(country).every((city) => fictionalPhone(country, city.name, key) !== null), country).toBe(true)
     }
   })
+
+  it('uses the NANP reserved 555 block with each territory’s assigned area code', () => {
+    for (const [country, city, area] of [
+      ['AG', 'Saint John’s', '268'], ['AI', 'The Valley', '264'], ['AS', 'Pago Pago', '684'],
+      ['BB', 'Bridgetown', '246'], ['BM', 'Pembroke Parish', '441'], ['BS', 'Nassau', '242'],
+      ['DM', 'Roseau', '767'], ['DO', 'Santo Domingo', '809'], ['GD', "Saint George's", '473'],
+      ['GU', 'Dededo Village', '671'], ['JM', 'Kingston', '876'], ['KN', 'Basseterre', '869'],
+      ['KY', 'George Town', '345'], ['LC', 'Castries', '758'], ['MP', 'Saipan', '670'],
+      ['MS', 'Brades', '664'], ['PR', 'San Juan', '787'], ['SX', 'Cul de Sac', '721'],
+      ['TC', 'Providenciales', '649'], ['TT', 'Chaguanas', '868'], ['VC', 'Kingstown', '784'],
+      ['VG', 'Road Town', '284'], ['VI', 'Charlotte Amalie', '340'],
+    ] as const) {
+      expect(fictionalPhone(country, city, key)).toMatch(new RegExp(`^\\+1${area}55501\\d{2}$`))
+      expect(fictionalPhone(country, 'Unknown city', key)).toBeNull()
+      expect(listCities(country).every((sampled) => fictionalPhone(country, sampled.name, key) !== null), country).toBe(true)
+    }
+  })
+
+  it('uses only the reserved national mobile ranges in France, Germany, Ireland and Sweden', () => {
+    expect(fictionalPhone('FR', 'Paris', key)).toMatch(/^\+3363998\d{4}$/)
+    expect(fictionalPhone('DE', 'Berlin', key)).toMatch(/^\+4917139200\d{2}$/)
+    expect(fictionalPhone('IE', 'Dublin', key)).toMatch(/^\+353890110\d{3}$/)
+    expect(fictionalPhone('SE', 'Stockholm', key)).toMatch(/^\+467017406(?:0[5-9]|[1-9]\d)$/)
+    for (const country of ['FR', 'DE', 'IE', 'SE']) {
+      expect(fictionalPhone(country, 'Unknown city', key)).toBeNull()
+      expect(listCities(country).every((sampled) => fictionalPhone(country, sampled.name, key) !== null), country).toBe(true)
+    }
+  })
 })
