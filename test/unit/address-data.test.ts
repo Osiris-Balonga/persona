@@ -58,6 +58,13 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(baku.postalCode).toBeNull()
     expect(baku.formatted).toContain('Baku')
     expect(baku.formatted).not.toContain('AZ Baku')
+    const portAuPrince = fictionalAddress(getCity('HT', 'Port-au-Prince')!, key)
+    expect(portAuPrince.postalCode).toBeNull()
+    expect(portAuPrince.formatted).toContain('Port-au-Prince')
+    expect(portAuPrince.formatted).not.toContain('HT Port-au-Prince')
+    const sanJose = fictionalAddress(getCity('CR', 'San José')!, key)
+    expect(sanJose.postalCode).toBeNull()
+    expect(sanJose.formatted).not.toContain('40602')
   })
 
   it('removes dangling address separators when optional locality parts are absent', () => {
