@@ -9,6 +9,7 @@ export function addressRule(country: string) {
 export function postalCodeForCity(city: City): string | null {
   if (city.country === 'PN' && city.name === 'Adamstown') return 'PCRN 1ZZ'
   if (city.country === 'CR' && city.geonameId === 3621849) return null
+  if (city.country === 'AU' && city.geonameId === 2147714) return '2000'
   return cityPostalCodes[city.geonameId] ?? null
 }
 

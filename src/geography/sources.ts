@@ -108,6 +108,20 @@ export const geographicSources = {
     edition: '2026-09-25',
     sha256: '3204de1275952be70033181a5b2073f4bfe3dd9dca15df97294823ff62c9d35a',
   },
+  'wikidata-oceania-qlever-candidates': {
+    title: 'Wikidata Oceania name candidates via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-25',
+    sha256: '3fa9a18df28904f3fadc5cccf02d5b6e90c8ed9335741793dcada3cdd5fa2f91',
+  },
+  'wikidata-oceania-birthplace-candidates': {
+    title: 'Wikidata Oceanian territory name candidates by birth place via QLever',
+    url: 'https://qlever.dev/api/wikidata',
+    license: 'CC0-1.0',
+    edition: '2026-09-25',
+    sha256: '1d53617a2bf92d3af624e70dd978a43aeef91131a8ec81bd7ded656d4b5be37e',
+  },
   'faroe-name-statistics': {
     title: 'Statistics Faroe Islands 2024 resident given names',
     url: 'https://hagstova.fo/fo/tidindi/jakup-og-maria-vanligastu-novnini-i-foroyum',
