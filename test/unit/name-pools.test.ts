@@ -76,7 +76,7 @@ describe('cultural name pools', () => {
   })
 
   it('uses country-specific pools without unreviewed secondary-language pools', () => {
-    expect(nameContextForCountry('BR').pools.map((pool) => pool.locale)).toEqual(['pt_BR'])
+    expect(nameContextForCountry('BR').pools.map((pool) => pool.locale)).toEqual(['br_BR'])
     expect(nameContextForCountry('BE').pools.map((pool) => pool.locale)).toEqual(['be_BE'])
   })
 
