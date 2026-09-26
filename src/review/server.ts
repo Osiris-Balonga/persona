@@ -55,6 +55,10 @@ export function createReviewApp(root: string) {
     try { return await store.decide(request.params.id, request.body) }
     catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Decision failed' }) }
   })
+  app.post<{ Params: { id: string } }>('/api/items/:id/reopen', async (request, reply) => {
+    try { return await store.reopen(request.params.id) }
+    catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Reopen failed' }) }
+  })
   app.post<{ Body: { ids: string[] } & Omit<ReviewDecision, 'at'> }>('/api/decisions', async (request, reply) => {
     try { return await store.decideMany(request.body?.ids, request.body) }
     catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Invalid bulk decision' }) }

@@ -65,6 +65,9 @@ describe('portrait review storage', () => {
     const rejected = await store.decide(candidate.id, { decision: 'rejected', reviewer: 'Osiris Balonga',
       reason: 'Visible rendering artifact' })
     expect(rejected.status).toBe('rejected')
+    const reopened = await store.reopen(candidate.id)
+    expect(reopened.status).toBe('needs-metadata')
+    expect(reopened.decision).toBeUndefined()
     expect((await store.list()).filter((item) => item.status === 'approved')).toEqual([])
   })
 

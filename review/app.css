@@ -562,6 +562,11 @@ dialog::backdrop {
   font-size: 11px;
   margin: 0 0 13px;
 }
+.decision-area .decision-status {
+  color: #526b57;
+  font-size: 12px;
+  line-height: 1.45;
+}
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

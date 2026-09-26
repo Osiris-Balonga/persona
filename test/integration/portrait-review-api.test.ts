@@ -92,4 +92,43 @@ describe('local portrait review API', () => {
     expect(decided).toHaveLength(101)
     expect((await store.list()).every((item) => item.status === 'approved')).toBe(true)
   })
+
+  it('lets a reviewer correct an approved portrait and undo a decision', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-correction-'))
+    roots.push(root)
+    const app = createReviewApp(root)
+    const bytes = await sharp({ create: { width: 768, height: 768, channels: 3,
+      background: '#aa806a' } }).png().toBuffer()
+    const upload = await app.inject({ method: 'POST', url: '/api/upload', headers: {
+      'content-type': 'application/octet-stream', 'x-file-name': 'portrait.png',
+      origin: 'http://localhost:4317',
+    }, payload: bytes })
+    const id = upload.json().id as string
+    const metadata = { ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32,
+      gender: 'female', appearance: 'west-african', visualGroup: 'black',
+      rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally' }
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`, payload: metadata })).statusCode).toBe(200)
+    const approval = { decision: 'approved', reviewer: 'Osiris Balonga', reason: 'Reviewed portrait' }
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: approval })).statusCode).toBe(200)
+
+    const correction = await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`,
+      payload: { ...metadata, apparentAgeMin: 33, apparentAgeMax: 37 } })
+    expect(correction.statusCode).toBe(200)
+    expect(correction.json()).toMatchObject({ status: 'ready-for-review',
+      metadata: { apparentAgeMin: 33, apparentAgeMax: 37 } })
+    expect(correction.json().decision).toBeUndefined()
+
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: approval })).statusCode).toBe(200)
+    const reopened = await app.inject({ method: 'POST', url: `/api/items/${id}/reopen` })
+    expect(reopened.statusCode).toBe(200)
+    expect(reopened.json()).toMatchObject({ status: 'ready-for-review', metadata: { apparentAgeMin: 33 } })
+    expect(reopened.json().decision).toBeUndefined()
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/reopen` })).statusCode).toBe(400)
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: {
+      decision: 'rejected', reviewer: 'Osiris Balonga', reason: 'Visible rendering artifact',
+    } })).statusCode).toBe(200)
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/reopen` })).json().status)
+      .toBe('ready-for-review')
+    await app.close()
+  })
 })

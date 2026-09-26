@@ -113,7 +113,6 @@ export class PortraitReviewStore {
       const items = await this.load()
       const item = items.find((entry) => entry.id === id)
       if (!item || item.status === 'processing-error') throw new RangeError('Portrait is not processed')
-      if (item.status === 'approved') throw new RangeError('Approved portrait cannot be edited')
       const master = await readFile(join(this.root, 'masters', `${id}${item.sourceExtension}`))
       const tagged = await optimizePortraitCandidate(master, xmp(metadata))
       const technical = await inspectPortraitBytes(tagged)
@@ -135,11 +134,28 @@ export class PortraitReviewStore {
       if (!item) throw new RangeError('Unknown portrait')
       if (!input.reviewer?.trim() || !input.reason?.trim()
         || !['approved', 'rejected'].includes(input.decision)) throw new RangeError('Reviewer and reason are required')
-      if (input.decision === 'approved' && (!item.metadata || item.status !== 'ready-for-review')) {
+      if (['approved', 'rejected'].includes(item.status)) {
+        throw new RangeError('Reopen the portrait before changing its decision')
+      }
+      if (input.decision === 'approved' && (item.status !== 'ready-for-review' || !item.metadata || !item.technical)) {
         throw new RangeError('Metadata must be ready for review')
       }
       item.status = input.decision
       item.decision = { ...input, at: new Date().toISOString() }
+      await this.save(items)
+      return item
+    })
+  }
+  async reopen(id: string): Promise<ReviewItem> {
+    return this.serialize(async () => {
+      const items = await this.load()
+      const item = items.find((entry) => entry.id === id)
+      if (!item || !['approved', 'rejected'].includes(item.status)) {
+        throw new RangeError('Only a reviewed portrait can be reopened')
+      }
+      item.status = item.error ? 'processing-error'
+        : item.metadata && item.technical ? 'ready-for-review' : 'needs-metadata'
+      item.decision = undefined
       await this.save(items)
       return item
     })
