@@ -3,6 +3,7 @@ import { appearanceCategories, isAppearance, type Appearance } from '../geograph
 import { ageGroupForAge } from '../age.js'
 import { areConsecutivePortraitAgeRanges, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
 import { areAppearanceTags, tagsMatchAppearance, type AppearanceTag } from './appearance-tags.js'
+import { isPortraitCollection, type PortraitCollection } from '../review/collections.js'
 
 type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
 type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
@@ -16,6 +17,7 @@ export interface PortraitAsset {
   gender: Person['gender']
   visualGroup: string
   appearance: Appearance
+  collection?: PortraitCollection
   compatibleAppearances?: readonly Appearance[]
   appearanceTags?: readonly AppearanceTag[]
   skinToneMst?: number
@@ -61,6 +63,9 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
     }
     if (asset.skinToneMst !== undefined && (!Number.isInteger(asset.skinToneMst)
       || asset.skinToneMst < 1 || asset.skinToneMst > 10)) errors.push(`Invalid Monk tone ${asset.id}`)
+    if (asset.collection !== undefined && !isPortraitCollection(asset.collection)) {
+      errors.push(`Invalid portrait collection ${asset.id}`)
+    }
     if (asset.compatibleAppearances !== undefined
       && (asset.compatibleAppearances.length === 0
         || !asset.compatibleAppearances.includes(asset.appearance)

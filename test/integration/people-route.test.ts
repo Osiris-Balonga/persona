@@ -9,6 +9,23 @@ import { canGenerateProfile } from '../../src/geography/profile-availability.js'
 const base = '/people?country=MW&city=Lilongwe&age=14&gender=female&appearance=east-asian&seed=route-demo&asOf=2026-09-24'
 
 describe('GET /people', () => {
+  it('never uses a portrait from another collection for a selected country', async () => {
+    const catalog: PortraitCatalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [{
+      id: 'p_0001', objectKey: 'portraits/v1/p_0001.webp', catalogVersion: 'v1',
+      ageGroup: 'adult', apparentAgeRanges: [[28, 32]], gender: 'female',
+      visualGroup: 'black', appearance: 'central-african', appearanceTags: ['black'],
+      collection: 'africa-east', rights: 'Synthetic portrait generated for Persona',
+      sha256: 'a'.repeat(64), reviewStatus: 'approved',
+    }] }
+    const app = buildApp({ portraitCatalog: catalog })
+    try {
+      const response = await app.inject({ method: 'GET',
+        url: '/people?country=CG&age=30&gender=female&appearance=central-african&seed=collection-check&asOf=2026-09-26' })
+      expect(response.statusCode).toBe(200)
+      expect(response.json().results[0].picture).toBeNull()
+    } finally { await app.close() }
+  })
+
   it('returns null instead of a potentially assigned phone number', async () => {
     const app = buildApp()
     try {
@@ -121,7 +138,7 @@ describe('GET /people', () => {
     const catalog: PortraitCatalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [1, 2].map((number) => ({
       id: `p_000${number}`, catalogVersion: 'v1', ageGroup: 'teen', gender: 'female',
       apparentAgeRanges: [[13, 15], [16, 17]],
-      visualGroup: 'east-asian', appearance: 'east-asian', rights: 'project-owned synthetic image',
+      collection: 'africa-east', visualGroup: 'east-asian', appearance: 'east-asian', rights: 'project-owned synthetic image',
       sha256: `${'a'.repeat(63)}${number}`, reviewStatus: 'approved',
       objectKey: `portraits/v1/teen/female/east-asian/east-asian/p_000${number}.webp`,
     })) }
@@ -138,7 +155,7 @@ describe('GET /people', () => {
   it('uses several consecutive bands when a portrait crosses from teen to adult', async () => {
     const catalog: PortraitCatalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [{
       id: 'p_0001', catalogVersion: 'v1', ageGroup: 'teen', apparentAgeRanges: [[16, 17], [18, 22], [23, 27]],
-      gender: 'female', visualGroup: 'east-asian', appearance: 'east-asian',
+      gender: 'female', collection: 'africa-east', visualGroup: 'east-asian', appearance: 'east-asian',
       rights: 'project-owned synthetic image', sha256: 'a'.repeat(64), reviewStatus: 'approved',
       objectKey: 'portraits/v1/teen/female/east-asian/east-asian/p_0001.webp',
     }] }

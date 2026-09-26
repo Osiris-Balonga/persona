@@ -3,7 +3,8 @@ import type { PeopleQuery } from './people-query.js'
 import { generatePersonWithoutPortrait } from './generation-core.js'
 import { geographicDataVersion } from './geography/data-version.js'
 import { createGenerationContext } from './replay.js'
-import { selectPortrait, type PortraitCatalog } from './portraits/catalog.js'
+import type { PortraitCatalog } from './portraits/catalog.js'
+import { selectPortraitFromCollection } from './portraits/collection-selection.js'
 
 export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCatalog): PeopleResponse {
   const versions = { dataVersion: geographicDataVersion, catalogVersion: catalog.version }
@@ -26,7 +27,8 @@ export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCata
       }
     }
     nameCounts.set(nameKey, repetitions + 1)
-    const picture = selectPortrait(catalog, person, context.componentKey(index, 'portrait'), usedPortraits)
+    const portraitKey = context.componentKey(index, 'portrait')
+    const picture = selectPortraitFromCollection(catalog, person, person.country, portraitKey, usedPortraits)
     return { ...person, picture }
   })
   return { results, meta: { count: query.count, asOf: query.asOf, seed: query.seed ?? null, ...versions } }
