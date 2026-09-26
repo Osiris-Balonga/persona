@@ -17,7 +17,6 @@ export interface PeopleQuery {
   city?: string
   seed?: string
   fields?: readonly FieldPath[]
-  phoneMode?: 'zero'
 }
 
 export class PeopleQueryError extends Error {
@@ -35,7 +34,7 @@ export class PeopleQueryError extends Error {
 
 const allowedParameters = new Set([
   'count', 'gender', 'age', 'ageGroup', 'appearance', 'country',
-  'city', 'seed', 'asOf', 'fields', 'phoneMode',
+  'city', 'seed', 'asOf', 'fields',
 ])
 
 function integerParameter(value: string | null, name: string, minimum: number, maximum: number) {
@@ -116,10 +115,6 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     throw new PeopleQueryError('UNSUPPORTED_VALUE', 'city', 'city is not available for the selected country')
   }
   const seed = boundedString(params.get('seed'), 'seed', 128)
-  const phoneMode = params.get('phoneMode')
-  if (phoneMode !== null && phoneMode !== 'zero') {
-    throw new PeopleQueryError('INVALID_QUERY', 'phoneMode', 'phoneMode must be zero')
-  }
   const fieldsValue = boundedString(params.get('fields'), 'fields', 512)
   let fields: readonly FieldPath[] | undefined
   if (fieldsValue !== undefined) {
@@ -146,7 +141,6 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     ...(country === null ? {} : { country }),
     ...(city === undefined ? {} : { city }),
     ...(seed === undefined ? {} : { seed }),
-    ...(phoneMode === null ? {} : { phoneMode }),
     ...(fields === undefined ? {} : { fields }),
   }
 }

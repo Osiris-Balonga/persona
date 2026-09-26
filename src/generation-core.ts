@@ -71,6 +71,6 @@ export function generatePersonWithoutPortrait(query: PeopleQuery, context: Gener
     city,
     address: fictionalAddress(resolved.city, context.componentKey(index, 'address')),
     email: fictionalEmail(name.firstName, name.lastName, context.componentKey(index, 'email')),
-    phone: fictionalPhone(country, city, context.componentKey(index, 'phone'), query.phoneMode),
+    phone: fictionalPhone(country, city, context.componentKey(index, 'phone')),
   }
 }

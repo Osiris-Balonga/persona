@@ -9,9 +9,8 @@ describe('GET /people query contract', () => {
     expect(parse('')).toEqual({ count: 1, asOf: '2026-09-25' })
   })
 
-  it('accepts an explicit zero-filled phone mode and rejects unsupported values', () => {
-    expect(parse('phoneMode=zero').phoneMode).toBe('zero')
-    expect(() => parse('phoneMode=reserved')).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'phoneMode' }))
+  it('rejects unsupported phone modes', () => {
+    expect(() => parse('phoneMode=zero')).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'phoneMode' }))
   })
 
   it('preserves explicit filters and derives the age group from numeric age', () => {

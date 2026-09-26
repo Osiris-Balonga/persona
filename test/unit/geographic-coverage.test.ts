@@ -56,7 +56,7 @@ describe('geographic source coverage', () => {
     ]) {
       expect(rows.find((row) => row.country === country)?.phone).toMatchObject({ status: 'ingested', source })
     }
-    expect(rows.find((row) => row.country === 'CG')?.phone).toMatchObject({ status: 'partial', source: 'libphonenumber-js', fallback: 'local-format-unreserved' })
+    expect(rows.find((row) => row.country === 'CG')?.phone).toMatchObject({ status: 'pending' })
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },
     })

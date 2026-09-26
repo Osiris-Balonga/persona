@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { fictionalEmail, fictionalPhone, nanpTerritoryAreas } from '../../src/geography/fictional-contact.js'
 import { listCities } from '../../src/geography/cities.js'
-import { listCountries } from '../../src/geography/countries.js'
-import { canGenerateProfile } from '../../src/geography/profile-availability.js'
-import { mobilePhoneExamples } from '../../src/geography/phone-example-data.js'
 
 const key = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
@@ -17,12 +14,10 @@ describe('fictional contact values', () => {
     expect(fictionalEmail('Aye Aye', 'Myint', key)).toBe('ayeaye.myint.0123456789ab@example.test')
   })
 
-  it('keeps reserved ranges and generates local-format numbers elsewhere', () => {
+  it('uses reserved ranges and returns null where no reviewed range exists', () => {
     expect(fictionalPhone('US', 'Washington', key)).toMatch(/^\+120255501\d{2}$/)
     expect(fictionalPhone('GB', 'London', key)).toMatch(/^\+447700900\d{3}$/)
-    expect(fictionalPhone('CG', 'Brazzaville', key)).toMatch(/^\+24206\d{7}$/)
-    expect(fictionalPhone('CG', 'Brazzaville', key, 'zero')).toBe('+242060000000')
-    expect(fictionalPhone('US', 'Washington', key, 'zero')).toBe(fictionalPhone('US', 'Washington', key))
+    expect(fictionalPhone('CG', 'Brazzaville', key)).toBeNull()
     expect(fictionalPhone('PN', 'Adamstown', key)).toBeNull()
   })
 
@@ -100,15 +95,4 @@ describe('fictional contact values', () => {
     expect(listCities('NO').every((city) => fictionalPhone('NO', city.name, key) !== null)).toBe(true)
   })
 
-  it('covers every profile country with an E.164-sized local example', () => {
-    for (const country of listCountries().filter(canGenerateProfile)) {
-      const city = listCities(country.code)[0]
-      const number = fictionalPhone(country.code, city.name, key)
-      expect(number, country.code).toMatch(/^\+[1-9]\d{1,14}$/)
-      expect(number?.startsWith(country.callingCode ?? '!'), country.code).toBe(true)
-      if (!['US', 'CA', 'GB', 'AU', 'FR', 'DE', 'IE', 'SE', 'NO'].includes(country.code) && !nanpTerritoryAreas[country.code]) {
-        expect(number?.slice(country.callingCode?.length), country.code).toHaveLength(mobilePhoneExamples[country.code].length)
-      }
-    }
-  })
 })

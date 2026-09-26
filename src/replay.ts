@@ -55,7 +55,6 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     ...generationInputs(query, versions, query.seed),
     query.count,
     query.fields ?? null,
-    query.phoneMode ?? null,
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

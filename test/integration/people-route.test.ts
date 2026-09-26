@@ -9,20 +9,12 @@ import { canGenerateProfile } from '../../src/geography/profile-availability.js'
 const base = '/people?country=MW&city=Lilongwe&age=14&gender=female&appearance=east-asian&seed=route-demo&asOf=2026-09-24'
 
 describe('GET /people', () => {
-  it('supports local-format and zero-filled phone output without changing the person', async () => {
+  it('returns null instead of a potentially assigned phone number', async () => {
     const app = buildApp()
     try {
-      const url = '/people?country=CG&city=Brazzaville&seed=phone-mode&asOf=2026-09-24'
-      const normal = await app.inject({ method: 'GET', url })
-      const zero = await app.inject({ method: 'GET', url: `${url}&phoneMode=zero` })
-      expect(normal.statusCode).toBe(200)
-      expect(zero.statusCode).toBe(200)
-      const normalPerson = normal.json().results[0]
-      const zeroPerson = zero.json().results[0]
-      expect(normalPerson.phone).toMatch(/^\+24206\d{7}$/)
-      expect(zeroPerson.phone).toBe('+242060000000')
-      expect({ ...normalPerson, phone: null }).toEqual({ ...zeroPerson, phone: null })
-      expect(normal.headers.etag).not.toBe(zero.headers.etag)
+      const response = await app.inject({ method: 'GET', url: '/people?country=CG&city=Brazzaville&seed=phone-safety&asOf=2026-09-24' })
+      expect(response.statusCode).toBe(200)
+      expect(response.json().results[0].phone).toBeNull()
     } finally { await app.close() }
   })
 
