@@ -7,7 +7,7 @@ describe('portrait production collections', () => {
     expect(portraitCollections.americas).toHaveLength(2)
     expect(portraitCollections.europe).toHaveLength(4)
     expect(portraitCollections.oceania).toHaveLength(2)
-    expect(isPortraitCollection('europe-unassigned')).toBe(true)
+    expect(isPortraitCollection('europe-unassigned')).toBe(false)
     expect(isPortraitCollection('north-american')).toBe(false)
   })
   it('accepts a Pacific portrait appearance independently of its production collection', () => {

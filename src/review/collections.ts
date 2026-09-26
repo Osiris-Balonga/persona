@@ -13,7 +13,6 @@ export const portraitCollectionOptions = [
   ...portraitCollections.asia,
   ...portraitCollections.americas,
   ...portraitCollections.europe,
-  'europe-unassigned',
   ...portraitCollections.oceania,
 ] as const
 

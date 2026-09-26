@@ -65,7 +65,6 @@ const collectionLabels = {
   "europe-west": "Europe de l’Ouest",
   "europe-south": "Europe du Sud",
   "europe-east": "Europe de l’Est",
-  "europe-unassigned": "Europe · à préciser",
   "oceania-australia-new-zealand": "Australie et Nouvelle-Zélande",
   "oceania-pacific-islands": "Îles du Pacifique",
 };
@@ -133,7 +132,7 @@ function renderSidebar() {
       <button type="button" class="region-parent" data-region="${group.id}" aria-expanded="${state.openRegions.has(group.id)}" aria-controls="region-children-${group.id}">
         <span class="region-label"><svg class="region-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4.5 6 3.5 3.5L11.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="region-name">${group.label}</span></span><span class="region-count">${count}</span>
       </button>
-      <div class="region-children" id="region-children-${group.id}"><div class="region-children-inner">${children.map(([id, label]) =>
+      <div class="region-children" id="region-children-${group.id}"><div class="region-children-inner"><button type="button" class="region-child region-all" data-region="${group.id}">Tous <span>${count}</span></button>${children.map(([id, label]) =>
         `<button type="button" class="region-child" data-region="${id}">${label}<span>${counts.get(id)}</span></button>`).join("")}</div></div>
     </div>`;
   }).join("");
@@ -144,7 +143,7 @@ function renderSidebar() {
 }
 function updateSidebarSelection() {
   $("#appearanceNav").querySelectorAll("button[data-region]").forEach((button) => {
-    const active = button.dataset.region === state.region;
+    const active = button.dataset.region === state.region && !button.classList.contains("region-parent");
     button.classList.toggle("active", active);
     if (active) button.setAttribute("aria-current", "true");
     else button.removeAttribute("aria-current");
@@ -666,6 +665,7 @@ $("#appearanceNav").addEventListener("click", (event) => {
       if (expanded) state.openRegions.add(region);
       branch.classList.toggle("expanded", expanded);
       button.setAttribute("aria-expanded", String(expanded));
+      return;
     }
     state.region = region;
     state.selectedIds.clear();

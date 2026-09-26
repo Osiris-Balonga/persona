@@ -13,11 +13,11 @@ describe('portrait gallery regions', () => {
     expect(matchesPortraitFilters(portrait, { ...filters, region: 'africa' })).toBe(false)
   })
 
-  it('keeps a general Europe lot distinct from reviewed regional lots', () => {
-    const portrait = { collection: 'europe-unassigned', metadata: { appearance: 'european' } }
-    expect(portraitRegion(portrait)).toBe('europe-unassigned')
-    expect(matchesPortraitFilters(portrait, { ...filters, region: 'europe' })).toBe(true)
-    expect(matchesPortraitFilters(portrait, { ...filters, region: 'europe-north' })).toBe(false)
+  it('routes a Latin American brief to the Americas even with another visual appearance', () => {
+    const portrait = { collection: 'americas-latin-caribbean', metadata: { appearance: 'black' } }
+    expect(portraitRegion(portrait)).toBe('americas-latin-caribbean')
+    expect(matchesPortraitFilters(portrait, { ...filters, region: 'americas' })).toBe(true)
+    expect(matchesPortraitFilters(portrait, { ...filters, region: 'europe' })).toBe(false)
   })
 
   it('places legacy African and Asian briefs in their regions without treating black as African origin', () => {

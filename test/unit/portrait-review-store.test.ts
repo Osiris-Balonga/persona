@@ -20,8 +20,8 @@ describe('portrait review storage', () => {
   it('assigns a production collection without claiming a visual origin or changing approval', async () => {
     const { store } = await createStore()
     const candidate = await store.ingest(await squarePortrait(), 'european-batch.png')
-    expect((await store.assignCollection([candidate.id], 'europe-unassigned'))[0]?.collection)
-      .toBe('europe-unassigned')
+    expect((await store.assignCollection([candidate.id], 'europe-west'))[0]?.collection)
+      .toBe('europe-west')
     await expect(store.assignCollection([candidate.id], 'north-american'))
       .rejects.toThrow('collection')
     expect((await store.get(candidate.id))?.status).toBe('needs-metadata')

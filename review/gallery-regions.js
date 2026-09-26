@@ -12,7 +12,6 @@ export const regionGroups = [
     ["europe-west", "Europe de l’Ouest"],
     ["europe-south", "Europe du Sud"],
     ["europe-east", "Europe de l’Est"],
-    ["europe-unassigned", "Sous-région à préciser"],
   ] },
   { id: "asia", label: "Asie", children: [
     ["asia-east", "Asie de l’Est"],
