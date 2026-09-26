@@ -1,12 +1,15 @@
 import { isIP } from 'node:net'
 
-export function readServerConfig(env: NodeJS.ProcessEnv): { host: string; port: number; trustedProxies?: string; requireHttps?: boolean } {
+export function readServerConfig(env: NodeJS.ProcessEnv): { host: string; port: number; trustedProxies?: string; requireHttps?: boolean; renderClientIp?: boolean } {
   const port = Number(env.PORT ?? '3000')
   if (!Number.isInteger(port) || port < 1 || port > 65_535) {
     throw new Error('Invalid PORT: expected an integer from 1 to 65535')
   }
 
   if (env.NODE_ENV === 'production') {
+    if (env.RENDER === 'true' && env.RENDER_SERVICE_TYPE === 'web') {
+      return { host: '0.0.0.0', port, renderClientIp: true }
+    }
     const proxies = env.TRUSTED_PROXIES?.split(',').map((value) => value.trim()) ?? []
     if (proxies.length === 0 || proxies.some((value) => {
       const parts = value.split('/')

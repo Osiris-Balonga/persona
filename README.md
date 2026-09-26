@@ -27,4 +27,4 @@ npm ci
 npm run dev
 ```
 
-The server reads `PORT` from the environment and defaults to `3000`. Run `npm run build` and `npm start` for the compiled application. In production, set `TRUSTED_PROXIES` to the exact IP addresses or CIDR ranges of the TLS-terminating reverse proxy. The server refuses to start without that setting and rejects requests that did not arrive over HTTPS through a trusted proxy.
+The server reads `PORT` from the environment and defaults to `3000`. Run `npm run build` and `npm start` for the compiled application. In production, set `TRUSTED_PROXIES` to the exact IP addresses or CIDR ranges of the TLS-terminating reverse proxy. The server refuses to start without that setting and rejects requests that did not arrive over HTTPS through a trusted proxy. On a Render web service, Render enforces HTTPS at its edge and supplies `CF-Connecting-IP` for per-client rate limiting; no `TRUSTED_PROXIES` value is needed there.

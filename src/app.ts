@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import { isIP } from 'node:net'
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
@@ -18,6 +19,7 @@ export interface AppOptions {
   requireHttps?: boolean
   rateLimitMax?: number
   maxResponseBytes?: number
+  renderClientIp?: boolean
 }
 
 export function buildApp(options: AppOptions = {}) {
@@ -44,6 +46,10 @@ export function buildApp(options: AppOptions = {}) {
   void app.register(cors, { origin: '*', methods: ['GET', 'HEAD'], allowedHeaders: ['If-None-Match'],
     exposedHeaders: ['ETag', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'Retry-After'] })
   void app.register(rateLimit, { max: options.rateLimitMax ?? 30, timeWindow: '1 minute',
+    keyGenerator: options.renderClientIp ? (request) => {
+      const clientIp = request.headers['cf-connecting-ip']
+      return typeof clientIp === 'string' && isIP(clientIp) ? clientIp : request.ip
+    } : undefined,
     errorResponseBuilder: () => ({ statusCode: 429, error: { code: 'RATE_LIMITED', message: 'Too many requests; try again later' } }),
   })
 

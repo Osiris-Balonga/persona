@@ -17,4 +17,11 @@ describe('server configuration', () => {
     expect(() => readServerConfig({ NODE_ENV: 'production', TRUSTED_PROXIES: '0.0.0.0/0' })).toThrow('TRUSTED_PROXIES')
     expect(() => readServerConfig({ NODE_ENV: 'production', TRUSTED_PROXIES: '127.0.0.1/8/garbage' })).toThrow('TRUSTED_PROXIES')
   })
+
+  it('uses Render edge protection and client IP only for a Render web service', () => {
+    expect(readServerConfig({ PORT: '10000', NODE_ENV: 'production', RENDER: 'true', RENDER_SERVICE_TYPE: 'web' }))
+      .toEqual({ host: '0.0.0.0', port: 10000, renderClientIp: true })
+    expect(() => readServerConfig({ NODE_ENV: 'production', RENDER: 'true', RENDER_SERVICE_TYPE: 'worker' }))
+      .toThrow('TRUSTED_PROXIES')
+  })
 })
