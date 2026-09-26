@@ -1,7 +1,7 @@
 import type { Person } from '../contracts/person.js'
 import { appearanceCategories, isAppearance, type Appearance } from '../geography/appearance.js'
 import { ageGroupForAge } from '../age.js'
-import { isAdjacentPortraitAgeRange, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
+import { areConsecutivePortraitAgeRanges, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
 
 type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
 type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
@@ -55,11 +55,8 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
       errors.push(`Invalid portrait metadata ${asset.id}`)
     }
     const ranges = asset.apparentAgeRanges
-    if (!Array.isArray(ranges) || ranges.length < 1 || ranges.length > 2
-      || ranges.some((range) => !Array.isArray(range) || range.length !== 2)
-      || !isPortraitAgeRange(asset.ageGroup, ranges[0][0], ranges[0][1])
-      || (ranges.length === 2 && !isAdjacentPortraitAgeRange(
-        ranges[0][0], ranges[0][1], ranges[1][0], ranges[1][1]))) {
+    if (!areConsecutivePortraitAgeRanges(ranges)
+      || !isPortraitAgeRange(asset.ageGroup, ranges[0][0], ranges[0][1])) {
       errors.push(`Invalid portrait age ranges ${asset.id}`)
     }
     if (!/^[a-f0-9]{64}$/.test(asset.sha256) || hashes.has(asset.sha256)) errors.push(`Invalid or duplicate portrait hash ${asset.id}`)

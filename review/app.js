@@ -16,6 +16,8 @@ const state = {
   selectedIds: new Set(),
   bulkDecision: null,
   pendingDecision: null,
+  editAgeRanges: [],
+  editAgePickerEditable: false,
 };
 const labels = {
   "processing-error": "Erreur",
@@ -55,9 +57,17 @@ const formatBytes = (bytes) =>
   bytes == null ? "—" : `${(bytes / 1024).toFixed(1)} Ko`;
 const formatAgeRange = (minimum, maximum) =>
   minimum === maximum ? `${minimum} ans` : `${minimum}–${maximum} ans`;
-const formatPortraitAge = (metadata) => metadata.secondaryAgeMin == null
-  ? formatAgeRange(metadata.apparentAgeMin, metadata.apparentAgeMax)
-  : `${formatAgeRange(metadata.apparentAgeMin, metadata.apparentAgeMax)} / ${formatAgeRange(metadata.secondaryAgeMin, metadata.secondaryAgeMax)}`;
+const metadataAgeRanges = (metadata) => (metadata?.apparentAgeRanges ?? [
+  [metadata?.apparentAgeMin, metadata?.apparentAgeMax],
+  ...(metadata?.secondaryAgeMin == null ? [] : [[metadata.secondaryAgeMin, metadata.secondaryAgeMax]]),
+]).slice().sort(([a], [b]) => a - b);
+const ageGroupForRange = (age) => age <= 12 ? "child" : age <= 17 ? "teen" : age <= 64 ? "adult" : "senior";
+const formatPortraitAge = (metadata) => {
+  const ranges = metadataAgeRanges(metadata);
+  return ranges.length === 1
+    ? formatAgeRange(...ranges[0])
+    : `${formatAgeRange(ranges[0][0], ranges.at(-1)[1])} · ${ranges.length} tranches`;
+};
 async function request(url, options) {
   const response = await fetch(url, options);
   if (!response.ok) {
@@ -185,34 +195,58 @@ function updateClearFilters() {
   $("#clearFilters").hidden = ["ageGroup", "ageRange", "gender", "quality"]
     .every((key) => state[key] === "all");
 }
-function fillAgeRanges(group, selected) {
-  const select = $("#metadataForm").elements.namedItem("ageRange");
-  select.innerHTML = '<option value="">Choisir un intervalle</option>';
-  const ranges = state.ageRanges[group] ?? [];
-  for (const [min, max] of ranges) {
-    const option = document.createElement("option");
-    option.value = `${min}-${max}`;
-    option.textContent = formatAgeRange(min, max);
-    select.append(option);
+const allAgeRanges = () => Object.values(state.ageRanges).flat();
+function buildAgePickerOptions() {
+  const container = $("#agePickerOptions");
+  container.replaceChildren();
+  let index = 0;
+  for (const [group, ranges] of Object.entries(state.ageRanges)) {
+    const heading = document.createElement("strong");
+    heading.textContent = ageLabels[group];
+    container.append(heading);
+    for (const [min, max] of ranges) {
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.dataset.index = String(index++);
+      label.append(checkbox, document.createTextNode(formatAgeRange(min, max)));
+      container.append(label);
+    }
   }
-  select.value = selected ?? "";
-  fillSecondaryAgeRanges("");
 }
-function fillSecondaryAgeRanges(selected) {
-  const select = $("#metadataForm").elements.namedItem("secondaryAgeRange");
-  const primary = $("#metadataForm").elements.namedItem("ageRange").value;
-  const choices = Object.values(state.ageRanges).flat();
-  const index = choices.findIndex(([min, max]) => `${min}-${max}` === primary);
-  select.innerHTML = '<option value="">Aucune</option>';
-  for (const range of [choices[index - 1], choices[index + 1]]) {
-    if (!range) continue;
-    const [min, max] = range;
-    const option = document.createElement("option");
-    option.value = `${min}-${max}`;
-    option.textContent = formatAgeRange(min, max);
-    select.append(option);
+function renderAgePicker() {
+  const ranges = allAgeRanges();
+  const selected = state.editAgeRanges.map(([min, max]) =>
+    ranges.findIndex(([first, last]) => first === min && last === max));
+  const first = selected[0];
+  const last = selected.at(-1);
+  for (const checkbox of $("#agePickerOptions").querySelectorAll("input")) {
+    const index = Number(checkbox.dataset.index);
+    checkbox.checked = selected.includes(index);
+    checkbox.disabled = !state.editAgePickerEditable || (selected.length > 0
+      && (checkbox.checked ? index !== first && index !== last : index !== first - 1 && index !== last + 1));
   }
-  select.value = selected ?? "";
+  const summary = $("#agePickerSummary");
+  summary.replaceChildren();
+  if (state.editAgeRanges.length === 0) {
+    summary.textContent = "Choisir une ou plusieurs tranches";
+    return;
+  }
+  for (const [min, max] of state.editAgeRanges.slice(0, 2)) {
+    const chip = document.createElement("span");
+    chip.className = "age-chip";
+    chip.textContent = formatAgeRange(min, max);
+    summary.append(chip);
+  }
+  if (state.editAgeRanges.length > 2) {
+    const more = document.createElement("span");
+    more.textContent = `+${state.editAgeRanges.length - 2}`;
+    summary.append(more);
+  }
+}
+function closeAgePicker() {
+  $("#agePickerMenu").hidden = true;
+  $("#agePickerToggle").setAttribute("aria-expanded", "false");
 }
 function openDetail(id) {
   const item = state.items.find((candidate) => candidate.id === id);
@@ -228,14 +262,10 @@ function openDetail(id) {
   const form = $("#metadataForm");
   form.reset();
   const metadata = item.metadata;
-  for (const key of ["ageGroup", "gender", "appearance"])
+  for (const key of ["gender", "appearance"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
-  fillAgeRanges(
-    metadata?.ageGroup,
-    metadata ? `${metadata.apparentAgeMin}-${metadata.apparentAgeMax}` : "",
-  );
-  fillSecondaryAgeRanges(metadata?.secondaryAgeMin == null
-    ? "" : `${metadata.secondaryAgeMin}-${metadata.secondaryAgeMax}`);
+  state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];
+  closeAgePicker();
   $("#rightsSummary").textContent =
     metadata?.rights === "Synthetic portrait generated for Persona"
       ? "Portrait synthétique créé pour Persona"
@@ -252,6 +282,8 @@ function openDetail(id) {
   form.querySelectorAll("select,button").forEach((element) => {
     element.disabled = !editable;
   });
+  state.editAgePickerEditable = editable;
+  renderAgePicker();
   const decided = ["approved", "rejected"].includes(item.status);
   $("#saveMetadata").textContent = decided ? "Enregistrer et remettre à valider" : "Enregistrer les corrections";
   $("#reopenButton").hidden = !decided;
@@ -297,21 +329,25 @@ function metadataPayload() {
   const item = state.items.find((candidate) => candidate.id === state.selected);
   const form = $("#metadataForm");
   if (!item?.metadata || !form.reportValidity()) return null;
+  if (state.editAgeRanges.length === 0) {
+    $("#detailError").textContent = "Choisis au moins une tranche d’âge apparent.";
+    $("#detailError").hidden = false;
+    $("#agePickerToggle").focus();
+    return null;
+  }
   const values = Object.fromEntries(new FormData(form));
-  const [apparentAgeMin, apparentAgeMax] = values.ageRange.split("-").map(Number);
+  const [apparentAgeMin, apparentAgeMax] = state.editAgeRanges[0];
   const payload = {
     ...item.metadata,
-    ageGroup: values.ageGroup,
+    ageGroup: ageGroupForRange(apparentAgeMin),
     gender: values.gender,
     appearance: values.appearance,
     apparentAgeMin,
     apparentAgeMax,
+    apparentAgeRanges: state.editAgeRanges.map(([min, max]) => [min, max]),
   };
   delete payload.secondaryAgeMin;
   delete payload.secondaryAgeMax;
-  if (values.secondaryAgeRange) {
-    [payload.secondaryAgeMin, payload.secondaryAgeMax] = values.secondaryAgeRange.split("-").map(Number);
-  }
   if (values.appearance !== item.metadata.appearance) {
     payload.visualGroup = ["west-african", "central-african", "east-african", "southern-african"].includes(values.appearance)
       ? "black" : values.appearance;
@@ -320,8 +356,8 @@ function metadataPayload() {
 }
 function metadataChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
-  return ["ageGroup", "apparentAgeMin", "apparentAgeMax", "gender", "appearance", "secondaryAgeMin", "secondaryAgeMax"]
-    .some((key) => (payload[key] ?? null) !== (metadata?.[key] ?? null));
+  return ["ageGroup", "gender", "appearance"].some((key) => payload[key] !== metadata?.[key])
+    || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata));
 }
 function decide(decision) {
   const reason = $("#decisionReason").value.trim();
@@ -506,12 +542,38 @@ $("#bulkConfirm").addEventListener("click", async () => {
   }
 });
 $("#closeDialog").addEventListener("click", () => $("#detailDialog").close());
-$("#metadataForm")
-  .elements.namedItem("ageGroup")
-  .addEventListener("change", (event) => fillAgeRanges(event.target.value, ""));
-$("#metadataForm")
-  .elements.namedItem("ageRange")
-  .addEventListener("change", () => fillSecondaryAgeRanges(""));
+$("#agePickerToggle").addEventListener("click", () => {
+  const menu = $("#agePickerMenu");
+  menu.hidden = !menu.hidden;
+  $("#agePickerToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+$("#agePickerOptions").addEventListener("change", (event) => {
+  const checkbox = event.target.closest('input[type="checkbox"]');
+  if (!checkbox) return;
+  const ranges = allAgeRanges();
+  const index = Number(checkbox.dataset.index);
+  if (checkbox.checked) state.editAgeRanges.push(ranges[index]);
+  else state.editAgeRanges = state.editAgeRanges.filter(([min, max]) =>
+    min !== ranges[index][0] || max !== ranges[index][1]);
+  state.editAgeRanges.sort(([a], [b]) => a - b);
+  $("#detailError").hidden = true;
+  renderAgePicker();
+});
+$("#clearAgeRanges").addEventListener("click", () => {
+  state.editAgeRanges = [];
+  renderAgePicker();
+  $("#agePickerOptions input:not(:disabled)")?.focus();
+});
+document.addEventListener("click", (event) => {
+  if (!$("#agePicker").contains(event.target)) closeAgePicker();
+});
+$("#agePicker").addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("#agePickerMenu").hidden) {
+    event.stopPropagation();
+    closeAgePicker();
+    $("#agePickerToggle").focus();
+  }
+});
 $("#metadataForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const payload = metadataPayload();
@@ -540,7 +602,9 @@ $("#rejectButton").addEventListener("click", () => decide("rejected"));
 $("#cancelDecision").addEventListener("click", () => $("#confirmDecisionDialog").close());
 $("#confirmDecision").addEventListener("click", confirmDecision);
 $("#reopenButton").addEventListener("click", async () => {
+  const item = state.items.find((candidate) => candidate.id === state.selected);
   const payload = metadataPayload();
+  if (item?.metadata && !payload) return;
   if (payload && metadataChanged(payload)) {
     $("#detailError").textContent = "Enregistrez d’abord vos corrections pour ne pas les perdre.";
     $("#detailError").hidden = false;
@@ -561,6 +625,7 @@ request("/api/options")
     state.appearances = appearanceCategories;
     state.ageRanges = portraitAgeRanges;
     fillGalleryAgeRanges();
+    buildAgePickerOptions();
     for (const category of appearanceCategories) {
       const option = document.createElement("option");
       option.value = category;

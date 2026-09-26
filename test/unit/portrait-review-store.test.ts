@@ -52,19 +52,18 @@ describe('portrait review storage', () => {
     expect(await readdir(join(root, 'webp'))).toEqual([`${candidate.id}.webp`])
   })
 
-  it('embeds a neighboring secondary band and rejects a distant one', async () => {
+  it('embeds multiple consecutive bands and rejects a gap', async () => {
     const { root, store } = await createStore()
     const candidate = await store.ingest(await squarePortrait(), 'adult-portrait.png')
     const metadata = { ageGroup: 'adult' as const, apparentAgeMin: 28, apparentAgeMax: 32,
-      secondaryAgeMin: 33, secondaryAgeMax: 37, gender: 'female' as const,
+      apparentAgeRanges: [[28, 32], [33, 37], [38, 42]], gender: 'female' as const,
       appearance: 'west-african' as const, visualGroup: 'black',
       rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally' }
     expect((await store.setMetadata(candidate.id, metadata)).status).toBe('ready-for-review')
     const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
-    expect(embedded).toContain('secondaryAgeMin="33"')
-    expect(embedded).toContain('secondaryAgeMax="37"')
-    await expect(store.setMetadata(candidate.id, { ...metadata, secondaryAgeMin: 43, secondaryAgeMax: 47 }))
-      .rejects.toThrow('Secondary age range')
+    expect(embedded).toContain('apparentAgeRanges="28-32,33-37,38-42"')
+    await expect(store.setMetadata(candidate.id, { ...metadata, apparentAgeRanges: [[28, 32], [38, 42]] }))
+      .rejects.toThrow('consecutive')
   })
 
   it('keeps failed uploads in inbox and rejected candidates out of the approved set', async () => {

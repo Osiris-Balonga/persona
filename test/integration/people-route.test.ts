@@ -134,9 +134,9 @@ describe('GET /people', () => {
     } finally { await app.close() }
   })
 
-  it('uses a neighboring age band when a portrait crosses from teen to adult', async () => {
+  it('uses several consecutive bands when a portrait crosses from teen to adult', async () => {
     const catalog: PortraitCatalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [{
-      id: 'p_0001', catalogVersion: 'v1', ageGroup: 'teen', apparentAgeRanges: [[16, 17], [18, 22]],
+      id: 'p_0001', catalogVersion: 'v1', ageGroup: 'teen', apparentAgeRanges: [[16, 17], [18, 22], [23, 27]],
       gender: 'female', visualGroup: 'east-asian', appearance: 'east-asian',
       rights: 'project-owned synthetic image', sha256: 'a'.repeat(64), reviewStatus: 'approved',
       objectKey: 'portraits/v1/teen/female/east-asian/east-asian/p_0001.webp',
@@ -147,7 +147,9 @@ describe('GET /people', () => {
       expect(adult.statusCode).toBe(200)
       expect(adult.json().results[0].picture?.url).toContain('/p_0001.webp')
       const older = await app.inject({ method: 'GET', url: base.replace('age=14', 'age=23') })
-      expect(older.json().results[0].picture).toBeNull()
+      expect(older.json().results[0].picture?.url).toContain('/p_0001.webp')
+      const outside = await app.inject({ method: 'GET', url: base.replace('age=14', 'age=28') })
+      expect(outside.json().results[0].picture).toBeNull()
     } finally { await app.close() }
   })
 })
