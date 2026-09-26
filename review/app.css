@@ -147,7 +147,7 @@ h3 {
   font-size: 12px;
   font-weight: 700;
 }
-.sidebar button span:last-child {
+.sidebar button > span:last-child {
   font-variant-numeric: tabular-nums;
   color: #99a99e;
 }
@@ -156,8 +156,61 @@ h3 {
   background: #e5f1e8;
   color: #28764f;
 }
-.sidebar button.active span:last-child {
+.sidebar button.active > span:last-child {
   color: #28764f;
+}
+.region-branch {
+  min-width: 0;
+}
+.sidebar .region-parent {
+  min-height: 42px;
+}
+.region-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  line-height: 1.2;
+}
+.region-chevron {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: #8fa397;
+  transform: rotate(-90deg);
+  transition: transform 220ms cubic-bezier(0.2, 0, 0, 1);
+}
+.region-name {
+  display: block;
+}
+.region-branch.expanded .region-chevron {
+  transform: rotate(0deg);
+}
+.region-children {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 220ms cubic-bezier(0.2, 0, 0, 1), opacity 180ms ease, visibility 0s linear 220ms;
+}
+.region-branch.expanded .region-children {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition: grid-template-rows 220ms cubic-bezier(0.2, 0, 0, 1), opacity 180ms ease, visibility 0s;
+}
+.region-children-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  gap: 2px;
+}
+.sidebar .region-child {
+  min-height: 40px;
+  padding-left: 31px;
+  font-weight: 600;
+  font-size: 11px;
 }
 .side-footer {
   border-top: 1px solid #e2e9e2;
@@ -1069,9 +1122,8 @@ body:has(#serialDialog[open]) {
   }
   .sidebar-inner {
     position: static;
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
+    max-height: 38vh;
+    overflow: auto;
     background: #f7f9f6;
     padding: 7px 0;
   }
@@ -1080,13 +1132,12 @@ body:has(#serialDialog[open]) {
     display: none;
   }
   .sidebar nav {
-    display: flex;
-    gap: 5px;
-    white-space: nowrap;
+    display: grid;
+    gap: 3px;
   }
   .sidebar button {
-    min-height: 35px;
-    width: auto;
+    min-height: 40px;
+    width: 100%;
     border: 1px solid #e0e9e1;
     padding: 0 9px;
   }
@@ -1135,7 +1186,7 @@ body:has(#serialDialog[open]) {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .portrait-tile {
+  .portrait-tile, .region-chevron, .region-children {
     transition: none;
   }
 }

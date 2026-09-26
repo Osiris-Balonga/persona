@@ -1,12 +1,16 @@
 // Editorial production batches. A collection records the brief used to make an image,
 // not a nationality or an appearance inferred from a face.
 export const portraitCollections = {
+  africa: ['africa-west', 'africa-central', 'africa-east', 'africa-south', 'africa-north', 'africa-indian-ocean'],
+  asia: ['asia-east', 'asia-southeast', 'asia-south', 'asia-middle-east'],
   americas: ['americas-north', 'americas-latin-caribbean'],
   europe: ['europe-north', 'europe-west', 'europe-south', 'europe-east'],
   oceania: ['oceania-australia-new-zealand', 'oceania-pacific-islands'],
 } as const
 
 export const portraitCollectionOptions = [
+  ...portraitCollections.africa,
+  ...portraitCollections.asia,
   ...portraitCollections.americas,
   ...portraitCollections.europe,
   'europe-unassigned',

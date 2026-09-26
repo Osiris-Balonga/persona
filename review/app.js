@@ -1,4 +1,5 @@
 import { isPortraitCompliant, matchesPortraitFilters } from "./gallery-filters.js";
+import { portraitRegion, regionGroups } from "./gallery-regions.js";
 import { eligibleReviewIds, nextPendingIndex, selectableAgeIndexes } from "./review-sequence.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -6,8 +7,8 @@ const state = {
   items: [],
   appearances: [],
   ageRanges: {},
-  appearance: "all",
-  collection: "all",
+  region: "all",
+  openRegions: new Set(),
   uploadCollection: "",
   status: "all",
   ageGroup: "all",
@@ -36,7 +37,7 @@ const appearanceLabels = {
   "east-african": "Afrique de l’Est",
   "southern-african": "Afrique australe",
   "north-african": "Afrique du Nord",
-  black: "Noir·e",
+  black: "Noir·e (apparence)",
   "middle-eastern": "Moyen-Orient",
   european: "Europe",
   "south-asian": "Asie du Sud",
@@ -48,6 +49,16 @@ const appearanceLabels = {
   unclassified: "À classer",
 };
 const collectionLabels = {
+  "africa-west": "Afrique de l’Ouest",
+  "africa-central": "Afrique centrale",
+  "africa-east": "Afrique de l’Est",
+  "africa-south": "Afrique australe",
+  "africa-north": "Afrique du Nord",
+  "africa-indian-ocean": "Afrique · Océan Indien",
+  "asia-east": "Asie de l’Est",
+  "asia-southeast": "Asie du Sud-Est",
+  "asia-south": "Asie du Sud",
+  "asia-middle-east": "Moyen-Orient",
   "americas-north": "Amérique du Nord",
   "americas-latin-caribbean": "Amérique latine et Caraïbes",
   "europe-north": "Europe du Nord",
@@ -58,6 +69,8 @@ const collectionLabels = {
   "oceania-australia-new-zealand": "Australie et Nouvelle-Zélande",
   "oceania-pacific-islands": "Îles du Pacifique",
 };
+const regionLabels = Object.fromEntries(regionGroups.flatMap((group) => group.children));
+regionLabels.unassigned = "À classer";
 const ageLabels = {
   child: "Enfant",
   teen: "Ado",
@@ -106,25 +119,39 @@ async function refresh() {
   state.items = next;
   render();
 }
-function render() {
-  const appearanceOf = (item) => item.metadata?.appearance ?? "unclassified";
-  const available = [
-    ...state.appearances.filter((name) =>
-      state.items.some((item) => appearanceOf(item) === name),
-    ),
-  ];
-  if (state.items.some((item) => appearanceOf(item) === "unclassified"))
-    available.push("unclassified");
-  if (state.appearance !== "all" && !available.includes(state.appearance))
-    state.appearance = "all";
-  $("#appearanceNav").innerHTML =
-    `<button type="button" data-appearance="all" class="${state.appearance === "all" ? "active" : ""}">Toutes les apparences <span>${state.items.length}</span></button>` +
-    available
-      .map(
-        (name) =>
-          `<button type="button" data-appearance="${name}" class="${state.appearance === name ? "active" : ""}">${appearanceLabels[name]} <span>${state.items.filter((item) => appearanceOf(item) === name).length}</span></button>`,
-      )
-      .join("");
+function renderSidebar() {
+  const counts = new Map();
+  for (const item of state.items) {
+    const region = portraitRegion(item);
+    counts.set(region, (counts.get(region) ?? 0) + 1);
+  }
+  const branches = regionGroups.map((group) => {
+    const children = group.children.filter(([id]) => counts.has(id));
+    const count = children.reduce((sum, [id]) => sum + counts.get(id), 0);
+    if (!count) return "";
+    return `<div class="region-branch ${state.openRegions.has(group.id) ? "expanded" : ""}" data-branch="${group.id}">
+      <button type="button" class="region-parent" data-region="${group.id}" aria-expanded="${state.openRegions.has(group.id)}" aria-controls="region-children-${group.id}">
+        <span class="region-label"><svg class="region-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4.5 6 3.5 3.5L11.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="region-name">${group.label}</span></span><span class="region-count">${count}</span>
+      </button>
+      <div class="region-children" id="region-children-${group.id}"><div class="region-children-inner">${children.map(([id, label]) =>
+        `<button type="button" class="region-child" data-region="${id}">${label}<span>${counts.get(id)}</span></button>`).join("")}</div></div>
+    </div>`;
+  }).join("");
+  $("#appearanceNav").innerHTML = `<button type="button" data-region="all">Tous les portraits <span>${state.items.length}</span></button>`
+    + branches + (counts.has("unassigned")
+      ? `<button type="button" data-region="unassigned">À classer <span>${counts.get("unassigned")}</span></button>` : "");
+  updateSidebarSelection();
+}
+function updateSidebarSelection() {
+  $("#appearanceNav").querySelectorAll("button[data-region]").forEach((button) => {
+    const active = button.dataset.region === state.region;
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "true");
+    else button.removeAttribute("aria-current");
+  });
+}
+function render({ sidebar = true } = {}) {
+  if (sidebar) renderSidebar();
   $("#totalCount").textContent = state.items.length;
   $("#readyCount").textContent = state.items.filter(
     (item) => item.status === "ready-for-review",
@@ -140,14 +167,11 @@ function render() {
     if (!visible.some((item) => item.id === id && item.status === "ready-for-review"))
       state.selectedIds.delete(id);
   updateSelectionControls(visible);
-  const groups = available
-    .filter(
-      (appearance) =>
-        state.appearance === "all" || state.appearance === appearance,
-    )
-    .map((appearance) => ({
-      appearance,
-      items: visible.filter((item) => appearanceOf(item) === appearance),
+  const orderedRegions = [...regionGroups.flatMap((group) => group.children.map(([id]) => id)), "unassigned"];
+  const groups = orderedRegions
+    .map((region) => ({
+      region,
+      items: visible.filter((item) => portraitRegion(item) === region),
     }))
     .filter((group) => group.items.length);
   $("#empty").hidden = groups.length > 0;
@@ -155,8 +179,8 @@ function render() {
     .map(
       (
         group,
-      ) => `<section class="portrait-group" id="group-${group.appearance}">
-    <div class="group-head"><h2>${appearanceLabels[group.appearance]}</h2><span class="group-count">${group.items.length}</span></div>
+      ) => `<section class="portrait-group" id="group-${group.region}">
+    <div class="group-head"><h2>${regionLabels[group.region]}</h2><span class="group-count">${group.items.length}</span></div>
     <div class="portrait-grid">${group.items
       .map(
         (
@@ -208,7 +232,7 @@ function fillGalleryAgeRanges() {
   select.value = state.ageRange;
 }
 function updateClearFilters() {
-  $("#clearFilters").hidden = ["collection", "ageGroup", "ageRange", "gender", "quality"]
+  $("#clearFilters").hidden = ["ageGroup", "ageRange", "gender", "quality"]
     .every((key) => state[key] === "all");
 }
 const allAgeRanges = () => Object.values(state.ageRanges).flat();
@@ -628,15 +652,28 @@ $("#statusNav").addEventListener("click", (event) => {
   render();
 });
 $("#appearanceNav").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-appearance]");
+  const button = event.target.closest("button[data-region]");
   if (button) {
-    state.appearance = button.dataset.appearance;
+    const region = button.dataset.region;
+    const branch = button.closest(".region-branch");
+    if (branch && button.classList.contains("region-parent")) {
+      const expanded = !state.openRegions.has(region);
+      state.openRegions.clear();
+      $("#appearanceNav").querySelectorAll(".region-branch.expanded").forEach((openBranch) => {
+        openBranch.classList.remove("expanded");
+        openBranch.querySelector(".region-parent").setAttribute("aria-expanded", "false");
+      });
+      if (expanded) state.openRegions.add(region);
+      branch.classList.toggle("expanded", expanded);
+      button.setAttribute("aria-expanded", String(expanded));
+    }
+    state.region = region;
     state.selectedIds.clear();
-    render();
+    updateSidebarSelection();
+    render({ sidebar: false });
   }
 });
 for (const [id, key] of [
-  ["filterCollection", "collection"],
   ["filterAgeGroup", "ageGroup"],
   ["filterAgeRange", "ageRange"],
   ["filterGender", "gender"],
@@ -651,9 +688,9 @@ for (const [id, key] of [
   });
 }
 $("#clearFilters").addEventListener("click", () => {
-  for (const key of ["collection", "ageGroup", "ageRange", "gender", "quality"])
+  for (const key of ["ageGroup", "ageRange", "gender", "quality"])
     state[key] = "all";
-  for (const id of ["filterCollection", "filterAgeGroup", "filterGender", "filterQuality"])
+  for (const id of ["filterAgeGroup", "filterGender", "filterQuality"])
     $(`#${id}`).value = "all";
   fillGalleryAgeRanges();
   updateClearFilters();
@@ -819,17 +856,13 @@ request("/api/options")
     state.appearances = appearanceCategories;
     state.ageRanges = portraitAgeRanges;
     for (const collection of portraitCollectionOptions) {
-      for (const id of ["uploadCollection", "detailCollection", "filterCollection"]) {
+      for (const id of ["uploadCollection", "detailCollection"]) {
         const option = document.createElement("option");
         option.value = collection;
         option.textContent = collectionLabels[collection] ?? collection;
         $(`#${id}`).append(option);
       }
     }
-    const unassigned = document.createElement("option");
-    unassigned.value = "unassigned";
-    unassigned.textContent = "Sans lot";
-    $("#filterCollection").append(unassigned);
     fillGalleryAgeRanges();
     buildAgePickerOptions();
     for (const category of appearanceCategories) {
