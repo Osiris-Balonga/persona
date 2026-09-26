@@ -55,6 +55,9 @@ const formatBytes = (bytes) =>
   bytes == null ? "—" : `${(bytes / 1024).toFixed(1)} Ko`;
 const formatAgeRange = (minimum, maximum) =>
   minimum === maximum ? `${minimum} ans` : `${minimum}–${maximum} ans`;
+const formatPortraitAge = (metadata) => metadata.secondaryAgeMin == null
+  ? formatAgeRange(metadata.apparentAgeMin, metadata.apparentAgeMax)
+  : `${formatAgeRange(metadata.apparentAgeMin, metadata.apparentAgeMax)} / ${formatAgeRange(metadata.secondaryAgeMin, metadata.secondaryAgeMax)}`;
 async function request(url, options) {
   const response = await fetch(url, options);
   if (!response.ok) {
@@ -136,7 +139,7 @@ function render() {
       ${item.technical ? `<img src="/api/items/${item.id}/image?v=${item.technical.sha256}" alt="" loading="lazy">` : '<span class="missing">Image à corriger</span>'}
       <span class="tile-spec">${item.technical ? `${item.technical.width} × ${item.technical.height} px · ${formatBytes(item.technical.bytes)}` : "Dimensions — · Taille —"}</span>
       ${state.selectionMode && item.status === "ready-for-review" ? `<span class="tile-check">${state.selectedIds.has(item.id) ? "✓" : ""}</span>` : isPortraitCompliant(item) ? `<span class="tile-status ${item.status}" title="${labels[item.status]}"></span>` : '<span class="tile-quality">À corriger</span>'}
-      <span class="tile-caption"><span>${item.id}</span><span>${item.metadata ? formatAgeRange(item.metadata.apparentAgeMin, item.metadata.apparentAgeMax) : labels[item.status]}</span></span>
+      <span class="tile-caption"><span>${item.id}</span><span>${item.metadata ? formatPortraitAge(item.metadata) : labels[item.status]}</span></span>
     </button>`,
       )
       .join("")}</div></section>`,
@@ -193,6 +196,23 @@ function fillAgeRanges(group, selected) {
     select.append(option);
   }
   select.value = selected ?? "";
+  fillSecondaryAgeRanges("");
+}
+function fillSecondaryAgeRanges(selected) {
+  const select = $("#metadataForm").elements.namedItem("secondaryAgeRange");
+  const primary = $("#metadataForm").elements.namedItem("ageRange").value;
+  const choices = Object.values(state.ageRanges).flat();
+  const index = choices.findIndex(([min, max]) => `${min}-${max}` === primary);
+  select.innerHTML = '<option value="">Aucune</option>';
+  for (const range of [choices[index - 1], choices[index + 1]]) {
+    if (!range) continue;
+    const [min, max] = range;
+    const option = document.createElement("option");
+    option.value = `${min}-${max}`;
+    option.textContent = formatAgeRange(min, max);
+    select.append(option);
+  }
+  select.value = selected ?? "";
 }
 function openDetail(id) {
   const item = state.items.find((candidate) => candidate.id === id);
@@ -214,6 +234,8 @@ function openDetail(id) {
     metadata?.ageGroup,
     metadata ? `${metadata.apparentAgeMin}-${metadata.apparentAgeMax}` : "",
   );
+  fillSecondaryAgeRanges(metadata?.secondaryAgeMin == null
+    ? "" : `${metadata.secondaryAgeMin}-${metadata.secondaryAgeMax}`);
   $("#rightsSummary").textContent =
     metadata?.rights === "Synthetic portrait generated for Persona"
       ? "Portrait synthétique créé pour Persona"
@@ -285,6 +307,11 @@ function metadataPayload() {
     apparentAgeMin,
     apparentAgeMax,
   };
+  delete payload.secondaryAgeMin;
+  delete payload.secondaryAgeMax;
+  if (values.secondaryAgeRange) {
+    [payload.secondaryAgeMin, payload.secondaryAgeMax] = values.secondaryAgeRange.split("-").map(Number);
+  }
   if (values.appearance !== item.metadata.appearance) {
     payload.visualGroup = ["west-african", "central-african", "east-african", "southern-african"].includes(values.appearance)
       ? "black" : values.appearance;
@@ -293,8 +320,8 @@ function metadataPayload() {
 }
 function metadataChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
-  return ["ageGroup", "apparentAgeMin", "apparentAgeMax", "gender", "appearance"]
-    .some((key) => payload[key] !== metadata?.[key]);
+  return ["ageGroup", "apparentAgeMin", "apparentAgeMax", "gender", "appearance", "secondaryAgeMin", "secondaryAgeMax"]
+    .some((key) => (payload[key] ?? null) !== (metadata?.[key] ?? null));
 }
 function decide(decision) {
   const reason = $("#decisionReason").value.trim();
@@ -482,6 +509,9 @@ $("#closeDialog").addEventListener("click", () => $("#detailDialog").close());
 $("#metadataForm")
   .elements.namedItem("ageGroup")
   .addEventListener("change", (event) => fillAgeRanges(event.target.value, ""));
+$("#metadataForm")
+  .elements.namedItem("ageRange")
+  .addEventListener("change", () => fillSecondaryAgeRanges(""));
 $("#metadataForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const payload = metadataPayload();

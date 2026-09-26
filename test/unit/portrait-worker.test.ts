@@ -8,9 +8,11 @@ const hash = 'a'.repeat(64)
 const catalog: PortraitCatalog = {
   version: 'v1', publicBaseUrl: 'https://images.example.test',
   assets: [{ id: 'p_0001', objectKey: key, catalogVersion: 'v1', ageGroup: 'adult', gender: 'female',
+    apparentAgeRanges: [[28, 32]],
     visualGroup: 'black', appearance: 'west-african', rights: 'project-owned synthetic image',
     sha256: hash, reviewStatus: 'approved' },
   { id: 'p_0002', objectKey: 'portraits/v1/adult/female/black/west-african/p_0002.webp',
+    apparentAgeRanges: [[28, 32]],
     catalogVersion: 'v1', ageGroup: 'adult', gender: 'female', visualGroup: 'black',
     appearance: 'west-african', rights: 'withdrawn', sha256: 'b'.repeat(64), reviewStatus: 'withdrawn' }],
 }

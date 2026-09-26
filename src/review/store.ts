@@ -4,13 +4,15 @@ import { extname, join } from 'node:path'
 import { isAppearance, type Appearance } from '../geography/appearance.js'
 import { inspectPortraitBytes, type PortraitFileInfo } from '../portraits/import.js'
 import { optimizePortraitCandidate } from '../portraits/optimize.js'
-import { isPortraitAgeRange } from './age-ranges.js'
+import { isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
 
 export type ReviewStatus = 'processing-error' | 'needs-metadata' | 'ready-for-review' | 'approved' | 'rejected'
 export interface PortraitMetadata {
   ageGroup: 'child' | 'teen' | 'adult' | 'senior'
   apparentAgeMin: number
   apparentAgeMax: number
+  secondaryAgeMin?: number
+  secondaryAgeMax?: number
   gender: 'female' | 'male'
   appearance: Appearance
   visualGroup: string
@@ -37,6 +39,11 @@ function validateMetadata(input: PortraitMetadata): void {
   if (!input || !isPortraitAgeRange(input.ageGroup, input.apparentAgeMin, input.apparentAgeMax)) {
     throw new RangeError('Apparent age range is incompatible with age group')
   }
+  if ((input.secondaryAgeMin !== undefined || input.secondaryAgeMax !== undefined)
+    && !isAdjacentPortraitAgeRange(input.apparentAgeMin, input.apparentAgeMax,
+      input.secondaryAgeMin as number, input.secondaryAgeMax as number)) {
+    throw new RangeError('Secondary age range must be adjacent to the primary range')
+  }
   if (!['female', 'male'].includes(input.gender) || !isAppearance(input.appearance)
     || !/^[a-z]+(?:-[a-z]+)*$/.test(input.visualGroup)
     || !input.rights?.trim() || !input.rightsEvidence?.trim()) throw new RangeError('Invalid portrait metadata')
@@ -44,6 +51,7 @@ function validateMetadata(input: PortraitMetadata): void {
 function xmp(input: PortraitMetadata): string {
   const fields = {
     ageGroup: input.ageGroup, apparentAgeMin: input.apparentAgeMin, apparentAgeMax: input.apparentAgeMax,
+    ...(input.secondaryAgeMin === undefined ? {} : { secondaryAgeMin: input.secondaryAgeMin, secondaryAgeMax: input.secondaryAgeMax }),
     gender: input.gender, appearance: input.appearance, visualGroup: input.visualGroup,
   }
   const attributes = Object.entries(fields).map(([name, value]) => `persona:${name}="${xmlEscape(String(value))}"`).join(' ')

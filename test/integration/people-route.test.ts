@@ -119,6 +119,7 @@ describe('GET /people', () => {
   it('uses distinct compatible approved portraits when the fixture has enough', async () => {
     const catalog: PortraitCatalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [1, 2].map((number) => ({
       id: `p_000${number}`, catalogVersion: 'v1', ageGroup: 'teen', gender: 'female',
+      apparentAgeRanges: [[13, 15], [16, 17]],
       visualGroup: 'east-asian', appearance: 'east-asian', rights: 'project-owned synthetic image',
       sha256: `${'a'.repeat(63)}${number}`, reviewStatus: 'approved',
       objectKey: `portraits/v1/teen/female/east-asian/east-asian/p_000${number}.webp`,
@@ -130,6 +131,23 @@ describe('GET /people', () => {
       const pictures = response.json().results.map((person: { picture: { url: string } }) => person.picture.url)
       expect(new Set(pictures).size).toBe(2)
       expect(pictures.every((url: string) => url.startsWith('https://images.example.test/portraits/v1/teen/female/east-asian/east-asian/'))).toBe(true)
+    } finally { await app.close() }
+  })
+
+  it('uses a neighboring age band when a portrait crosses from teen to adult', async () => {
+    const catalog: PortraitCatalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [{
+      id: 'p_0001', catalogVersion: 'v1', ageGroup: 'teen', apparentAgeRanges: [[16, 17], [18, 22]],
+      gender: 'female', visualGroup: 'east-asian', appearance: 'east-asian',
+      rights: 'project-owned synthetic image', sha256: 'a'.repeat(64), reviewStatus: 'approved',
+      objectKey: 'portraits/v1/teen/female/east-asian/east-asian/p_0001.webp',
+    }] }
+    const app = buildApp({ portraitCatalog: catalog })
+    try {
+      const adult = await app.inject({ method: 'GET', url: base.replace('age=14', 'age=19') })
+      expect(adult.statusCode).toBe(200)
+      expect(adult.json().results[0].picture?.url).toContain('/p_0001.webp')
+      const older = await app.inject({ method: 'GET', url: base.replace('age=14', 'age=23') })
+      expect(older.json().results[0].picture).toBeNull()
     } finally { await app.close() }
   })
 })

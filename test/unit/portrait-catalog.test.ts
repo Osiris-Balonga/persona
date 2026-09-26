@@ -5,6 +5,7 @@ const asset = (id: string, overrides: Record<string, unknown> = {}) => ({
   id,
   objectKey: `portraits/v1/teen/female/black/west-african/${id}.webp`,
   catalogVersion: 'v1', ageGroup: 'teen' as const, gender: 'female' as const,
+  apparentAgeRanges: [[13, 15], [16, 17]],
   visualGroup: 'black', appearance: 'west-african' as const,
   rights: 'project-owned synthetic image', sha256: `${'a'.repeat(63)}${id.slice(-1)}`,
   reviewStatus: 'approved' as const,
@@ -15,7 +16,7 @@ const catalog = (assets: ReturnType<typeof asset>[]) => ({
   version: 'v1', publicBaseUrl: 'https://images.example.test', assets,
 })
 
-const profile = { ageGroup: 'teen' as const, gender: 'female' as const, appearance: 'west-african' as const }
+const profile = { age: 14, ageGroup: 'teen' as const, gender: 'female' as const, appearance: 'west-african' as const }
 const key = '0123456789abcdef'.repeat(4)
 
 describe('approved portrait catalog', () => {
@@ -40,12 +41,24 @@ describe('approved portrait catalog', () => {
     expect(portraitCoverage(catalog([asset('p_0001'), asset('p_0002')]), profile).ready).toBe(true)
     const rows = portraitCoverageMatrix(catalog([asset('p_0001'), asset('p_0002')]))
     expect(rows).toHaveLength(96)
-    expect(rows.filter((row) => row.ready)).toEqual([{ ...profile, approved: 2, minimum: 2, ready: true }])
+    expect(rows.filter((row) => row.ready)).toEqual([{ ageGroup: profile.ageGroup, gender: profile.gender,
+      appearance: profile.appearance, approved: 2, minimum: 2, ready: true }])
   })
 
   it('rejects duplicate IDs, hashes, and mismatched object keys', () => {
     const invalid = catalog([asset('p_0001'), asset('p_0001', { objectKey: 'portraits/v1/adult/female/black/west-african/p_0001.webp' })])
     expect(validatePortraitCatalog(invalid).length).toBeGreaterThan(0)
+  })
+
+  it('matches either reviewed age band, including a neighboring adult band', () => {
+    const portrait = asset('p_0001', { apparentAgeRanges: [[16, 17], [18, 22]] })
+    const manifest = catalog([portrait])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    expect(selectPortrait(manifest, { ...profile, age: 17 }, key)).not.toBeNull()
+    expect(selectPortrait(manifest, { ...profile, age: 19, ageGroup: 'adult' }, key)).not.toBeNull()
+    expect(selectPortrait(manifest, { ...profile, age: 23, ageGroup: 'adult' }, key)).toBeNull()
+    expect(validatePortraitCatalog(catalog([asset('p_0001', { apparentAgeRanges: [[13, 15], [23, 27]] })])).length)
+      .toBeGreaterThan(0)
   })
 
   it('keeps the production manifest empty until images are approved', async () => {

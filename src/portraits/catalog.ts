@@ -1,13 +1,17 @@
 import type { Person } from '../contracts/person.js'
 import { appearanceCategories, isAppearance, type Appearance } from '../geography/appearance.js'
+import { ageGroupForAge } from '../age.js'
+import { isAdjacentPortraitAgeRange, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
 
-type PortraitProfile = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
+type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
+type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
 
 export interface PortraitAsset {
   id: string
   objectKey: string
   catalogVersion: string
   ageGroup: Person['ageGroup']
+  apparentAgeRanges: readonly (readonly [number, number])[]
   gender: Person['gender']
   visualGroup: string
   appearance: Appearance
@@ -50,6 +54,14 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
       || !['approved', 'rejected', 'withdrawn'].includes(asset.reviewStatus)) {
       errors.push(`Invalid portrait metadata ${asset.id}`)
     }
+    const ranges = asset.apparentAgeRanges
+    if (!Array.isArray(ranges) || ranges.length < 1 || ranges.length > 2
+      || ranges.some((range) => !Array.isArray(range) || range.length !== 2)
+      || !isPortraitAgeRange(asset.ageGroup, ranges[0][0], ranges[0][1])
+      || (ranges.length === 2 && !isAdjacentPortraitAgeRange(
+        ranges[0][0], ranges[0][1], ranges[1][0], ranges[1][1]))) {
+      errors.push(`Invalid portrait age ranges ${asset.id}`)
+    }
     if (!/^[a-f0-9]{64}$/.test(asset.sha256) || hashes.has(asset.sha256)) errors.push(`Invalid or duplicate portrait hash ${asset.id}`)
     hashes.add(asset.sha256)
   }
@@ -60,13 +72,17 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
 }
 
 function compatible(catalog: PortraitCatalog, profile: PortraitProfile) {
+  if (ageGroupForAge(profile.age) !== profile.ageGroup) return []
   return catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
-    && asset.ageGroup === profile.ageGroup && asset.gender === profile.gender
-    && asset.appearance === profile.appearance)
+    && asset.gender === profile.gender && asset.appearance === profile.appearance
+    && asset.apparentAgeRanges.some(([minimum, maximum]) => profile.age >= minimum && profile.age <= maximum))
 }
 
-export function portraitCoverage(catalog: PortraitCatalog, profile: PortraitProfile) {
-  const approved = compatible(catalog, profile).length
+export function portraitCoverage(catalog: PortraitCatalog, profile: PortraitGroup) {
+  const ranges = portraitAgeRanges[profile.ageGroup]
+  const approved = Math.min(...ranges.flatMap(([minimum, maximum]) =>
+    Array.from({ length: maximum - minimum + 1 }, (_, offset) =>
+      compatible(catalog, { ...profile, age: minimum + offset }).length)))
   return { approved, minimum: minimumApprovedPortraits, ready: approved >= minimumApprovedPortraits }
 }
 
