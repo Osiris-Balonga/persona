@@ -1,0 +1,24 @@
+# Beta architecture
+
+Persona exposes a public, keyless HTTP API for generating coherent fictional people. The beta is intentionally small: a Node.js 24 and TypeScript service using Fastify and TypeBox, versioned read-only data files, and a curated portrait catalog. Fastify keeps the HTTP layer direct while TypeBox lets request and response schemas drive validation and serialization. We can add a larger application framework when the service grows enough to need it.
+
+## Hosting and delivery
+
+- Deploy the API on the existing Hostinger Business plan after checking its available resources, Node.js runtime, health checks, and rollback path. If shared-plan capacity or operations prove insufficient, move the service to a paid Render web service.
+- Keep the API accessible over HTTPS without credentials. Bound request size, `count`, response size, and generation cost; apply rate limits using a trusted client IP. Define CORS, safe errors, and restrained logs before opening the beta.
+- Keep datasets and the portrait manifest versioned so a result can record the data versions used. Reproducing a result requires the same request parameters, `seed`, `asOf`, and data and catalog versions. The HTTP cache policy must distinguish replayable responses from requests whose randomness or date is not fixed.
+- Store approved WebP portraits in the private Cloudflare R2 bucket `persona-portraits`. Serve them through a read-only Cloudflare Worker bound to R2. The bucket has neither an enabled `r2.dev` endpoint nor a public custom domain. The Worker must check the approved manifest before returning an object; a public portrait URL is shareable, not confidential.
+
+## Portrait catalog
+
+A new object key should be `portraits/v1/p_0001.webp`, so correcting appearance, age, or skin-tone metadata does not rename the object. The validator still accepts the older category-based key shape for unshipped catalog fixtures. The versioned manifest lists approved IDs and object keys with age group, gender, reviewed visual compatibility tags, optional Monk skin-tone annotation, review status, usage rights, and SHA-256. Production collection records the generation brief separately; it must not be inferred from a person's nationality. A portrait may carry several visual tags, and the existing public `appearance` filter maps to these tags when selecting an image. The older `appearance` and `visualGroup` fields remain in review records and catalog fixtures during this transition. A Monk value describes perceived tone in this image, not race, ancestry, or country, and does not yet drive selection.
+
+An import must verify WebP format, dimensions, metadata, duplicate hashes, and a strict size limit below 50,000 bytes. Only reviewed and approved IDs are selectable and readable. Selection uses the compatible IDs in the manifest with a stable seeded algorithm and catalog version; it never guesses that every number up to a folder maximum exists. When enough candidates exist, a multi-person response should avoid repeated portraits. Missing coverage has an explicit API outcome rather than silently substituting an incompatible image.
+
+The checked-in portrait manifest contains 322 approved assets in version `v1`. Locally reviewed masters and WebPs remain Git-ignored, while approved WebPs are copied to private R2. Selection returns `picture: null` when no compatible portrait exists. `npm run data:audit:portraits` reports the catalog version, approved count, and how many of the 112 age-group, gender, and appearance combinations meet the minimum of two approved candidates. Add `-- --json` for per-combination counts. A group with one approved asset may be selected but remains below the coverage target; a withdrawn or rejected ID is never selected.
+
+Approved versioned portrait URLs use `Cache-Control: public, max-age=300, must-revalidate`; missing and withdrawn assets use `no-store`. Withdrawal first removes approval, then purges the exact public URL from Cloudflare's global cache, and finally verifies that a new request is denied. Use a normal URL cache key and a globally purgeable CDN path; deleting an entry from a Worker's local Cache API is insufficient. Replacing an asset uses a new key or catalog version. Previously fetched browser copies may remain fresh for up to five minutes. The [HTTP contract](api.md#replay-and-http-caching) defines person-response caching. Additional synthetic portraits go through the same review and publication boundary.
+
+## Development
+
+Change behavior with a focused failing test first, then implement and refactor. Keep unit, integration, and end-to-end suites independently runnable, with realistic fixtures and tests aimed at distinct risks. Work enters `dev` through a pull request from a short-lived branch; production promotion is a pull request from `dev` to `main`.
