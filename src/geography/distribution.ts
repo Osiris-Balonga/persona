@@ -1,5 +1,6 @@
 import type { PeopleQuery } from '../people-query.js'
-import { appearanceCategories, isAppearance } from './appearance.js'
+import { isAppearance } from './appearance.js'
+import { appearanceDistributionForCountry } from './appearance-distribution.js'
 import { getCity, listCities } from './cities.js'
 import { getCountry, listCountries } from './countries.js'
 import { canGenerateProfile } from './profile-availability.js'
@@ -41,9 +42,7 @@ export function resolveGeographicContext(
   if (query.appearance !== undefined && !isAppearance(query.appearance)) {
     throw new RangeError('Unknown appearance category')
   }
-  const appearance = query.appearance ?? chooseWeighted(appearanceCategories.map((value) => ({
-    value, weight: 1,
-  })), draw(24))
+  const appearance = query.appearance ?? chooseWeighted(appearanceDistributionForCountry(country.code).weights, draw(24))
 
   return { country, city, appearance }
 }

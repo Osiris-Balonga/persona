@@ -2,6 +2,7 @@ import type { Person } from '../contracts/person.js'
 import { appearanceCategories, isAppearance, type Appearance } from '../geography/appearance.js'
 import { ageGroupForAge } from '../age.js'
 import { areConsecutivePortraitAgeRanges, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
+import { areAppearanceTags, tagsMatchAppearance, type AppearanceTag } from './appearance-tags.js'
 
 type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
 type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
@@ -15,6 +16,9 @@ export interface PortraitAsset {
   gender: Person['gender']
   visualGroup: string
   appearance: Appearance
+  compatibleAppearances?: readonly Appearance[]
+  appearanceTags?: readonly AppearanceTag[]
+  skinToneMst?: number
   rights: string
   sha256: string
   reviewStatus: 'approved' | 'rejected' | 'withdrawn'
@@ -45,14 +49,27 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
   for (const asset of catalog.assets) {
     if (!/^p_\d{4,}$/.test(asset.id) || ids.has(asset.id)) errors.push(`Invalid or duplicate portrait ID ${asset.id}`)
     ids.add(asset.id)
-    const expectedKey = `portraits/${catalog.version}/${asset.ageGroup}/${asset.gender}/${asset.visualGroup}/${asset.appearance}/${asset.id}.webp`
-    if (asset.objectKey !== expectedKey || keys.has(asset.objectKey)) errors.push(`Invalid or duplicate portrait key ${asset.id}`)
+    const stableKey = `portraits/${catalog.version}/${asset.id}.webp`
+    const legacyKey = `portraits/${catalog.version}/${asset.ageGroup}/${asset.gender}/${asset.visualGroup}/${asset.appearance}/${asset.id}.webp`
+    if (![stableKey, legacyKey].includes(asset.objectKey) || keys.has(asset.objectKey)) errors.push(`Invalid or duplicate portrait key ${asset.id}`)
     keys.add(asset.objectKey)
     if (asset.catalogVersion !== catalog.version || !['child', 'teen', 'adult', 'senior'].includes(asset.ageGroup)
       || !['male', 'female'].includes(asset.gender) || !/^[a-z]+(?:-[a-z]+)*$/.test(asset.visualGroup)
       || !isAppearance(asset.appearance) || !asset.rights.trim()
       || !['approved', 'rejected', 'withdrawn'].includes(asset.reviewStatus)) {
       errors.push(`Invalid portrait metadata ${asset.id}`)
+    }
+    if (asset.skinToneMst !== undefined && (!Number.isInteger(asset.skinToneMst)
+      || asset.skinToneMst < 1 || asset.skinToneMst > 10)) errors.push(`Invalid Monk tone ${asset.id}`)
+    if (asset.compatibleAppearances !== undefined
+      && (asset.compatibleAppearances.length === 0
+        || !asset.compatibleAppearances.includes(asset.appearance)
+        || new Set(asset.compatibleAppearances).size !== asset.compatibleAppearances.length
+        || asset.compatibleAppearances.some((value) => !isAppearance(value)))) {
+      errors.push(`Invalid compatible appearances ${asset.id}`)
+    }
+    if (asset.appearanceTags !== undefined && !areAppearanceTags(asset.appearanceTags)) {
+      errors.push(`Invalid visual appearance tags ${asset.id}`)
     }
     const ranges = asset.apparentAgeRanges
     if (!areConsecutivePortraitAgeRanges(ranges)
@@ -71,7 +88,12 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
 function compatible(catalog: PortraitCatalog, profile: PortraitProfile) {
   if (ageGroupForAge(profile.age) !== profile.ageGroup) return []
   return catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
-    && asset.gender === profile.gender && asset.appearance === profile.appearance
+    && asset.gender === profile.gender
+    && (profile.appearance === 'mixed'
+      ? (asset.compatibleAppearances ?? [asset.appearance]).includes('mixed')
+      : asset.appearanceTags
+        ? tagsMatchAppearance(asset.appearanceTags, profile.appearance)
+        : (asset.compatibleAppearances ?? [asset.appearance]).some((value) => value === profile.appearance))
     && asset.apparentAgeRanges.some(([minimum, maximum]) => profile.age >= minimum && profile.age <= maximum))
 }
 

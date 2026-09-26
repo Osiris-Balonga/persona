@@ -10,6 +10,17 @@ const roots: string[] = []
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('local portrait review API', () => {
+  it('serves the decision flow module used by the review page', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-assets-'))
+    roots.push(root)
+    const app = createReviewApp(root)
+    const response = await app.inject({ method: 'GET', url: '/decision-flow.js' })
+    expect(response.statusCode).toBe(200)
+    expect(response.headers['content-type']).toContain('text/javascript')
+    expect(response.body).toContain('decisionSteps')
+    await app.close()
+  })
+
   it('accepts an upload and serves a checked candidate without publishing it', async () => {
     const root = await mkdtemp(join(tmpdir(), 'persona-review-api-'))
     roots.push(root)
@@ -18,10 +29,15 @@ describe('local portrait review API', () => {
       background: '#aa806a' } }).png().toBuffer()
     const upload = await app.inject({ method: 'POST', url: '/api/upload', headers: {
       'content-type': 'application/octet-stream', 'x-file-name': 'portrait.png', origin: 'http://localhost:4317',
+      'x-portrait-collection': 'oceania-pacific-islands',
     }, payload: bytes })
     expect(upload.statusCode).toBe(201)
     const item = upload.json()
     expect(item.status).toBe('needs-metadata')
+    expect(item.collection).toBe('oceania-pacific-islands')
+    const reassigned = await app.inject({ method: 'POST', url: '/api/collections',
+      payload: { ids: [item.id], collection: 'oceania-australia-new-zealand' } })
+    expect(reassigned.json()[0].collection).toBe('oceania-australia-new-zealand')
     const listing = await app.inject({ method: 'GET', url: '/api/items' })
     expect(listing.json()).toHaveLength(1)
     const image = await app.inject({ method: 'GET', url: `/api/items/${item.id}/image` })
@@ -110,6 +126,13 @@ describe('local portrait review API', () => {
     expect((await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`, payload: metadata })).statusCode).toBe(200)
     const approval = { decision: 'approved', reviewer: 'Osiris Balonga', reason: 'Reviewed portrait' }
     expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: approval })).statusCode).toBe(200)
+
+    const tags = await app.inject({ method: 'POST', url: `/api/items/${id}/appearance-tags`,
+      payload: { tags: ['black', 'european'] } })
+    expect(tags.statusCode).toBe(200)
+    expect(tags.json()).toMatchObject({ status: 'approved', metadata: { appearanceTags: ['black', 'european'] } })
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/appearance-tags`,
+      payload: { tags: ['unknown'] } })).statusCode).toBe(400)
 
     const correction = await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`,
       payload: { ...metadata, apparentAgeMin: 33, apparentAgeMax: 37,

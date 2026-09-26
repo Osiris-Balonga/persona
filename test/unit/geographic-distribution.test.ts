@@ -30,6 +30,15 @@ describe('seeded geographic choices', () => {
     expect(appearanceCategories).toContain(person.appearance)
   })
 
+  it('uses country-specific appearance weights for unfiltered appearances', () => {
+    const firstDraw = '0'.repeat(64)
+    expect(resolveGeographicContext({ country: 'FR' }, firstDraw).appearance).toBe('european')
+    expect(resolveGeographicContext({ country: 'CG' }, firstDraw).appearance).toBe('central-african')
+    expect(resolveGeographicContext({ country: 'MA' }, firstDraw).appearance).toBe('north-african')
+    const franceSecondDraw = `${'0'.repeat(24)}${'12'.padStart(12, '0')}${'0'.repeat(28)}`
+    expect(resolveGeographicContext({ country: 'FR' }, franceSecondDraw).appearance).toBe('north-african')
+  })
+
   it('does not select or accept an unreviewed country for a beta profile', () => {
     const filters = query('seed=profile-demo&asOf=2026-09-24')
     const zeroKey = '0'.repeat(64)

@@ -17,6 +17,15 @@ const squarePortrait = () => sharp({ create: { width: 768, height: 768, channels
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('portrait review storage', () => {
+  it('assigns a production collection without claiming a visual origin or changing approval', async () => {
+    const { store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'european-batch.png')
+    expect((await store.assignCollection([candidate.id], 'europe-west'))[0]?.collection)
+      .toBe('europe-west')
+    await expect(store.assignCollection([candidate.id], 'north-american'))
+      .rejects.toThrow('collection')
+    expect((await store.get(candidate.id))?.status).toBe('needs-metadata')
+  })
   it('moves a processed original out of inbox and records a checked WebP candidate', async () => {
     const { root, store } = await createStore()
     const bytes = await squarePortrait()
@@ -64,6 +73,44 @@ describe('portrait review storage', () => {
     expect(embedded).toContain('apparentAgeRanges="28-32,33-37,38-42"')
     await expect(store.setMetadata(candidate.id, { ...metadata, apparentAgeRanges: [[28, 32], [38, 42]] }))
       .rejects.toThrow('consecutive')
+  })
+
+  it('adds a reviewed Monk tone to an approved portrait without discarding its approval', async () => {
+    const { root, store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'adult-portrait.png')
+    await store.setMetadata(candidate.id, {
+      ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32,
+      gender: 'female', appearance: 'west-african', visualGroup: 'black',
+      rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally',
+    })
+    const approved = await store.decide(candidate.id, { decision: 'approved', reviewer: 'Osiris Balonga',
+      reason: 'Portrait reviewed' })
+    const annotated = await store.setSkinTone(candidate.id, 6)
+    expect(annotated.status).toBe('approved')
+    expect(annotated.decision).toEqual(approved.decision)
+    expect(annotated.metadata?.skinToneMst).toBe(6)
+    const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
+    expect(embedded).toContain('skinToneMst="6"')
+    await expect(store.setSkinTone(candidate.id, 11)).rejects.toThrow('Monk')
+    expect((await store.get(candidate.id))?.metadata?.skinToneMst).toBe(6)
+  })
+
+  it('adds multiple visual tags to the WebP without erasing an approval', async () => {
+    const { root, store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'adult-portrait.png')
+    await store.setMetadata(candidate.id, {
+      ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32,
+      gender: 'female', appearance: 'european', visualGroup: 'european',
+      rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally',
+    })
+    const approved = await store.decide(candidate.id, { decision: 'approved', reviewer: 'Osiris Balonga', reason: 'Portrait reviewed' })
+    const annotated = await store.setAppearanceTags(candidate.id, ['black', 'european'])
+    expect(annotated.status).toBe('approved')
+    expect(annotated.decision).toEqual(approved.decision)
+    expect(annotated.metadata?.appearanceTags).toEqual(['black', 'european'])
+    const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
+    expect(embedded).toContain('appearanceTags="black,european"')
+    await expect(store.setAppearanceTags(candidate.id, ['black', 'black'])).rejects.toThrow('tags')
   })
 
   it('keeps failed uploads in inbox and rejected candidates out of the approved set', async () => {

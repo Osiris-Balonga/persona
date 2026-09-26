@@ -14,13 +14,13 @@
           <span class="eyebrow">Bibliothèque de portraits</span>
           <h1>Revue des images</h1>
           <p>
-            Portraits classés par apparence. Les caractéristiques et la décision
+            Portraits classés par région de production. Les caractéristiques et la décision
             se trouvent dans la fiche de chaque image.
           </p>
         </div>
-        <button class="primary" id="uploadButton" type="button">
+        <div class="import-controls"><label>Lot d’import<select id="uploadCollection"><option value="">À classer plus tard</option></select></label><button class="primary" id="uploadButton" type="button">
           ＋ Importer des photos</button
-        ><input
+        ></div><input
           id="fileInput"
           type="file"
           accept="image/png,image/jpeg,image/webp"
@@ -31,8 +31,8 @@
       <div class="workspace">
         <aside class="sidebar">
           <div class="sidebar-inner">
-            <div class="side-title">Apparences</div>
-            <nav id="appearanceNav" aria-label="Apparences"></nav>
+            <div class="side-title">Régions</div>
+            <nav id="appearanceNav" aria-label="Régions des portraits"></nav>
             <div class="side-footer">
               <span id="totalCount">0</span> portraits ·
               <span id="readyCount">0</span> à valider
@@ -98,7 +98,7 @@
           <div id="groups"></div>
           <div id="empty" class="empty" hidden>
             <strong>Aucun portrait dans cette sélection</strong>
-            <p>Choisis une autre apparence ou importe des photos.</p>
+            <p>Choisis une autre région ou importe des photos.</p>
           </div>
         </section>
       </div>
@@ -165,21 +165,24 @@
           <span class="eyebrow">Fiche de revue</span>
           <h2 id="detailTitle">Portrait</h2>
         </div>
-        <button
-          type="button"
-          id="closeDialog"
-          class="icon-button"
-          aria-label="Fermer"
-        >
-          ×
-        </button>
+        <div class="dialog-head-actions">
+          <button type="button" id="detailActionsToggle" class="icon-button" aria-label="Plus d’actions" aria-expanded="false" aria-controls="detailActionsMenu" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+          </button>
+          <div id="detailActionsMenu" class="detail-actions-menu" hidden>
+            <button type="button" id="reopenButton">Remettre à valider</button>
+          </div>
+          <button type="button" id="closeDialog" class="icon-button" aria-label="Fermer">×</button>
+        </div>
       </div>
+      <div class="dialog-scroll">
       <div class="dialog-layout">
         <div class="preview-column">
           <img id="detailImage" alt="Portrait à vérifier" />
           <div id="technicalInfo" class="technical"></div>
         </div>
         <div class="review-column">
+          <label class="collection-field">Lot de production<select id="detailCollection"><option value="">À classer</option></select></label>
           <div class="section-heading">
             <h3>Caractéristiques proposées</h3>
             <p>Corrige un choix seulement si nécessaire.</p>
@@ -205,20 +208,41 @@
                   <option value="female">Femme</option>
                   <option value="male">Homme</option>
                 </select></label
-              ><label
-                >Apparence<select name="appearance" required>
-                  <option value="">Choisir</option>
-                </select></label
               >
+              <div class="appearance-picker-field">
+                <span id="appearancePickerLabel">Compatibilités visuelles</span>
+                <div class="age-picker" id="appearancePicker">
+                  <button type="button" id="appearancePickerToggle" aria-labelledby="appearancePickerLabel appearancePickerSummary" aria-expanded="false" aria-controls="appearancePickerMenu">
+                    <span id="appearancePickerSummary">Choisir un ou plusieurs tags</span><span aria-hidden="true">⌄</span>
+                  </button>
+                  <div id="appearancePickerMenu" class="age-picker-menu" hidden>
+                    <p>Un portrait peut convenir à plusieurs apparences.</p>
+                    <div id="appearancePickerOptions"></div>
+                  </div>
+                </div>
+              </div>
+              <fieldset class="skin-tone-field">
+                <legend>Teinte visuelle · échelle Monk</legend>
+                <div class="tone-options" role="radiogroup" aria-label="Teinte visuelle">
+                  <label><input type="radio" name="skinToneMst" value="1"/><span class="tone-swatch" style="--tone:#f7ede4"></span><span>1</span></label>
+                  <label><input type="radio" name="skinToneMst" value="2"/><span class="tone-swatch" style="--tone:#f3e7da"></span><span>2</span></label>
+                  <label><input type="radio" name="skinToneMst" value="3"/><span class="tone-swatch" style="--tone:#f6ead0"></span><span>3</span></label>
+                  <label><input type="radio" name="skinToneMst" value="4"/><span class="tone-swatch" style="--tone:#ead9bb"></span><span>4</span></label>
+                  <label><input type="radio" name="skinToneMst" value="5"/><span class="tone-swatch" style="--tone:#d7bd96"></span><span>5</span></label>
+                  <label><input type="radio" name="skinToneMst" value="6"/><span class="tone-swatch" style="--tone:#9f7d54"></span><span>6</span></label>
+                  <label><input type="radio" name="skinToneMst" value="7"/><span class="tone-swatch" style="--tone:#815d44"></span><span>7</span></label>
+                  <label><input type="radio" name="skinToneMst" value="8"/><span class="tone-swatch" style="--tone:#604234"></span><span>8</span></label>
+                  <label><input type="radio" name="skinToneMst" value="9"/><span class="tone-swatch" style="--tone:#3a312a"></span><span>9</span></label>
+                  <label><input type="radio" name="skinToneMst" value="10"/><span class="tone-swatch" style="--tone:#2a2420"></span><span>10</span></label>
+                </div>
+                <div class="tone-help"><span id="toneSelectionLabel">Non renseignée</span><button type="button" id="clearSkinTone" hidden>Effacer</button><a href="https://skintone.google/" target="_blank" rel="noopener noreferrer">Voir l’échelle</a></div>
+              </fieldset>
             </div>
             <div class="provenance">
               <span>Origine et droits</span
               ><strong id="rightsSummary">À renseigner par l’agent</strong
               ><small id="evidenceSummary"></small>
             </div>
-            <button class="secondary" type="submit" id="saveMetadata">
-              Enregistrer les corrections
-            </button>
           </form>
           <div class="decision-area">
             <h3>Ta décision</h3>
@@ -230,17 +254,25 @@
               rows="3"
               placeholder="Ex. : âge apparent incohérent, artefact visible…"
             ></textarea>
-            <div class="decision-buttons">
-              <button type="button" class="secondary" id="reopenButton" hidden>Remettre à valider</button>
-              <button type="button" class="reject" id="rejectButton">
-                Rejeter</button
-              ><button type="button" class="primary" id="approveButton">
-                Approuver
-              </button>
-            </div>
-            <p id="detailError" class="bulk-error" role="alert" hidden></p>
           </div>
         </div>
+      </div>
+      </div>
+      <div class="dialog-footer">
+        <p id="detailError" class="bulk-error" role="alert" hidden></p>
+        <div class="decision-buttons">
+          <button type="button" class="reject" id="rejectButton">Rejeter</button>
+          <button type="button" class="primary" id="approveButton">Approuver</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="confirmReopenDialog" class="bulk-dialog" aria-labelledby="confirmReopenTitle">
+      <h2 id="confirmReopenTitle">Remettre à valider ?</h2>
+      <p>La décision actuelle sera annulée. Le portrait restera dans la bibliothèque, avec ses caractéristiques et ses droits.</p>
+      <p id="confirmReopenError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="cancelReopen">Annuler</button>
+        <button type="button" class="primary" id="confirmReopen">Remettre à valider</button>
       </div>
     </dialog>
     <dialog id="confirmDecisionDialog" class="bulk-dialog">

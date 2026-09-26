@@ -4,11 +4,13 @@ export const appearanceCategories = [
   'east-african',
   'southern-african',
   'north-african',
+  'black',
   'middle-eastern',
   'european',
   'south-asian',
   'east-asian',
   'southeast-asian',
+  'pacific-islander',
   'latin-american',
   'mixed',
 ] as const

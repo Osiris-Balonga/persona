@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { portraitCoverage, portraitCoverageMatrix, selectPortrait, validatePortraitCatalog } from '../../src/portraits/catalog.js'
+import { appearanceCategories } from '../../src/geography/appearance.js'
 
 const asset = (id: string, overrides: Record<string, unknown> = {}) => ({
   id,
@@ -40,7 +41,7 @@ describe('approved portrait catalog', () => {
     expect(portraitCoverage(one, profile)).toEqual({ approved: 1, minimum: 2, ready: false })
     expect(portraitCoverage(catalog([asset('p_0001'), asset('p_0002')]), profile).ready).toBe(true)
     const rows = portraitCoverageMatrix(catalog([asset('p_0001'), asset('p_0002')]))
-    expect(rows).toHaveLength(96)
+    expect(rows).toHaveLength(4 * 2 * appearanceCategories.length)
     expect(rows.filter((row) => row.ready)).toEqual([{ ageGroup: profile.ageGroup, gender: profile.gender,
       appearance: profile.appearance, approved: 2, minimum: 2, ready: true }])
   })
@@ -62,9 +63,46 @@ describe('approved portrait catalog', () => {
       .toBeGreaterThan(0)
   })
 
-  it('keeps the production manifest empty until images are approved', async () => {
+  it('reuses one reviewed portrait across compatible appearance pools without duplicating the object', () => {
+    const portrait = asset('p_0001', {
+      objectKey: 'portraits/v1/p_0001.webp',
+      compatibleAppearances: ['west-african', 'black'], skinToneMst: 6,
+    })
+    const manifest = catalog([portrait])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    expect(selectPortrait(manifest, { ...profile, appearance: 'black' }, key)?.url)
+      .toBe('https://images.example.test/portraits/v1/p_0001.webp')
+    expect(validatePortraitCatalog(catalog([asset('p_0001', {
+      objectKey: 'portraits/v1/p_0001.webp', compatibleAppearances: ['black', 'black'],
+    })])).length).toBeGreaterThan(0)
+  })
+
+  it('matches reviewed visual tags independently of the production region', () => {
+    const portrait = asset('p_0001', {
+      objectKey: 'portraits/v1/p_0001.webp', appearanceTags: ['black', 'indigenous-american'],
+    })
+    const manifest = catalog([portrait])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    expect(selectPortrait(manifest, { ...profile, appearance: 'central-african' }, key)?.url)
+      .toBe('https://images.example.test/portraits/v1/p_0001.webp')
+    expect(selectPortrait(manifest, { ...profile, appearance: 'latin-american' }, key)?.url)
+      .toBe('https://images.example.test/portraits/v1/p_0001.webp')
+    expect(selectPortrait(manifest, { ...profile, appearance: 'mixed' }, key)).toBeNull()
+    expect(selectPortrait(manifest, { ...profile, appearance: 'european' }, key)).toBeNull()
+    expect(validatePortraitCatalog(catalog([asset('p_0001', { appearanceTags: ['black', 'black'] })])).length)
+      .toBeGreaterThan(0)
+    const mixed = catalog([asset('p_0002', {
+      objectKey: 'portraits/v1/p_0002.webp', appearance: 'mixed',
+      visualGroup: 'mixed', appearanceTags: ['black', 'european'],
+    })])
+    expect(selectPortrait(mixed, { ...profile, appearance: 'mixed' }, key)).not.toBeNull()
+  })
+
+  it('publishes only reviewed portraits in the production manifest', async () => {
     const { portraitCatalog } = await import('../../src/portraits/manifest.js')
-    expect(portraitCatalog.assets).toEqual([])
-    expect(selectPortrait(portraitCatalog, profile, key)).toBeNull()
+    expect(portraitCatalog.version).toBe('v1')
+    expect(portraitCatalog.assets).toHaveLength(322)
+    expect(portraitCatalog.assets.every((entry) => entry.reviewStatus === 'approved')).toBe(true)
+    expect(validatePortraitCatalog(portraitCatalog)).toEqual([])
   })
 })

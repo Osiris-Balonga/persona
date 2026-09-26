@@ -1,12 +1,16 @@
 import { isPortraitCompliant, matchesPortraitFilters } from "./gallery-filters.js";
+import { portraitRegion, regionGroups } from "./gallery-regions.js";
 import { eligibleReviewIds, nextPendingIndex, selectableAgeIndexes } from "./review-sequence.js";
+import { decisionSteps } from "./decision-flow.js";
 
 const $ = (selector) => document.querySelector(selector);
 const state = {
   items: [],
-  appearances: [],
+  appearanceTags: [],
   ageRanges: {},
-  appearance: "all",
+  region: "all",
+  openRegions: new Set(),
+  uploadCollection: "",
   status: "all",
   ageGroup: "all",
   ageRange: "all",
@@ -18,6 +22,7 @@ const state = {
   bulkDecision: null,
   pendingDecision: null,
   editAgeRanges: [],
+  editAppearanceTags: [],
   editAgePickerEditable: false,
   sequence: null,
 };
@@ -28,21 +33,34 @@ const labels = {
   approved: "Approuvé",
   rejected: "Rejeté",
 };
-const appearanceLabels = {
-  "west-african": "Afrique de l’Ouest",
-  "central-african": "Afrique centrale",
-  "east-african": "Afrique de l’Est",
-  "southern-african": "Afrique australe",
-  "north-african": "Afrique du Nord",
-  "middle-eastern": "Moyen-Orient",
-  european: "Europe",
-  "south-asian": "Asie du Sud",
-  "east-asian": "Asie de l’Est",
-  "southeast-asian": "Asie du Sud-Est",
-  "latin-american": "Amérique latine",
-  mixed: "Mixte",
-  unclassified: "À classer",
+const appearanceTagLabels = {
+  black: "Noir·e", european: "Européen·ne", "north-african": "Nord-africain·e",
+  "middle-eastern": "Moyen-oriental·e", "south-asian": "Sud-asiatique",
+  "east-asian": "Est-asiatique", "southeast-asian": "Sud-est-asiatique",
+  "pacific-islander": "Insulaire du Pacifique", "indigenous-american": "Autochtone des Amériques",
 };
+const collectionLabels = {
+  "africa-west": "Afrique de l’Ouest",
+  "africa-central": "Afrique centrale",
+  "africa-east": "Afrique de l’Est",
+  "africa-south": "Afrique australe",
+  "africa-north": "Afrique du Nord",
+  "africa-indian-ocean": "Afrique · Océan Indien",
+  "asia-east": "Asie de l’Est",
+  "asia-southeast": "Asie du Sud-Est",
+  "asia-south": "Asie du Sud",
+  "asia-middle-east": "Moyen-Orient",
+  "americas-north": "Amérique du Nord",
+  "americas-latin-caribbean": "Amérique latine et Caraïbes",
+  "europe-north": "Europe du Nord",
+  "europe-west": "Europe de l’Ouest",
+  "europe-south": "Europe du Sud",
+  "europe-east": "Europe de l’Est",
+  "oceania-australia-new-zealand": "Australie et Nouvelle-Zélande",
+  "oceania-pacific-islands": "Îles du Pacifique",
+};
+const regionLabels = Object.fromEntries(regionGroups.flatMap((group) => group.children));
+regionLabels.unassigned = "À classer";
 const ageLabels = {
   child: "Enfant",
   teen: "Ado",
@@ -91,25 +109,39 @@ async function refresh() {
   state.items = next;
   render();
 }
-function render() {
-  const appearanceOf = (item) => item.metadata?.appearance ?? "unclassified";
-  const available = [
-    ...state.appearances.filter((name) =>
-      state.items.some((item) => appearanceOf(item) === name),
-    ),
-  ];
-  if (state.items.some((item) => appearanceOf(item) === "unclassified"))
-    available.push("unclassified");
-  if (state.appearance !== "all" && !available.includes(state.appearance))
-    state.appearance = "all";
-  $("#appearanceNav").innerHTML =
-    `<button type="button" data-appearance="all" class="${state.appearance === "all" ? "active" : ""}">Toutes les apparences <span>${state.items.length}</span></button>` +
-    available
-      .map(
-        (name) =>
-          `<button type="button" data-appearance="${name}" class="${state.appearance === name ? "active" : ""}">${appearanceLabels[name]} <span>${state.items.filter((item) => appearanceOf(item) === name).length}</span></button>`,
-      )
-      .join("");
+function renderSidebar() {
+  const counts = new Map();
+  for (const item of state.items) {
+    const region = portraitRegion(item);
+    counts.set(region, (counts.get(region) ?? 0) + 1);
+  }
+  const branches = regionGroups.map((group) => {
+    const children = group.children.filter(([id]) => counts.has(id));
+    const count = children.reduce((sum, [id]) => sum + counts.get(id), 0);
+    if (!count) return "";
+    return `<div class="region-branch ${state.openRegions.has(group.id) ? "expanded" : ""}" data-branch="${group.id}">
+      <button type="button" class="region-parent" data-region="${group.id}" aria-expanded="${state.openRegions.has(group.id)}" aria-controls="region-children-${group.id}">
+        <span class="region-label"><svg class="region-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4.5 6 3.5 3.5L11.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="region-name">${group.label}</span></span><span class="region-count">${count}</span>
+      </button>
+      <div class="region-children" id="region-children-${group.id}"><div class="region-children-inner"><button type="button" class="region-child region-all" data-region="${group.id}">Tous <span>${count}</span></button>${children.map(([id, label]) =>
+        `<button type="button" class="region-child" data-region="${id}">${label}<span>${counts.get(id)}</span></button>`).join("")}</div></div>
+    </div>`;
+  }).join("");
+  $("#appearanceNav").innerHTML = `<button type="button" data-region="all">Tous les portraits <span>${state.items.length}</span></button>`
+    + branches + (counts.has("unassigned")
+      ? `<button type="button" data-region="unassigned">À classer <span>${counts.get("unassigned")}</span></button>` : "");
+  updateSidebarSelection();
+}
+function updateSidebarSelection() {
+  $("#appearanceNav").querySelectorAll("button[data-region]").forEach((button) => {
+    const active = button.dataset.region === state.region && !button.classList.contains("region-parent");
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "true");
+    else button.removeAttribute("aria-current");
+  });
+}
+function render({ sidebar = true } = {}) {
+  if (sidebar) renderSidebar();
   $("#totalCount").textContent = state.items.length;
   $("#readyCount").textContent = state.items.filter(
     (item) => item.status === "ready-for-review",
@@ -125,14 +157,11 @@ function render() {
     if (!visible.some((item) => item.id === id && item.status === "ready-for-review"))
       state.selectedIds.delete(id);
   updateSelectionControls(visible);
-  const groups = available
-    .filter(
-      (appearance) =>
-        state.appearance === "all" || state.appearance === appearance,
-    )
-    .map((appearance) => ({
-      appearance,
-      items: visible.filter((item) => appearanceOf(item) === appearance),
+  const orderedRegions = [...regionGroups.flatMap((group) => group.children.map(([id]) => id)), "unassigned"];
+  const groups = orderedRegions
+    .map((region) => ({
+      region,
+      items: visible.filter((item) => portraitRegion(item) === region),
     }))
     .filter((group) => group.items.length);
   $("#empty").hidden = groups.length > 0;
@@ -140,8 +169,8 @@ function render() {
     .map(
       (
         group,
-      ) => `<section class="portrait-group" id="group-${group.appearance}">
-    <div class="group-head"><h2>${appearanceLabels[group.appearance]}</h2><span class="group-count">${group.items.length}</span></div>
+      ) => `<section class="portrait-group" id="group-${group.region}">
+    <div class="group-head"><h2>${regionLabels[group.region]}</h2><span class="group-count">${group.items.length}</span></div>
     <div class="portrait-grid">${group.items
       .map(
         (
@@ -248,13 +277,46 @@ function renderAgePicker() {
   }
   if (state.editAgeRanges.length > 2) {
     const more = document.createElement("span");
+    more.className = "age-overflow";
     more.textContent = `+${state.editAgeRanges.length - 2}`;
+    more.dataset.tooltip = state.editAgeRanges.map(([min, max]) => formatAgeRange(min, max)).join(" · ");
+    more.title = more.dataset.tooltip;
     summary.append(more);
   }
 }
 function closeAgePicker() {
   $("#agePickerMenu").hidden = true;
   $("#agePickerToggle").setAttribute("aria-expanded", "false");
+}
+function renderAppearancePicker() {
+  for (const input of $("#appearancePickerOptions").querySelectorAll('input[type="checkbox"]')) {
+    input.checked = state.editAppearanceTags.includes(input.value);
+    input.disabled = !state.editAgePickerEditable;
+  }
+  const summary = $("#appearancePickerSummary");
+  summary.replaceChildren();
+  if (!state.editAppearanceTags.length) {
+    summary.textContent = "Choisir un ou plusieurs tags";
+    return;
+  }
+  for (const tag of state.editAppearanceTags.slice(0, 2)) {
+    const chip = document.createElement("span");
+    chip.className = "age-chip";
+    chip.textContent = appearanceTagLabels[tag] ?? tag;
+    summary.append(chip);
+  }
+  if (state.editAppearanceTags.length > 2) {
+    const more = document.createElement("span");
+    more.className = "age-overflow";
+    more.textContent = `+${state.editAppearanceTags.length - 2}`;
+    more.dataset.tooltip = state.editAppearanceTags.map((tag) => appearanceTagLabels[tag] ?? tag).join(" · ");
+    more.title = more.dataset.tooltip;
+    summary.append(more);
+  }
+}
+function closeAppearancePicker() {
+  $("#appearancePickerMenu").hidden = true;
+  $("#appearancePickerToggle").setAttribute("aria-expanded", "false");
 }
 function populateDetail(id) {
   const item = state.items.find((candidate) => candidate.id === id);
@@ -270,10 +332,18 @@ function populateDetail(id) {
   const form = $("#metadataForm");
   form.reset();
   const metadata = item.metadata;
-  for (const key of ["gender", "appearance"])
+  $("#detailCollection").value = item.collection ?? "";
+  $(".review-column .section-heading p").textContent = metadata?.reviewNotes
+    ? `À vérifier : ${metadata.reviewNotes}` : "Corrige un choix seulement si nécessaire.";
+  for (const key of ["gender"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
+  const tone = form.querySelector(`input[name="skinToneMst"][value="${metadata?.skinToneMst ?? ""}"]`);
+  if (tone) tone.checked = true;
+  renderSkinToneSelection();
   state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];
+  state.editAppearanceTags = [...(metadata?.appearanceTags ?? [])];
   closeAgePicker();
+  closeAppearancePicker();
   $("#rightsSummary").textContent =
     metadata?.rights === "Synthetic portrait generated for Persona"
       ? "Portrait synthétique créé pour Persona"
@@ -281,26 +351,27 @@ function populateDetail(id) {
   $("#evidenceSummary").textContent = metadata?.rightsEvidence?.startsWith(
     "Codex image_gen batch africa-pilot-2026-09-25",
   )
-    ? "Généré avec Codex le 25/09/2026 · trace de génération conservée localement"
+    ? "Lot Codex du 25/09/2026 · fichier source conservé localement"
     : (metadata?.rightsEvidence ??
       "La provenance sera ajoutée avant ta validation.");
   const editable = Boolean(
     metadata && item.technical && item.status !== "processing-error",
   );
-  form.querySelectorAll("select,button").forEach((element) => {
+  form.querySelectorAll("select,button,input[type=radio]").forEach((element) => {
     element.disabled = !editable;
   });
   state.editAgePickerEditable = editable;
   renderAgePicker();
+  $("#appearancePickerToggle").disabled = !editable;
+  renderAppearancePicker();
   const decided = ["approved", "rejected"].includes(item.status);
-  $("#saveMetadata").textContent = decided ? "Enregistrer et remettre à valider" : "Enregistrer les corrections";
-  $("#reopenButton").hidden = !decided;
-  $("#reopenButton").textContent = metadata && item.technical ? "Remettre à valider" : "Reprendre la préparation";
+  $("#detailActionsToggle").hidden = !decided;
+  closeDetailActions();
   $("#decisionStatus").textContent = decided
-    ? `${labels[item.status]} · conservé localement. Vous pouvez reprendre sa revue ou corriger ses caractéristiques.`
+    ? `${labels[item.status]} · les corrections seront enregistrées avec ta prochaine décision.`
     : `${labels[item.status]} · aucune décision enregistrée.`;
-  $("#approveButton").disabled = item.status !== "ready-for-review";
-  $("#rejectButton").disabled = item.status !== "ready-for-review";
+  $("#approveButton").disabled = !editable;
+  $("#rejectButton").disabled = !editable;
   $("#detailError").hidden = true;
   $("#decisionReason").value = "";
 }
@@ -322,6 +393,7 @@ async function upload(files) {
         headers: {
           "content-type": "application/octet-stream",
           "x-file-name": encodeURIComponent(file.name),
+          ...(state.uploadCollection ? { "x-portrait-collection": state.uploadCollection } : {}),
         },
         body: file,
       });
@@ -347,29 +419,52 @@ function metadataPayload() {
     $("#agePickerToggle").focus();
     return null;
   }
+  if (state.editAppearanceTags.length === 0) {
+    const error = state.sequence ? $("#serialError") : $("#detailError");
+    error.textContent = "Choisis au moins une compatibilité visuelle.";
+    error.hidden = false;
+    $("#appearancePickerToggle").focus();
+    return null;
+  }
   const values = Object.fromEntries(new FormData(form));
   const [apparentAgeMin, apparentAgeMax] = state.editAgeRanges[0];
   const payload = {
     ...item.metadata,
     ageGroup: ageGroupForRange(apparentAgeMin),
     gender: values.gender,
-    appearance: values.appearance,
+    appearanceTags: [...state.editAppearanceTags],
     apparentAgeMin,
     apparentAgeMax,
     apparentAgeRanges: state.editAgeRanges.map(([min, max]) => [min, max]),
   };
+  if (values.skinToneMst) payload.skinToneMst = Number(values.skinToneMst);
+  else delete payload.skinToneMst;
   delete payload.secondaryAgeMin;
   delete payload.secondaryAgeMax;
-  if (values.appearance !== item.metadata.appearance) {
-    payload.visualGroup = ["west-african", "central-african", "east-african", "southern-african"].includes(values.appearance)
-      ? "black" : values.appearance;
-  }
   return payload;
 }
 function metadataChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
-  return ["ageGroup", "gender", "appearance"].some((key) => payload[key] !== metadata?.[key])
-    || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata));
+  return ["ageGroup", "gender"].some((key) => payload[key] !== metadata?.[key])
+    || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata))
+    || JSON.stringify(payload.appearanceTags) !== JSON.stringify(metadata?.appearanceTags ?? [])
+    || payload.skinToneMst !== metadata?.skinToneMst;
+}
+function onlyVisualChanged(payload) {
+  const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
+  return (payload.skinToneMst !== metadata?.skinToneMst
+      || JSON.stringify(payload.appearanceTags) !== JSON.stringify(metadata?.appearanceTags ?? []))
+    && ["ageGroup", "gender", "appearance", "visualGroup"].every((key) => payload[key] === metadata?.[key])
+    && JSON.stringify(payload.apparentAgeRanges) === JSON.stringify(metadataAgeRanges(metadata));
+}
+function renderSkinToneSelection() {
+  const selected = $("#metadataForm input[name=skinToneMst]:checked")?.value;
+  $("#toneSelectionLabel").textContent = selected ? `MST ${selected} sélectionnée` : "Non renseignée";
+  $("#clearSkinTone").hidden = !selected;
+}
+function closeDetailActions() {
+  $("#detailActionsMenu").hidden = true;
+  $("#detailActionsToggle").setAttribute("aria-expanded", "false");
 }
 function decide(decision) {
   const reason = $("#decisionReason").value.trim();
@@ -380,12 +475,24 @@ function decide(decision) {
   const payload = metadataPayload();
   if (!payload) return;
   const changed = metadataChanged(payload);
-  state.pendingDecision = { decision, reason: reason || "Conforme après inspection visuelle", payload: changed ? payload : null };
-  $("#confirmDecisionTitle").textContent = decision === "approved" ? "Approuver ce portrait ?" : "Rejeter ce portrait ?";
-  $("#confirmDecisionText").textContent = changed
-    ? `Les caractéristiques modifiées seront enregistrées avant ${decision === "approved" ? "l’approbation" : "le rejet"}. Confirmer ?`
-    : "Cette décision sera enregistrée localement. Vous pourrez ensuite remettre le portrait à valider.";
-  $("#confirmDecision").textContent = decision === "approved" ? "Confirmer l’approbation" : "Confirmer le rejet";
+  const item = state.items.find((candidate) => candidate.id === state.selected);
+  const collection = $("#detailCollection").value || null;
+  const collectionChanged = collection !== (item.collection ?? null);
+  const steps = decisionSteps(item.status, decision, changed, onlyVisualChanged(payload), collectionChanged);
+  if (!steps.length) {
+    notify(`Portrait déjà ${decision === "approved" ? "approuvé" : "rejeté"} : aucune correction à enregistrer.`);
+    return;
+  }
+  state.pendingDecision = { decision, reason: reason || "Conforme après inspection visuelle", payload: changed ? payload : null, collection, steps };
+  const keepsDecision = steps.every((step) => ["visual", "collection"].includes(step));
+  $("#confirmDecisionTitle").textContent = keepsDecision ? "Enregistrer les corrections ?"
+    : decision === "approved" ? "Approuver ce portrait ?" : "Rejeter ce portrait ?";
+  $("#confirmDecisionText").textContent = keepsDecision
+    ? "Les corrections seront enregistrées. La décision actuelle sera conservée."
+    : changed || collectionChanged ? `Les caractéristiques modifiées seront enregistrées avec ${decision === "approved" ? "l’approbation" : "le rejet"}. Confirmer ?`
+      : "La décision précédente sera remplacée. Confirmer ?";
+  $("#confirmDecision").textContent = keepsDecision ? "Enregistrer les corrections"
+    : decision === "approved" ? "Confirmer l’approbation" : "Confirmer le rejet";
   $("#confirmDecisionError").hidden = true;
   $("#confirmDecisionDialog").showModal();
 }
@@ -394,22 +501,39 @@ async function confirmDecision() {
   if (!pending) return;
   $("#confirmDecision").disabled = true;
   try {
-    if (pending.payload) {
-      await request(`/api/items/${state.selected}/metadata`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(pending.payload),
+    for (const step of pending.steps) {
+      if (step === "collection") await request("/api/collections", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ids: [state.selected], collection: pending.collection }),
+      });
+      if (step === "metadata") await request(`/api/items/${state.selected}/metadata`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(pending.payload),
+      });
+      if (step === "visual") {
+        const current = state.items.find((item) => item.id === state.selected)?.metadata;
+        if (JSON.stringify(pending.payload.appearanceTags) !== JSON.stringify(current?.appearanceTags ?? []))
+          await request(`/api/items/${state.selected}/appearance-tags`, {
+            method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify({ tags: pending.payload.appearanceTags }),
+          });
+        if (pending.payload.skinToneMst !== current?.skinToneMst)
+          await request(`/api/items/${state.selected}/skin-tone`, {
+            method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify({ tone: pending.payload.skinToneMst ?? null }),
+          });
+      }
+      if (step === "reopen") await request(`/api/items/${state.selected}/reopen`, { method: "POST" });
+      if (step === "decide") await request(`/api/items/${state.selected}/decision`, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ decision: pending.decision, reviewer: "Osiris Balonga", reason: pending.reason }),
       });
     }
-    await request(`/api/items/${state.selected}/decision`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ decision: pending.decision, reviewer: "Osiris Balonga", reason: pending.reason }),
-    });
     $("#confirmDecisionDialog").close();
     $("#detailDialog").close();
     await refresh();
-    notify(pending.decision === "approved"
+    notify(pending.steps.every((step) => ["visual", "collection"].includes(step))
+      ? "Corrections enregistrées. La décision est conservée."
+      : pending.decision === "approved"
       ? "Portrait approuvé et conservé localement. Retrouvez-le dans Approuvés."
       : "Portrait rejeté et conservé localement. Retrouvez-le dans Rejetés.");
   } catch (error) {
@@ -609,11 +733,26 @@ $("#statusNav").addEventListener("click", (event) => {
   render();
 });
 $("#appearanceNav").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-appearance]");
+  const button = event.target.closest("button[data-region]");
   if (button) {
-    state.appearance = button.dataset.appearance;
+    const region = button.dataset.region;
+    const branch = button.closest(".region-branch");
+    if (branch && button.classList.contains("region-parent")) {
+      const expanded = !state.openRegions.has(region);
+      state.openRegions.clear();
+      $("#appearanceNav").querySelectorAll(".region-branch.expanded").forEach((openBranch) => {
+        openBranch.classList.remove("expanded");
+        openBranch.querySelector(".region-parent").setAttribute("aria-expanded", "false");
+      });
+      if (expanded) state.openRegions.add(region);
+      branch.classList.toggle("expanded", expanded);
+      button.setAttribute("aria-expanded", String(expanded));
+      return;
+    }
+    state.region = region;
     state.selectedIds.clear();
-    render();
+    updateSidebarSelection();
+    render({ sidebar: false });
   }
 });
 for (const [id, key] of [
@@ -738,63 +877,97 @@ $("#agePicker").addEventListener("keydown", (event) => {
     $("#agePickerToggle").focus();
   }
 });
-$("#metadataForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const payload = metadataPayload();
-  if (!payload) return;
-  const wasDecided = ["approved", "rejected"].includes(
-    state.items.find((item) => item.id === state.selected)?.status,
-  );
-  try {
-    await request(`/api/items/${state.selected}/metadata`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    await refresh();
-    $("#detailDialog").close();
-    notify(wasDecided
-      ? "Corrections enregistrées. La décision précédente est annulée : le portrait est à valider."
-      : "Corrections enregistrées. Le portrait reste à valider.");
-  } catch (error) {
-    $("#detailError").textContent = error.message;
-    $("#detailError").hidden = false;
+$("#appearancePickerToggle").addEventListener("click", () => {
+  const menu = $("#appearancePickerMenu");
+  menu.hidden = !menu.hidden;
+  $("#appearancePickerToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+$("#appearancePickerOptions").addEventListener("change", (event) => {
+  const checkbox = event.target.closest('input[type="checkbox"]');
+  if (!checkbox) return;
+  state.editAppearanceTags = state.appearanceTags.filter((tag) =>
+    $("#appearancePickerOptions").querySelector(`input[value="${tag}"]`)?.checked);
+  $("#detailError").hidden = true;
+  renderAppearancePicker();
+});
+document.addEventListener("click", (event) => {
+  if (!$("#appearancePicker").contains(event.target)) closeAppearancePicker();
+});
+$("#appearancePicker").addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("#appearancePickerMenu").hidden) {
+    event.stopPropagation();
+    closeAppearancePicker();
+    $("#appearancePickerToggle").focus();
   }
+});
+$("#metadataForm").addEventListener("submit", (event) => event.preventDefault());
+$("#metadataForm").addEventListener("change", (event) => {
+  if (event.target.name === "skinToneMst") renderSkinToneSelection();
+});
+$("#clearSkinTone").addEventListener("click", () => {
+  for (const input of $("#metadataForm").querySelectorAll('input[name="skinToneMst"]')) input.checked = false;
+  renderSkinToneSelection();
 });
 $("#approveButton").addEventListener("click", () => decide("approved"));
 $("#rejectButton").addEventListener("click", () => decide("rejected"));
 $("#cancelDecision").addEventListener("click", () => $("#confirmDecisionDialog").close());
 $("#confirmDecision").addEventListener("click", confirmDecision);
-$("#reopenButton").addEventListener("click", async () => {
+$("#detailActionsToggle").addEventListener("click", () => {
+  const menu = $("#detailActionsMenu");
+  menu.hidden = !menu.hidden;
+  $("#detailActionsToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+$("#reopenButton").addEventListener("click", () => {
+  closeDetailActions();
   const item = state.items.find((candidate) => candidate.id === state.selected);
   const payload = metadataPayload();
   if (item?.metadata && !payload) return;
-  if (payload && metadataChanged(payload)) {
-    $("#detailError").textContent = "Enregistrez d’abord vos corrections pour ne pas les perdre.";
+  if ((payload && metadataChanged(payload)) || $("#detailCollection").value !== (item?.collection ?? "")) {
+    $("#detailError").textContent = "Approuve ou rejette d’abord tes corrections pour ne pas les perdre.";
     $("#detailError").hidden = false;
     return;
   }
+  $("#confirmReopenError").hidden = true;
+  $("#confirmReopenDialog").showModal();
+});
+$("#cancelReopen").addEventListener("click", () => $("#confirmReopenDialog").close());
+$("#confirmReopen").addEventListener("click", async () => {
+  $("#confirmReopen").disabled = true;
   try {
     await request(`/api/items/${state.selected}/reopen`, { method: "POST" });
+    $("#confirmReopenDialog").close();
     $("#detailDialog").close();
     await refresh();
-    notify("Décision annulée. Le portrait peut de nouveau être préparé ou validé.");
+    notify("Décision annulée. Le portrait est de nouveau à valider.");
   } catch (error) {
-    $("#detailError").textContent = error.message;
-    $("#detailError").hidden = false;
+    $("#confirmReopenError").textContent = error.message;
+    $("#confirmReopenError").hidden = false;
+  } finally {
+    $("#confirmReopen").disabled = false;
   }
 });
+$("#uploadCollection").addEventListener("change", (event) => { state.uploadCollection = event.target.value; });
 request("/api/options")
-  .then(({ appearanceCategories, portraitAgeRanges }) => {
-    state.appearances = appearanceCategories;
+  .then(({ appearanceTags, portraitAgeRanges, portraitCollectionOptions }) => {
+    state.appearanceTags = appearanceTags;
     state.ageRanges = portraitAgeRanges;
+    for (const collection of portraitCollectionOptions) {
+      for (const id of ["uploadCollection", "detailCollection"]) {
+        const option = document.createElement("option");
+        option.value = collection;
+        option.textContent = collectionLabels[collection] ?? collection;
+        $(`#${id}`).append(option);
+      }
+    }
     fillGalleryAgeRanges();
     buildAgePickerOptions();
-    for (const category of appearanceCategories) {
-      const option = document.createElement("option");
-      option.value = category;
-      option.textContent = appearanceLabels[category] ?? category;
-      $("#metadataForm").elements.namedItem("appearance").append(option);
+    for (const tag of appearanceTags) {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.value = tag;
+      label.append(input, document.createTextNode(appearanceTagLabels[tag] ?? tag));
+      $("#appearancePickerOptions").append(label);
     }
     return refresh();
   })

@@ -44,7 +44,8 @@ describe('GET /people', () => {
       expect(Value.Check(DefaultPeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)
       expect(body.results[0]).toMatchObject({ country: 'MW', city: 'Lilongwe', age: 14,
-        gender: 'female', picture: null, address: { line1: expect.stringMatching(/^\d{1,3} .+ (?:Road|Street|Avenue)$/) } })
+        gender: 'female', address: { line1: expect.stringMatching(/^\d{1,3} .+ (?:Road|Street|Avenue)$/) } })
+      expect(body.results[0].picture?.url).toMatch(/^https:\/\/persona-portraits\.osirisbalonga\.workers\.dev\/portraits\/v1\/p_\d+\.webp$/)
       expect(body.results[0]).not.toHaveProperty('ageGroup')
       expect(body.results[0]).not.toHaveProperty('appearance')
       expect(body.results[0].id).not.toBe(body.results[1].id)
@@ -92,7 +93,7 @@ describe('GET /people', () => {
       const projected = await app.inject({ method: 'GET', url: `${base}&fields=firstName,address.city,picture.url` })
       expect(projected.statusCode).toBe(200)
       expect(projected.json()).toEqual({ results: [{ firstName: full.results[0].firstName,
-        address: { city: 'Lilongwe' }, picture: null }], meta: full.meta })
+        address: { city: 'Lilongwe' }, picture: full.results[0].picture }], meta: full.meta })
     } finally { await app.close() }
   })
 
