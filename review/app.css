@@ -562,6 +562,75 @@ dialog {
 dialog::backdrop {
   background: #1d342397;
 }
+#detailDialog {
+  height: min(740px, calc(100dvh - 30px));
+  overflow: hidden;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+#detailDialog[open] {
+  display: grid;
+}
+#detailDialog .dialog-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#detailDialog .dialog-head {
+  align-items: center;
+  position: relative;
+  z-index: 8;
+  background: #fff;
+}
+.dialog-head-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dialog-head-actions svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.detail-actions-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 44px;
+  min-width: 170px;
+  padding: 5px;
+  border: 1px solid #dce7dd;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 8px 24px #1e362621;
+}
+.detail-actions-menu button {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #314a38;
+  text-align: left;
+  font: inherit;
+}
+.detail-actions-menu button:hover,
+.detail-actions-menu button:focus-visible {
+  background: #f4f7f3;
+}
+.dialog-footer {
+  display: grid;
+  justify-items: end;
+  padding: 12px 24px 16px;
+  border-top: 1px solid #e5ece5;
+  background: #fff;
+}
+.dialog-footer .decision-buttons {
+  margin: 0;
+}
+.dialog-footer .bulk-error {
+  justify-self: stretch;
+}
 .dialog-head {
   display: flex;
   align-items: start;
@@ -629,7 +698,84 @@ dialog::backdrop {
   grid-template-columns: 1fr 1fr;
   gap: 0 10px;
 }
+.skin-tone-field {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}
+.skin-tone-field legend {
+  margin-bottom: 7px;
+  color: #5e7864;
+  font-size: 11px;
+  font-weight: 700;
+}
+.tone-options {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+}
+.tone-options label {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  min-width: 0;
+  margin: 0;
+  padding: 5px 2px 4px;
+  border: 1px solid #dce7dd;
+  border-radius: 7px;
+  color: #526b57;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tone-options label:hover {
+  border-color: #719780;
+  background: #f4f7f3;
+}
+.tone-options label:has(input:checked) {
+  border-color: #28764f;
+  background: #e6f1e9;
+  color: #225b3e;
+}
+.tone-options label:has(input:focus-visible) {
+  outline: 2px solid #28764f;
+  outline-offset: 2px;
+}
+.tone-options input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.tone-swatch {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #00000025;
+  border-radius: 6px;
+  background: var(--tone);
+}
+.tone-help {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  color: #526b57;
+  font-size: 11px;
+}
+.tone-help button {
+  border: 0;
+  padding: 3px 0;
+  background: transparent;
+  color: #28764f;
+  font: inherit;
+  font-weight: 600;
+}
 .skin-tone-field a {
+  margin-left: auto;
   color: #28764f;
   font-size: 11px;
   font-weight: 600;
@@ -678,6 +824,34 @@ dialog::backdrop {
   color: #28764f;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
+}
+.age-overflow {
+  position: relative;
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: #eef3ee;
+  color: #526b57;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.age-overflow:hover::after,
+.age-overflow:focus-visible::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  width: max-content;
+  max-width: min(280px, calc(100vw - 50px));
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: #253f2e;
+  box-shadow: 0 5px 18px #1e362630;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: normal;
+  transform: translateX(-50%);
 }
 .age-picker-menu {
   position: absolute;
@@ -1008,7 +1182,6 @@ body:has(#serialDialog[open]) {
 }
 #serialDialog .section-heading,
 #serialDialog .provenance,
-#serialDialog #saveMetadata,
 #serialDialog .skin-tone-field,
 #serialDialog .decision-area {
   display: none;
@@ -1184,6 +1357,9 @@ body:has(#serialDialog[open]) {
   }
 }
 @media (max-width: 390px) {
+  .tone-options {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
   .preview-column {
     grid-template-columns: 1fr;
   }

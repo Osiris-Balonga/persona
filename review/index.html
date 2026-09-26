@@ -165,15 +165,17 @@
           <span class="eyebrow">Fiche de revue</span>
           <h2 id="detailTitle">Portrait</h2>
         </div>
-        <button
-          type="button"
-          id="closeDialog"
-          class="icon-button"
-          aria-label="Fermer"
-        >
-          ×
-        </button>
+        <div class="dialog-head-actions">
+          <button type="button" id="detailActionsToggle" class="icon-button" aria-label="Plus d’actions" aria-expanded="false" aria-controls="detailActionsMenu" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+          </button>
+          <div id="detailActionsMenu" class="detail-actions-menu" hidden>
+            <button type="button" id="reopenButton">Remettre à valider</button>
+          </div>
+          <button type="button" id="closeDialog" class="icon-button" aria-label="Fermer">×</button>
+        </div>
       </div>
+      <div class="dialog-scroll">
       <div class="dialog-layout">
         <div class="preview-column">
           <img id="detailImage" alt="Portrait à vérifier" />
@@ -211,25 +213,28 @@
                   <option value="">Choisir</option>
                 </select></label
               >
-              <label class="skin-tone-field">Teinte visuelle · échelle Monk
-                <select name="skinToneMst"><option value="">Non renseignée</option>
-                  <option value="1">MST 1</option><option value="2">MST 2</option>
-                  <option value="3">MST 3</option><option value="4">MST 4</option>
-                  <option value="5">MST 5</option><option value="6">MST 6</option>
-                  <option value="7">MST 7</option><option value="8">MST 8</option>
-                  <option value="9">MST 9</option><option value="10">MST 10</option>
-                </select>
-                <a href="https://skintone.google/" target="_blank" rel="noopener noreferrer">Comparer avec l’échelle illustrée</a>
-              </label>
+              <fieldset class="skin-tone-field">
+                <legend>Teinte visuelle · échelle Monk</legend>
+                <div class="tone-options" role="radiogroup" aria-label="Teinte visuelle">
+                  <label><input type="radio" name="skinToneMst" value="1"/><span class="tone-swatch" style="--tone:#f7ede4"></span><span>1</span></label>
+                  <label><input type="radio" name="skinToneMst" value="2"/><span class="tone-swatch" style="--tone:#f3e7da"></span><span>2</span></label>
+                  <label><input type="radio" name="skinToneMst" value="3"/><span class="tone-swatch" style="--tone:#f6ead0"></span><span>3</span></label>
+                  <label><input type="radio" name="skinToneMst" value="4"/><span class="tone-swatch" style="--tone:#ead9bb"></span><span>4</span></label>
+                  <label><input type="radio" name="skinToneMst" value="5"/><span class="tone-swatch" style="--tone:#d7bd96"></span><span>5</span></label>
+                  <label><input type="radio" name="skinToneMst" value="6"/><span class="tone-swatch" style="--tone:#9f7d54"></span><span>6</span></label>
+                  <label><input type="radio" name="skinToneMst" value="7"/><span class="tone-swatch" style="--tone:#815d44"></span><span>7</span></label>
+                  <label><input type="radio" name="skinToneMst" value="8"/><span class="tone-swatch" style="--tone:#604234"></span><span>8</span></label>
+                  <label><input type="radio" name="skinToneMst" value="9"/><span class="tone-swatch" style="--tone:#3a312a"></span><span>9</span></label>
+                  <label><input type="radio" name="skinToneMst" value="10"/><span class="tone-swatch" style="--tone:#2a2420"></span><span>10</span></label>
+                </div>
+                <div class="tone-help"><span id="toneSelectionLabel">Non renseignée</span><button type="button" id="clearSkinTone" hidden>Effacer</button><a href="https://skintone.google/" target="_blank" rel="noopener noreferrer">Voir l’échelle</a></div>
+              </fieldset>
             </div>
             <div class="provenance">
               <span>Origine et droits</span
               ><strong id="rightsSummary">À renseigner par l’agent</strong
               ><small id="evidenceSummary"></small>
             </div>
-            <button class="secondary" type="submit" id="saveMetadata">
-              Enregistrer les corrections
-            </button>
           </form>
           <div class="decision-area">
             <h3>Ta décision</h3>
@@ -241,17 +246,25 @@
               rows="3"
               placeholder="Ex. : âge apparent incohérent, artefact visible…"
             ></textarea>
-            <div class="decision-buttons">
-              <button type="button" class="secondary" id="reopenButton" hidden>Remettre à valider</button>
-              <button type="button" class="reject" id="rejectButton">
-                Rejeter</button
-              ><button type="button" class="primary" id="approveButton">
-                Approuver
-              </button>
-            </div>
-            <p id="detailError" class="bulk-error" role="alert" hidden></p>
           </div>
         </div>
+      </div>
+      </div>
+      <div class="dialog-footer">
+        <p id="detailError" class="bulk-error" role="alert" hidden></p>
+        <div class="decision-buttons">
+          <button type="button" class="reject" id="rejectButton">Rejeter</button>
+          <button type="button" class="primary" id="approveButton">Approuver</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="confirmReopenDialog" class="bulk-dialog" aria-labelledby="confirmReopenTitle">
+      <h2 id="confirmReopenTitle">Remettre à valider ?</h2>
+      <p>La décision actuelle sera annulée. Le portrait restera dans la bibliothèque, avec ses caractéristiques et ses droits.</p>
+      <p id="confirmReopenError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="cancelReopen">Annuler</button>
+        <button type="button" class="primary" id="confirmReopen">Remettre à valider</button>
       </div>
     </dialog>
     <dialog id="confirmDecisionDialog" class="bulk-dialog">

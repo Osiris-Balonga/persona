@@ -10,6 +10,17 @@ const roots: string[] = []
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('local portrait review API', () => {
+  it('serves the decision flow module used by the review page', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-assets-'))
+    roots.push(root)
+    const app = createReviewApp(root)
+    const response = await app.inject({ method: 'GET', url: '/decision-flow.js' })
+    expect(response.statusCode).toBe(200)
+    expect(response.headers['content-type']).toContain('text/javascript')
+    expect(response.body).toContain('decisionSteps')
+    await app.close()
+  })
+
   it('accepts an upload and serves a checked candidate without publishing it', async () => {
     const root = await mkdtemp(join(tmpdir(), 'persona-review-api-'))
     roots.push(root)

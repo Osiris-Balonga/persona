@@ -1,6 +1,7 @@
 import { isPortraitCompliant, matchesPortraitFilters } from "./gallery-filters.js";
 import { portraitRegion, regionGroups } from "./gallery-regions.js";
 import { eligibleReviewIds, nextPendingIndex, selectableAgeIndexes } from "./review-sequence.js";
+import { decisionSteps } from "./decision-flow.js";
 
 const $ = (selector) => document.querySelector(selector);
 const state = {
@@ -286,7 +287,10 @@ function renderAgePicker() {
   }
   if (state.editAgeRanges.length > 2) {
     const more = document.createElement("span");
+    more.className = "age-overflow";
     more.textContent = `+${state.editAgeRanges.length - 2}`;
+    more.dataset.tooltip = state.editAgeRanges.map(([min, max]) => formatAgeRange(min, max)).join(" · ");
+    more.title = more.dataset.tooltip;
     summary.append(more);
   }
 }
@@ -313,7 +317,9 @@ function populateDetail(id) {
     ? `À vérifier : ${metadata.reviewNotes}` : "Corrige un choix seulement si nécessaire.";
   for (const key of ["gender", "appearance"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
-  form.elements.namedItem("skinToneMst").value = metadata?.skinToneMst ?? "";
+  const tone = form.querySelector(`input[name="skinToneMst"][value="${metadata?.skinToneMst ?? ""}"]`);
+  if (tone) tone.checked = true;
+  renderSkinToneSelection();
   state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];
   closeAgePicker();
   $("#rightsSummary").textContent =
@@ -329,20 +335,19 @@ function populateDetail(id) {
   const editable = Boolean(
     metadata && item.technical && item.status !== "processing-error",
   );
-  form.querySelectorAll("select,button").forEach((element) => {
+  form.querySelectorAll("select,button,input[type=radio]").forEach((element) => {
     element.disabled = !editable;
   });
   state.editAgePickerEditable = editable;
   renderAgePicker();
   const decided = ["approved", "rejected"].includes(item.status);
-  $("#saveMetadata").textContent = "Enregistrer les changements";
-  $("#reopenButton").hidden = !decided;
-  $("#reopenButton").textContent = metadata && item.technical ? "Remettre à valider" : "Reprendre la préparation";
+  $("#detailActionsToggle").hidden = !decided;
+  closeDetailActions();
   $("#decisionStatus").textContent = decided
-    ? `${labels[item.status]} · conservé localement. Vous pouvez reprendre sa revue ou corriger ses caractéristiques.`
+    ? `${labels[item.status]} · les corrections seront enregistrées avec ta prochaine décision.`
     : `${labels[item.status]} · aucune décision enregistrée.`;
-  $("#approveButton").disabled = item.status !== "ready-for-review";
-  $("#rejectButton").disabled = item.status !== "ready-for-review";
+  $("#approveButton").disabled = !editable;
+  $("#rejectButton").disabled = !editable;
   $("#detailError").hidden = true;
   $("#decisionReason").value = "";
 }
@@ -423,6 +428,15 @@ function onlySkinToneChanged(payload) {
     && ["ageGroup", "gender", "appearance", "visualGroup"].every((key) => payload[key] === metadata?.[key])
     && JSON.stringify(payload.apparentAgeRanges) === JSON.stringify(metadataAgeRanges(metadata));
 }
+function renderSkinToneSelection() {
+  const selected = $("#metadataForm input[name=skinToneMst]:checked")?.value;
+  $("#toneSelectionLabel").textContent = selected ? `MST ${selected} sélectionnée` : "Non renseignée";
+  $("#clearSkinTone").hidden = !selected;
+}
+function closeDetailActions() {
+  $("#detailActionsMenu").hidden = true;
+  $("#detailActionsToggle").setAttribute("aria-expanded", "false");
+}
 function decide(decision) {
   const reason = $("#decisionReason").value.trim();
   if (decision === "rejected" && !reason) {
@@ -432,12 +446,24 @@ function decide(decision) {
   const payload = metadataPayload();
   if (!payload) return;
   const changed = metadataChanged(payload);
-  state.pendingDecision = { decision, reason: reason || "Conforme après inspection visuelle", payload: changed ? payload : null };
-  $("#confirmDecisionTitle").textContent = decision === "approved" ? "Approuver ce portrait ?" : "Rejeter ce portrait ?";
-  $("#confirmDecisionText").textContent = changed
-    ? `Les caractéristiques modifiées seront enregistrées avant ${decision === "approved" ? "l’approbation" : "le rejet"}. Confirmer ?`
-    : "Cette décision sera enregistrée localement. Vous pourrez ensuite remettre le portrait à valider.";
-  $("#confirmDecision").textContent = decision === "approved" ? "Confirmer l’approbation" : "Confirmer le rejet";
+  const item = state.items.find((candidate) => candidate.id === state.selected);
+  const collection = $("#detailCollection").value || null;
+  const collectionChanged = collection !== (item.collection ?? null);
+  const steps = decisionSteps(item.status, decision, changed, onlySkinToneChanged(payload), collectionChanged);
+  if (!steps.length) {
+    notify(`Portrait déjà ${decision === "approved" ? "approuvé" : "rejeté"} : aucune correction à enregistrer.`);
+    return;
+  }
+  state.pendingDecision = { decision, reason: reason || "Conforme après inspection visuelle", payload: changed ? payload : null, collection, steps };
+  const keepsDecision = steps.every((step) => ["tone", "collection"].includes(step));
+  $("#confirmDecisionTitle").textContent = keepsDecision ? "Enregistrer les corrections ?"
+    : decision === "approved" ? "Approuver ce portrait ?" : "Rejeter ce portrait ?";
+  $("#confirmDecisionText").textContent = keepsDecision
+    ? "Les corrections seront enregistrées. La décision actuelle sera conservée."
+    : changed || collectionChanged ? `Les caractéristiques modifiées seront enregistrées avec ${decision === "approved" ? "l’approbation" : "le rejet"}. Confirmer ?`
+      : "La décision précédente sera remplacée. Confirmer ?";
+  $("#confirmDecision").textContent = keepsDecision ? "Enregistrer les corrections"
+    : decision === "approved" ? "Confirmer l’approbation" : "Confirmer le rejet";
   $("#confirmDecisionError").hidden = true;
   $("#confirmDecisionDialog").showModal();
 }
@@ -446,22 +472,29 @@ async function confirmDecision() {
   if (!pending) return;
   $("#confirmDecision").disabled = true;
   try {
-    if (pending.payload) {
-      await request(`/api/items/${state.selected}/metadata`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(pending.payload),
+    for (const step of pending.steps) {
+      if (step === "collection") await request("/api/collections", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ids: [state.selected], collection: pending.collection }),
+      });
+      if (step === "metadata") await request(`/api/items/${state.selected}/metadata`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(pending.payload),
+      });
+      if (step === "tone") await request(`/api/items/${state.selected}/skin-tone`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tone: pending.payload.skinToneMst ?? null }),
+      });
+      if (step === "reopen") await request(`/api/items/${state.selected}/reopen`, { method: "POST" });
+      if (step === "decide") await request(`/api/items/${state.selected}/decision`, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ decision: pending.decision, reviewer: "Osiris Balonga", reason: pending.reason }),
       });
     }
-    await request(`/api/items/${state.selected}/decision`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ decision: pending.decision, reviewer: "Osiris Balonga", reason: pending.reason }),
-    });
     $("#confirmDecisionDialog").close();
     $("#detailDialog").close();
     await refresh();
-    notify(pending.decision === "approved"
+    notify(pending.steps.every((step) => ["tone", "collection"].includes(step))
+      ? "Corrections enregistrées. La décision est conservée."
+      : pending.decision === "approved"
       ? "Portrait approuvé et conservé localement. Retrouvez-le dans Approuvés."
       : "Portrait rejeté et conservé localement. Retrouvez-le dans Rejetés.");
   } catch (error) {
@@ -805,69 +838,53 @@ $("#agePicker").addEventListener("keydown", (event) => {
     $("#agePickerToggle").focus();
   }
 });
-$("#metadataForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const payload = metadataPayload();
-  if (!payload) return;
-  const wasDecided = ["approved", "rejected"].includes(
-    state.items.find((item) => item.id === state.selected)?.status,
-  );
-  if (!metadataChanged(payload)) {
-    notify("Aucune correction à enregistrer.");
-    return;
-  }
-  const toneOnly = onlySkinToneChanged(payload);
-  try {
-    await request(`/api/items/${state.selected}/${toneOnly ? "skin-tone" : "metadata"}`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(toneOnly ? { tone: payload.skinToneMst ?? null } : payload),
-    });
-    await refresh();
-    $("#detailDialog").close();
-    notify(toneOnly
-      ? "Teinte enregistrée. La décision de validation est conservée."
-      : wasDecided
-      ? "Corrections enregistrées. La décision précédente est annulée : le portrait est à valider."
-      : "Corrections enregistrées. Le portrait reste à valider.");
-  } catch (error) {
-    $("#detailError").textContent = error.message;
-    $("#detailError").hidden = false;
-  }
+$("#metadataForm").addEventListener("submit", (event) => event.preventDefault());
+$("#metadataForm").addEventListener("change", (event) => {
+  if (event.target.name === "skinToneMst") renderSkinToneSelection();
+});
+$("#clearSkinTone").addEventListener("click", () => {
+  for (const input of $("#metadataForm").querySelectorAll('input[name="skinToneMst"]')) input.checked = false;
+  renderSkinToneSelection();
 });
 $("#approveButton").addEventListener("click", () => decide("approved"));
 $("#rejectButton").addEventListener("click", () => decide("rejected"));
 $("#cancelDecision").addEventListener("click", () => $("#confirmDecisionDialog").close());
 $("#confirmDecision").addEventListener("click", confirmDecision);
-$("#reopenButton").addEventListener("click", async () => {
+$("#detailActionsToggle").addEventListener("click", () => {
+  const menu = $("#detailActionsMenu");
+  menu.hidden = !menu.hidden;
+  $("#detailActionsToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+$("#reopenButton").addEventListener("click", () => {
+  closeDetailActions();
   const item = state.items.find((candidate) => candidate.id === state.selected);
   const payload = metadataPayload();
   if (item?.metadata && !payload) return;
-  if (payload && metadataChanged(payload)) {
-    $("#detailError").textContent = "Enregistrez d’abord vos corrections pour ne pas les perdre.";
+  if ((payload && metadataChanged(payload)) || $("#detailCollection").value !== (item?.collection ?? "")) {
+    $("#detailError").textContent = "Approuve ou rejette d’abord tes corrections pour ne pas les perdre.";
     $("#detailError").hidden = false;
     return;
   }
+  $("#confirmReopenError").hidden = true;
+  $("#confirmReopenDialog").showModal();
+});
+$("#cancelReopen").addEventListener("click", () => $("#confirmReopenDialog").close());
+$("#confirmReopen").addEventListener("click", async () => {
+  $("#confirmReopen").disabled = true;
   try {
     await request(`/api/items/${state.selected}/reopen`, { method: "POST" });
+    $("#confirmReopenDialog").close();
     $("#detailDialog").close();
     await refresh();
-    notify("Décision annulée. Le portrait peut de nouveau être préparé ou validé.");
+    notify("Décision annulée. Le portrait est de nouveau à valider.");
   } catch (error) {
-    $("#detailError").textContent = error.message;
-    $("#detailError").hidden = false;
+    $("#confirmReopenError").textContent = error.message;
+    $("#confirmReopenError").hidden = false;
+  } finally {
+    $("#confirmReopen").disabled = false;
   }
 });
 $("#uploadCollection").addEventListener("change", (event) => { state.uploadCollection = event.target.value; });
-$("#detailCollection").addEventListener("change", async (event) => {
-  if (!state.selected) return;
-  try {
-    await request("/api/collections", { method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ids: [state.selected], collection: event.target.value || null }) });
-    await refresh();
-    notify("Lot de production enregistré.");
-  } catch (error) { notify(error.message, true); }
-});
 request("/api/options")
   .then(({ appearanceCategories, portraitAgeRanges, portraitCollectionOptions }) => {
     state.appearances = appearanceCategories;
