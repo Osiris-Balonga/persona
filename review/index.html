@@ -164,6 +164,7 @@
           </form>
           <div class="decision-area">
             <h3>Ta décision</h3>
+            <p id="decisionStatus" class="decision-status"></p>
             <p id="reviewerLabel">Relecteur : Osiris Balonga</p>
             <label for="decisionReason">Motif du rejet, si nécessaire</label
             ><textarea
@@ -172,14 +173,25 @@
               placeholder="Ex. : âge apparent incohérent, artefact visible…"
             ></textarea>
             <div class="decision-buttons">
+              <button type="button" class="secondary" id="reopenButton" hidden>Remettre à valider</button>
               <button type="button" class="reject" id="rejectButton">
                 Rejeter</button
               ><button type="button" class="primary" id="approveButton">
                 Approuver
               </button>
             </div>
+            <p id="detailError" class="bulk-error" role="alert" hidden></p>
           </div>
         </div>
+      </div>
+    </dialog>
+    <dialog id="confirmDecisionDialog" class="bulk-dialog">
+      <h2 id="confirmDecisionTitle">Confirmer la décision</h2>
+      <p id="confirmDecisionText"></p>
+      <p id="confirmDecisionError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="cancelDecision">Annuler</button>
+        <button type="button" class="primary" id="confirmDecision">Confirmer</button>
       </div>
     </dialog>
     <dialog id="bulkDialog" class="bulk-dialog">

@@ -15,6 +15,7 @@ const state = {
   selectionMode: false,
   selectedIds: new Set(),
   bulkDecision: null,
+  pendingDecision: null,
 };
 const labels = {
   "processing-error": "Erreur",
@@ -224,13 +225,21 @@ function openDetail(id) {
     : (metadata?.rightsEvidence ??
       "La provenance sera ajoutée avant ta validation.");
   const editable = Boolean(
-    metadata && item.technical && item.status !== "approved",
+    metadata && item.technical && item.status !== "processing-error",
   );
   form.querySelectorAll("select,button").forEach((element) => {
     element.disabled = !editable;
   });
+  const decided = ["approved", "rejected"].includes(item.status);
+  $("#saveMetadata").textContent = decided ? "Enregistrer et remettre à valider" : "Enregistrer les corrections";
+  $("#reopenButton").hidden = !decided;
+  $("#reopenButton").textContent = metadata && item.technical ? "Remettre à valider" : "Reprendre la préparation";
+  $("#decisionStatus").textContent = decided
+    ? `${labels[item.status]} · conservé localement. Vous pouvez reprendre sa revue ou corriger ses caractéristiques.`
+    : `${labels[item.status]} · aucune décision enregistrée.`;
   $("#approveButton").disabled = item.status !== "ready-for-review";
-  $("#rejectButton").disabled = ["rejected", "approved"].includes(item.status);
+  $("#rejectButton").disabled = item.status !== "ready-for-review";
+  $("#detailError").hidden = true;
   $("#decisionReason").value = "";
   $("#detailDialog").showModal();
 }
@@ -262,31 +271,78 @@ async function upload(files) {
     errors.length > 0,
   );
 }
-async function decide(decision) {
+function metadataPayload() {
+  const item = state.items.find((candidate) => candidate.id === state.selected);
+  const form = $("#metadataForm");
+  if (!item?.metadata || !form.reportValidity()) return null;
+  const values = Object.fromEntries(new FormData(form));
+  const [apparentAgeMin, apparentAgeMax] = values.ageRange.split("-").map(Number);
+  const payload = {
+    ...item.metadata,
+    ageGroup: values.ageGroup,
+    gender: values.gender,
+    appearance: values.appearance,
+    apparentAgeMin,
+    apparentAgeMax,
+  };
+  if (values.appearance !== item.metadata.appearance) {
+    payload.visualGroup = ["west-african", "central-african", "east-african", "southern-african"].includes(values.appearance)
+      ? "black" : values.appearance;
+  }
+  return payload;
+}
+function metadataChanged(payload) {
+  const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
+  return ["ageGroup", "apparentAgeMin", "apparentAgeMax", "gender", "appearance"]
+    .some((key) => payload[key] !== metadata?.[key]);
+}
+function decide(decision) {
   const reason = $("#decisionReason").value.trim();
   if (decision === "rejected" && !reason) {
     $("#decisionReason").focus();
     return;
   }
+  const payload = metadataPayload();
+  if (!payload) return;
+  const changed = metadataChanged(payload);
+  state.pendingDecision = { decision, reason: reason || "Conforme après inspection visuelle", payload: changed ? payload : null };
+  $("#confirmDecisionTitle").textContent = decision === "approved" ? "Approuver ce portrait ?" : "Rejeter ce portrait ?";
+  $("#confirmDecisionText").textContent = changed
+    ? `Les caractéristiques modifiées seront enregistrées avant ${decision === "approved" ? "l’approbation" : "le rejet"}. Confirmer ?`
+    : "Cette décision sera enregistrée localement. Vous pourrez ensuite remettre le portrait à valider.";
+  $("#confirmDecision").textContent = decision === "approved" ? "Confirmer l’approbation" : "Confirmer le rejet";
+  $("#confirmDecisionError").hidden = true;
+  $("#confirmDecisionDialog").showModal();
+}
+async function confirmDecision() {
+  const pending = state.pendingDecision;
+  if (!pending) return;
+  $("#confirmDecision").disabled = true;
   try {
+    if (pending.payload) {
+      await request(`/api/items/${state.selected}/metadata`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(pending.payload),
+      });
+    }
     await request(`/api/items/${state.selected}/decision`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        decision,
-        reviewer: "Osiris Balonga",
-        reason: reason || "Conforme après inspection visuelle",
-      }),
+      body: JSON.stringify({ decision: pending.decision, reviewer: "Osiris Balonga", reason: pending.reason }),
     });
+    $("#confirmDecisionDialog").close();
     $("#detailDialog").close();
     await refresh();
-    notify(
-      decision === "approved"
-        ? "Portrait approuvé et conservé localement."
-        : "Portrait rejeté et conservé pour suivi.",
-    );
+    notify(pending.decision === "approved"
+      ? "Portrait approuvé et conservé localement. Retrouvez-le dans Approuvés."
+      : "Portrait rejeté et conservé localement. Retrouvez-le dans Rejetés.");
   } catch (error) {
-    notify(error.message, true);
+    $("#confirmDecisionError").textContent = error.message;
+    $("#confirmDecisionError").hidden = false;
+    await refresh();
+  } finally {
+    $("#confirmDecision").disabled = false;
   }
 }
 $("#uploadButton").addEventListener("click", () => $("#fileInput").click());
@@ -428,30 +484,11 @@ $("#metadataForm")
   .addEventListener("change", (event) => fillAgeRanges(event.target.value, ""));
 $("#metadataForm").addEventListener("submit", async (event) => {
   event.preventDefault();
-  const item = state.items.find((candidate) => candidate.id === state.selected);
-  if (!item?.metadata) return;
-  const values = Object.fromEntries(new FormData(event.currentTarget));
-  const [apparentAgeMin, apparentAgeMax] = values.ageRange
-    .split("-")
-    .map(Number);
-  const payload = {
-    ...item.metadata,
-    ageGroup: values.ageGroup,
-    gender: values.gender,
-    appearance: values.appearance,
-    apparentAgeMin,
-    apparentAgeMax,
-  };
-  if (values.appearance !== item.metadata.appearance) {
-    payload.visualGroup = [
-      "west-african",
-      "central-african",
-      "east-african",
-      "southern-african",
-    ].includes(values.appearance)
-      ? "black"
-      : values.appearance;
-  }
+  const payload = metadataPayload();
+  if (!payload) return;
+  const wasDecided = ["approved", "rejected"].includes(
+    state.items.find((item) => item.id === state.selected)?.status,
+  );
   try {
     await request(`/api/items/${state.selected}/metadata`, {
       method: "POST",
@@ -460,13 +497,35 @@ $("#metadataForm").addEventListener("submit", async (event) => {
     });
     await refresh();
     $("#detailDialog").close();
-    notify("Corrections enregistrées. Le portrait reste à valider.");
+    notify(wasDecided
+      ? "Corrections enregistrées. La décision précédente est annulée : le portrait est à valider."
+      : "Corrections enregistrées. Le portrait reste à valider.");
   } catch (error) {
-    notify(error.message, true);
+    $("#detailError").textContent = error.message;
+    $("#detailError").hidden = false;
   }
 });
 $("#approveButton").addEventListener("click", () => decide("approved"));
 $("#rejectButton").addEventListener("click", () => decide("rejected"));
+$("#cancelDecision").addEventListener("click", () => $("#confirmDecisionDialog").close());
+$("#confirmDecision").addEventListener("click", confirmDecision);
+$("#reopenButton").addEventListener("click", async () => {
+  const payload = metadataPayload();
+  if (payload && metadataChanged(payload)) {
+    $("#detailError").textContent = "Enregistrez d’abord vos corrections pour ne pas les perdre.";
+    $("#detailError").hidden = false;
+    return;
+  }
+  try {
+    await request(`/api/items/${state.selected}/reopen`, { method: "POST" });
+    $("#detailDialog").close();
+    await refresh();
+    notify("Décision annulée. Le portrait peut de nouveau être préparé ou validé.");
+  } catch (error) {
+    $("#detailError").textContent = error.message;
+    $("#detailError").hidden = false;
+  }
+});
 request("/api/options")
   .then(({ appearanceCategories, portraitAgeRanges }) => {
     state.appearances = appearanceCategories;
