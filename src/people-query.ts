@@ -70,7 +70,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   }
 
   const count = integerParameter(params.get('count'), 'count', 1, 100) ?? 1
-  const age = integerParameter(params.get('age'), 'age', 6, 120)
+  const age = integerParameter(params.get('age'), 'age', 6, 100)
   const gender = params.get('gender')
   if (gender !== null && gender !== 'male' && gender !== 'female') {
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')

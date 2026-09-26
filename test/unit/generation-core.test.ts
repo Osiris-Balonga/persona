@@ -23,7 +23,7 @@ describe('generation core', () => {
   })
 
   it('keeps exact ages, derived groups, birth dates, and contacts coherent', () => {
-    for (const age of [6, 14, 65, 120]) {
+    for (const age of [6, 14, 65, 100]) {
       const result = person(`country=MW&age=${age}&seed=age-demo&asOf=2025-02-28`)
       expect(result.age).toBe(age)
       expect(ageOn(result.dateOfBirth, '2025-02-28')).toBe(age)

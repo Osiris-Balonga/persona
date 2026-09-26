@@ -18,7 +18,7 @@ function calendarDate(value: string, label: string) {
 }
 
 export function ageGroupForAge(age: number): AgeGroup {
-  if (!Number.isSafeInteger(age) || age < 6 || age > 120) {
+  if (!Number.isSafeInteger(age) || age < 6 || age > 100) {
     throw new RangeError('Invalid age')
   }
   if (age <= 12) return 'child'

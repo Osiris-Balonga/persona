@@ -17,7 +17,7 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | `id` | Nonempty identifier prefixed with `per_` |
 | `firstName`, `lastName`, `fullName` | Three nonempty strings; `fullName` combines the first and last display components |
 | `gender` | `male` or `female` |
-| `age`, `ageGroup`, `dateOfBirth` | Integer from 6 to 120; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
+| `age`, `ageGroup`, `dateOfBirth` | Integer from 6 to 100; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
 | `appearance`, `country`, `city` | Nonempty appearance label; uppercase two-letter code from the registry; nonempty city |
 | `address` | nullable `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and country-ordered `formatted` |
 | `email`, `phone` | Email at `example.test`; phone from a reviewed fictional range or `null` when no safe range is available |

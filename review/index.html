@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Persona · Revue des portraits</title>
+    <link rel="stylesheet" href="/app.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">P</span
+        ><span>Persona <small>Studio</small></span>
+      </div>
+      <span class="local-badge">● Espace local</span>
+    </header>
+    <main class="shell">
+      <header class="page-head">
+        <div>
+          <span class="eyebrow">Bibliothèque de portraits</span>
+          <h1>Revue des images</h1>
+          <p>
+            Portraits classés par apparence. Les caractéristiques et la décision
+            se trouvent dans la fiche de chaque image.
+          </p>
+        </div>
+        <button class="primary" id="uploadButton" type="button">
+          ＋ Importer des photos</button
+        ><input
+          id="fileInput"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          multiple
+          hidden
+        />
+      </header>
+      <div class="workspace">
+        <aside class="sidebar">
+          <div class="sidebar-inner">
+            <div class="side-title">Apparences</div>
+            <nav id="appearanceNav" aria-label="Apparences"></nav>
+            <div class="side-footer">
+              <span id="totalCount">0</span> portraits ·
+              <span id="readyCount">0</span> à valider
+            </div>
+          </div>
+        </aside>
+        <section class="content">
+          <div class="toolbar">
+            <div class="status-tabs" id="statusNav" aria-label="Statuts">
+              <button type="button" data-status="all" class="active">
+                Tous <span id="nav-all">0</span></button
+              ><button type="button" data-status="ready-for-review">
+                À valider <span id="nav-ready-for-review">0</span></button
+              ><button type="button" data-status="needs-metadata">
+                À documenter <span id="nav-needs-metadata">0</span></button
+              ><button type="button" data-status="approved">
+                Approuvés <span id="nav-approved">0</span></button
+              ><button type="button" data-status="rejected">
+                Rejetés <span id="nav-rejected">0</span></button
+              ><button type="button" data-status="processing-error">
+                Erreurs <span id="nav-processing-error">0</span>
+              </button>
+            </div>
+          </div>
+          <div id="dropZone" class="dropzone" tabindex="0">
+            <strong>Déposer des photos ici</strong
+            ><span>PNG, JPG, WebP · carrées · 512 px minimum · 20 Mo max</span
+            ><button type="button" id="dropBrowse">Parcourir</button>
+          </div>
+          <div id="message" class="message" role="status" hidden></div>
+          <div id="groups"></div>
+          <div id="empty" class="empty" hidden>
+            <strong>Aucun portrait dans cette sélection</strong>
+            <p>Choisis une autre apparence ou importe des photos.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <dialog id="detailDialog">
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow">Fiche de revue</span>
+          <h2 id="detailTitle">Portrait</h2>
+        </div>
+        <button
+          type="button"
+          id="closeDialog"
+          class="icon-button"
+          aria-label="Fermer"
+        >
+          ×
+        </button>
+      </div>
+      <div class="dialog-layout">
+        <div class="preview-column">
+          <img id="detailImage" alt="Portrait à vérifier" />
+          <div id="technicalInfo" class="technical"></div>
+        </div>
+        <div class="review-column">
+          <div class="section-heading">
+            <h3>Caractéristiques proposées</h3>
+            <p>Corrige un choix seulement si nécessaire.</p>
+          </div>
+          <form id="metadataForm">
+            <div class="form-grid">
+              <label
+                >Tranche d’âge<select name="ageGroup" required>
+                  <option value="">Choisir</option>
+                  <option value="child">Enfant</option>
+                  <option value="teen">Ado</option>
+                  <option value="adult">Adulte</option>
+                  <option value="senior">Senior</option>
+                </select></label
+              ><label
+                >Âge apparent<select name="ageRange" required>
+                  <option value="">Choisir d’abord une tranche</option>
+                </select></label
+              ><label
+                >Genre<select name="gender" required>
+                  <option value="">Choisir</option>
+                  <option value="female">Femme</option>
+                  <option value="male">Homme</option>
+                </select></label
+              ><label
+                >Apparence<select name="appearance" required>
+                  <option value="">Choisir</option>
+                </select></label
+              >
+            </div>
+            <div class="provenance">
+              <span>Origine et droits</span
+              ><strong id="rightsSummary">À renseigner par l’agent</strong
+              ><small id="evidenceSummary"></small>
+            </div>
+            <button class="secondary" type="submit" id="saveMetadata">
+              Enregistrer les corrections
+            </button>
+          </form>
+          <div class="decision-area">
+            <h3>Ta décision</h3>
+            <p id="reviewerLabel">Relecteur : Osiris Balonga</p>
+            <label for="decisionReason">Motif du rejet, si nécessaire</label
+            ><textarea
+              id="decisionReason"
+              rows="3"
+              placeholder="Ex. : âge apparent incohérent, artefact visible…"
+            ></textarea>
+            <div class="decision-buttons">
+              <button type="button" class="reject" id="rejectButton">
+                Rejeter</button
+              ><button type="button" class="primary" id="approveButton">
+                Approuver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

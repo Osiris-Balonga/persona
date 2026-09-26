@@ -1,10 +1,16 @@
 # Portrait review and import
 
-The production catalog remains empty until image generation is explicitly authorized and each image is reviewed. This procedure prepares metadata and validates files; it does not generate, upload, or publish portraits.
+The production catalog remains empty until each image is reviewed and explicitly released. This procedure prepares metadata and validates files; it does not generate, upload, or publish portraits.
+
+## Local review console
+
+Run `npm run portraits:review` from the repository root and open `http://127.0.0.1:4317`. The console listens on the local loopback interface only. Upload one or more PNG, JPEG, or WebP masters with the import button, or place them in `staging/portraits/review/inbox/`; the running console scans that folder every five seconds. To import an existing directory without moving its originals, run `npm run portraits:import-review -- <image-directory>`.
+
+Successful imports move an original to `masters/` and create a 512×512 WebP under `webp/`. An invalid original remains in `inbox/` with a processing error. The ignored `review-state.json` stores proposed metadata and review decisions, separately from the image folders. The console groups portraits by appearance, displays technical properties in each image's review sheet, and offers five-year age intervals from 6 to 100, shortened where an interval meets an age-group boundary. An agent must inspect the image and enter the proposed age, category, and retained rights evidence before its status becomes ready for human review. The reviewer may correct the proposed choices, approve, or reject with a reason. Approval in this local console never publishes a portrait or changes the production catalog.
 
 ## Human review rubric
 
-Review each candidate at its intended display size and at full resolution. Record a named reviewer, UTC review date, decision (`approved`, `rejected`, or `withdrawn`), and a specific reason. Approval requires every check below:
+Review each candidate at its intended display size and at full resolution. Record a named reviewer, UTC review date, and decision (`approved`, `rejected`, or `withdrawn`). A standard approval reason is sufficient after inspection; a rejection or withdrawal needs a specific reason. Approval requires every check below:
 
 | Check | Approval rule |
 | --- | --- |

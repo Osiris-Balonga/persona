@@ -10,7 +10,7 @@ Production requests must use HTTPS. There is no live production URL yet. The res
 
 ## Inputs
 
-`count` defaults to 1 and accepts 1–100. `age` is an integer from 6–120; `ageGroup` is a separate derived value (`child`, `teen`, `adult`, `senior`) and can also be used as a filter. The two filters must agree. `country` is an uppercase two-letter code with a reviewed local name pool; `city` requires a country and must match an available city. `gender` accepts `male` or `female`; `appearance` accepts a supported lowercase category. `seed` accepts 1–128 characters and `asOf` accepts a valid `YYYY-MM-DD` date. See the [full parameter table](api.md#query-parameters) and [field paths](api.md#selecting-fields).
+`count` defaults to 1 and accepts 1–100. `age` is an integer from 6–100; `ageGroup` is a separate derived value (`child`, `teen`, `adult`, `senior`) and can also be used as a filter. The two filters must agree. `country` is an uppercase two-letter code with a reviewed local name pool; `city` requires a country and must match an available city. `gender` accepts `male` or `female`; `appearance` accepts a supported lowercase category. `seed` accepts 1–128 characters and `asOf` accepts a valid `YYYY-MM-DD` date. See the [full parameter table](api.md#query-parameters) and [field paths](api.md#selecting-fields).
 
 Supply both `seed` and `asOf` to replay the same result against the same dataset and algorithm versions. Such responses have a private `ETag`; send `If-None-Match` to get `304` when unchanged. Responses without either explicit input, and errors, use `Cache-Control: no-store`.
 

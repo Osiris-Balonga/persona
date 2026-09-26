@@ -11,7 +11,7 @@ type GenerationContext = ReturnType<typeof createGenerationContext>
 type AgeGroup = Person['ageGroup']
 
 const ageRanges: Record<AgeGroup, readonly [number, number]> = {
-  child: [6, 12], teen: [13, 17], adult: [18, 64], senior: [65, 120],
+  child: [6, 12], teen: [13, 17], adult: [18, 64], senior: [65, 100],
 }
 
 function draw(key: string, range: number): number {
@@ -45,7 +45,7 @@ function birthDateForAge(age: number, asOf: string, key: string): string {
 export function resolveAbstractPerson(query: PeopleQuery, context: GenerationContext, index: number) {
   const geography = resolveGeographicContext(query, context.componentKey(index, 'geography'))
   const gender = query.gender ?? (draw(context.componentKey(index, 'gender'), 2) === 0 ? 'female' : 'male')
-  const [minimum, maximum] = query.ageGroup === undefined ? [6, 120] : ageRanges[query.ageGroup]
+  const [minimum, maximum] = query.ageGroup === undefined ? [6, 100] : ageRanges[query.ageGroup]
   const age = query.age ?? minimum + draw(context.componentKey(index, 'age'), maximum - minimum + 1)
   const nameContext = nameContextForCountry(geography.country.code)
   if (!nameContext) throw new RangeError('Country has no name context')
