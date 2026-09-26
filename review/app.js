@@ -64,9 +64,7 @@ const metadataAgeRanges = (metadata) => (metadata?.apparentAgeRanges ?? [
 const ageGroupForRange = (age) => age <= 12 ? "child" : age <= 17 ? "teen" : age <= 64 ? "adult" : "senior";
 const formatPortraitAge = (metadata) => {
   const ranges = metadataAgeRanges(metadata);
-  return ranges.length === 1
-    ? formatAgeRange(...ranges[0])
-    : `${formatAgeRange(ranges[0][0], ranges.at(-1)[1])} · ${ranges.length} tranches`;
+  return formatAgeRange(ranges[0][0], ranges.at(-1)[1]);
 };
 async function request(url, options) {
   const response = await fetch(url, options);
