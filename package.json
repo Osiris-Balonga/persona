@@ -20,6 +20,8 @@
     "data:audit:beta": "tsx scripts/audit-beta-http.ts",
     "portraits:prepare": "tsx scripts/prepare-portrait-import.ts",
     "portraits:optimize": "tsx scripts/optimize-portrait-candidates.ts",
+    "portraits:review": "tsx src/review/index.ts",
+    "portraits:import-review": "tsx scripts/import-review-portraits.ts",
     "data:audit:names": "node scripts/audit-name-candidates.mjs",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",

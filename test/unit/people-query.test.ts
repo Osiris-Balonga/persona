@@ -28,7 +28,7 @@ describe('GET /people query contract', () => {
   })
 
   it('rejects nonnumeric and excessive ages or counts', () => {
-    for (const query of ['age=teen', 'age=121', 'count=0', 'count=101']) {
+    for (const query of ['age=teen', 'age=101', 'count=0', 'count=101']) {
       expect(() => parse(query)).toThrow(PeopleQueryError)
     }
     expect(() => parse('age=teen')).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'age' }))

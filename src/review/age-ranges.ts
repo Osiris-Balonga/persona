@@ -1,0 +1,31 @@
+import type { AgeGroup } from '../age.js'
+
+type AgeRange = readonly [number, number]
+const groupBounds: Record<AgeGroup, AgeRange> = {
+  child: [6, 12], teen: [13, 17], adult: [18, 64], senior: [65, 100],
+}
+
+function bands(minimum: number, maximum: number): AgeRange[] {
+  const result: AgeRange[] = []
+  for (let first = minimum; first <= maximum; first += 5) {
+    result.push([first, Math.min(first + 4, maximum)])
+  }
+  return result
+}
+
+export const portraitAgeRanges: Record<AgeGroup, readonly AgeRange[]> = {
+  child: bands(...groupBounds.child), teen: bands(...groupBounds.teen),
+  adult: bands(...groupBounds.adult), senior: bands(...groupBounds.senior),
+}
+
+export function isPortraitAgeRange(group: AgeGroup, minimum: number, maximum: number): boolean {
+  return portraitAgeRanges[group]?.some(([first, last]) => first === minimum && last === maximum) ?? false
+}
+
+export function closestPortraitAgeRange(group: AgeGroup, minimum: number, maximum: number): AgeRange {
+  const midpoint = (minimum + maximum) / 2
+  const choices = portraitAgeRanges[group]
+  if (!choices?.length) throw new RangeError('Invalid age group')
+  return choices.reduce((best, current) => Math.abs((current[0] + current[1]) / 2 - midpoint)
+    < Math.abs((best[0] + best[1]) / 2 - midpoint) ? current : best)
+}

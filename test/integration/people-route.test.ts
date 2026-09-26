@@ -65,7 +65,7 @@ describe('GET /people', () => {
       expect(response.statusCode).toBe(200)
       const people = response.json().results
       expect(people).toHaveLength(100)
-      expect(people.every((person: { age: number }) => person.age >= 6 && person.age <= 120)).toBe(true)
+      expect(people.every((person: { age: number }) => person.age >= 6 && person.age <= 100)).toBe(true)
       expect(new Set(people.map((person: { id: string }) => person.id)).size).toBe(100)
       const counts = new Map<string, number>()
       for (const person of people) counts.set(person.fullName, (counts.get(person.fullName) ?? 0) + 1)
@@ -76,6 +76,12 @@ describe('GET /people', () => {
       const invalid = await app.inject({ method: 'GET', url: '/people?age=5' })
       expect(invalid.statusCode).toBe(400)
       expect(invalid.json().error).toMatchObject({ code: 'INVALID_QUERY', parameter: 'age' })
+      const oldest = await app.inject({ method: 'GET', url: `${base}&age=100` })
+      expect(oldest.statusCode).toBe(200)
+      expect(oldest.json().results[0].age).toBe(100)
+      const excessive = await app.inject({ method: 'GET', url: '/people?age=101' })
+      expect(excessive.statusCode).toBe(400)
+      expect(excessive.json().error).toMatchObject({ code: 'INVALID_QUERY', parameter: 'age' })
     } finally { await app.close() }
   })
 
