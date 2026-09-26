@@ -1,12 +1,27 @@
 # Developer quickstart
 
-Persona's public beta has one generation endpoint: `GET /people`. It needs no API key or credentials. Start the local server with `npm ci && npm run dev`, then run:
+Persona's public beta has one generation endpoint: `GET /people`. It needs no API key or credentials. Try the `dev` staging deployment over HTTPS:
+
+```sh
+curl -i 'https://persona-dev.onrender.com/people?country=FR&age=30&count=1&seed=demo&asOf=2026-09-26'
+```
+
+In JavaScript:
+
+```js
+const response = await fetch('https://persona-dev.onrender.com/people?country=FR&age=30&count=1')
+if (!response.ok) throw new Error(`Persona returned ${response.status}`)
+const { results, meta } = await response.json()
+console.log(results[0], meta)
+```
+
+The staging service uses Render's free plan, so its first request after inactivity can take longer while the service wakes. For local development, start the server with `npm ci && npm run dev`, then run:
 
 ```sh
 curl -i 'http://localhost:3000/people?country=MW&city=Lilongwe&age=27&count=2&seed=demo&asOf=2026-09-24&fields=firstName,lastName,age,ageGroup,address.city,picture.url'
 ```
 
-Production requests must use HTTPS. There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture` is currently `null` because no portrait has been approved. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for every country currently available for profile generation; it remains `null` for codes pending name review and does not certify a deliverable address.
+There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture.url` points to an approved WebP portrait when the catalog has a match; otherwise `picture` is `null`. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for every country currently available for profile generation; it does not certify a deliverable address.
 
 ## Inputs
 
