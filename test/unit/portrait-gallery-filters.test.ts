@@ -30,11 +30,13 @@ describe('portrait gallery filters', () => {
     })).toBe(true)
   })
 
-  it('finds a portrait through either of its adjacent apparent-age bands', () => {
-    const dual = { ...portrait, metadata: { ...portrait.metadata, secondaryAgeMin: 33, secondaryAgeMax: 37 } }
+  it('finds a portrait through any of its selected apparent-age bands', () => {
+    const dual = { ...portrait, metadata: { ...portrait.metadata,
+      apparentAgeRanges: [[28, 32], [33, 37], [38, 42]] } }
     const filters = { status: 'all', appearance: 'all', ageGroup: 'adult', gender: 'all', quality: 'all' }
     expect(matchesPortraitFilters(dual, { ...filters, ageRange: '28-32' })).toBe(true)
     expect(matchesPortraitFilters(dual, { ...filters, ageRange: '33-37' })).toBe(true)
-    expect(matchesPortraitFilters(dual, { ...filters, ageRange: '38-42' })).toBe(false)
+    expect(matchesPortraitFilters(dual, { ...filters, ageRange: '38-42' })).toBe(true)
+    expect(matchesPortraitFilters(dual, { ...filters, ageRange: '43-47' })).toBe(false)
   })
 })

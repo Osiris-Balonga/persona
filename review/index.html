@@ -129,23 +129,20 @@
           </div>
           <form id="metadataForm">
             <div class="form-grid">
+              <div class="age-picker-field">
+                <span id="agePickerLabel">Âges apparents</span>
+                <div class="age-picker" id="agePicker">
+                  <button type="button" id="agePickerToggle" aria-labelledby="agePickerLabel agePickerSummary" aria-expanded="false" aria-controls="agePickerMenu">
+                    <span id="agePickerSummary">Choisir une ou plusieurs tranches</span><span aria-hidden="true">⌄</span>
+                  </button>
+                  <div id="agePickerMenu" class="age-picker-menu" hidden>
+                    <p>Choisis des tranches consécutives.</p>
+                    <div id="agePickerOptions"></div>
+                    <button type="button" id="clearAgeRanges">Effacer la sélection</button>
+                  </div>
+                </div>
+              </div>
               <label
-                >Tranche d’âge<select name="ageGroup" required>
-                  <option value="">Choisir</option>
-                  <option value="child">Enfant</option>
-                  <option value="teen">Ado</option>
-                  <option value="adult">Adulte</option>
-                  <option value="senior">Senior</option>
-                </select></label
-              ><label
-                >Âge apparent<select name="ageRange" required>
-                  <option value="">Choisir d’abord une tranche</option>
-                </select></label
-              ><label
-                >Autre tranche possible<select name="secondaryAgeRange">
-                  <option value="">Aucune</option>
-                </select></label
-              ><label
                 >Genre<select name="gender" required>
                   <option value="">Choisir</option>
                   <option value="female">Femme</option>

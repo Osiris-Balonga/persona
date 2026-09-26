@@ -112,10 +112,12 @@ describe('local portrait review API', () => {
     expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: approval })).statusCode).toBe(200)
 
     const correction = await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`,
-      payload: { ...metadata, apparentAgeMin: 33, apparentAgeMax: 37 } })
+      payload: { ...metadata, apparentAgeMin: 33, apparentAgeMax: 37,
+        apparentAgeRanges: [[33, 37], [38, 42], [43, 47]] } })
     expect(correction.statusCode).toBe(200)
     expect(correction.json()).toMatchObject({ status: 'ready-for-review',
-      metadata: { apparentAgeMin: 33, apparentAgeMax: 37 } })
+      metadata: { apparentAgeMin: 33, apparentAgeMax: 37,
+        apparentAgeRanges: [[33, 37], [38, 42], [43, 47]] } })
     expect(correction.json().decision).toBeUndefined()
 
     expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: approval })).statusCode).toBe(200)

@@ -20,6 +20,18 @@ export const portraitAgeRanges: Record<AgeGroup, readonly AgeRange[]> = {
 
 const orderedAgeRanges = Object.values(portraitAgeRanges).flat()
 
+export function areConsecutivePortraitAgeRanges(value: unknown): value is AgeRange[] {
+  if (!Array.isArray(value) || value.length === 0) return false
+  let previous = -1
+  for (const range of value) {
+    if (!Array.isArray(range) || range.length !== 2) return false
+    const index = orderedAgeRanges.findIndex(([min, max]) => min === range[0] && max === range[1])
+    if (index < 0 || (previous >= 0 && index !== previous + 1)) return false
+    previous = index
+  }
+  return true
+}
+
 export function adjacentPortraitAgeRanges(minimum: number, maximum: number): AgeRange[] {
   const index = orderedAgeRanges.findIndex(([first, last]) => first === minimum && last === maximum)
   if (index < 0) return []

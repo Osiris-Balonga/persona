@@ -13,19 +13,18 @@ export function isPortraitCompliant(item) {
 
 export function matchesPortraitFilters(item, filters) {
   const metadata = item.metadata;
-  const primaryRange = `${metadata?.apparentAgeMin}-${metadata?.apparentAgeMax}`;
-  const secondaryRange = `${metadata?.secondaryAgeMin}-${metadata?.secondaryAgeMax}`;
-  const secondaryGroup = metadata?.secondaryAgeMin == null ? null
-    : metadata.secondaryAgeMin <= 12 ? "child"
-    : metadata.secondaryAgeMin <= 17 ? "teen"
-    : metadata.secondaryAgeMin <= 64 ? "adult" : "senior";
+  const ranges = metadata?.apparentAgeRanges ?? [
+    [metadata?.apparentAgeMin, metadata?.apparentAgeMax],
+    ...(metadata?.secondaryAgeMin == null ? [] : [[metadata.secondaryAgeMin, metadata.secondaryAgeMax]]),
+  ];
+  const groupForAge = (age) => age <= 12 ? "child" : age <= 17 ? "teen" : age <= 64 ? "adult" : "senior";
   return (
     (filters.status === "all" || item.status === filters.status) &&
     (filters.appearance === "all" ||
       (metadata?.appearance ?? "unclassified") === filters.appearance) &&
-    (filters.ageGroup === "all" || metadata?.ageGroup === filters.ageGroup || secondaryGroup === filters.ageGroup) &&
+    (filters.ageGroup === "all" || ranges.some(([min]) => Number.isInteger(min) && groupForAge(min) === filters.ageGroup)) &&
     (filters.ageRange === "all" ||
-      primaryRange === filters.ageRange || secondaryRange === filters.ageRange) &&
+      ranges.some(([min, max]) => `${min}-${max}` === filters.ageRange)) &&
     (filters.gender === "all" || metadata?.gender === filters.gender) &&
     (filters.quality === "all" ||
       isPortraitCompliant(item) === (filters.quality === "compliant"))

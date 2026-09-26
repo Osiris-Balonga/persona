@@ -37,7 +37,7 @@ describe('portrait import review', () => {
   })
 
   it('proposes only explicitly approved records from a fully valid reviewed batch', () => {
-    const approved = review({ apparentAgeRanges: [[28, 32], [33, 37]] })
+    const approved = review({ apparentAgeRanges: [[28, 32], [33, 37], [38, 42]] })
     const rejected = review({ id: 'p_0002', objectKey: 'portraits/v1/adult/female/black/west-african/p_0002.webp',
       reviewStatus: 'rejected', decisionReason: 'Visible artifact', sha256: 'b'.repeat(64) })
     const withdrawn = review({ id: 'p_0003', objectKey: 'portraits/v1/adult/female/black/west-african/p_0003.webp',
@@ -46,7 +46,7 @@ describe('portrait import review', () => {
     const result = evaluatePortraitImport([approved, rejected, withdrawn], files, 'https://images.example.test')
     expect(result.errors).toEqual([])
     expect(result.approved.map((asset) => asset.id)).toEqual(['p_0001'])
-    expect(result.approved[0]?.apparentAgeRanges).toEqual([[28, 32], [33, 37]])
+    expect(result.approved[0]?.apparentAgeRanges).toEqual([[28, 32], [33, 37], [38, 42]])
     expect(result.approved[0]).not.toHaveProperty('reviewer')
   })
 })

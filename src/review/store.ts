@@ -2,15 +2,17 @@ import { createHash } from 'node:crypto'
 import { mkdir, readFile, readdir, rename, unlink, writeFile } from 'node:fs/promises'
 import { extname, join } from 'node:path'
 import { isAppearance, type Appearance } from '../geography/appearance.js'
+import { ageGroupForAge } from '../age.js'
 import { inspectPortraitBytes, type PortraitFileInfo } from '../portraits/import.js'
 import { optimizePortraitCandidate } from '../portraits/optimize.js'
-import { isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
+import { areConsecutivePortraitAgeRanges, isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
 
 export type ReviewStatus = 'processing-error' | 'needs-metadata' | 'ready-for-review' | 'approved' | 'rejected'
 export interface PortraitMetadata {
   ageGroup: 'child' | 'teen' | 'adult' | 'senior'
   apparentAgeMin: number
   apparentAgeMax: number
+  apparentAgeRanges?: readonly (readonly [number, number])[]
   secondaryAgeMin?: number
   secondaryAgeMax?: number
   gender: 'female' | 'male'
@@ -39,6 +41,13 @@ function validateMetadata(input: PortraitMetadata): void {
   if (!input || !isPortraitAgeRange(input.ageGroup, input.apparentAgeMin, input.apparentAgeMax)) {
     throw new RangeError('Apparent age range is incompatible with age group')
   }
+  if (input.apparentAgeRanges !== undefined
+    && (!areConsecutivePortraitAgeRanges(input.apparentAgeRanges)
+      || input.apparentAgeRanges[0][0] !== input.apparentAgeMin
+      || input.apparentAgeRanges[0][1] !== input.apparentAgeMax
+      || input.secondaryAgeMin !== undefined || input.secondaryAgeMax !== undefined)) {
+    throw new RangeError('Apparent age ranges must be consecutive and start with the primary range')
+  }
   if ((input.secondaryAgeMin !== undefined || input.secondaryAgeMax !== undefined)
     && !isAdjacentPortraitAgeRange(input.apparentAgeMin, input.apparentAgeMax,
       input.secondaryAgeMin as number, input.secondaryAgeMax as number)) {
@@ -51,10 +60,11 @@ function validateMetadata(input: PortraitMetadata): void {
 function xmp(input: PortraitMetadata): string {
   const fields = {
     ageGroup: input.ageGroup, apparentAgeMin: input.apparentAgeMin, apparentAgeMax: input.apparentAgeMax,
-    ...(input.secondaryAgeMin === undefined ? {} : { secondaryAgeMin: input.secondaryAgeMin, secondaryAgeMax: input.secondaryAgeMax }),
+    apparentAgeRanges: input.apparentAgeRanges?.map(([min, max]) => `${min}-${max}`).join(','),
     gender: input.gender, appearance: input.appearance, visualGroup: input.visualGroup,
   }
-  const attributes = Object.entries(fields).map(([name, value]) => `persona:${name}="${xmlEscape(String(value))}"`).join(' ')
+  const attributes = Object.entries(fields).filter(([, value]) => value !== undefined)
+    .map(([name, value]) => `persona:${name}="${xmlEscape(String(value))}"`).join(' ')
   return `<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:persona="urn:persona:portrait:1" ${attributes}/></rdf:RDF></x:xmpmeta>`
 }
 
@@ -118,15 +128,24 @@ export class PortraitReviewStore {
   async setMetadata(id: string, metadata: PortraitMetadata): Promise<ReviewItem> {
     return this.serialize(async () => {
       validateMetadata(metadata)
+      const ranges = (metadata.apparentAgeRanges ?? [
+        [metadata.apparentAgeMin, metadata.apparentAgeMax] as const,
+        ...(metadata.secondaryAgeMin === undefined ? [] : [[metadata.secondaryAgeMin, metadata.secondaryAgeMax as number] as const]),
+      ]).slice().sort(([a], [b]) => a - b)
+      const normalized: PortraitMetadata = { ...metadata,
+        ageGroup: ageGroupForAge(ranges[0][0]), apparentAgeMin: ranges[0][0], apparentAgeMax: ranges[0][1],
+        apparentAgeRanges: ranges.map(([min, max]) => [min, max]) }
+      delete normalized.secondaryAgeMin
+      delete normalized.secondaryAgeMax
       const items = await this.load()
       const item = items.find((entry) => entry.id === id)
       if (!item || item.status === 'processing-error') throw new RangeError('Portrait is not processed')
       const master = await readFile(join(this.root, 'masters', `${id}${item.sourceExtension}`))
-      const tagged = await optimizePortraitCandidate(master, xmp(metadata))
+      const tagged = await optimizePortraitCandidate(master, xmp(normalized))
       const technical = await inspectPortraitBytes(tagged)
       if (technical.bytes >= 50_000) throw new RangeError('Tagged portrait exceeds 50000 bytes')
       await writeFile(join(this.root, 'webp', `${id}.webp`), tagged)
-      item.metadata = metadata
+      item.metadata = normalized
       item.technical = technical
       item.status = 'ready-for-review'
       item.error = undefined

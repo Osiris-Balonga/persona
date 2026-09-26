@@ -51,12 +51,13 @@ describe('approved portrait catalog', () => {
   })
 
   it('matches either reviewed age band, including a neighboring adult band', () => {
-    const portrait = asset('p_0001', { apparentAgeRanges: [[16, 17], [18, 22]] })
+    const portrait = asset('p_0001', { apparentAgeRanges: [[16, 17], [18, 22], [23, 27]] })
     const manifest = catalog([portrait])
     expect(validatePortraitCatalog(manifest)).toEqual([])
     expect(selectPortrait(manifest, { ...profile, age: 17 }, key)).not.toBeNull()
     expect(selectPortrait(manifest, { ...profile, age: 19, ageGroup: 'adult' }, key)).not.toBeNull()
-    expect(selectPortrait(manifest, { ...profile, age: 23, ageGroup: 'adult' }, key)).toBeNull()
+    expect(selectPortrait(manifest, { ...profile, age: 23, ageGroup: 'adult' }, key)).not.toBeNull()
+    expect(selectPortrait(manifest, { ...profile, age: 28, ageGroup: 'adult' }, key)).toBeNull()
     expect(validatePortraitCatalog(catalog([asset('p_0001', { apparentAgeRanges: [[13, 15], [23, 27]] })])).length)
       .toBeGreaterThan(0)
   })

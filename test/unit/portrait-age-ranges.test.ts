@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { portraitAgeRanges, closestPortraitAgeRange, adjacentPortraitAgeRanges } from '../../src/review/age-ranges.js'
+import { portraitAgeRanges, closestPortraitAgeRange, adjacentPortraitAgeRanges,
+  areConsecutivePortraitAgeRanges } from '../../src/review/age-ranges.js'
 
 describe('portrait age choices', () => {
   it('uses shorter age bands for children and teens, then five-year adult bands', () => {
@@ -24,5 +25,12 @@ describe('portrait age choices', () => {
     expect(adjacentPortraitAgeRanges(28, 32)).toEqual([[23, 27], [33, 37]])
     expect(adjacentPortraitAgeRanges(16, 17)).toEqual([[13, 15], [18, 22]])
     expect(adjacentPortraitAgeRanges(6, 8)).toEqual([[9, 12]])
+  })
+
+  it('accepts any number of ordered consecutive bands, including category boundaries', () => {
+    expect(areConsecutivePortraitAgeRanges([[13, 15], [16, 17], [18, 22], [23, 27]])).toBe(true)
+    expect(areConsecutivePortraitAgeRanges([[13, 15], [18, 22]])).toBe(false)
+    expect(areConsecutivePortraitAgeRanges([[16, 17], [13, 15]])).toBe(false)
+    expect(areConsecutivePortraitAgeRanges([])).toBe(false)
   })
 })
