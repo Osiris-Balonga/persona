@@ -31,6 +31,19 @@ describe('public API guardrails', () => {
     } finally { await app.close() }
   })
 
+  it('limits Render clients by the edge-written client IP, never by forwarded claims', async () => {
+    const app = buildApp({ rateLimitMax: 1, renderClientIp: true })
+    try {
+      const request = (clientIp: string, forwarded: string) => app.inject({
+        method: 'GET', url: '/people?country=MW', remoteAddress: '10.0.0.1',
+        headers: { 'cf-connecting-ip': clientIp, 'x-forwarded-for': forwarded },
+      })
+      expect((await request('198.51.100.3', '203.0.113.4')).statusCode).toBe(200)
+      expect((await request('198.51.100.3', '203.0.113.5')).statusCode).toBe(429)
+      expect((await request('198.51.100.4', '203.0.113.4')).statusCode).toBe(200)
+    } finally { await app.close() }
+  })
+
   it('allows only documented browser methods and rejects oversized input', async () => {
     const app = buildApp()
     try {
