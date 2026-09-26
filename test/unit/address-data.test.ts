@@ -28,8 +28,9 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(us.formatted).toContain(`Washington, District of Columbia ${us.postalCode}`)
     const cg = fictionalAddress(getCity('CG', 'Brazzaville')!, key)
     expect(cg).toMatchObject({ city: 'Brazzaville', postalCode: null, country: 'CG' })
-    expect(cg.line1).toBeNull()
-    expect(fictionalAddress(getCity('SN', 'Dakar')!, key).line1).toBeNull()
+    expect(cg.line1).toMatch(/^\d{1,3}, (?:Rue|Avenue|Boulevard) .+$/)
+    expect(cg.formatted).toContain(cg.line1!)
+    expect(fictionalAddress(getCity('SN', 'Dakar')!, key).line1).toMatch(/^\d{1,3}, (?:Rue|Avenue|Boulevard) .+$/)
     expect(cg.formatted).not.toContain('null')
     const mozambique = fictionalAddress(getCity('MZ', 'Maputo')!, key)
     expect(mozambique).toMatchObject({ city: 'Maputo', region: 'Maputo City', postalCode: null })
@@ -46,6 +47,23 @@ describe('country address metadata and city-linked postcodes', () => {
     expect(saoPaulo.formatted).not.toContain('01000-000')
     const falklands = fictionalAddress(getCity('FK', 'Stanley')!, key)
     expect(falklands.formatted).toContain('Stanley\nFIQQ 1ZZ')
+  })
+
+  it('uses a Malawian street form and varies the line by seed', () => {
+    const lilongwe = getCity('MW', 'Lilongwe')!
+    const samples = Array.from({ length: 12 }, (_, index) => fictionalAddress(lilongwe, index.toString(16).padEnd(64, '0')))
+    expect(samples.every((address) => /^\d{1,3} .+ (?:Road|Street|Avenue)$/.test(address.line1 ?? ''))).toBe(true)
+    expect(new Set(samples.map((address) => address.line1)).size).toBeGreaterThan(1)
+    expect(samples.every((address) => address.formatted.startsWith(`${address.line1}\n`))).toBe(true)
+  })
+
+  it('keeps synthetic Congo lines in the French street form across cities', () => {
+    const key = 'fedcba9876543210'.repeat(4)
+    for (const city of ['Nkayi', 'Impfondo', 'Owando', 'Sibiti'] as const) {
+      const address = fictionalAddress(getCity('CG', city)!, key)
+      expect(address.line1).toMatch(/^\d{1,3}, (?:Rue|Avenue|Boulevard) .+$/)
+      expect(address.formatted).toContain(`${address.line1}\n${city}`)
+    }
   })
 
   it('omits country postcode prefixes when a city has no verified postcode', () => {
@@ -90,7 +108,8 @@ describe('country address metadata and city-linked postcodes', () => {
     const dubai = fictionalAddress(getCity('AE', 'Dubai')!, '0123456789abcdef'.repeat(4))
     expect(dubai.city).toBe('Dubai')
     expect(dubai.region).toBe('Dubai')
-    expect(dubai.formatted).toBe('Dubai')
+    expect(dubai.formatted).toContain(dubai.line1)
+    expect(dubai.formatted.split('Dubai')).toHaveLength(2)
     for (const code of ['CN', 'KP', 'KR'] as const) {
       const address = fictionalAddress(getCity(code, { CN: 'Shanghai', KP: 'Pyongyang', KR: 'Seoul' }[code])!, '0123456789abcdef'.repeat(4))
       expect(address.formatted.split(address.city)).toHaveLength(2)

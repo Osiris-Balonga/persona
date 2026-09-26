@@ -20,7 +20,7 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | `age`, `ageGroup`, `dateOfBirth` | Integer from 6 to 120; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
 | `appearance`, `country`, `city` | Nonempty appearance label; uppercase two-letter code from the registry; nonempty city |
 | `address` | nullable `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and country-ordered `formatted` |
-| `email`, `phone` | Email at `example.test`; phone string or `null` when no safe fictional number is available |
+| `email`, `phone` | Email at `example.test`; phone from a reviewed fictional range or `null` when no safe range is available |
 | `picture` | Object with an HTTPS `url`, or `null` when no compatible approved portrait is available |
 
 The default response omits the derived `ageGroup` and internal portrait-matching `appearance`; either can be requested explicitly with `fields`. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.

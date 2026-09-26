@@ -381,6 +381,66 @@ export const geographicSources = {
     license: 'Public numbering guidance (range fact)',
     edition: '2026-09-24',
   },
+  'acma-fictional-numbers': {
+    title: 'ACMA phone numbers for creative works',
+    url: 'https://www.acma.gov.au/phone-numbers-use-tv-shows-films-and-creative-works',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2026-09-25',
+  },
+  'crtc-fictional-numbers': {
+    title: 'CRTC decision 2017-203 on Canadian 555 numbers',
+    url: 'https://crtc.gc.ca/eng/archive/2017/2017-203.htm',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2017-06-20',
+  },
+  'cnac-area-codes': {
+    title: 'Canadian Numbering Administrator exchange area listing',
+    url: 'https://cnac.ca/reference_data/canadian_exchange_area_listing.htm',
+    license: 'Public numbering guidance (area-code fact)',
+    edition: '2026-09-25',
+  },
+  'nanpa-area-codes': {
+    title: 'NANPA United States area-code maps',
+    url: 'https://www.nanpa.com/resources/area-code-maps',
+    license: 'Public numbering guidance (area-code fact)',
+    edition: '2026-09-25',
+  },
+  'nanpa-territory-areas': {
+    title: 'NANPA country and territory NPA map',
+    url: 'https://www.nanpa.com/resources/area-code-map/territories',
+    license: 'Public numbering guidance (area-code fact)',
+    edition: '2026-09-25',
+  },
+  'arcep-fictional-numbers': {
+    title: 'ARCEP national numbering plan, audiovisual numbers',
+    url: 'https://en.arcep.fr/uploads/tx_gsavis/25-2215.pdf',
+    license: 'Public numbering decision (range fact)',
+    edition: '2026-01-01',
+  },
+  'bnetza-drama-numbers': {
+    title: 'Bundesnetzagentur drama numbers, notice 148/2021',
+    url: 'https://www.bundesnetzagentur.de/DE/Fachthemen/Telekommunikation/Nummerierung/_DL/mittlg148_2021.pdf?__blob=publicationFile&v=1',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2021-04-14',
+  },
+  'comreg-drama-numbers': {
+    title: 'ComReg numbering conditions, drama mobile range',
+    url: 'https://www.comreg.ie/media/2024/04/ComReg-15136R4.pdf',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2024-04',
+  },
+  'pts-fictional-numbers': {
+    title: 'PTS phone numbers for books and films',
+    url: 'https://pts.se/internet-och-telefoni/telefonnummer-och-adressering/telefonnummer-till-bocker-och-filmer/',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2024-05-14',
+  },
+  'nkom-fictional-numbers': {
+    title: 'Nkom blocked TV and film production numbers',
+    url: 'https://nkom.no/telefoni-og-telefonnummer/telefonnummer-og-den-norske-nummerplan/alle-nummerserier-for-norske-telefonnumre',
+    license: 'Public numbering guidance (range fact)',
+    edition: '2026-09-25',
+  },
 } as const
 
 export type GeographicSource = keyof typeof geographicSources

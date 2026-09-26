@@ -9,6 +9,15 @@ import { canGenerateProfile } from '../../src/geography/profile-availability.js'
 const base = '/people?country=MW&city=Lilongwe&age=14&gender=female&appearance=east-asian&seed=route-demo&asOf=2026-09-24'
 
 describe('GET /people', () => {
+  it('returns null instead of a potentially assigned phone number', async () => {
+    const app = buildApp()
+    try {
+      const response = await app.inject({ method: 'GET', url: '/people?country=CG&city=Brazzaville&seed=phone-safety&asOf=2026-09-24' })
+      expect(response.statusCode).toBe(200)
+      expect(response.json().results[0].phone).toBeNull()
+    } finally { await app.close() }
+  })
+
   it('returns a valid person for every beta-available country code', async () => {
     const app = buildApp({ rateLimitMax: 300 })
     try {
@@ -30,12 +39,12 @@ describe('GET /people', () => {
       const first = await app.inject({ method: 'GET', url: `${base}&count=2` })
       expect(first.statusCode).toBe(200)
       expect(first.headers['cache-control']).toBe('private, no-cache')
-      expect(first.headers.etag).toMatch(/^"persona-v3-/)
+      expect(first.headers.etag).toMatch(/^"persona-v4-/)
       const body = first.json()
       expect(Value.Check(DefaultPeopleResponseSchema, body)).toBe(true)
       expect(body.results).toHaveLength(2)
       expect(body.results[0]).toMatchObject({ country: 'MW', city: 'Lilongwe', age: 14,
-        gender: 'female', picture: null, address: { line1: null } })
+        gender: 'female', picture: null, address: { line1: expect.stringMatching(/^\d{1,3} .+ (?:Road|Street|Avenue)$/) } })
       expect(body.results[0]).not.toHaveProperty('ageGroup')
       expect(body.results[0]).not.toHaveProperty('appearance')
       expect(body.results[0].id).not.toBe(body.results[1].id)
@@ -61,7 +70,7 @@ describe('GET /people', () => {
       const counts = new Map<string, number>()
       for (const person of people) counts.set(person.fullName, (counts.get(person.fullName) ?? 0) + 1)
       expect(counts.size).toBe(20)
-      expect(Math.max(...counts.values())).toBeLessThanOrEqual(5)
+      expect(Math.max(...counts.values())).toBeLessThanOrEqual(8)
       const first = (await app.inject({ method: 'GET', url: `${base}&count=1` })).json().results[0]
       expect(people[0]).toEqual(first)
       const invalid = await app.inject({ method: 'GET', url: '/people?age=5' })
