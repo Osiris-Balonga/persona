@@ -17,6 +17,7 @@ export function reviewedPortraitRecords(items: readonly ReviewItem[], version: s
       id: item.id, objectKey: `portraits/${version}/${item.id}.webp`, catalogVersion: version,
       ageGroup: metadata.ageGroup, apparentAgeRanges: ranges, gender: metadata.gender,
       visualGroup: metadata.visualGroup, appearance: metadata.appearance,
+      ...(item.collection ? { collection: item.collection } : {}),
       appearanceTags: metadata.appearanceTags, skinToneMst: metadata.skinToneMst,
       rights: metadata.rights, sha256: technical.sha256, reviewStatus: 'approved',
       rightsEvidence: metadata.rightsEvidence, reviewer: decision.reviewer,

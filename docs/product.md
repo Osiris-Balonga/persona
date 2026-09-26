@@ -23,7 +23,7 @@ The full public object has a [V1 example](../examples/person-v1.json) and a vers
 | `email`, `phone` | Email at `example.test`; phone from a reviewed fictional range or `null` when no safe range is available |
 | `picture` | Object with an HTTPS `url`, or `null` when no compatible approved portrait is available |
 
-The default response omits the derived `ageGroup` and internal portrait-matching `appearance`; either can be requested explicitly with `fields`. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
+The default response omits the derived `ageGroup` and `appearance`; either can be requested explicitly with `fields`. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
 
 `firstName` and `lastName` are always populated so developers can use them in ordinary two-field forms. Some naming traditions do not use an inherited family surname; in those cases, `lastName` is a second display component of a plausible complete name, not a claim about ancestry. `firstName` can contain more than one word.
 
@@ -37,7 +37,7 @@ The versioned registry recognizes every assigned country and territory code. Bet
 
 `seed` and `asOf`, together with the request parameters and the versions of the datasets and portrait catalog, make a response reproducible. Without a seed, responses may differ. The [HTTP contract](api.md) defines request limits, errors, replay, and cache behavior; rate limits will be fixed before the public beta opens.
 
-Portraits come from a pre-generated, reviewed catalog; requests do not generate images. The catalog uses approved metadata for age group, gender, and appearance. An absent compatible portrait has an explicit outcome. Producing the actual images remains gated by separate authorization from the project owner.
+Portraits come from a pre-generated, reviewed catalog; requests do not generate images. The API selects by country-linked production collection, gender, and apparent age. An absent matching portrait has an explicit outcome. Producing further images remains gated by separate authorization from the project owner.
 
 ## Scope
 

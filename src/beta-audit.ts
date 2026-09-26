@@ -7,9 +7,10 @@ import { listCountries } from './geography/countries.js'
 import { getCity } from './geography/cities.js'
 import { listCoverage } from './geography/coverage.js'
 import { profileGenerationStatus } from './geography/profile-availability.js'
-import { portraitCoverageMatrix } from './portraits/catalog.js'
-import { tagsMatchAppearance } from './portraits/appearance-tags.js'
 import { portraitCatalog } from './portraits/manifest.js'
+import { collectionForCountry } from './portraits/collection-selection.js'
+import { portraitCollectionOptions } from './review/collections.js'
+import { portraitAgeRanges } from './review/age-ranges.js'
 
 export async function auditBetaHttp() {
   const app = buildApp({ rateLimitMax: 1_000 })
@@ -49,13 +50,8 @@ export async function auditBetaHttp() {
           !isAgeProfileConsistent(person, asOf) || !person.email.endsWith('@example.test') ||
           (person.phone !== null && (!country.callingCode || !person.phone.startsWith(country.callingCode))) ||
           (person.picture !== null && !portraitCatalog.assets.some((asset) =>
-            asset.reviewStatus === 'approved' && asset.ageGroup === person.ageGroup &&
+            asset.reviewStatus === 'approved' && asset.collection === collectionForCountry(code) &&
             asset.gender === person.gender &&
-            (person.appearance === 'mixed'
-              ? (asset.compatibleAppearances ?? [asset.appearance]).includes('mixed')
-              : asset.appearanceTags
-                ? tagsMatchAppearance(asset.appearanceTags, person.appearance)
-                : (asset.compatibleAppearances ?? [asset.appearance]).some((value) => value === person.appearance)) &&
             asset.apparentAgeRanges.some(([minimum, maximum]) => person.age >= minimum && person.age <= maximum) &&
             person.picture?.url === `${portraitCatalog.publicBaseUrl}/${asset.objectKey}`))) {
           errors.push(`${code}: incoherent generated person`)
@@ -73,13 +69,21 @@ export async function auditBetaHttp() {
     }
   } finally { await app.close() }
   const coverage = listCoverage()
-  const portraitRows = portraitCoverageMatrix(portraitCatalog)
+  const missingAgeBands = portraitCollectionOptions.flatMap((collection) =>
+    (['female', 'male'] as const).flatMap((gender) =>
+      Object.values(portraitAgeRanges).flat().filter(([min, max]) =>
+        !portraitCatalog.assets.some((asset) => asset.reviewStatus === 'approved'
+          && asset.collection === collection && asset.gender === gender
+          && asset.apparentAgeRanges.some(([first, last]) => first === min && last === max)))
+        .map(([min, max]) => ({ collection, gender, ageRange: [min, max] }))
+    ))
+  const totalAgeBands = portraitCollectionOptions.length * 2 * Object.values(portraitAgeRanges).flat().length
   return {
     available: available.sort(), pendingNameReview: pendingNameReview.sort(), unavailable: unavailable.sort(),
     addressPartial: coverage.filter((row) => row.addresses.status === 'partial').map((row) => row.country).sort(),
     phonePending: coverage.filter((row) => row.phone.status === 'pending').map((row) => row.country).sort(),
     portrait: { approvedAssets: portraitCatalog.assets.filter((asset) => asset.reviewStatus === 'approved').length,
-      readyCombinations: portraitRows.filter((row) => row.ready).length, totalCombinations: portraitRows.length },
+      coveredAgeBands: totalAgeBands - missingAgeBands.length, totalAgeBands, missingAgeBands },
     errors,
   }
 }

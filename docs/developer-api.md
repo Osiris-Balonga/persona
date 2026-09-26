@@ -21,7 +21,7 @@ The staging service uses Render's free plan, so its first request after inactivi
 curl -i 'http://localhost:3000/people?country=MW&city=Lilongwe&age=27&count=2&seed=demo&asOf=2026-09-24&fields=firstName,lastName,age,ageGroup,address.city,picture.url'
 ```
 
-There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture.url` points to an approved WebP portrait when the catalog has a match; otherwise `picture` is `null`. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for every country currently available for profile generation; it does not certify a deliverable address.
+There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture.url` points to an approved WebP portrait selected by country collection, gender, and apparent age when the catalog has a match; otherwise `picture` is `null`. The `appearance` filter does not select the portrait in this release. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for every country currently available for profile generation; it does not certify a deliverable address.
 
 ## Inputs
 

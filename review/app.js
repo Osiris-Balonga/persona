@@ -49,6 +49,7 @@ const collectionLabels = {
   "asia-east": "Asie de l’Est",
   "asia-southeast": "Asie du Sud-Est",
   "asia-south": "Asie du Sud",
+  "asia-central": "Asie centrale",
   "asia-middle-east": "Moyen-Orient",
   "americas-north": "Amérique du Nord",
   "americas-latin-caribbean": "Amérique latine et Caraïbes",
