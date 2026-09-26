@@ -5,8 +5,7 @@ Persona is an API for generating coherent fictional people for interface design,
 The API is under development. Its first release is planned as a public beta with no API key. A small group of developers will help evaluate it first.
 
 See the [V1 product definition](docs/product.md) for the approved scope.
-Portraits follow a [human review and import procedure](docs/portrait-review.md); no production images are approved yet.
-The [private Worker delivery path](docs/portrait-delivery.md) is prepared with an empty production catalog.
+Portraits follow a [human review and import procedure](docs/portrait-review.md). The first 322 approved portraits are published through the [private R2 and Worker delivery path](docs/portrait-delivery.md); profile responses return `picture: null` when no reviewed portrait matches.
 The [beta coverage audit](docs/beta-coverage.md) lists the available and pending country codes and current data gaps.
 Start with the [developer API guide](docs/developer-api.md); the full request and response rules are in the [API contract](docs/api.md).
 
