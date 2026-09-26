@@ -78,6 +78,7 @@
                 <option value="noncompliant">À corriger</option>
               </select></label>
               <button type="button" id="clearFilters" hidden>Effacer</button>
+              <button type="button" id="startSequence" class="secondary">Validation en série</button>
               <button type="button" id="selectionToggle" aria-pressed="false">Sélection multiple</button>
               <button type="button" id="selectVisible" aria-pressed="false" title="Cocher tous les portraits à valider affichés">Tout cocher</button>
             </div>
@@ -102,6 +103,62 @@
         </section>
       </div>
     </main>
+    <dialog id="serialDialog" aria-labelledby="serialTitle">
+      <div class="serial-shell">
+        <header class="serial-head">
+          <div>
+            <span class="eyebrow">Bibliothèque de portraits · Mode de revue</span>
+            <h1 id="serialTitle">Validation en série</h1>
+            <p>Un portrait à la fois, puis le suivant.</p>
+          </div>
+          <button type="button" id="closeSequence" class="serial-close" aria-label="Fermer la validation en série">×</button>
+        </header>
+        <div class="serial-progress">
+          <strong id="serialProgressCount">0 / 0 examinés</strong>
+          <progress id="serialProgressBar" max="1" value="0"></progress>
+          <span id="serialRemaining">0 à valider</span>
+          <span id="serialPosition">1er portrait</span>
+        </div>
+        <div id="serialReview">
+          <div class="serial-stage">
+            <button type="button" id="serialPrevious" class="serial-neighbor" aria-label="Portrait précédent">
+              <strong>Précédent</strong><img alt="" /><span></span>
+            </button>
+            <div class="serial-current">
+              <img id="serialImage" alt="Portrait en cours de revue" />
+              <div class="serial-caption"><strong id="serialId"></strong><span id="serialTechnical"></span></div>
+            </div>
+            <button type="button" id="serialNext" class="serial-neighbor" aria-label="Portrait suivant">
+              <strong>Suivant</strong><img alt="" /><span></span>
+            </button>
+          </div>
+          <div class="serial-bottom">
+            <div id="serialFormHost"></div>
+            <div class="serial-actions">
+              <button type="button" class="reject" id="serialReject">Rejeter</button>
+              <button type="button" class="primary" id="serialApprove">Approuver →</button>
+              <button type="button" class="secondary" id="serialReopen" hidden>Remettre à valider</button>
+            </div>
+          </div>
+          <p id="serialError" class="bulk-error" role="alert" hidden></p>
+        </div>
+        <div id="serialDone" class="serial-done" hidden>
+          <h2>Fin de la file</h2>
+          <p id="serialDoneText"></p>
+          <button type="button" class="primary" id="serialDoneClose">Revenir à la galerie</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="serialRejectDialog" class="bulk-dialog" aria-labelledby="serialRejectTitle">
+      <h2 id="serialRejectTitle">Rejeter ce portrait</h2>
+      <label for="serialRejectReason">Motif du rejet</label>
+      <textarea id="serialRejectReason" rows="3" placeholder="Ex. : âge apparent incohérent, artefact visible…"></textarea>
+      <p id="serialRejectError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="serialRejectCancel">Annuler</button>
+        <button type="button" class="reject" id="serialRejectConfirm">Rejeter et suivant →</button>
+      </div>
+    </dialog>
     <dialog id="detailDialog">
       <div class="dialog-head">
         <div>

@@ -756,6 +756,288 @@ textarea {
   margin: 9px 0 0;
   color: #af584a !important;
 }
+#startSequence {
+  min-height: 34px;
+  padding: 0 11px;
+  font-size: 11px;
+}
+#startSequence:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+body:has(#serialDialog[open]) {
+  overflow: hidden;
+}
+#serialDialog {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: #f7f9f6;
+}
+.serial-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px 28px;
+}
+.serial-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 17px;
+}
+.serial-head h1 {
+  margin: 4px 0 3px;
+  font-size: 25px;
+}
+.serial-head p {
+  margin: 0;
+  color: #809087;
+  font-size: 12px;
+}
+.serial-close {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #dce7dd;
+  border-radius: 50%;
+  background: #fff;
+  color: #536d5c;
+  font-size: 22px;
+  line-height: 1;
+}
+.serial-close:hover {
+  background: #e7f3e9;
+}
+.serial-progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 53px;
+  border-top: 1px solid #e2e9e3;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.serial-progress progress {
+  width: 230px;
+  height: 7px;
+  border: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #e3ece4;
+}
+.serial-progress progress::-webkit-progress-bar {
+  background: #e3ece4;
+}
+.serial-progress progress::-webkit-progress-value {
+  background: #2d7956;
+}
+.serial-progress progress::-moz-progress-bar {
+  background: #2d7956;
+}
+#serialRemaining {
+  color: #809087;
+}
+#serialPosition {
+  margin-left: auto;
+  padding: 7px 10px;
+  border-radius: 20px;
+  background: #e5f1e8;
+  color: #28764f;
+  font-weight: 700;
+  font-size: 11px;
+}
+#serialReview {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.serial-stage {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3vw, 38px);
+}
+.serial-current {
+  width: min(51vh, calc(100vh - 338px), 410px);
+  flex: 0 0 auto;
+}
+.serial-current img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px #263b2e10;
+}
+.serial-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 11px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.serial-caption span {
+  color: #65796b;
+  font-size: 11px;
+}
+.serial-caption .file-ok {
+  color: #28764f;
+  font-weight: 700;
+}
+.serial-caption .file-bad {
+  color: #af584a;
+  font-weight: 700;
+}
+.serial-neighbor {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  width: 165px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #809087;
+  font-size: 11px;
+  opacity: 0.78;
+}
+.serial-neighbor:hover {
+  opacity: 1;
+}
+.serial-neighbor:disabled {
+  visibility: hidden;
+}
+.serial-neighbor strong {
+  color: #97a69a;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.serial-neighbor img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.serial-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 22px;
+  width: min(930px, 100%);
+  margin: 0 auto;
+  padding-top: 14px;
+  border-top: 1px solid #e2e9e3;
+  position: relative;
+  z-index: 1;
+}
+#serialFormHost {
+  min-width: 0;
+}
+#serialDialog .section-heading,
+#serialDialog .provenance,
+#serialDialog #saveMetadata,
+#serialDialog .decision-area {
+  display: none;
+}
+#serialDialog #metadataForm::before {
+  content: "Caractéristiques proposées";
+  display: block;
+  margin-bottom: 9px;
+  color: #97a69a;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+#serialDialog .form-grid {
+  display: flex;
+  gap: 8px;
+}
+#serialDialog .form-grid > * {
+  margin: 0;
+}
+#serialDialog .age-picker-field {
+  width: 210px;
+}
+#serialDialog .form-grid > label {
+  width: 145px;
+}
+#serialDialog .form-grid > label:last-child {
+  width: 195px;
+}
+#serialDialog .form-grid > label,
+#serialDialog .age-picker-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+#serialDialog .age-picker {
+  margin-top: 0;
+}
+#serialDialog .age-picker-menu {
+  top: auto;
+  bottom: calc(100% + 4px);
+  max-height: min(265px, 48vh);
+}
+.serial-actions {
+  display: flex;
+  gap: 8px;
+  min-width: 277px;
+}
+.serial-actions button {
+  flex: 1;
+}
+.serial-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#serialError {
+  width: min(930px, 100%);
+  margin: 7px auto 0;
+}
+.serial-done {
+  margin: auto;
+  text-align: center;
+}
+.serial-done h2 {
+  font-size: 23px;
+}
+.serial-done p {
+  margin: 8px 0 20px;
+  color: #65796b;
+}
+@media (max-width: 850px) {
+  .serial-neighbor { width: 110px; }
+  .serial-neighbor img { width: 100px; height: 100px; }
+  .serial-bottom { flex-direction: column; align-items: stretch; gap: 12px; }
+  #serialFormHost { margin: auto; }
+  .serial-actions { align-self: flex-end; }
+}
+@media (max-width: 650px) {
+  .serial-shell { padding: 15px; }
+  .serial-head h1 { font-size: 21px; }
+  .serial-head p { display: none; }
+  .serial-progress { gap: 8px; font-size: 11px; }
+  .serial-progress progress { width: 65px; }
+  .serial-neighbor { display: none; }
+  .serial-current { width: min(45vh, 100%); }
+  #serialDialog .form-grid { flex-wrap: wrap; }
+  #serialDialog .age-picker-field,
+  #serialDialog .form-grid > label,
+  #serialDialog .form-grid > label:last-child { width: calc(50% - 4px); }
+  .serial-actions { align-self: stretch; }
+}
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: 165px minmax(0, 1fr);
