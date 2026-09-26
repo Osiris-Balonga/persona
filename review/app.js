@@ -148,7 +148,10 @@ function updateSelectionControls(visible) {
   $("#selectionToggle").setAttribute("aria-pressed", String(state.selectionMode));
   $("#selectionBar").hidden = !state.selectionMode;
   $("#selectionCount").textContent = `${count} sélectionné${count > 1 ? "s" : ""}`;
-  $("#selectVisible").disabled = count >= 100 || eligible.length === 0 || eligible.every((item) => state.selectedIds.has(item.id));
+  const allSelected = eligible.length > 0 && eligible.every((item) => state.selectedIds.has(item.id));
+  $("#selectVisible").disabled = eligible.length === 0;
+  $("#selectVisible").setAttribute("aria-pressed", String(allSelected));
+  $("#selectVisible").textContent = allSelected ? "Tout décocher" : "Tout cocher";
   $("#clearSelection").disabled = count === 0;
   $("#bulkApprove").disabled = count === 0;
   $("#bulkReject").disabled = count === 0;
@@ -185,7 +188,7 @@ function fillAgeRanges(group, selected) {
   for (const [min, max] of ranges) {
     const option = document.createElement("option");
     option.value = `${min}-${max}`;
-    option.textContent = `${formatAgeRange(min, max)}${option.value === selected ? " · proposition" : ""}`;
+    option.textContent = formatAgeRange(min, max);
     select.append(option);
   }
   select.value = selected ?? "";
@@ -360,8 +363,13 @@ $("#selectionToggle").addEventListener("click", () => {
   render();
 });
 $("#selectVisible").addEventListener("click", () => {
-  for (const item of state.items.filter((candidate) => matchesPortraitFilters(candidate, state)))
-    if (item.status === "ready-for-review" && state.selectedIds.size < 100) state.selectedIds.add(item.id);
+  const eligible = state.items.filter((item) => item.status === "ready-for-review" && matchesPortraitFilters(item, state));
+  const allSelected = eligible.every((item) => state.selectedIds.has(item.id));
+  state.selectionMode = true;
+  for (const item of eligible) {
+    if (allSelected) state.selectedIds.delete(item.id);
+    else state.selectedIds.add(item.id);
+  }
   render();
 });
 $("#clearSelection").addEventListener("click", clearSelection);
@@ -370,8 +378,7 @@ $("#groups").addEventListener("click", (event) => {
   if (!tile) return;
   if (state.selectionMode && state.items.some((item) => item.id === tile.dataset.id && item.status === "ready-for-review")) {
     if (state.selectedIds.has(tile.dataset.id)) state.selectedIds.delete(tile.dataset.id);
-    else if (state.selectedIds.size < 100) state.selectedIds.add(tile.dataset.id);
-    else notify("100 portraits maximum par décision groupée.", true);
+    else state.selectedIds.add(tile.dataset.id);
     render();
   } else openDetail(tile.dataset.id);
 });
