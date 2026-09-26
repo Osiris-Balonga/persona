@@ -1,4 +1,5 @@
 import { isPortraitCompliant, matchesPortraitFilters } from "./gallery-filters.js";
+import { eligibleReviewIds, nextPendingIndex, selectableAgeIndexes } from "./review-sequence.js";
 
 const $ = (selector) => document.querySelector(selector);
 const state = {
@@ -18,6 +19,7 @@ const state = {
   pendingDecision: null,
   editAgeRanges: [],
   editAgePickerEditable: false,
+  sequence: null,
 };
 const labels = {
   "processing-error": "Erreur",
@@ -118,6 +120,7 @@ function render() {
       (item) => item.status === status,
     ).length;
   const visible = state.items.filter((item) => matchesPortraitFilters(item, state));
+  $("#startSequence").disabled = eligibleReviewIds(state.items, state).length === 0;
   for (const id of state.selectedIds)
     if (!visible.some((item) => item.id === id && item.status === "ready-for-review"))
       state.selectedIds.delete(id);
@@ -216,13 +219,20 @@ function renderAgePicker() {
   const ranges = allAgeRanges();
   const selected = state.editAgeRanges.map(([min, max]) =>
     ranges.findIndex(([first, last]) => first === min && last === max));
-  const first = selected[0];
-  const last = selected.at(-1);
+  const available = selectableAgeIndexes(ranges, state.editAgeRanges);
   for (const checkbox of $("#agePickerOptions").querySelectorAll("input")) {
     const index = Number(checkbox.dataset.index);
     checkbox.checked = selected.includes(index);
-    checkbox.disabled = !state.editAgePickerEditable || (selected.length > 0
-      && (checkbox.checked ? index !== first && index !== last : index !== first - 1 && index !== last + 1));
+    checkbox.disabled = !state.editAgePickerEditable;
+    checkbox.parentElement.hidden = !available.includes(index);
+  }
+  for (const heading of $("#agePickerOptions").querySelectorAll("strong")) {
+    let next = heading.nextElementSibling;
+    heading.hidden = true;
+    while (next && next.tagName !== "STRONG") {
+      if (!next.hidden) heading.hidden = false;
+      next = next.nextElementSibling;
+    }
   }
   const summary = $("#agePickerSummary");
   summary.replaceChildren();
@@ -246,7 +256,7 @@ function closeAgePicker() {
   $("#agePickerMenu").hidden = true;
   $("#agePickerToggle").setAttribute("aria-expanded", "false");
 }
-function openDetail(id) {
+function populateDetail(id) {
   const item = state.items.find((candidate) => candidate.id === id);
   if (!item) return;
   state.selected = id;
@@ -293,6 +303,9 @@ function openDetail(id) {
   $("#rejectButton").disabled = item.status !== "ready-for-review";
   $("#detailError").hidden = true;
   $("#decisionReason").value = "";
+}
+function openDetail(id) {
+  populateDetail(id);
   $("#detailDialog").showModal();
 }
 async function upload(files) {
@@ -328,8 +341,9 @@ function metadataPayload() {
   const form = $("#metadataForm");
   if (!item?.metadata || !form.reportValidity()) return null;
   if (state.editAgeRanges.length === 0) {
-    $("#detailError").textContent = "Choisis au moins une tranche d’âge apparent.";
-    $("#detailError").hidden = false;
+    const error = state.sequence ? $("#serialError") : $("#detailError");
+    error.textContent = "Choisis au moins une tranche d’âge apparent.";
+    error.hidden = false;
     $("#agePickerToggle").focus();
     return null;
   }
@@ -406,6 +420,158 @@ async function confirmDecision() {
     $("#confirmDecision").disabled = false;
   }
 }
+const reviewColumn = $("#detailDialog .review-column");
+function sequenceItem(index) {
+  return state.items.find((item) => item.id === state.sequence?.ids[index]);
+}
+function showSequenceItem() {
+  const sequence = state.sequence;
+  if (!sequence) return;
+  const item = sequenceItem(sequence.index);
+  const completed = sequence.ids.filter((id) =>
+    ["approved", "rejected"].includes(state.items.find((candidate) => candidate.id === id)?.status)).length;
+  const remaining = sequence.ids.length - completed;
+  $("#serialProgressCount").textContent = `${completed} / ${sequence.ids.length} examinés`;
+  $("#serialProgressBar").max = sequence.ids.length;
+  $("#serialProgressBar").value = completed;
+  $("#serialRemaining").textContent = `${remaining} à valider`;
+  $("#serialPosition").textContent = item
+    ? `${sequence.index + 1}${sequence.index === 0 ? "er" : "e"} portrait`
+    : "File terminée";
+  $("#serialReview").hidden = !item;
+  $("#serialDone").hidden = Boolean(item);
+  if (!item) {
+    $("#serialDoneText").textContent = remaining === 0
+      ? `${sequence.ids.length} portraits examinés dans cette file.`
+      : `${remaining} portrait${remaining > 1 ? "s" : ""} encore à valider dans cette file.`;
+    return;
+  }
+  populateDetail(item.id);
+  $("#serialImage").src = item.technical
+    ? `/api/items/${item.id}/image?v=${item.technical.sha256}` : "";
+  $("#serialId").textContent = item.id;
+  $("#serialTechnical").innerHTML = item.technical
+    ? `${item.technical.width} × ${item.technical.height} px · ${formatBytes(item.technical.bytes)} <span class="${isPortraitCompliant(item) ? "file-ok" : "file-bad"}">${isPortraitCompliant(item) ? "✓ Conforme" : "À corriger"}</span>`
+    : "Caractéristiques indisponibles";
+  for (const [selector, neighbor] of [["#serialPrevious", sequenceItem(sequence.index - 1)], ["#serialNext", sequenceItem(sequence.index + 1)]]) {
+    const button = $(selector);
+    button.disabled = !neighbor;
+    button.querySelector("img").src = neighbor?.technical
+      ? `/api/items/${neighbor.id}/image?v=${neighbor.technical.sha256}` : "";
+    button.querySelector("span").textContent = neighbor
+      ? `${neighbor.id} · ${labels[neighbor.status]}` : "";
+  }
+  const ready = item.status === "ready-for-review";
+  $("#serialApprove").hidden = !ready;
+  $("#serialReject").hidden = !ready;
+  $("#serialReopen").hidden = ready;
+  $("#serialError").hidden = true;
+}
+function closeSequence() {
+  if (state.sequence?.busy) return;
+  $("#serialDialog").close();
+}
+function moveSequence(index) {
+  if (!state.sequence || index < 0 || index >= state.sequence.ids.length) return;
+  const item = sequenceItem(state.sequence.index);
+  if (item?.status === "ready-for-review") {
+    const payload = metadataPayload();
+    if (!payload) return;
+    if (metadataChanged(payload)) {
+      $("#serialError").textContent = "Valide ce portrait avant de quitter les caractéristiques modifiées.";
+      $("#serialError").hidden = false;
+      return;
+    }
+  }
+  state.sequence.index = index;
+  showSequenceItem();
+}
+async function submitSequenceDecision(decision, reason) {
+  const sequence = state.sequence;
+  if (!sequence || sequence.busy) return;
+  const item = sequenceItem(sequence.index);
+  const payload = metadataPayload();
+  if (!item || !payload) return;
+  sequence.busy = true;
+  $("#serialApprove").disabled = true;
+  $("#serialRejectConfirm").disabled = true;
+  $("#closeSequence").disabled = true;
+  try {
+    if (metadataChanged(payload)) {
+      await request(`/api/items/${item.id}/metadata`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload),
+      });
+    }
+    await request(`/api/items/${item.id}/decision`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ decision, reviewer: "Osiris Balonga", reason }),
+    });
+    if ($("#serialRejectDialog").open) $("#serialRejectDialog").close();
+    await refresh();
+    sequence.index = nextPendingIndex(sequence.ids, state.items, sequence.index);
+    showSequenceItem();
+  } catch (error) {
+    const target = $("#serialRejectDialog").open ? $("#serialRejectError") : $("#serialError");
+    target.textContent = error.message;
+    target.hidden = false;
+    await refresh();
+  } finally {
+    sequence.busy = false;
+    $("#serialApprove").disabled = false;
+    $("#serialRejectConfirm").disabled = false;
+    $("#closeSequence").disabled = false;
+  }
+}
+$("#startSequence").addEventListener("click", () => {
+  const ids = eligibleReviewIds(state.items, state);
+  if (!ids.length) return;
+  state.sequence = { ids, index: 0, busy: false };
+  $("#serialFormHost").append(reviewColumn);
+  $("#serialDialog").showModal();
+  showSequenceItem();
+});
+$("#closeSequence").addEventListener("click", closeSequence);
+$("#serialDoneClose").addEventListener("click", closeSequence);
+$("#serialDialog").addEventListener("cancel", (event) => {
+  if (state.sequence?.busy) event.preventDefault();
+});
+$("#serialDialog").addEventListener("close", () => {
+  $("#detailDialog .dialog-layout").append(reviewColumn);
+  state.sequence = null;
+});
+$("#serialPrevious").addEventListener("click", () => moveSequence(state.sequence.index - 1));
+$("#serialNext").addEventListener("click", () => moveSequence(state.sequence.index + 1));
+$("#serialApprove").addEventListener("click", () =>
+  submitSequenceDecision("approved", "Conforme après inspection visuelle"));
+$("#serialReject").addEventListener("click", () => {
+  $("#serialRejectReason").value = "";
+  $("#serialRejectError").hidden = true;
+  $("#serialRejectDialog").showModal();
+  $("#serialRejectReason").focus();
+});
+$("#serialRejectCancel").addEventListener("click", () => $("#serialRejectDialog").close());
+$("#serialRejectConfirm").addEventListener("click", () => {
+  const reason = $("#serialRejectReason").value.trim();
+  if (!reason) { $("#serialRejectReason").focus(); return; }
+  submitSequenceDecision("rejected", reason);
+});
+$("#serialReopen").addEventListener("click", async () => {
+  const item = sequenceItem(state.sequence.index);
+  const payload = metadataPayload();
+  if (!item || !payload) return;
+  try {
+    if (metadataChanged(payload)) {
+      await request(`/api/items/${item.id}/metadata`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload),
+      });
+    } else await request(`/api/items/${item.id}/reopen`, { method: "POST" });
+    await refresh();
+    showSequenceItem();
+  } catch (error) {
+    $("#serialError").textContent = error.message;
+    $("#serialError").hidden = false;
+  }
+});
 $("#uploadButton").addEventListener("click", () => $("#fileInput").click());
 $("#dropBrowse").addEventListener("click", () => $("#fileInput").click());
 $("#fileInput").addEventListener("change", (event) => {
@@ -634,6 +800,6 @@ request("/api/options")
   })
   .catch((error) => notify(error.message, true));
 setInterval(() => {
-  if (!$("#detailDialog").open && !$("#bulkDialog").open)
+  if (!$("#detailDialog").open && !$("#bulkDialog").open && !$("#serialDialog").open)
     refresh().catch((error) => notify(error.message, true));
 }, 5000);
