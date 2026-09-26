@@ -12,6 +12,9 @@ const state = {
   gender: "all",
   quality: "all",
   selected: null,
+  selectionMode: false,
+  selectedIds: new Set(),
+  bulkDecision: null,
 };
 const labels = {
   "processing-error": "Erreur",
@@ -103,6 +106,10 @@ function render() {
       (item) => item.status === status,
     ).length;
   const visible = state.items.filter((item) => matchesPortraitFilters(item, state));
+  for (const id of state.selectedIds)
+    if (!visible.some((item) => item.id === id && item.status === "ready-for-review"))
+      state.selectedIds.delete(id);
+  updateSelectionControls(visible);
   const groups = available
     .filter(
       (appearance) =>
@@ -124,16 +131,31 @@ function render() {
       .map(
         (
           item,
-        ) => `<button type="button" class="portrait-tile" data-id="${item.id}" aria-label="Ouvrir ${item.id}, ${labels[item.status]}, ${item.technical ? `${item.technical.width} par ${item.technical.height} pixels, ${formatBytes(item.technical.bytes)}` : "caractéristiques indisponibles"}${isPortraitCompliant(item) ? "" : ", fichier à corriger"}" title="${escapeHtml(item.originalName)}">
+        ) => `<button type="button" class="portrait-tile ${state.selectedIds.has(item.id) ? "selected" : ""}" data-id="${item.id}" ${state.selectionMode && item.status === "ready-for-review" ? `aria-pressed="${state.selectedIds.has(item.id)}"` : ""} aria-label="${state.selectionMode && item.status === "ready-for-review" ? "Sélectionner" : "Ouvrir"} ${item.id}, ${labels[item.status]}, ${item.technical ? `${item.technical.width} par ${item.technical.height} pixels, ${formatBytes(item.technical.bytes)}` : "caractéristiques indisponibles"}${isPortraitCompliant(item) ? "" : ", fichier à corriger"}" title="${escapeHtml(item.originalName)}">
       ${item.technical ? `<img src="/api/items/${item.id}/image?v=${item.technical.sha256}" alt="" loading="lazy">` : '<span class="missing">Image à corriger</span>'}
       <span class="tile-spec">${item.technical ? `${item.technical.width} × ${item.technical.height} px · ${formatBytes(item.technical.bytes)}` : "Dimensions — · Taille —"}</span>
-      ${isPortraitCompliant(item) ? `<span class="tile-status ${item.status}" title="${labels[item.status]}"></span>` : '<span class="tile-quality">À corriger</span>'}
+      ${state.selectionMode && item.status === "ready-for-review" ? `<span class="tile-check">${state.selectedIds.has(item.id) ? "✓" : ""}</span>` : isPortraitCompliant(item) ? `<span class="tile-status ${item.status}" title="${labels[item.status]}"></span>` : '<span class="tile-quality">À corriger</span>'}
       <span class="tile-caption"><span>${item.id}</span><span>${item.metadata ? formatAgeRange(item.metadata.apparentAgeMin, item.metadata.apparentAgeMax) : labels[item.status]}</span></span>
     </button>`,
       )
       .join("")}</div></section>`,
     )
     .join("");
+}
+function updateSelectionControls(visible) {
+  const count = state.selectedIds.size;
+  const eligible = visible.filter((item) => item.status === "ready-for-review");
+  $("#selectionToggle").setAttribute("aria-pressed", String(state.selectionMode));
+  $("#selectionBar").hidden = !state.selectionMode;
+  $("#selectionCount").textContent = `${count} sélectionné${count > 1 ? "s" : ""}`;
+  $("#selectVisible").disabled = count >= 100 || eligible.length === 0 || eligible.every((item) => state.selectedIds.has(item.id));
+  $("#clearSelection").disabled = count === 0;
+  $("#bulkApprove").disabled = count === 0;
+  $("#bulkReject").disabled = count === 0;
+}
+function clearSelection() {
+  state.selectedIds.clear();
+  render();
 }
 function fillGalleryAgeRanges() {
   const select = $("#filterAgeRange");
@@ -292,6 +314,7 @@ $("#statusNav").addEventListener("click", (event) => {
   const button = event.target.closest("button[data-status]");
   if (!button) return;
   state.status = button.dataset.status;
+  state.selectedIds.clear();
   $("#statusNav")
     .querySelectorAll("button")
     .forEach((element) =>
@@ -303,6 +326,7 @@ $("#appearanceNav").addEventListener("click", (event) => {
   const button = event.target.closest("button[data-appearance]");
   if (button) {
     state.appearance = button.dataset.appearance;
+    state.selectedIds.clear();
     render();
   }
 });
@@ -314,6 +338,7 @@ for (const [id, key] of [
 ]) {
   $(`#${id}`).addEventListener("change", (event) => {
     state[key] = event.target.value;
+    state.selectedIds.clear();
     if (key === "ageGroup") fillGalleryAgeRanges();
     updateClearFilters();
     render();
@@ -326,11 +351,69 @@ $("#clearFilters").addEventListener("click", () => {
     $(`#${id}`).value = "all";
   fillGalleryAgeRanges();
   updateClearFilters();
+  state.selectedIds.clear();
   render();
 });
+$("#selectionToggle").addEventListener("click", () => {
+  state.selectionMode = !state.selectionMode;
+  state.selectedIds.clear();
+  render();
+});
+$("#selectVisible").addEventListener("click", () => {
+  for (const item of state.items.filter((candidate) => matchesPortraitFilters(candidate, state)))
+    if (item.status === "ready-for-review" && state.selectedIds.size < 100) state.selectedIds.add(item.id);
+  render();
+});
+$("#clearSelection").addEventListener("click", clearSelection);
 $("#groups").addEventListener("click", (event) => {
   const tile = event.target.closest(".portrait-tile");
-  if (tile) openDetail(tile.dataset.id);
+  if (!tile) return;
+  if (state.selectionMode && state.items.some((item) => item.id === tile.dataset.id && item.status === "ready-for-review")) {
+    if (state.selectedIds.has(tile.dataset.id)) state.selectedIds.delete(tile.dataset.id);
+    else if (state.selectedIds.size < 100) state.selectedIds.add(tile.dataset.id);
+    else notify("100 portraits maximum par décision groupée.", true);
+    render();
+  } else openDetail(tile.dataset.id);
+});
+function openBulkDecision(decision) {
+  if (!state.selectedIds.size) return;
+  state.bulkDecision = decision;
+  $("#bulkTitle").textContent = decision === "approved" ? "Approuver le lot" : "Rejeter le lot";
+  $("#bulkSummary").textContent = `${state.selectedIds.size} portrait${state.selectedIds.size > 1 ? "s" : ""} sélectionné${state.selectedIds.size > 1 ? "s" : ""}. Cette décision s’appliquera à chacun.`;
+  $("#bulkReasonLabel").hidden = decision !== "rejected";
+  $("#bulkReason").hidden = decision !== "rejected";
+  $("#bulkReason").value = "";
+  $("#bulkError").hidden = true;
+  $("#bulkDialog").showModal();
+}
+$("#bulkApprove").addEventListener("click", () => openBulkDecision("approved"));
+$("#bulkReject").addEventListener("click", () => openBulkDecision("rejected"));
+$("#bulkCancel").addEventListener("click", () => $("#bulkDialog").close());
+$("#bulkConfirm").addEventListener("click", async () => {
+  const reason = state.bulkDecision === "rejected"
+    ? $("#bulkReason").value.trim()
+    : "Revue visuelle du lot";
+  if (!reason) { $("#bulkReason").focus(); return; }
+  const count = state.selectedIds.size;
+  $("#bulkConfirm").disabled = true;
+  try {
+    await request("/api/decisions", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ids: [...state.selectedIds], decision: state.bulkDecision,
+        reviewer: "Osiris Balonga", reason }),
+    });
+    $("#bulkDialog").close();
+    state.selectedIds.clear();
+    state.selectionMode = false;
+    await refresh();
+    notify(`${count} portrait${count > 1 ? "s" : ""} ${state.bulkDecision === "approved" ? "approuvé" : "rejeté"}${count > 1 ? "s" : ""}.`);
+  } catch (error) {
+    $("#bulkError").textContent = error.message;
+    $("#bulkError").hidden = false;
+  } finally {
+    $("#bulkConfirm").disabled = false;
+  }
 });
 $("#closeDialog").addEventListener("click", () => $("#detailDialog").close());
 $("#metadataForm")
@@ -392,6 +475,6 @@ request("/api/options")
   })
   .catch((error) => notify(error.message, true));
 setInterval(() => {
-  if (!$("#detailDialog").open)
+  if (!$("#detailDialog").open && !$("#bulkDialog").open)
     refresh().catch((error) => notify(error.message, true));
 }, 5000);

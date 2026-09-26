@@ -14,7 +14,7 @@ function bands(minimum: number, maximum: number): AgeRange[] {
 }
 
 export const portraitAgeRanges: Record<AgeGroup, readonly AgeRange[]> = {
-  child: bands(...groupBounds.child), teen: bands(...groupBounds.teen),
+  child: [[6, 8], [9, 12]], teen: [[13, 15], [16, 17]],
   adult: bands(...groupBounds.adult), senior: bands(...groupBounds.senior),
 }
 

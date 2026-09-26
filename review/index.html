@@ -78,6 +78,14 @@
                 <option value="noncompliant">À corriger</option>
               </select></label>
               <button type="button" id="clearFilters" hidden>Effacer</button>
+              <button type="button" id="selectionToggle" aria-pressed="false">Sélection multiple</button>
+            </div>
+            <div id="selectionBar" class="selection-bar" hidden>
+              <strong id="selectionCount">0 sélectionné</strong>
+              <button type="button" id="selectVisible">Sélectionner jusqu’à 100 portraits à valider</button>
+              <button type="button" id="clearSelection">Désélectionner</button>
+              <button type="button" class="reject" id="bulkReject" disabled>Rejeter</button>
+              <button type="button" class="primary" id="bulkApprove" disabled>Approuver</button>
             </div>
           </div>
           <div id="dropZone" class="dropzone" tabindex="0">
@@ -172,6 +180,17 @@
             </div>
           </div>
         </div>
+      </div>
+    </dialog>
+    <dialog id="bulkDialog" class="bulk-dialog">
+      <h2 id="bulkTitle">Décision groupée</h2>
+      <p id="bulkSummary"></p>
+      <label id="bulkReasonLabel" for="bulkReason">Motif du rejet</label>
+      <textarea id="bulkReason" rows="3" placeholder="Ex. : âge apparent incohérent, artefacts visibles…"></textarea>
+      <p id="bulkError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="bulkCancel">Annuler</button>
+        <button type="button" class="primary" id="bulkConfirm">Confirmer</button>
       </div>
     </dialog>
   </body>
