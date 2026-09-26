@@ -52,6 +52,21 @@ describe('portrait review storage', () => {
     expect(await readdir(join(root, 'webp'))).toEqual([`${candidate.id}.webp`])
   })
 
+  it('embeds a neighboring secondary band and rejects a distant one', async () => {
+    const { root, store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'adult-portrait.png')
+    const metadata = { ageGroup: 'adult' as const, apparentAgeMin: 28, apparentAgeMax: 32,
+      secondaryAgeMin: 33, secondaryAgeMax: 37, gender: 'female' as const,
+      appearance: 'west-african' as const, visualGroup: 'black',
+      rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally' }
+    expect((await store.setMetadata(candidate.id, metadata)).status).toBe('ready-for-review')
+    const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
+    expect(embedded).toContain('secondaryAgeMin="33"')
+    expect(embedded).toContain('secondaryAgeMax="37"')
+    await expect(store.setMetadata(candidate.id, { ...metadata, secondaryAgeMin: 43, secondaryAgeMax: 47 }))
+      .rejects.toThrow('Secondary age range')
+  })
+
   it('keeps failed uploads in inbox and rejected candidates out of the approved set', async () => {
     const { root, store } = await createStore()
     const rectangle = await sharp({ create: { width: 768, height: 600, channels: 3,

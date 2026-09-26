@@ -18,6 +18,19 @@ export const portraitAgeRanges: Record<AgeGroup, readonly AgeRange[]> = {
   adult: bands(...groupBounds.adult), senior: bands(...groupBounds.senior),
 }
 
+const orderedAgeRanges = Object.values(portraitAgeRanges).flat()
+
+export function adjacentPortraitAgeRanges(minimum: number, maximum: number): AgeRange[] {
+  const index = orderedAgeRanges.findIndex(([first, last]) => first === minimum && last === maximum)
+  if (index < 0) return []
+  return [orderedAgeRanges[index - 1], orderedAgeRanges[index + 1]].filter((range): range is AgeRange => range !== undefined)
+}
+
+export function isAdjacentPortraitAgeRange(primaryMin: number, primaryMax: number, secondaryMin: number, secondaryMax: number): boolean {
+  return adjacentPortraitAgeRanges(primaryMin, primaryMax)
+    .some(([first, last]) => first === secondaryMin && last === secondaryMax)
+}
+
 export function isPortraitAgeRange(group: AgeGroup, minimum: number, maximum: number): boolean {
   return portraitAgeRanges[group]?.some(([first, last]) => first === minimum && last === maximum) ?? false
 }

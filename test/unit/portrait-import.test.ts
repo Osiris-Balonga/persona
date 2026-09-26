@@ -5,6 +5,7 @@ import { evaluatePortraitImport, validatePortraitReview, type PortraitReview } f
 const hash = 'a'.repeat(64)
 const review = (overrides: Partial<PortraitReview> = {}): PortraitReview => ({
   id: 'p_0001', catalogVersion: 'v1', ageGroup: 'adult', gender: 'female',
+  apparentAgeRanges: [[28, 32]],
   visualGroup: 'black', appearance: 'west-african',
   objectKey: 'portraits/v1/adult/female/black/west-african/p_0001.webp',
   rights: 'project-owned synthetic image', rightsEvidence: 'review-record-0001',
@@ -36,7 +37,7 @@ describe('portrait import review', () => {
   })
 
   it('proposes only explicitly approved records from a fully valid reviewed batch', () => {
-    const approved = review()
+    const approved = review({ apparentAgeRanges: [[28, 32], [33, 37]] })
     const rejected = review({ id: 'p_0002', objectKey: 'portraits/v1/adult/female/black/west-african/p_0002.webp',
       reviewStatus: 'rejected', decisionReason: 'Visible artifact', sha256: 'b'.repeat(64) })
     const withdrawn = review({ id: 'p_0003', objectKey: 'portraits/v1/adult/female/black/west-african/p_0003.webp',
@@ -45,6 +46,7 @@ describe('portrait import review', () => {
     const result = evaluatePortraitImport([approved, rejected, withdrawn], files, 'https://images.example.test')
     expect(result.errors).toEqual([])
     expect(result.approved.map((asset) => asset.id)).toEqual(['p_0001'])
+    expect(result.approved[0]?.apparentAgeRanges).toEqual([[28, 32], [33, 37]])
     expect(result.approved[0]).not.toHaveProperty('reviewer')
   })
 })

@@ -7,6 +7,7 @@ const tinyPng = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0l
 const sha256 = 'a'.repeat(64)
 const record = (id: string, overrides: Partial<PortraitReview> = {}): PortraitReview => ({
   id, objectKey: `portraits/v1/adult/female/black/west-african/${id}.webp`,
+  apparentAgeRanges: [[28, 32]],
   catalogVersion: 'v1', ageGroup: 'adult', gender: 'female', visualGroup: 'black',
   appearance: 'west-african', rights: 'project-owned synthetic image',
   rightsEvidence: 'batch-review-1', sha256, reviewStatus: 'approved',
