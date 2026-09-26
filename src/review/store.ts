@@ -144,6 +144,28 @@ export class PortraitReviewStore {
       return item
     })
   }
+  async decideMany(ids: string[], input: Omit<ReviewDecision, 'at'>): Promise<ReviewItem[]> {
+    return this.serialize(async () => {
+      if (!Array.isArray(ids) || ids.length < 1 || ids.length > 100
+        || ids.some((id) => typeof id !== 'string' || !/^p_\d{4,}$/.test(id))
+        || new Set(ids).size !== ids.length) throw new RangeError('Select 1 to 100 distinct portraits')
+      if (!input || !input.reviewer?.trim() || !input.reason?.trim()
+        || !['approved', 'rejected'].includes(input.decision)) throw new RangeError('Reviewer and reason are required')
+      const items = await this.load()
+      const selected = ids.map((id) => items.find((item) => item.id === id))
+      if (selected.some((item) => !item || item.status !== 'ready-for-review' || !item.metadata || !item.technical)) {
+        throw new RangeError('Every selected portrait must be ready for review')
+      }
+      const decided = selected as ReviewItem[]
+      const at = new Date().toISOString()
+      for (const item of decided) {
+        item.status = input.decision
+        item.decision = { ...input, at }
+      }
+      await this.save(items)
+      return decided
+    })
+  }
   async pendingFiles() { await this.setup(); return readdir(join(this.root, 'inbox')) }
   async processInbox(): Promise<ReviewItem[]> {
     const processed: ReviewItem[] = []

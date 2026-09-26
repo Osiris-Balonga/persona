@@ -32,4 +32,38 @@ describe('local portrait review API', () => {
     expect(denied.statusCode).toBe(403)
     await app.close()
   })
+
+  it('applies a bulk decision only when every selected portrait is ready', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-bulk-'))
+    roots.push(root)
+    const app = createReviewApp(root)
+    const ids: string[] = []
+    for (const color of ['#aa806a', '#806a55', '#735c4c']) {
+      const bytes = await sharp({ create: { width: 768, height: 768, channels: 3, background: color } }).png().toBuffer()
+      const response = await app.inject({ method: 'POST', url: '/api/upload', headers: {
+        'content-type': 'application/octet-stream', 'x-file-name': `portrait-${ids.length + 1}.png`,
+        origin: 'http://localhost:4317',
+      }, payload: bytes })
+      ids.push(response.json().id)
+    }
+    for (const id of ids.slice(0, 2)) {
+      const response = await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`, payload: {
+        ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32, gender: 'female',
+        appearance: 'west-african', visualGroup: 'black', rights: 'Synthetic portrait for Persona',
+        rightsEvidence: 'ChatGPT generation record retained locally',
+      } })
+      expect(response.statusCode).toBe(200)
+    }
+    const decision = { decision: 'approved', reviewer: 'Osiris Balonga', reason: 'Reviewed portraits' }
+    const invalid = await app.inject({ method: 'POST', url: '/api/decisions', payload: { ids, ...decision } })
+    expect(invalid.statusCode).toBe(400)
+    expect((await app.inject({ method: 'GET', url: '/api/items' })).json().map((item: { status: string }) => item.status))
+      .toEqual(['ready-for-review', 'ready-for-review', 'needs-metadata'])
+    const approved = await app.inject({ method: 'POST', url: '/api/decisions', payload: { ids: ids.slice(0, 2), ...decision } })
+    expect(approved.statusCode).toBe(200)
+    expect(approved.json().map((item: { status: string }) => item.status)).toEqual(['approved', 'approved'])
+    const repeated = await app.inject({ method: 'POST', url: '/api/decisions', payload: { ids: ids.slice(0, 2), ...decision } })
+    expect(repeated.statusCode).toBe(400)
+    await app.close()
+  })
 })

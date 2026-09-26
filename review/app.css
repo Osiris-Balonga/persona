@@ -238,6 +238,43 @@ h3 {
   font-size: 11px;
   font-weight: 700;
 }
+#selectionToggle {
+  margin-left: auto;
+}
+#selectionToggle[aria-pressed="true"] {
+  color: #fff;
+  background: #2d7956;
+  border-radius: 7px;
+  padding: 0 10px;
+}
+.selection-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-top: 8px;
+}
+.selection-bar strong {
+  margin-right: auto;
+  font-size: 11px;
+}
+.selection-bar > button:not(.primary, .reject) {
+  min-height: 34px;
+  border: 0;
+  background: transparent;
+  color: #28764f;
+  font-size: 11px;
+  font-weight: 700;
+}
+.selection-bar .primary,
+.selection-bar .reject {
+  min-height: 34px;
+  font-size: 11px;
+}
+.selection-bar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 .dropzone {
   display: flex;
   align-items: center;
@@ -330,6 +367,28 @@ h3 {
 .portrait-tile:hover {
   box-shadow: 0 6px 18px #173d1b26;
   transform: translateY(-2px);
+}
+.portrait-tile.selected {
+  outline: 4px solid #2d7956;
+  outline-offset: -4px;
+}
+.tile-check {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  color: #fff;
+  background: #18372682;
+  font-size: 13px;
+  font-weight: 800;
+}
+.selected .tile-check {
+  background: #2d7956;
 }
 .portrait-tile img {
   display: block;
@@ -554,6 +613,32 @@ textarea {
   justify-content: flex-end;
   gap: 9px;
   margin-top: 11px;
+}
+.bulk-dialog {
+  width: 420px;
+  padding: 22px 24px;
+}
+.bulk-dialog h2 {
+  font-size: 19px;
+  margin-bottom: 7px;
+}
+.bulk-dialog p {
+  color: #637768;
+  line-height: 1.5;
+}
+.bulk-dialog label {
+  display: block;
+  margin-bottom: 6px;
+  color: #5e7864;
+  font-size: 11px;
+  font-weight: 700;
+}
+.bulk-dialog textarea {
+  width: 100%;
+}
+.bulk-error {
+  margin: 9px 0 0;
+  color: #af584a !important;
 }
 @media (max-width: 900px) {
   .workspace {

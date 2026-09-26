@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { portraitAgeRanges, closestPortraitAgeRange } from '../../src/review/age-ranges.js'
 
 describe('portrait age choices', () => {
-  it('uses five-year bands within Persona age groups, including the upper senior ages', () => {
-    expect(portraitAgeRanges.child).toEqual([[6, 10], [11, 12]])
-    expect(portraitAgeRanges.teen).toEqual([[13, 17]])
+  it('uses shorter age bands for children and teens, then five-year adult bands', () => {
+    expect(portraitAgeRanges.child).toEqual([[6, 8], [9, 12]])
+    expect(portraitAgeRanges.teen).toEqual([[13, 15], [16, 17]])
     expect(portraitAgeRanges.adult.slice(0, 3)).toEqual([[18, 22], [23, 27], [28, 32]])
     expect(portraitAgeRanges.adult.at(-1)).toEqual([63, 64])
     expect(portraitAgeRanges.senior.slice(0, 2)).toEqual([[65, 69], [70, 74]])
@@ -12,6 +12,10 @@ describe('portrait age choices', () => {
   })
 
   it('maps an existing age estimate to one offered band', () => {
+    expect(closestPortraitAgeRange('child', 7, 10)).toEqual([6, 8])
+    expect(closestPortraitAgeRange('child', 9, 12)).toEqual([9, 12])
+    expect(closestPortraitAgeRange('teen', 14, 16)).toEqual([13, 15])
+    expect(closestPortraitAgeRange('teen', 15, 17)).toEqual([16, 17])
     expect(closestPortraitAgeRange('adult', 26, 34)).toEqual([28, 32])
     expect(closestPortraitAgeRange('senior', 73, 83)).toEqual([75, 79])
   })
