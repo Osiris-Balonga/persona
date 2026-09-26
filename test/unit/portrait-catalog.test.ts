@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { portraitCoverage, portraitCoverageMatrix, selectPortrait, validatePortraitCatalog } from '../../src/portraits/catalog.js'
+import { appearanceCategories } from '../../src/geography/appearance.js'
 
 const asset = (id: string, overrides: Record<string, unknown> = {}) => ({
   id,
@@ -40,7 +41,7 @@ describe('approved portrait catalog', () => {
     expect(portraitCoverage(one, profile)).toEqual({ approved: 1, minimum: 2, ready: false })
     expect(portraitCoverage(catalog([asset('p_0001'), asset('p_0002')]), profile).ready).toBe(true)
     const rows = portraitCoverageMatrix(catalog([asset('p_0001'), asset('p_0002')]))
-    expect(rows).toHaveLength(96)
+    expect(rows).toHaveLength(4 * 2 * appearanceCategories.length)
     expect(rows.filter((row) => row.ready)).toEqual([{ ageGroup: profile.ageGroup, gender: profile.gender,
       appearance: profile.appearance, approved: 2, minimum: 2, ready: true }])
   })

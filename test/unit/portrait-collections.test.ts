@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { isPortraitCollection, portraitCollections } from '../../src/review/collections.js'
+import { isAppearance } from '../../src/geography/appearance.js'
 
 describe('portrait production collections', () => {
   it('keeps explicit review blocks separate from visual appearance labels', () => {
@@ -8,5 +9,10 @@ describe('portrait production collections', () => {
     expect(portraitCollections.oceania).toHaveLength(2)
     expect(isPortraitCollection('europe-unassigned')).toBe(true)
     expect(isPortraitCollection('north-american')).toBe(false)
+  })
+  it('accepts a Pacific portrait appearance independently of its production collection', () => {
+    expect(isAppearance('pacific-islander')).toBe(true)
+    expect(isAppearance('black')).toBe(true)
+    expect(isPortraitCollection('pacific-islander')).toBe(false)
   })
 })

@@ -36,11 +36,13 @@ const appearanceLabels = {
   "east-african": "Afrique de l’Est",
   "southern-african": "Afrique australe",
   "north-african": "Afrique du Nord",
+  black: "Noir·e",
   "middle-eastern": "Moyen-Orient",
   european: "Europe",
   "south-asian": "Asie du Sud",
   "east-asian": "Asie de l’Est",
   "southeast-asian": "Asie du Sud-Est",
+  "pacific-islander": "Îles du Pacifique",
   "latin-american": "Amérique latine",
   mixed: "Mixte",
   unclassified: "À classer",
@@ -284,6 +286,8 @@ function populateDetail(id) {
   form.reset();
   const metadata = item.metadata;
   $("#detailCollection").value = item.collection ?? "";
+  $(".review-column .section-heading p").textContent = metadata?.reviewNotes
+    ? `À vérifier : ${metadata.reviewNotes}` : "Corrige un choix seulement si nécessaire.";
   for (const key of ["gender", "appearance"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
   state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];

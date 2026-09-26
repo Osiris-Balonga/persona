@@ -21,6 +21,7 @@ export interface PortraitMetadata {
   visualGroup: string
   rights: string
   rightsEvidence: string
+  reviewNotes?: string
 }
 export interface ReviewDecision { decision: 'approved' | 'rejected'; reviewer: string; reason: string; at: string }
 export interface ReviewItem {
