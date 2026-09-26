@@ -21,7 +21,7 @@ describe('geographic source coverage', () => {
       cities: { status: 'ingested', source: 'geonames' },
       names: { status: 'ingested', source: 'congo-senate-names', fallback: null, review: 'reviewed' },
       addresses: { status: 'partial', source: 'libaddressinput-data', fallback: expect.stringContaining('global-format') },
-      distributions: { status: 'partial', source: 'persona-policy', fallback: 'uniform-country,uniform-appearance' },
+      distributions: { status: 'partial', source: 'persona-policy', fallback: 'uniform-country,country-aware-appearance' },
     })
     expect(rows.find((row) => row.country === 'CG')?.addresses).toMatchObject({
       fallback: expect.stringContaining('synthetic-street'), supplementarySources: expect.arrayContaining(['persona-policy']),

@@ -196,7 +196,7 @@ export function listCoverage() {
                         : country.code === 'NO' ? ingested('nkom-fictional-numbers')
                           : pending(),
       distributions: resident ? { ...partial('persona-policy'),
-        fallback: 'uniform-country,uniform-appearance', supplementarySources: ['geonames'] } : notApplicable(),
+        fallback: 'uniform-country,country-aware-appearance', supplementarySources: ['geonames'] } : notApplicable(),
       portraits: resident ? pending() : notApplicable(),
     }
   })

@@ -60,6 +60,10 @@ export function createReviewApp(root: string) {
     try { return await store.setMetadata(request.params.id, request.body) }
     catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Invalid metadata' }) }
   })
+  app.post<{ Params: { id: string }; Body: { tone: number | null } }>('/api/items/:id/skin-tone', async (request, reply) => {
+    try { return await store.setSkinTone(request.params.id, request.body?.tone) }
+    catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Invalid Monk tone' }) }
+  })
   app.post<{ Params: { id: string }; Body: Omit<ReviewDecision, 'at'> }>('/api/items/:id/decision', async (request, reply) => {
     try { return await store.decide(request.params.id, request.body) }
     catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Decision failed' }) }

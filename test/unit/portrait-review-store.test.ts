@@ -75,6 +75,26 @@ describe('portrait review storage', () => {
       .rejects.toThrow('consecutive')
   })
 
+  it('adds a reviewed Monk tone to an approved portrait without discarding its approval', async () => {
+    const { root, store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'adult-portrait.png')
+    await store.setMetadata(candidate.id, {
+      ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32,
+      gender: 'female', appearance: 'west-african', visualGroup: 'black',
+      rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally',
+    })
+    const approved = await store.decide(candidate.id, { decision: 'approved', reviewer: 'Osiris Balonga',
+      reason: 'Portrait reviewed' })
+    const annotated = await store.setSkinTone(candidate.id, 6)
+    expect(annotated.status).toBe('approved')
+    expect(annotated.decision).toEqual(approved.decision)
+    expect(annotated.metadata?.skinToneMst).toBe(6)
+    const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
+    expect(embedded).toContain('skinToneMst="6"')
+    await expect(store.setSkinTone(candidate.id, 11)).rejects.toThrow('Monk')
+    expect((await store.get(candidate.id))?.metadata?.skinToneMst).toBe(6)
+  })
+
   it('keeps failed uploads in inbox and rejected candidates out of the approved set', async () => {
     const { root, store } = await createStore()
     const rectangle = await sharp({ create: { width: 768, height: 600, channels: 3,

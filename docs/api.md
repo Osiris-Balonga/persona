@@ -38,7 +38,7 @@ For example, `fields=firstName,city,picture.url` returns this shape for the illu
   "results": [{
     "firstName": "Chikondi",
     "city": "Lilongwe",
-    "picture": { "url": "https://images.example.test/portraits/v1/adult/female/black/southern-african/p_0042.webp" }
+    "picture": { "url": "https://images.example.test/portraits/v1/p_0042.webp" }
   }],
   "meta": {
     "count": 1,

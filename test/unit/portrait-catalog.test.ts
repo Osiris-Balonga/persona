@@ -63,6 +63,20 @@ describe('approved portrait catalog', () => {
       .toBeGreaterThan(0)
   })
 
+  it('reuses one reviewed portrait across compatible appearance pools without duplicating the object', () => {
+    const portrait = asset('p_0001', {
+      objectKey: 'portraits/v1/p_0001.webp',
+      compatibleAppearances: ['west-african', 'black'], skinToneMst: 6,
+    })
+    const manifest = catalog([portrait])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    expect(selectPortrait(manifest, { ...profile, appearance: 'black' }, key)?.url)
+      .toBe('https://images.example.test/portraits/v1/p_0001.webp')
+    expect(validatePortraitCatalog(catalog([asset('p_0001', {
+      objectKey: 'portraits/v1/p_0001.webp', compatibleAppearances: ['black', 'black'],
+    })])).length).toBeGreaterThan(0)
+  })
+
   it('keeps the production manifest empty until images are approved', async () => {
     const { portraitCatalog } = await import('../../src/portraits/manifest.js')
     expect(portraitCatalog.assets).toEqual([])

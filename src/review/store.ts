@@ -19,6 +19,7 @@ export interface PortraitMetadata {
   gender: 'female' | 'male'
   appearance: Appearance
   visualGroup: string
+  skinToneMst?: number
   rights: string
   rightsEvidence: string
   reviewNotes?: string
@@ -58,6 +59,8 @@ function validateMetadata(input: PortraitMetadata): void {
   }
   if (!['female', 'male'].includes(input.gender) || !isAppearance(input.appearance)
     || !/^[a-z]+(?:-[a-z]+)*$/.test(input.visualGroup)
+    || (input.skinToneMst !== undefined && (!Number.isInteger(input.skinToneMst)
+      || input.skinToneMst < 1 || input.skinToneMst > 10))
     || !input.rights?.trim() || !input.rightsEvidence?.trim()) throw new RangeError('Invalid portrait metadata')
 }
 function xmp(input: PortraitMetadata): string {
@@ -65,6 +68,7 @@ function xmp(input: PortraitMetadata): string {
     ageGroup: input.ageGroup, apparentAgeMin: input.apparentAgeMin, apparentAgeMax: input.apparentAgeMax,
     apparentAgeRanges: input.apparentAgeRanges?.map(([min, max]) => `${min}-${max}`).join(','),
     gender: input.gender, appearance: input.appearance, visualGroup: input.visualGroup,
+    skinToneMst: input.skinToneMst,
   }
   const attributes = Object.entries(fields).filter(([, value]) => value !== undefined)
     .map(([name, value]) => `persona:${name}="${xmlEscape(String(value))}"`).join(' ')
@@ -169,6 +173,30 @@ export class PortraitReviewStore {
       item.status = 'ready-for-review'
       item.error = undefined
       item.decision = undefined
+      await this.save(items)
+      return item
+    })
+  }
+  async setSkinTone(id: string, tone: number | null): Promise<ReviewItem> {
+    if (tone !== null && (!Number.isInteger(tone) || tone < 1 || tone > 10)) {
+      throw new RangeError('Monk skin tone must be an integer from 1 to 10')
+    }
+    return this.serialize(async () => {
+      const items = await this.load()
+      const item = items.find((entry) => entry.id === id)
+      if (!item?.metadata || !item.technical || item.status === 'processing-error') {
+        throw new RangeError('Portrait has no reviewed metadata')
+      }
+      const metadata = { ...item.metadata }
+      if (tone === null) delete metadata.skinToneMst
+      else metadata.skinToneMst = tone
+      const master = await readFile(join(this.root, 'masters', `${id}${item.sourceExtension}`))
+      const tagged = await optimizePortraitCandidate(master, xmp(metadata))
+      const technical = await inspectPortraitBytes(tagged)
+      if (technical.bytes >= 50_000) throw new RangeError('Tagged portrait exceeds 50000 bytes')
+      await writeFile(join(this.root, 'webp', `${id}.webp`), tagged)
+      item.metadata = metadata
+      item.technical = technical
       await this.save(items)
       return item
     })

@@ -313,6 +313,7 @@ function populateDetail(id) {
     ? `À vérifier : ${metadata.reviewNotes}` : "Corrige un choix seulement si nécessaire.";
   for (const key of ["gender", "appearance"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
+  form.elements.namedItem("skinToneMst").value = metadata?.skinToneMst ?? "";
   state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];
   closeAgePicker();
   $("#rightsSummary").textContent =
@@ -334,7 +335,7 @@ function populateDetail(id) {
   state.editAgePickerEditable = editable;
   renderAgePicker();
   const decided = ["approved", "rejected"].includes(item.status);
-  $("#saveMetadata").textContent = decided ? "Enregistrer et remettre à valider" : "Enregistrer les corrections";
+  $("#saveMetadata").textContent = "Enregistrer les changements";
   $("#reopenButton").hidden = !decided;
   $("#reopenButton").textContent = metadata && item.technical ? "Remettre à valider" : "Reprendre la préparation";
   $("#decisionStatus").textContent = decided
@@ -400,6 +401,8 @@ function metadataPayload() {
     apparentAgeMax,
     apparentAgeRanges: state.editAgeRanges.map(([min, max]) => [min, max]),
   };
+  if (values.skinToneMst) payload.skinToneMst = Number(values.skinToneMst);
+  else delete payload.skinToneMst;
   delete payload.secondaryAgeMin;
   delete payload.secondaryAgeMax;
   if (values.appearance !== item.metadata.appearance) {
@@ -411,7 +414,14 @@ function metadataPayload() {
 function metadataChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
   return ["ageGroup", "gender", "appearance"].some((key) => payload[key] !== metadata?.[key])
-    || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata));
+    || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata))
+    || payload.skinToneMst !== metadata?.skinToneMst;
+}
+function onlySkinToneChanged(payload) {
+  const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
+  return payload.skinToneMst !== metadata?.skinToneMst
+    && ["ageGroup", "gender", "appearance", "visualGroup"].every((key) => payload[key] === metadata?.[key])
+    && JSON.stringify(payload.apparentAgeRanges) === JSON.stringify(metadataAgeRanges(metadata));
 }
 function decide(decision) {
   const reason = $("#decisionReason").value.trim();
@@ -802,15 +812,22 @@ $("#metadataForm").addEventListener("submit", async (event) => {
   const wasDecided = ["approved", "rejected"].includes(
     state.items.find((item) => item.id === state.selected)?.status,
   );
+  if (!metadataChanged(payload)) {
+    notify("Aucune correction à enregistrer.");
+    return;
+  }
+  const toneOnly = onlySkinToneChanged(payload);
   try {
-    await request(`/api/items/${state.selected}/metadata`, {
+    await request(`/api/items/${state.selected}/${toneOnly ? "skin-tone" : "metadata"}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(toneOnly ? { tone: payload.skinToneMst ?? null } : payload),
     });
     await refresh();
     $("#detailDialog").close();
-    notify(wasDecided
+    notify(toneOnly
+      ? "Teinte enregistrée. La décision de validation est conservée."
+      : wasDecided
       ? "Corrections enregistrées. La décision précédente est annulée : le portrait est à valider."
       : "Corrections enregistrées. Le portrait reste à valider.");
   } catch (error) {

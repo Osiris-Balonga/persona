@@ -629,6 +629,11 @@ dialog::backdrop {
   grid-template-columns: 1fr 1fr;
   gap: 0 10px;
 }
+.skin-tone-field a {
+  color: #28764f;
+  font-size: 11px;
+  font-weight: 600;
+}
 .age-picker-field {
   grid-column: 1 / -1;
   margin-bottom: 10px;
@@ -1004,6 +1009,7 @@ body:has(#serialDialog[open]) {
 #serialDialog .section-heading,
 #serialDialog .provenance,
 #serialDialog #saveMetadata,
+#serialDialog .skin-tone-field,
 #serialDialog .decision-area {
   display: none;
 }
