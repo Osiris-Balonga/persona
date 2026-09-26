@@ -1,6 +1,6 @@
-# Public beta HTTP coverage — 2026-09-25
+# Public beta HTTP coverage — 2026-09-26
 
-Run `npm run data:audit:beta` to repeat this audit against the current code and data. The integration suite runs the same checks in CI. This snapshot uses geographic data version `geo-2026-09-25.13` and portrait catalog `empty-v1`.
+Run `npm run data:audit:beta` to repeat this audit against the current code and data. The integration suite runs the same checks in CI. This snapshot uses geographic data version `geo-2026-09-26.1` and portrait catalog `v1`.
 
 | Status | Codes | HTTP outcome |
 | --- | ---: | --- |
@@ -16,4 +16,4 @@ Run `npm run data:audit:beta` to repeat this audit against the current code and 
 
 For each available code, the audit requests two people with explicit country, age, gender, appearance, seed, and `asOf`. It checks the response schema, country-linked city and address, nonempty names, calendar age, fictional contact, compatible approved portrait or `null`, exact seeded replay, and field projection. All checks passed with zero audit errors.
 
-The coverage matrix still marks 242 resident codes with partial city-level addresses. Phone values use reviewed reserved fictional ranges where available and remain `null` elsewhere. The production portrait catalog contains 0 approved assets and 0/96 ready age/gender/appearance combinations, so current API responses have `picture: null`. This audit validates the current beta boundary; rerun it after data or catalog changes and before deployment.
+The coverage matrix still marks 242 resident codes with partial city-level addresses. Phone values use reviewed reserved fictional ranges where available and remain `null` elsewhere. The production portrait catalog contains 322 approved assets and 64/112 ready age-group, gender, and appearance combinations. Thirty-four combinations have no matching portrait; these return `picture: null` and are tracked in #162. Rerun the audit after data or catalog changes and before API deployment.

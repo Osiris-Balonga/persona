@@ -1,6 +1,6 @@
 # Portrait review and import
 
-The production catalog remains empty until each image is reviewed and explicitly released. This procedure prepares metadata and validates files; it does not generate, upload, or publish portraits.
+Only approved and explicitly released images enter the versioned production catalog. This procedure prepares and validates review metadata; publication is described in [private portrait delivery](portrait-delivery.md).
 
 ## Local review console
 
@@ -40,4 +40,4 @@ Replace the example URL with the planned HTTPS Worker base. The command requires
 
 To prepare generated PNG masters for review, run `npm run portraits:optimize -- <candidate-directory>`. The command preserves the masters, writes 512×512 WebP candidates at quality 88 under `<candidate-directory>/webp/`, and rejects any output at or above 50,000 bytes. It rejects non-square or undersized masters rather than silently cropping or enlarging a face. Its `webp/manifest.json` records byte sizes and hashes; all outputs remain unreviewed. Repeating the command accepts identical outputs and refuses to overwrite a changed candidate.
 
-The one-pixel test fixture is a non-portrait file used solely to verify that undersized images are rejected. The checked-in [production manifest](../src/portraits/manifest.ts) contains no assets.
+The one-pixel test fixture is a non-portrait file used solely to verify that undersized images are rejected. The checked-in [production manifest](../src/portraits/manifest.ts) lists the published approved assets.

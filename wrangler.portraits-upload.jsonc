@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "persona-portraits-local-upload",
+  "main": "./worker/portrait-upload.ts",
+  "account_id": "917acaaedf2bbea5593df5983921d617",
+  "compatibility_date": "2026-09-25",
+  "workers_dev": false,
+  "r2_buckets": [
+    { "binding": "PORTRAITS", "bucket_name": "persona-portraits", "remote": true }
+  ]
+}

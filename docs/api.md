@@ -1,6 +1,6 @@
 # HTTP API contract
 
-`GET /people` is the V1 endpoint. The [illustrative response](../examples/people-response-v1.json) contains one [V1 Person](../examples/person-v1.json). Its `example.test` image URL is a placeholder, not a published portrait. The production portrait catalog is empty pending authorization and image review, so live responses currently return `picture: null`.
+`GET /people` is the V1 endpoint. The [example response](../examples/people-response-v1.json) contains one [V1 Person](../examples/person-v1.json), generated from the request below with all public fields selected, including `ageGroup` and `appearance`. Its portrait URL resolves through the public read-only Worker. Responses still return `picture: null` where the reviewed catalog has no matching portrait.
 
 ## Query parameters
 
@@ -31,20 +31,20 @@ For a Burmese name, `fields=firstName,lastName,fullName` selects these values fr
 {"firstName":"Aye Aye","lastName":"Myint","fullName":"Aye Aye Myint"}
 ```
 
-For example, `fields=firstName,city,picture.url` returns this shape for the illustrative person:
+For example, `fields=firstName,city,picture.url` returns this shape for the example person:
 
 ```json
 {
   "results": [{
-    "firstName": "Chikondi",
+    "firstName": "Chimwemwe",
     "city": "Lilongwe",
-    "picture": { "url": "https://images.example.test/portraits/v1/p_0042.webp" }
+    "picture": { "url": "https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/p_0049.webp" }
   }],
   "meta": {
     "count": 1,
     "asOf": "2026-09-24",
     "seed": "profile-demo",
-    "dataVersion": "v1",
+    "dataVersion": "geo-2026-09-26.1",
     "catalogVersion": "v1"
   }
 }

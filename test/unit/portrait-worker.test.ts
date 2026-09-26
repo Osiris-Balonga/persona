@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { handlePortraitRequest } from '../../worker/portrait-worker.js'
 import type { PortraitCatalog } from '../../src/portraits/catalog.js'
-import { portraitCatalog } from '../../src/portraits/manifest.js'
 
 const key = 'portraits/v1/adult/female/black/west-african/p_0001.webp'
 const hash = 'a'.repeat(64)
@@ -23,7 +22,8 @@ const object = () => ({ size: 13, httpEtag: '"r2-etag"', customMetadata: { sha25
 describe('portrait delivery Worker', () => {
   it('denies every object while the production catalog is empty', async () => {
     const store = { get: vi.fn(), head: vi.fn() }
-    const response = await handlePortraitRequest(new Request(`https://images.example.test/${key}`), store, portraitCatalog)
+    const emptyCatalog: PortraitCatalog = { version: 'empty-v1', publicBaseUrl: null, assets: [] }
+    const response = await handlePortraitRequest(new Request(`https://images.example.test/${key}`), store, emptyCatalog)
     expect(response.status).toBe(404)
     expect(response.headers.get('cache-control')).toBe('no-store')
     expect(store.get).not.toHaveBeenCalled()

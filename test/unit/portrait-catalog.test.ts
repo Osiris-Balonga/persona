@@ -98,9 +98,11 @@ describe('approved portrait catalog', () => {
     expect(selectPortrait(mixed, { ...profile, appearance: 'mixed' }, key)).not.toBeNull()
   })
 
-  it('keeps the production manifest empty until images are approved', async () => {
+  it('publishes only reviewed portraits in the production manifest', async () => {
     const { portraitCatalog } = await import('../../src/portraits/manifest.js')
-    expect(portraitCatalog.assets).toEqual([])
-    expect(selectPortrait(portraitCatalog, profile, key)).toBeNull()
+    expect(portraitCatalog.version).toBe('v1')
+    expect(portraitCatalog.assets).toHaveLength(322)
+    expect(portraitCatalog.assets.every((entry) => entry.reviewStatus === 'approved')).toBe(true)
+    expect(validatePortraitCatalog(portraitCatalog)).toEqual([])
   })
 })

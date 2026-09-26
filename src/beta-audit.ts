@@ -8,6 +8,7 @@ import { getCity } from './geography/cities.js'
 import { listCoverage } from './geography/coverage.js'
 import { profileGenerationStatus } from './geography/profile-availability.js'
 import { portraitCoverageMatrix } from './portraits/catalog.js'
+import { tagsMatchAppearance } from './portraits/appearance-tags.js'
 import { portraitCatalog } from './portraits/manifest.js'
 
 export async function auditBetaHttp() {
@@ -49,7 +50,13 @@ export async function auditBetaHttp() {
           (person.phone !== null && (!country.callingCode || !person.phone.startsWith(country.callingCode))) ||
           (person.picture !== null && !portraitCatalog.assets.some((asset) =>
             asset.reviewStatus === 'approved' && asset.ageGroup === person.ageGroup &&
-            asset.gender === person.gender && asset.appearance === person.appearance &&
+            asset.gender === person.gender &&
+            (person.appearance === 'mixed'
+              ? (asset.compatibleAppearances ?? [asset.appearance]).includes('mixed')
+              : asset.appearanceTags
+                ? tagsMatchAppearance(asset.appearanceTags, person.appearance)
+                : (asset.compatibleAppearances ?? [asset.appearance]).some((value) => value === person.appearance)) &&
+            asset.apparentAgeRanges.some(([minimum, maximum]) => person.age >= minimum && person.age <= maximum) &&
             person.picture?.url === `${portraitCatalog.publicBaseUrl}/${asset.objectKey}`))) {
           errors.push(`${code}: incoherent generated person`)
         }
@@ -60,7 +67,9 @@ export async function auditBetaHttp() {
       if (projected.statusCode !== 200 || projected.json().meta.count !== 2 ||
         projected.json().results.some((person: { firstName: string; address: { city: string }; picture: unknown }, index: number) =>
           person.firstName !== body.results[index].firstName || person.address.city !== body.results[index].city ||
-          person.picture !== null)) errors.push(`${code}: field projection changed generated values`)
+          JSON.stringify(person.picture) !== JSON.stringify(body.results[index].picture))) {
+        errors.push(`${code}: field projection changed generated values`)
+      }
     }
   } finally { await app.close() }
   const coverage = listCoverage()
