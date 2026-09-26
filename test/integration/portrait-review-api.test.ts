@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import sharp from 'sharp'
 import { createReviewApp } from '../../src/review/server.js'
+import { PortraitReviewStore, type ReviewItem } from '../../src/review/store.js'
 
 const roots: string[] = []
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
@@ -65,5 +66,30 @@ describe('local portrait review API', () => {
     const repeated = await app.inject({ method: 'POST', url: '/api/decisions', payload: { ids: ids.slice(0, 2), ...decision } })
     expect(repeated.statusCode).toBe(400)
     await app.close()
+  })
+
+  it('can decide the entire ready gallery when it contains more than 100 portraits', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-all-'))
+    roots.push(root)
+    const items: ReviewItem[] = Array.from({ length: 101 }, (_, index) => {
+      const id = `p_${String(index + 1).padStart(4, '0')}`
+      const sha256 = (index + 1).toString(16).padStart(64, '0')
+      return {
+        id, originalName: `${id}.webp`, sourceSha256: sha256,
+        sourceExtension: '.webp', status: 'ready-for-review', createdAt: '2026-09-26T00:00:00.000Z',
+        technical: { format: 'webp', width: 512, height: 512, pages: 1, bytes: 25_000,
+          sha256 },
+        metadata: { ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32,
+          gender: 'female', appearance: 'west-african', visualGroup: 'black',
+          rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally' },
+      }
+    })
+    await writeFile(join(root, 'review-state.json'), JSON.stringify(items))
+    const store = new PortraitReviewStore(root)
+    const decided = await store.decideMany(items.map((item) => item.id), {
+      decision: 'approved', reviewer: 'Osiris Balonga', reason: 'Reviewed portraits',
+    })
+    expect(decided).toHaveLength(101)
+    expect((await store.list()).every((item) => item.status === 'approved')).toBe(true)
   })
 })
