@@ -75,6 +75,10 @@ h3 {
   margin: 0;
   line-height: 1.5;
 }
+.import-controls { display: flex; align-items: end; gap: 10px; }
+.import-controls label, .collection-field { display: grid; gap: 4px; color: #738679; font-size: 11px; font-weight: 700; }
+.import-controls select, .collection-field select { min-height: 40px; border: 1px solid #dce7dd; border-radius: 8px; background: #fff; color: #314a38; padding: 0 10px; }
+.collection-field { margin-top: 12px; }
 .primary,
 .secondary,
 .reject {
@@ -1051,6 +1055,7 @@ body:has(#serialDialog[open]) {
   .shell {
     padding: 20px 15px 60px;
   }
+  .import-controls { flex-wrap: wrap; }
   .page-head {
     align-items: start;
     flex-direction: column;

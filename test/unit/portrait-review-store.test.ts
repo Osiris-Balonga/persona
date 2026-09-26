@@ -17,6 +17,15 @@ const squarePortrait = () => sharp({ create: { width: 768, height: 768, channels
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('portrait review storage', () => {
+  it('assigns a production collection without claiming a visual origin or changing approval', async () => {
+    const { store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'european-batch.png')
+    expect((await store.assignCollection([candidate.id], 'europe-unassigned'))[0]?.collection)
+      .toBe('europe-unassigned')
+    await expect(store.assignCollection([candidate.id], 'north-american'))
+      .rejects.toThrow('collection')
+    expect((await store.get(candidate.id))?.status).toBe('needs-metadata')
+  })
   it('moves a processed original out of inbox and records a checked WebP candidate', async () => {
     const { root, store } = await createStore()
     const bytes = await squarePortrait()

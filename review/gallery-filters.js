@@ -22,6 +22,8 @@ export function matchesPortraitFilters(item, filters) {
     (filters.status === "all" || item.status === filters.status) &&
     (filters.appearance === "all" ||
       (metadata?.appearance ?? "unclassified") === filters.appearance) &&
+    (!filters.collection || filters.collection === "all" ||
+      (item.collection ?? "unassigned") === filters.collection) &&
     (filters.ageGroup === "all" || ranges.some(([min]) => Number.isInteger(min) && groupForAge(min) === filters.ageGroup)) &&
     (filters.ageRange === "all" ||
       ranges.some(([min, max]) => `${min}-${max}` === filters.ageRange)) &&

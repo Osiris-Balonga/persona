@@ -6,6 +6,7 @@ import { ageGroupForAge } from '../age.js'
 import { inspectPortraitBytes, type PortraitFileInfo } from '../portraits/import.js'
 import { optimizePortraitCandidate } from '../portraits/optimize.js'
 import { areConsecutivePortraitAgeRanges, isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
+import { isPortraitCollection, type PortraitCollection } from './collections.js'
 
 export type ReviewStatus = 'processing-error' | 'needs-metadata' | 'ready-for-review' | 'approved' | 'rejected'
 export interface PortraitMetadata {
@@ -25,6 +26,7 @@ export interface ReviewDecision { decision: 'approved' | 'rejected'; reviewer: s
 export interface ReviewItem {
   id: string
   originalName: string
+  collection?: PortraitCollection
   sourceSha256: string
   sourceExtension: string
   status: ReviewStatus
@@ -97,8 +99,9 @@ export class PortraitReviewStore {
     if (!/^p_\d{4,}$/.test(id) || !(await this.get(id))) throw new RangeError('Unknown portrait')
     return readFile(join(this.root, 'webp', `${id}.webp`))
   }
-  async ingest(bytes: Buffer, originalName: string): Promise<ReviewItem> {
+  async ingest(bytes: Buffer, originalName: string, collection?: PortraitCollection): Promise<ReviewItem> {
     return this.serialize(async () => {
+      if (collection !== undefined && !isPortraitCollection(collection)) throw new RangeError('Unknown portrait collection')
       if (!bytes.length || bytes.length > 20_000_000) throw new RangeError('Upload must be between 1 and 20 MB')
       const items = await this.load()
       const sourceSha256 = hash(bytes)
@@ -107,7 +110,7 @@ export class PortraitReviewStore {
       const id = `p_${String(Math.max(0, ...items.map((item) => Number(item.id.slice(2)))) + 1).padStart(4, '0')}`
       const ext = extname(originalName).toLowerCase()
       const sourceExtension = ['.png', '.jpg', '.jpeg', '.webp'].includes(ext) ? ext : '.img'
-      const item: ReviewItem = { id, originalName: originalName.slice(0, 180), sourceSha256,
+      const item: ReviewItem = { id, originalName: originalName.slice(0, 180), ...(collection ? { collection } : {}), sourceSha256,
         sourceExtension, status: 'needs-metadata', createdAt: new Date().toISOString() }
       const inbox = join(this.root, 'inbox', `${id}${sourceExtension}`)
       await writeFile(inbox, bytes)
@@ -123,6 +126,21 @@ export class PortraitReviewStore {
       items.push(item)
       await this.save(items)
       return item
+    })
+  }
+  async assignCollection(ids: string[], collection: PortraitCollection | null): Promise<ReviewItem[]> {
+    return this.serialize(async () => {
+      if (!Array.isArray(ids) || !ids.length || new Set(ids).size !== ids.length
+        || (collection !== null && !isPortraitCollection(collection))) throw new RangeError('Invalid portrait collection')
+      const items = await this.load()
+      const selected = ids.map((id) => items.find((item) => item.id === id))
+      if (selected.some((item) => !item)) throw new RangeError('Unknown portrait')
+      for (const item of selected as ReviewItem[]) {
+        if (collection === null) delete item.collection
+        else item.collection = collection
+      }
+      await this.save(items)
+      return selected as ReviewItem[]
     })
   }
   async setMetadata(id: string, metadata: PortraitMetadata): Promise<ReviewItem> {

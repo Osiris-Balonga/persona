@@ -18,9 +18,9 @@
             se trouvent dans la fiche de chaque image.
           </p>
         </div>
-        <button class="primary" id="uploadButton" type="button">
+        <div class="import-controls"><label>Lot d’import<select id="uploadCollection"><option value="">À classer plus tard</option></select></label><button class="primary" id="uploadButton" type="button">
           ＋ Importer des photos</button
-        ><input
+        ></div><input
           id="fileInput"
           type="file"
           accept="image/png,image/jpeg,image/webp"
@@ -57,6 +57,7 @@
               </button>
             </div>
             <div class="gallery-filters" aria-label="Filtres des portraits">
+              <label>Lot<select id="filterCollection"><option value="all">Tous les lots</option></select></label>
               <label>Catégorie d’âge<select id="filterAgeGroup">
                 <option value="all">Toutes</option>
                 <option value="child">Enfant</option>
@@ -180,6 +181,7 @@
           <div id="technicalInfo" class="technical"></div>
         </div>
         <div class="review-column">
+          <label class="collection-field">Lot de production<select id="detailCollection"><option value="">À classer</option></select></label>
           <div class="section-heading">
             <h3>Caractéristiques proposées</h3>
             <p>Corrige un choix seulement si nécessaire.</p>

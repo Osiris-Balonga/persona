@@ -18,10 +18,15 @@ describe('local portrait review API', () => {
       background: '#aa806a' } }).png().toBuffer()
     const upload = await app.inject({ method: 'POST', url: '/api/upload', headers: {
       'content-type': 'application/octet-stream', 'x-file-name': 'portrait.png', origin: 'http://localhost:4317',
+      'x-portrait-collection': 'oceania-pacific-islands',
     }, payload: bytes })
     expect(upload.statusCode).toBe(201)
     const item = upload.json()
     expect(item.status).toBe('needs-metadata')
+    expect(item.collection).toBe('oceania-pacific-islands')
+    const reassigned = await app.inject({ method: 'POST', url: '/api/collections',
+      payload: { ids: [item.id], collection: 'oceania-australia-new-zealand' } })
+    expect(reassigned.json()[0].collection).toBe('oceania-australia-new-zealand')
     const listing = await app.inject({ method: 'GET', url: '/api/items' })
     expect(listing.json()).toHaveLength(1)
     const image = await app.inject({ method: 'GET', url: `/api/items/${item.id}/image` })

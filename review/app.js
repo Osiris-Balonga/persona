@@ -7,6 +7,8 @@ const state = {
   appearances: [],
   ageRanges: {},
   appearance: "all",
+  collection: "all",
+  uploadCollection: "",
   status: "all",
   ageGroup: "all",
   ageRange: "all",
@@ -42,6 +44,17 @@ const appearanceLabels = {
   "latin-american": "Amérique latine",
   mixed: "Mixte",
   unclassified: "À classer",
+};
+const collectionLabels = {
+  "americas-north": "Amérique du Nord",
+  "americas-latin-caribbean": "Amérique latine et Caraïbes",
+  "europe-north": "Europe du Nord",
+  "europe-west": "Europe de l’Ouest",
+  "europe-south": "Europe du Sud",
+  "europe-east": "Europe de l’Est",
+  "europe-unassigned": "Europe · à préciser",
+  "oceania-australia-new-zealand": "Australie et Nouvelle-Zélande",
+  "oceania-pacific-islands": "Îles du Pacifique",
 };
 const ageLabels = {
   child: "Enfant",
@@ -193,7 +206,7 @@ function fillGalleryAgeRanges() {
   select.value = state.ageRange;
 }
 function updateClearFilters() {
-  $("#clearFilters").hidden = ["ageGroup", "ageRange", "gender", "quality"]
+  $("#clearFilters").hidden = ["collection", "ageGroup", "ageRange", "gender", "quality"]
     .every((key) => state[key] === "all");
 }
 const allAgeRanges = () => Object.values(state.ageRanges).flat();
@@ -270,6 +283,7 @@ function populateDetail(id) {
   const form = $("#metadataForm");
   form.reset();
   const metadata = item.metadata;
+  $("#detailCollection").value = item.collection ?? "";
   for (const key of ["gender", "appearance"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
   state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];
@@ -322,6 +336,7 @@ async function upload(files) {
         headers: {
           "content-type": "application/octet-stream",
           "x-file-name": encodeURIComponent(file.name),
+          ...(state.uploadCollection ? { "x-portrait-collection": state.uploadCollection } : {}),
         },
         body: file,
       });
@@ -617,6 +632,7 @@ $("#appearanceNav").addEventListener("click", (event) => {
   }
 });
 for (const [id, key] of [
+  ["filterCollection", "collection"],
   ["filterAgeGroup", "ageGroup"],
   ["filterAgeRange", "ageRange"],
   ["filterGender", "gender"],
@@ -631,9 +647,9 @@ for (const [id, key] of [
   });
 }
 $("#clearFilters").addEventListener("click", () => {
-  for (const key of ["ageGroup", "ageRange", "gender", "quality"])
+  for (const key of ["collection", "ageGroup", "ageRange", "gender", "quality"])
     state[key] = "all";
-  for (const id of ["filterAgeGroup", "filterGender", "filterQuality"])
+  for (const id of ["filterCollection", "filterAgeGroup", "filterGender", "filterQuality"])
     $(`#${id}`).value = "all";
   fillGalleryAgeRanges();
   updateClearFilters();
@@ -784,10 +800,32 @@ $("#reopenButton").addEventListener("click", async () => {
     $("#detailError").hidden = false;
   }
 });
+$("#uploadCollection").addEventListener("change", (event) => { state.uploadCollection = event.target.value; });
+$("#detailCollection").addEventListener("change", async (event) => {
+  if (!state.selected) return;
+  try {
+    await request("/api/collections", { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ids: [state.selected], collection: event.target.value || null }) });
+    await refresh();
+    notify("Lot de production enregistré.");
+  } catch (error) { notify(error.message, true); }
+});
 request("/api/options")
-  .then(({ appearanceCategories, portraitAgeRanges }) => {
+  .then(({ appearanceCategories, portraitAgeRanges, portraitCollectionOptions }) => {
     state.appearances = appearanceCategories;
     state.ageRanges = portraitAgeRanges;
+    for (const collection of portraitCollectionOptions) {
+      for (const id of ["uploadCollection", "detailCollection", "filterCollection"]) {
+        const option = document.createElement("option");
+        option.value = collection;
+        option.textContent = collectionLabels[collection] ?? collection;
+        $(`#${id}`).append(option);
+      }
+    }
+    const unassigned = document.createElement("option");
+    unassigned.value = "unassigned";
+    unassigned.textContent = "Sans lot";
+    $("#filterCollection").append(unassigned);
     fillGalleryAgeRanges();
     buildAgePickerOptions();
     for (const category of appearanceCategories) {

@@ -39,4 +39,12 @@ describe('portrait gallery filters', () => {
     expect(matchesPortraitFilters(dual, { ...filters, ageRange: '38-42' })).toBe(true)
     expect(matchesPortraitFilters(dual, { ...filters, ageRange: '43-47' })).toBe(false)
   })
+
+  it('filters production collections independently of appearance', () => {
+    const item = { ...portrait, collection: 'europe-south' }
+    const filters = { status: 'all', appearance: 'all', ageGroup: 'all', ageRange: 'all', gender: 'all', quality: 'all' }
+    expect(matchesPortraitFilters(item, { ...filters, collection: 'europe-south' })).toBe(true)
+    expect(matchesPortraitFilters(item, { ...filters, collection: 'europe-east' })).toBe(false)
+    expect(matchesPortraitFilters(portrait, { ...filters, collection: 'unassigned' })).toBe(true)
+  })
 })

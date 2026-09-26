@@ -10,6 +10,8 @@ Successful imports move an original to `masters/` and create a 512×512 WebP und
 
 ## Human review rubric
 
+The optional production collection records the generation brief and can be selected before import, filtered in the gallery, or corrected on an item. It is independent of the public appearance category and must not be inferred from a face. Current collections are North America, Latin America and the Caribbean; Northern, Western, Southern, and Eastern Europe; and Australia/New Zealand and the Pacific islands. An `europe-unassigned` collection holds images from a general Europe brief until their provenance is clarified. Each regional batch targets 16 portraits: four children, four teenagers, four adults, and four seniors. Collection assignment alone does not approve an image.
+
 Review each candidate at its intended display size and at full resolution. Record a named reviewer, UTC review date, and decision (`approved`, `rejected`, or `withdrawn`). A standard approval reason is sufficient after inspection; a rejection or withdrawal needs a specific reason. Approval requires every check below:
 
 | Check | Approval rule |
