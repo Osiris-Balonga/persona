@@ -5,6 +5,7 @@ import { appearanceCategories } from '../geography/appearance.js'
 import { PortraitReviewStore, type PortraitMetadata, type ReviewDecision } from './store.js'
 import { portraitAgeRanges } from './age-ranges.js'
 import { portraitCollectionOptions, type PortraitCollection } from './collections.js'
+import { appearanceTags, type AppearanceTag } from '../portraits/appearance-tags.js'
 
 const pageRoot = join(process.cwd(), 'review')
 function localOrigin(value: unknown): boolean {
@@ -38,7 +39,7 @@ export function createReviewApp(root: string) {
   app.get('/gallery-regions.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'gallery-regions.js'))))
   app.get('/review-sequence.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'review-sequence.js'))))
   app.get('/decision-flow.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'decision-flow.js'))))
-  app.get('/api/options', async () => ({ appearanceCategories, portraitAgeRanges, portraitCollectionOptions }))
+  app.get('/api/options', async () => ({ appearanceCategories, appearanceTags, portraitAgeRanges, portraitCollectionOptions }))
   app.get('/api/items', async () => store.list())
   app.get<{ Params: { id: string } }>('/api/items/:id/image', async (request, reply) => {
     try { return reply.type('image/webp').header('cache-control', 'no-store').send(await store.image(request.params.id)) }
@@ -64,6 +65,10 @@ export function createReviewApp(root: string) {
   app.post<{ Params: { id: string }; Body: { tone: number | null } }>('/api/items/:id/skin-tone', async (request, reply) => {
     try { return await store.setSkinTone(request.params.id, request.body?.tone) }
     catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Invalid Monk tone' }) }
+  })
+  app.post<{ Params: { id: string }; Body: { tags: AppearanceTag[] } }>('/api/items/:id/appearance-tags', async (request, reply) => {
+    try { return await store.setAppearanceTags(request.params.id, request.body?.tags) }
+    catch (error) { return reply.code(400).send({ error: error instanceof Error ? error.message : 'Invalid visual appearance tags' }) }
   })
   app.post<{ Params: { id: string }; Body: Omit<ReviewDecision, 'at'> }>('/api/items/:id/decision', async (request, reply) => {
     try { return await store.decide(request.params.id, request.body) }

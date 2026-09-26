@@ -7,8 +7,8 @@ describe('portrait review decision flow', () => {
     expect(decisionSteps('ready-for-review', 'approved', false, false)).toEqual(['decide'])
   })
 
-  it('keeps an approval when only the visual tone changes', () => {
-    expect(decisionSteps('approved', 'approved', true, true)).toEqual(['tone'])
+  it('keeps an approval when only visual tags or tone change', () => {
+    expect(decisionSteps('approved', 'approved', true, true)).toEqual(['visual'])
     expect(decisionSteps('approved', 'approved', true, false)).toEqual(['metadata', 'decide'])
     expect(decisionSteps('approved', 'approved', false, false)).toEqual([])
   })
@@ -22,7 +22,7 @@ describe('portrait review decision flow', () => {
   it('records a changed production collection with the decision', () => {
     expect(decisionSteps('ready-for-review', 'approved', false, false, true)).toEqual(['collection', 'decide'])
     expect(decisionSteps('approved', 'approved', false, false, true)).toEqual(['collection'])
-    expect(decisionSteps('approved', 'approved', true, true, true)).toEqual(['collection', 'tone'])
+    expect(decisionSteps('approved', 'approved', true, true, true)).toEqual(['collection', 'visual'])
     expect(decisionSteps('approved', 'rejected', false, false, true)).toEqual(['collection', 'reopen', 'decide'])
   })
 })

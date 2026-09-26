@@ -9,7 +9,7 @@ const record = (id: string, overrides: Partial<PortraitReview> = {}): PortraitRe
   id, objectKey: `portraits/v1/adult/female/black/west-african/${id}.webp`,
   apparentAgeRanges: [[28, 32]],
   catalogVersion: 'v1', ageGroup: 'adult', gender: 'female', visualGroup: 'black',
-  appearance: 'west-african', rights: 'project-owned synthetic image',
+  appearance: 'west-african', appearanceTags: ['black'], rights: 'project-owned synthetic image',
   rightsEvidence: 'batch-review-1', sha256, reviewStatus: 'approved',
   reviewer: 'reviewer-1', reviewedAt: '2026-09-25', decisionReason: 'Reviewed',
   ...overrides,

@@ -77,6 +77,27 @@ describe('approved portrait catalog', () => {
     })])).length).toBeGreaterThan(0)
   })
 
+  it('matches reviewed visual tags independently of the production region', () => {
+    const portrait = asset('p_0001', {
+      objectKey: 'portraits/v1/p_0001.webp', appearanceTags: ['black', 'indigenous-american'],
+    })
+    const manifest = catalog([portrait])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    expect(selectPortrait(manifest, { ...profile, appearance: 'central-african' }, key)?.url)
+      .toBe('https://images.example.test/portraits/v1/p_0001.webp')
+    expect(selectPortrait(manifest, { ...profile, appearance: 'latin-american' }, key)?.url)
+      .toBe('https://images.example.test/portraits/v1/p_0001.webp')
+    expect(selectPortrait(manifest, { ...profile, appearance: 'mixed' }, key)).toBeNull()
+    expect(selectPortrait(manifest, { ...profile, appearance: 'european' }, key)).toBeNull()
+    expect(validatePortraitCatalog(catalog([asset('p_0001', { appearanceTags: ['black', 'black'] })])).length)
+      .toBeGreaterThan(0)
+    const mixed = catalog([asset('p_0002', {
+      objectKey: 'portraits/v1/p_0002.webp', appearance: 'mixed',
+      visualGroup: 'mixed', appearanceTags: ['black', 'european'],
+    })])
+    expect(selectPortrait(mixed, { ...profile, appearance: 'mixed' }, key)).not.toBeNull()
+  })
+
   it('keeps the production manifest empty until images are approved', async () => {
     const { portraitCatalog } = await import('../../src/portraits/manifest.js')
     expect(portraitCatalog.assets).toEqual([])

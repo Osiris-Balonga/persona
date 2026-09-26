@@ -2,6 +2,7 @@ import type { Person } from '../contracts/person.js'
 import { appearanceCategories, isAppearance, type Appearance } from '../geography/appearance.js'
 import { ageGroupForAge } from '../age.js'
 import { areConsecutivePortraitAgeRanges, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
+import { areAppearanceTags, tagsMatchAppearance, type AppearanceTag } from './appearance-tags.js'
 
 type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
 type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
@@ -16,6 +17,7 @@ export interface PortraitAsset {
   visualGroup: string
   appearance: Appearance
   compatibleAppearances?: readonly Appearance[]
+  appearanceTags?: readonly AppearanceTag[]
   skinToneMst?: number
   rights: string
   sha256: string
@@ -66,6 +68,9 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
         || asset.compatibleAppearances.some((value) => !isAppearance(value)))) {
       errors.push(`Invalid compatible appearances ${asset.id}`)
     }
+    if (asset.appearanceTags !== undefined && !areAppearanceTags(asset.appearanceTags)) {
+      errors.push(`Invalid visual appearance tags ${asset.id}`)
+    }
     const ranges = asset.apparentAgeRanges
     if (!areConsecutivePortraitAgeRanges(ranges)
       || !isPortraitAgeRange(asset.ageGroup, ranges[0][0], ranges[0][1])) {
@@ -84,7 +89,11 @@ function compatible(catalog: PortraitCatalog, profile: PortraitProfile) {
   if (ageGroupForAge(profile.age) !== profile.ageGroup) return []
   return catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
     && asset.gender === profile.gender
-    && (asset.compatibleAppearances ?? [asset.appearance]).some((value) => value === profile.appearance)
+    && (profile.appearance === 'mixed'
+      ? (asset.compatibleAppearances ?? [asset.appearance]).includes('mixed')
+      : asset.appearanceTags
+        ? tagsMatchAppearance(asset.appearanceTags, profile.appearance)
+        : (asset.compatibleAppearances ?? [asset.appearance]).some((value) => value === profile.appearance))
     && asset.apparentAgeRanges.some(([minimum, maximum]) => profile.age >= minimum && profile.age <= maximum))
 }
 

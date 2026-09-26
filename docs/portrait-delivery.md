@@ -1,6 +1,6 @@
 # Private portrait delivery
 
-The portrait Worker reads a private R2 bucket through its binding. It has no upload, delete, or listing route. Its production manifest is currently empty, so every portrait URL returns `404` with `Cache-Control: no-store`. No image was generated or deployed by this setup.
+The portrait Worker reads a private R2 bucket through its binding. It has no upload, delete, or listing route. Its production manifest is currently empty, so every portrait URL returns `404` with `Cache-Control: no-store`. Locally reviewed portraits remain outside the production catalog until publication is approved.
 
 ## Publication boundary
 

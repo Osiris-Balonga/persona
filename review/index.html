@@ -208,11 +208,19 @@
                   <option value="female">Femme</option>
                   <option value="male">Homme</option>
                 </select></label
-              ><label
-                >Apparence<select name="appearance" required>
-                  <option value="">Choisir</option>
-                </select></label
               >
+              <div class="appearance-picker-field">
+                <span id="appearancePickerLabel">Compatibilités visuelles</span>
+                <div class="age-picker" id="appearancePicker">
+                  <button type="button" id="appearancePickerToggle" aria-labelledby="appearancePickerLabel appearancePickerSummary" aria-expanded="false" aria-controls="appearancePickerMenu">
+                    <span id="appearancePickerSummary">Choisir un ou plusieurs tags</span><span aria-hidden="true">⌄</span>
+                  </button>
+                  <div id="appearancePickerMenu" class="age-picker-menu" hidden>
+                    <p>Un portrait peut convenir à plusieurs apparences.</p>
+                    <div id="appearancePickerOptions"></div>
+                  </div>
+                </div>
+              </div>
               <fieldset class="skin-tone-field">
                 <legend>Teinte visuelle · échelle Monk</legend>
                 <div class="tone-options" role="radiogroup" aria-label="Teinte visuelle">

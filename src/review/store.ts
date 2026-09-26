@@ -7,6 +7,7 @@ import { inspectPortraitBytes, type PortraitFileInfo } from '../portraits/import
 import { optimizePortraitCandidate } from '../portraits/optimize.js'
 import { areConsecutivePortraitAgeRanges, isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
 import { isPortraitCollection, type PortraitCollection } from './collections.js'
+import { areAppearanceTags, type AppearanceTag } from '../portraits/appearance-tags.js'
 
 export type ReviewStatus = 'processing-error' | 'needs-metadata' | 'ready-for-review' | 'approved' | 'rejected'
 export interface PortraitMetadata {
@@ -19,6 +20,7 @@ export interface PortraitMetadata {
   gender: 'female' | 'male'
   appearance: Appearance
   visualGroup: string
+  appearanceTags?: readonly AppearanceTag[]
   skinToneMst?: number
   rights: string
   rightsEvidence: string
@@ -59,6 +61,7 @@ function validateMetadata(input: PortraitMetadata): void {
   }
   if (!['female', 'male'].includes(input.gender) || !isAppearance(input.appearance)
     || !/^[a-z]+(?:-[a-z]+)*$/.test(input.visualGroup)
+    || (input.appearanceTags !== undefined && !areAppearanceTags(input.appearanceTags))
     || (input.skinToneMst !== undefined && (!Number.isInteger(input.skinToneMst)
       || input.skinToneMst < 1 || input.skinToneMst > 10))
     || !input.rights?.trim() || !input.rightsEvidence?.trim()) throw new RangeError('Invalid portrait metadata')
@@ -68,6 +71,7 @@ function xmp(input: PortraitMetadata): string {
     ageGroup: input.ageGroup, apparentAgeMin: input.apparentAgeMin, apparentAgeMax: input.apparentAgeMax,
     apparentAgeRanges: input.apparentAgeRanges?.map(([min, max]) => `${min}-${max}`).join(','),
     gender: input.gender, appearance: input.appearance, visualGroup: input.visualGroup,
+    appearanceTags: input.appearanceTags?.join(','),
     skinToneMst: input.skinToneMst,
   }
   const attributes = Object.entries(fields).filter(([, value]) => value !== undefined)
@@ -190,6 +194,26 @@ export class PortraitReviewStore {
       const metadata = { ...item.metadata }
       if (tone === null) delete metadata.skinToneMst
       else metadata.skinToneMst = tone
+      const master = await readFile(join(this.root, 'masters', `${id}${item.sourceExtension}`))
+      const tagged = await optimizePortraitCandidate(master, xmp(metadata))
+      const technical = await inspectPortraitBytes(tagged)
+      if (technical.bytes >= 50_000) throw new RangeError('Tagged portrait exceeds 50000 bytes')
+      await writeFile(join(this.root, 'webp', `${id}.webp`), tagged)
+      item.metadata = metadata
+      item.technical = technical
+      await this.save(items)
+      return item
+    })
+  }
+  async setAppearanceTags(id: string, tags: AppearanceTag[]): Promise<ReviewItem> {
+    if (!areAppearanceTags(tags)) throw new RangeError('Invalid visual appearance tags')
+    return this.serialize(async () => {
+      const items = await this.load()
+      const item = items.find((entry) => entry.id === id)
+      if (!item?.metadata || !item.technical || item.status === 'processing-error') {
+        throw new RangeError('Portrait has no reviewed metadata')
+      }
+      const metadata = { ...item.metadata, appearanceTags: tags }
       const master = await readFile(join(this.root, 'masters', `${id}${item.sourceExtension}`))
       const tagged = await optimizePortraitCandidate(master, xmp(metadata))
       const technical = await inspectPortraitBytes(tagged)

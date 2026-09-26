@@ -6,7 +6,7 @@ const hash = 'a'.repeat(64)
 const review = (overrides: Partial<PortraitReview> = {}): PortraitReview => ({
   id: 'p_0001', catalogVersion: 'v1', ageGroup: 'adult', gender: 'female',
   apparentAgeRanges: [[28, 32]],
-  visualGroup: 'black', appearance: 'west-african',
+  visualGroup: 'black', appearance: 'west-african', appearanceTags: ['black'],
   objectKey: 'portraits/v1/adult/female/black/west-african/p_0001.webp',
   rights: 'project-owned synthetic image', rightsEvidence: 'review-record-0001',
   sha256: hash, reviewStatus: 'approved', reviewer: 'reviewer-1',
@@ -32,6 +32,8 @@ describe('portrait import review', () => {
     const file = { format: 'webp', width: 512, height: 512, pages: 1, bytes: 1_000, sha256: hash }
     expect(validatePortraitReview(review({ reviewer: '', rightsEvidence: '', decisionReason: '' }), file).length).toBeGreaterThanOrEqual(3)
     expect(validatePortraitReview(review({ reviewedAt: '2026-02-30' }), file)).toContain('p_0001: review date is required')
+    expect(validatePortraitReview(review({ appearanceTags: undefined }), file))
+      .toContain('p_0001: visual appearance tags are required')
     expect(validatePortraitReview(review({ ageGroup: 'teen', reviewStatus: 'withdrawn' }), file))
       .toContain('p_0001: inconsistent catalog metadata')
   })

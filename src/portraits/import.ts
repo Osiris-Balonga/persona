@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import sharp from 'sharp'
 import { validatePortraitCatalog, type PortraitAsset } from './catalog.js'
+import { areAppearanceTags } from './appearance-tags.js'
 
 export interface PortraitReview extends PortraitAsset {
   rightsEvidence: string
@@ -28,6 +29,7 @@ export function validatePortraitReview(record: PortraitReview, file?: PortraitFi
   }
   if (!record.decisionReason?.trim()) errors.push(`${prefix}decision reason is required`)
   if (!record.rightsEvidence?.trim()) errors.push(`${prefix}rights evidence is required`)
+  if (!areAppearanceTags(record.appearanceTags)) errors.push(`${prefix}visual appearance tags are required`)
   const catalog = { version: record.catalogVersion, publicBaseUrl: 'https://images.example.test', assets: [record] }
   if (validatePortraitCatalog(catalog).length) errors.push(`${prefix}inconsistent catalog metadata`)
   if (file !== undefined) {

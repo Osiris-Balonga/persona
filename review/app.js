@@ -6,7 +6,7 @@ import { decisionSteps } from "./decision-flow.js";
 const $ = (selector) => document.querySelector(selector);
 const state = {
   items: [],
-  appearances: [],
+  appearanceTags: [],
   ageRanges: {},
   region: "all",
   openRegions: new Set(),
@@ -22,6 +22,7 @@ const state = {
   bulkDecision: null,
   pendingDecision: null,
   editAgeRanges: [],
+  editAppearanceTags: [],
   editAgePickerEditable: false,
   sequence: null,
 };
@@ -32,22 +33,11 @@ const labels = {
   approved: "Approuvé",
   rejected: "Rejeté",
 };
-const appearanceLabels = {
-  "west-african": "Afrique de l’Ouest",
-  "central-african": "Afrique centrale",
-  "east-african": "Afrique de l’Est",
-  "southern-african": "Afrique australe",
-  "north-african": "Afrique du Nord",
-  black: "Noir·e (apparence)",
-  "middle-eastern": "Moyen-Orient",
-  european: "Europe",
-  "south-asian": "Asie du Sud",
-  "east-asian": "Asie de l’Est",
-  "southeast-asian": "Asie du Sud-Est",
-  "pacific-islander": "Îles du Pacifique",
-  "latin-american": "Amérique latine",
-  mixed: "Mixte",
-  unclassified: "À classer",
+const appearanceTagLabels = {
+  black: "Noir·e", european: "Européen·ne", "north-african": "Nord-africain·e",
+  "middle-eastern": "Moyen-oriental·e", "south-asian": "Sud-asiatique",
+  "east-asian": "Est-asiatique", "southeast-asian": "Sud-est-asiatique",
+  "pacific-islander": "Insulaire du Pacifique", "indigenous-american": "Autochtone des Amériques",
 };
 const collectionLabels = {
   "africa-west": "Afrique de l’Ouest",
@@ -298,6 +288,36 @@ function closeAgePicker() {
   $("#agePickerMenu").hidden = true;
   $("#agePickerToggle").setAttribute("aria-expanded", "false");
 }
+function renderAppearancePicker() {
+  for (const input of $("#appearancePickerOptions").querySelectorAll('input[type="checkbox"]')) {
+    input.checked = state.editAppearanceTags.includes(input.value);
+    input.disabled = !state.editAgePickerEditable;
+  }
+  const summary = $("#appearancePickerSummary");
+  summary.replaceChildren();
+  if (!state.editAppearanceTags.length) {
+    summary.textContent = "Choisir un ou plusieurs tags";
+    return;
+  }
+  for (const tag of state.editAppearanceTags.slice(0, 2)) {
+    const chip = document.createElement("span");
+    chip.className = "age-chip";
+    chip.textContent = appearanceTagLabels[tag] ?? tag;
+    summary.append(chip);
+  }
+  if (state.editAppearanceTags.length > 2) {
+    const more = document.createElement("span");
+    more.className = "age-overflow";
+    more.textContent = `+${state.editAppearanceTags.length - 2}`;
+    more.dataset.tooltip = state.editAppearanceTags.map((tag) => appearanceTagLabels[tag] ?? tag).join(" · ");
+    more.title = more.dataset.tooltip;
+    summary.append(more);
+  }
+}
+function closeAppearancePicker() {
+  $("#appearancePickerMenu").hidden = true;
+  $("#appearancePickerToggle").setAttribute("aria-expanded", "false");
+}
 function populateDetail(id) {
   const item = state.items.find((candidate) => candidate.id === id);
   if (!item) return;
@@ -315,13 +335,15 @@ function populateDetail(id) {
   $("#detailCollection").value = item.collection ?? "";
   $(".review-column .section-heading p").textContent = metadata?.reviewNotes
     ? `À vérifier : ${metadata.reviewNotes}` : "Corrige un choix seulement si nécessaire.";
-  for (const key of ["gender", "appearance"])
+  for (const key of ["gender"])
     form.elements.namedItem(key).value = metadata?.[key] ?? "";
   const tone = form.querySelector(`input[name="skinToneMst"][value="${metadata?.skinToneMst ?? ""}"]`);
   if (tone) tone.checked = true;
   renderSkinToneSelection();
   state.editAgeRanges = metadata ? metadataAgeRanges(metadata) : [];
+  state.editAppearanceTags = [...(metadata?.appearanceTags ?? [])];
   closeAgePicker();
+  closeAppearancePicker();
   $("#rightsSummary").textContent =
     metadata?.rights === "Synthetic portrait generated for Persona"
       ? "Portrait synthétique créé pour Persona"
@@ -329,7 +351,7 @@ function populateDetail(id) {
   $("#evidenceSummary").textContent = metadata?.rightsEvidence?.startsWith(
     "Codex image_gen batch africa-pilot-2026-09-25",
   )
-    ? "Généré avec Codex le 25/09/2026 · trace de génération conservée localement"
+    ? "Lot Codex du 25/09/2026 · fichier source conservé localement"
     : (metadata?.rightsEvidence ??
       "La provenance sera ajoutée avant ta validation.");
   const editable = Boolean(
@@ -340,6 +362,8 @@ function populateDetail(id) {
   });
   state.editAgePickerEditable = editable;
   renderAgePicker();
+  $("#appearancePickerToggle").disabled = !editable;
+  renderAppearancePicker();
   const decided = ["approved", "rejected"].includes(item.status);
   $("#detailActionsToggle").hidden = !decided;
   closeDetailActions();
@@ -395,13 +419,20 @@ function metadataPayload() {
     $("#agePickerToggle").focus();
     return null;
   }
+  if (state.editAppearanceTags.length === 0) {
+    const error = state.sequence ? $("#serialError") : $("#detailError");
+    error.textContent = "Choisis au moins une compatibilité visuelle.";
+    error.hidden = false;
+    $("#appearancePickerToggle").focus();
+    return null;
+  }
   const values = Object.fromEntries(new FormData(form));
   const [apparentAgeMin, apparentAgeMax] = state.editAgeRanges[0];
   const payload = {
     ...item.metadata,
     ageGroup: ageGroupForRange(apparentAgeMin),
     gender: values.gender,
-    appearance: values.appearance,
+    appearanceTags: [...state.editAppearanceTags],
     apparentAgeMin,
     apparentAgeMax,
     apparentAgeRanges: state.editAgeRanges.map(([min, max]) => [min, max]),
@@ -410,21 +441,19 @@ function metadataPayload() {
   else delete payload.skinToneMst;
   delete payload.secondaryAgeMin;
   delete payload.secondaryAgeMax;
-  if (values.appearance !== item.metadata.appearance) {
-    payload.visualGroup = ["west-african", "central-african", "east-african", "southern-african"].includes(values.appearance)
-      ? "black" : values.appearance;
-  }
   return payload;
 }
 function metadataChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
-  return ["ageGroup", "gender", "appearance"].some((key) => payload[key] !== metadata?.[key])
+  return ["ageGroup", "gender"].some((key) => payload[key] !== metadata?.[key])
     || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata))
+    || JSON.stringify(payload.appearanceTags) !== JSON.stringify(metadata?.appearanceTags ?? [])
     || payload.skinToneMst !== metadata?.skinToneMst;
 }
-function onlySkinToneChanged(payload) {
+function onlyVisualChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
-  return payload.skinToneMst !== metadata?.skinToneMst
+  return (payload.skinToneMst !== metadata?.skinToneMst
+      || JSON.stringify(payload.appearanceTags) !== JSON.stringify(metadata?.appearanceTags ?? []))
     && ["ageGroup", "gender", "appearance", "visualGroup"].every((key) => payload[key] === metadata?.[key])
     && JSON.stringify(payload.apparentAgeRanges) === JSON.stringify(metadataAgeRanges(metadata));
 }
@@ -449,13 +478,13 @@ function decide(decision) {
   const item = state.items.find((candidate) => candidate.id === state.selected);
   const collection = $("#detailCollection").value || null;
   const collectionChanged = collection !== (item.collection ?? null);
-  const steps = decisionSteps(item.status, decision, changed, onlySkinToneChanged(payload), collectionChanged);
+  const steps = decisionSteps(item.status, decision, changed, onlyVisualChanged(payload), collectionChanged);
   if (!steps.length) {
     notify(`Portrait déjà ${decision === "approved" ? "approuvé" : "rejeté"} : aucune correction à enregistrer.`);
     return;
   }
   state.pendingDecision = { decision, reason: reason || "Conforme après inspection visuelle", payload: changed ? payload : null, collection, steps };
-  const keepsDecision = steps.every((step) => ["tone", "collection"].includes(step));
+  const keepsDecision = steps.every((step) => ["visual", "collection"].includes(step));
   $("#confirmDecisionTitle").textContent = keepsDecision ? "Enregistrer les corrections ?"
     : decision === "approved" ? "Approuver ce portrait ?" : "Rejeter ce portrait ?";
   $("#confirmDecisionText").textContent = keepsDecision
@@ -480,9 +509,19 @@ async function confirmDecision() {
       if (step === "metadata") await request(`/api/items/${state.selected}/metadata`, {
         method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(pending.payload),
       });
-      if (step === "tone") await request(`/api/items/${state.selected}/skin-tone`, {
-        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tone: pending.payload.skinToneMst ?? null }),
-      });
+      if (step === "visual") {
+        const current = state.items.find((item) => item.id === state.selected)?.metadata;
+        if (JSON.stringify(pending.payload.appearanceTags) !== JSON.stringify(current?.appearanceTags ?? []))
+          await request(`/api/items/${state.selected}/appearance-tags`, {
+            method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify({ tags: pending.payload.appearanceTags }),
+          });
+        if (pending.payload.skinToneMst !== current?.skinToneMst)
+          await request(`/api/items/${state.selected}/skin-tone`, {
+            method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify({ tone: pending.payload.skinToneMst ?? null }),
+          });
+      }
       if (step === "reopen") await request(`/api/items/${state.selected}/reopen`, { method: "POST" });
       if (step === "decide") await request(`/api/items/${state.selected}/decision`, {
         method: "POST", headers: { "content-type": "application/json" },
@@ -492,7 +531,7 @@ async function confirmDecision() {
     $("#confirmDecisionDialog").close();
     $("#detailDialog").close();
     await refresh();
-    notify(pending.steps.every((step) => ["tone", "collection"].includes(step))
+    notify(pending.steps.every((step) => ["visual", "collection"].includes(step))
       ? "Corrections enregistrées. La décision est conservée."
       : pending.decision === "approved"
       ? "Portrait approuvé et conservé localement. Retrouvez-le dans Approuvés."
@@ -838,6 +877,29 @@ $("#agePicker").addEventListener("keydown", (event) => {
     $("#agePickerToggle").focus();
   }
 });
+$("#appearancePickerToggle").addEventListener("click", () => {
+  const menu = $("#appearancePickerMenu");
+  menu.hidden = !menu.hidden;
+  $("#appearancePickerToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+$("#appearancePickerOptions").addEventListener("change", (event) => {
+  const checkbox = event.target.closest('input[type="checkbox"]');
+  if (!checkbox) return;
+  state.editAppearanceTags = state.appearanceTags.filter((tag) =>
+    $("#appearancePickerOptions").querySelector(`input[value="${tag}"]`)?.checked);
+  $("#detailError").hidden = true;
+  renderAppearancePicker();
+});
+document.addEventListener("click", (event) => {
+  if (!$("#appearancePicker").contains(event.target)) closeAppearancePicker();
+});
+$("#appearancePicker").addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("#appearancePickerMenu").hidden) {
+    event.stopPropagation();
+    closeAppearancePicker();
+    $("#appearancePickerToggle").focus();
+  }
+});
 $("#metadataForm").addEventListener("submit", (event) => event.preventDefault());
 $("#metadataForm").addEventListener("change", (event) => {
   if (event.target.name === "skinToneMst") renderSkinToneSelection();
@@ -886,8 +948,8 @@ $("#confirmReopen").addEventListener("click", async () => {
 });
 $("#uploadCollection").addEventListener("change", (event) => { state.uploadCollection = event.target.value; });
 request("/api/options")
-  .then(({ appearanceCategories, portraitAgeRanges, portraitCollectionOptions }) => {
-    state.appearances = appearanceCategories;
+  .then(({ appearanceTags, portraitAgeRanges, portraitCollectionOptions }) => {
+    state.appearanceTags = appearanceTags;
     state.ageRanges = portraitAgeRanges;
     for (const collection of portraitCollectionOptions) {
       for (const id of ["uploadCollection", "detailCollection"]) {
@@ -899,11 +961,13 @@ request("/api/options")
     }
     fillGalleryAgeRanges();
     buildAgePickerOptions();
-    for (const category of appearanceCategories) {
-      const option = document.createElement("option");
-      option.value = category;
-      option.textContent = appearanceLabels[category] ?? category;
-      $("#metadataForm").elements.namedItem("appearance").append(option);
+    for (const tag of appearanceTags) {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.value = tag;
+      label.append(input, document.createTextNode(appearanceTagLabels[tag] ?? tag));
+      $("#appearancePickerOptions").append(label);
     }
     return refresh();
   })

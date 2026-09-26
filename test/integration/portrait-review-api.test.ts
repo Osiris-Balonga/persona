@@ -127,6 +127,13 @@ describe('local portrait review API', () => {
     const approval = { decision: 'approved', reviewer: 'Osiris Balonga', reason: 'Reviewed portrait' }
     expect((await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: approval })).statusCode).toBe(200)
 
+    const tags = await app.inject({ method: 'POST', url: `/api/items/${id}/appearance-tags`,
+      payload: { tags: ['black', 'european'] } })
+    expect(tags.statusCode).toBe(200)
+    expect(tags.json()).toMatchObject({ status: 'approved', metadata: { appearanceTags: ['black', 'european'] } })
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/appearance-tags`,
+      payload: { tags: ['unknown'] } })).statusCode).toBe(400)
+
     const correction = await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`,
       payload: { ...metadata, apparentAgeMin: 33, apparentAgeMax: 37,
         apparentAgeRanges: [[33, 37], [38, 42], [43, 47]] } })

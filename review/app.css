@@ -787,11 +787,19 @@ dialog::backdrop {
   font-size: 11px;
   font-weight: 700;
 }
+.appearance-picker-field {
+  grid-column: 1 / -1;
+  margin-bottom: 10px;
+  color: #5e7864;
+  font-size: 11px;
+  font-weight: 700;
+}
 .age-picker {
   position: relative;
   margin-top: 5px;
 }
-#agePickerToggle {
+#agePickerToggle,
+#appearancePickerToggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -805,10 +813,12 @@ dialog::backdrop {
   color: #314a38;
   text-align: left;
 }
-#agePickerToggle:disabled {
+#agePickerToggle:disabled,
+#appearancePickerToggle:disabled {
   opacity: 0.5;
 }
-#agePickerSummary {
+#agePickerSummary,
+#appearancePickerSummary {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -824,6 +834,9 @@ dialog::backdrop {
   color: #28764f;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
+}
+.appearance-picker-field .age-picker-menu label {
+  cursor: pointer;
 }
 .age-overflow {
   position: relative;
