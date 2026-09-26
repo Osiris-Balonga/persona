@@ -1,0 +1,32 @@
+import { describe, expect, it } from 'vitest'
+import { isPortraitCompliant, matchesPortraitFilters } from '../../review/gallery-filters.js'
+
+const portrait = {
+  status: 'ready-for-review',
+  metadata: { ageGroup: 'adult', apparentAgeMin: 28, apparentAgeMax: 32, gender: 'female', appearance: 'west-african' },
+  technical: { format: 'webp', width: 512, height: 512, pages: 1, bytes: 42_000 },
+}
+
+describe('portrait gallery filters', () => {
+  it('matches the selected age category, exact five-year interval, gender and appearance', () => {
+    expect(matchesPortraitFilters(portrait, {
+      status: 'ready-for-review', appearance: 'west-african', ageGroup: 'adult', ageRange: '28-32', gender: 'female', quality: 'all',
+    })).toBe(true)
+    expect(matchesPortraitFilters(portrait, {
+      status: 'all', appearance: 'all', ageGroup: 'adult', ageRange: '33-37', gender: 'all', quality: 'all',
+    })).toBe(false)
+    expect(matchesPortraitFilters({ status: 'needs-metadata' }, {
+      status: 'all', appearance: 'all', ageGroup: 'adult', ageRange: 'all', gender: 'all', quality: 'all',
+    })).toBe(false)
+  })
+
+  it('flags missing or invalid technical characteristics', () => {
+    expect(isPortraitCompliant(portrait)).toBe(true)
+    expect(isPortraitCompliant({ ...portrait, technical: { ...portrait.technical, bytes: 50_000 } })).toBe(false)
+    expect(isPortraitCompliant({ ...portrait, technical: { ...portrait.technical, width: 480 } })).toBe(false)
+    expect(isPortraitCompliant({ ...portrait, technical: undefined })).toBe(false)
+    expect(matchesPortraitFilters({ ...portrait, technical: undefined }, {
+      status: 'all', appearance: 'all', ageGroup: 'all', ageRange: 'all', gender: 'all', quality: 'noncompliant',
+    })).toBe(true)
+  })
+})

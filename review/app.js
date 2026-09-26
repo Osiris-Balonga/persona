@@ -1,3 +1,5 @@
+import { isPortraitCompliant, matchesPortraitFilters } from "./gallery-filters.js";
+
 const $ = (selector) => document.querySelector(selector);
 const state = {
   items: [],
@@ -5,6 +7,10 @@ const state = {
   ageRanges: {},
   appearance: "all",
   status: "all",
+  ageGroup: "all",
+  ageRange: "all",
+  gender: "all",
+  quality: "all",
   selected: null,
 };
 const labels = {
@@ -96,11 +102,7 @@ function render() {
     $(`#nav-${status}`).textContent = state.items.filter(
       (item) => item.status === status,
     ).length;
-  const visible = state.items.filter(
-    (item) =>
-      (state.status === "all" || item.status === state.status) &&
-      (state.appearance === "all" || appearanceOf(item) === state.appearance),
-  );
+  const visible = state.items.filter((item) => matchesPortraitFilters(item, state));
   const groups = available
     .filter(
       (appearance) =>
@@ -122,14 +124,37 @@ function render() {
       .map(
         (
           item,
-        ) => `<button type="button" class="portrait-tile" data-id="${item.id}" aria-label="Ouvrir ${item.id}, ${labels[item.status]}" title="${escapeHtml(item.originalName)}">
+        ) => `<button type="button" class="portrait-tile" data-id="${item.id}" aria-label="Ouvrir ${item.id}, ${labels[item.status]}, ${item.technical ? `${item.technical.width} par ${item.technical.height} pixels, ${formatBytes(item.technical.bytes)}` : "caractéristiques indisponibles"}${isPortraitCompliant(item) ? "" : ", fichier à corriger"}" title="${escapeHtml(item.originalName)}">
       ${item.technical ? `<img src="/api/items/${item.id}/image?v=${item.technical.sha256}" alt="" loading="lazy">` : '<span class="missing">Image à corriger</span>'}
-      <span class="tile-status ${item.status}" title="${labels[item.status]}"></span><span class="tile-caption"><span>${item.id}</span><span>${item.metadata ? formatAgeRange(item.metadata.apparentAgeMin, item.metadata.apparentAgeMax) : labels[item.status]}</span></span>
+      <span class="tile-spec">${item.technical ? `${item.technical.width} × ${item.technical.height} px · ${formatBytes(item.technical.bytes)}` : "Dimensions — · Taille —"}</span>
+      ${isPortraitCompliant(item) ? `<span class="tile-status ${item.status}" title="${labels[item.status]}"></span>` : '<span class="tile-quality">À corriger</span>'}
+      <span class="tile-caption"><span>${item.id}</span><span>${item.metadata ? formatAgeRange(item.metadata.apparentAgeMin, item.metadata.apparentAgeMax) : labels[item.status]}</span></span>
     </button>`,
       )
       .join("")}</div></section>`,
     )
     .join("");
+}
+function fillGalleryAgeRanges() {
+  const select = $("#filterAgeRange");
+  const ranges = state.ageGroup === "all"
+    ? Object.values(state.ageRanges).flat()
+    : (state.ageRanges[state.ageGroup] ?? []);
+  const choices = [...new Map(ranges.map(([min, max]) => [`${min}-${max}`, [min, max]])).values()];
+  select.innerHTML = '<option value="all">Toutes</option>';
+  for (const [min, max] of choices) {
+    const option = document.createElement("option");
+    option.value = `${min}-${max}`;
+    option.textContent = formatAgeRange(min, max);
+    select.append(option);
+  }
+  if (!choices.some(([min, max]) => `${min}-${max}` === state.ageRange))
+    state.ageRange = "all";
+  select.value = state.ageRange;
+}
+function updateClearFilters() {
+  $("#clearFilters").hidden = ["ageGroup", "ageRange", "gender", "quality"]
+    .every((key) => state[key] === "all");
 }
 function fillAgeRanges(group, selected) {
   const select = $("#metadataForm").elements.namedItem("ageRange");
@@ -281,6 +306,28 @@ $("#appearanceNav").addEventListener("click", (event) => {
     render();
   }
 });
+for (const [id, key] of [
+  ["filterAgeGroup", "ageGroup"],
+  ["filterAgeRange", "ageRange"],
+  ["filterGender", "gender"],
+  ["filterQuality", "quality"],
+]) {
+  $(`#${id}`).addEventListener("change", (event) => {
+    state[key] = event.target.value;
+    if (key === "ageGroup") fillGalleryAgeRanges();
+    updateClearFilters();
+    render();
+  });
+}
+$("#clearFilters").addEventListener("click", () => {
+  for (const key of ["ageGroup", "ageRange", "gender", "quality"])
+    state[key] = "all";
+  for (const id of ["filterAgeGroup", "filterGender", "filterQuality"])
+    $(`#${id}`).value = "all";
+  fillGalleryAgeRanges();
+  updateClearFilters();
+  render();
+});
 $("#groups").addEventListener("click", (event) => {
   const tile = event.target.closest(".portrait-tile");
   if (tile) openDetail(tile.dataset.id);
@@ -334,6 +381,7 @@ request("/api/options")
   .then(({ appearanceCategories, portraitAgeRanges }) => {
     state.appearances = appearanceCategories;
     state.ageRanges = portraitAgeRanges;
+    fillGalleryAgeRanges();
     for (const category of appearanceCategories) {
       const option = document.createElement("option");
       option.value = category;

@@ -33,6 +33,7 @@ export function createReviewApp(root: string) {
   app.get('/', async (_request, reply) => reply.type('text/html; charset=utf-8').send(await readFile(join(pageRoot, 'index.html'))))
   app.get('/app.css', async (_request, reply) => reply.type('text/css; charset=utf-8').send(await readFile(join(pageRoot, 'app.css'))))
   app.get('/app.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'app.js'))))
+  app.get('/gallery-filters.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'gallery-filters.js'))))
   app.get('/api/options', async () => ({ appearanceCategories, portraitAgeRanges }))
   app.get('/api/items', async () => store.list())
   app.get<{ Params: { id: string } }>('/api/items/:id/image', async (request, reply) => {

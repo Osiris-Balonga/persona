@@ -5,16 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Persona · Revue des portraits</title>
     <link rel="stylesheet" href="/app.css" />
-    <script src="/app.js" defer></script>
+    <script src="/app.js" type="module"></script>
   </head>
   <body>
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark">P</span
-        ><span>Persona <small>Studio</small></span>
-      </div>
-      <span class="local-badge">● Espace local</span>
-    </header>
     <main class="shell">
       <header class="page-head">
         <div>
@@ -62,6 +55,29 @@
               ><button type="button" data-status="processing-error">
                 Erreurs <span id="nav-processing-error">0</span>
               </button>
+            </div>
+            <div class="gallery-filters" aria-label="Filtres des portraits">
+              <label>Catégorie d’âge<select id="filterAgeGroup">
+                <option value="all">Toutes</option>
+                <option value="child">Enfant</option>
+                <option value="teen">Ado</option>
+                <option value="adult">Adulte</option>
+                <option value="senior">Senior</option>
+              </select></label>
+              <label>Tranche d’âge<select id="filterAgeRange">
+                <option value="all">Toutes</option>
+              </select></label>
+              <label>Genre<select id="filterGender">
+                <option value="all">Tous</option>
+                <option value="female">Femme</option>
+                <option value="male">Homme</option>
+              </select></label>
+              <label>Fichier<select id="filterQuality">
+                <option value="all">Tous</option>
+                <option value="compliant">Conforme</option>
+                <option value="noncompliant">À corriger</option>
+              </select></label>
+              <button type="button" id="clearFilters" hidden>Effacer</button>
             </div>
           </div>
           <div id="dropZone" class="dropzone" tabindex="0">
