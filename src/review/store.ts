@@ -146,9 +146,9 @@ export class PortraitReviewStore {
   }
   async decideMany(ids: string[], input: Omit<ReviewDecision, 'at'>): Promise<ReviewItem[]> {
     return this.serialize(async () => {
-      if (!Array.isArray(ids) || ids.length < 1 || ids.length > 100
+      if (!Array.isArray(ids) || ids.length < 1
         || ids.some((id) => typeof id !== 'string' || !/^p_\d{4,}$/.test(id))
-        || new Set(ids).size !== ids.length) throw new RangeError('Select 1 to 100 distinct portraits')
+        || new Set(ids).size !== ids.length) throw new RangeError('Select distinct portraits')
       if (!input || !input.reviewer?.trim() || !input.reason?.trim()
         || !['approved', 'rejected'].includes(input.decision)) throw new RangeError('Reviewer and reason are required')
       const items = await this.load()
