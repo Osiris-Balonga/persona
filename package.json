@@ -32,6 +32,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "typecheck:worker": "tsc -p tsconfig.worker.json",
     "build:worker": "wrangler deploy --config wrangler.portraits.jsonc --dry-run",
+    "build:analytics-worker": "wrangler deploy --config wrangler.analytics.jsonc --dry-run",
     "test": "vitest run --project unit --project integration",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",

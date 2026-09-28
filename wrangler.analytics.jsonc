@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "persona-analytics",
+  "main": "./worker/analytics-worker.ts",
+  "account_id": "917acaaedf2bbea5593df5983921d617",
+  "compatibility_date": "2026-09-28",
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [{ "name": "USAGE", "class_name": "UsageStore" }]
+  },
+  "exports": {
+    "UsageStore": { "type": "durable-object", "storage": "sqlite" }
+  }
+}

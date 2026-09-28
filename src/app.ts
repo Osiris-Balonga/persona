@@ -11,6 +11,7 @@ import { projectPeopleResponse } from './field-selection.js'
 import { generatePeopleResponse } from './generate-people.js'
 import { validatePortraitCatalog, type PortraitCatalog } from './portraits/catalog.js'
 import { portraitCatalog } from './portraits/manifest.js'
+import type { AnalyticsSink } from './analytics/client.js'
 
 export interface AppOptions {
   logger?: boolean
@@ -20,6 +21,7 @@ export interface AppOptions {
   rateLimitMax?: number
   maxResponseBytes?: number
   renderClientIp?: boolean
+  analytics?: AnalyticsSink
 }
 
 export function buildApp(options: AppOptions = {}) {
@@ -32,6 +34,19 @@ export function buildApp(options: AppOptions = {}) {
     trustProxy: options.trustedProxies ?? false,
     bodyLimit: 1_024,
   }).withTypeProvider<TypeBoxTypeProvider>()
+  const generatedCounts = new WeakMap<object, number>()
+
+  app.addHook('onResponse', async (request, reply) => {
+    if (!options.analytics || request.method !== 'GET' ||
+      new URL(request.raw.url ?? '/', 'http://localhost').pathname !== '/people') return
+    try {
+      await options.analytics.record({ statusCode: reply.statusCode,
+        profileCount: reply.statusCode === 200 ? (generatedCounts.get(request) ?? 0) : 0,
+        durationMs: Math.max(0, reply.elapsedTime) })
+    } catch {
+      request.log.warn('Analytics recording failed')
+    }
+  })
 
   app.addHook('onRequest', async (request, reply) => {
     if (options.requireHttps && request.protocol !== 'https') {
@@ -108,6 +123,7 @@ export function buildApp(options: AppOptions = {}) {
         if (validators.includes(headers.ETag) || validators.includes('*')) return reply.code(304).send()
       }
       const response = generatePeopleResponse(query, catalog)
+      generatedCounts.set(request, response.results.length)
       return projectPeopleResponse(response, query.fields)
     } catch (error) {
       if (error instanceof PeopleQueryError) {
