@@ -30,3 +30,7 @@ npm run dev
 ```
 
 The server reads `PORT` from the environment and defaults to `3000`. Run `npm run build` and `npm start` for the compiled application. In production, set `TRUSTED_PROXIES` to the exact IP addresses or CIDR ranges of the TLS-terminating reverse proxy. The server refuses to start without that setting and rejects requests that did not arrive over HTTPS through a trusted proxy. On a Render web service, Render enforces HTTPS at its edge and supplies `CF-Connecting-IP` for per-client rate limiting; no `TRUSTED_PROXIES` value is needed there.
+
+## License
+
+Persona's original code and documentation are licensed under [MIT](LICENSE). Third-party data and derived snapshots retain their source terms and attributions, documented in [geographic data](docs/geographic-data.md). Portrait images are stored outside this repository on R2 and are not covered by the repository's MIT license.
