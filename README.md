@@ -6,7 +6,7 @@ The API is under development as a public beta with no API key. A small group of 
 
 `GET /people` uses the [public v2 contract](docs/api.md). Requests can constrain nationality, residence country, continent, city, age group, and gender; `age` and `appearance` are not public filters. A result has structured `name`, `dob`, and `location` fields. Location coordinates identify the sampled city, not the synthetic street. `picture` has large, medium, and thumbnail URLs or is `null` when no reviewed portrait matches. A synthetic `login` is available only through `fields`.
 
-The [V1 product definition](docs/product.md) records the historical first-release plan; use the v2 contract for the current API. Portraits follow a [human review and import procedure](docs/portrait-review.md) and the [private R2 and Worker delivery path](docs/portrait-delivery.md). The expanded rendition set is being verified for publication.
+The [V1 product definition](docs/product.md) records the historical first-release plan; use the v2 contract for the current API. Portraits follow a [human review and import procedure](docs/portrait-review.md) and the [private R2 and Worker delivery path](docs/portrait-delivery.md). The approved catalog has 1,764 portraits, with 5,292 large, medium, and thumbnail variants published through R2 and the Worker.
 The [beta coverage audit](docs/beta-coverage.md) lists the available and pending country codes and current data gaps.
 Start with the [developer API guide](docs/developer-api.md); the full request and response rules are in the [API contract](docs/api.md).
 
