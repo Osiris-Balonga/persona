@@ -3,6 +3,7 @@ import { isAppearance } from './appearance.js'
 import { appearanceDistributionForCountry } from './appearance-distribution.js'
 import { getCity, listCities } from './cities.js'
 import { getCountry, listCountries } from './countries.js'
+import { continentForCountry } from './continents.js'
 import { canGenerateProfile } from './profile-availability.js'
 
 export function chooseWeighted<T>(items: readonly { value: T; weight: number }[], draw: number): T {
@@ -21,28 +22,41 @@ export function chooseWeighted<T>(items: readonly { value: T; weight: number }[]
 }
 
 export function resolveGeographicContext(
-  query: Pick<PeopleQuery, 'country' | 'city' | 'appearance'>,
+  query: Pick<PeopleQuery, 'nationality' | 'residenceCountry' | 'continent' | 'city'>
+    & { country?: string; appearance?: string },
   key: string,
 ) {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid generation key')
   const draw = (offset: number) => Number.parseInt(key.slice(offset, offset + 12), 16)
-  const country = query.country === undefined
-    ? chooseWeighted(listCountries().filter(canGenerateProfile)
+  const nationalityCode = query.nationality ?? query.country
+    ?? (query.continent === undefined ? query.residenceCountry : undefined)
+  const nationality = nationalityCode === undefined
+    ? chooseWeighted(listCountries().filter((country) => canGenerateProfile(country)
+      && (query.continent === undefined || continentForCountry(country.code) === query.continent))
       .map((value) => ({ value, weight: 1 })), draw(0))
-    : getCountry(query.country)
-  if (!country || !canGenerateProfile(country)) throw new RangeError('Unavailable beta profile country')
+    : getCountry(nationalityCode)
+  if (!nationality || !canGenerateProfile(nationality)
+    || (query.continent !== undefined && continentForCountry(nationality.code) !== query.continent)) {
+    throw new RangeError('Unavailable beta profile nationality')
+  }
+
+  const residenceCountry = getCountry(query.residenceCountry ?? nationality.code)
+  if (!residenceCountry || residenceCountry.generation !== 'eligible'
+    || listCities(residenceCountry.code).length === 0) {
+    throw new RangeError('Unavailable beta profile residence country')
+  }
 
   const city = query.city === undefined
-    ? chooseWeighted(listCities(country.code).map((value) => ({
+    ? chooseWeighted(listCities(residenceCountry.code).map((value) => ({
       value, weight: Math.max(1, Math.round(Math.sqrt(value.population))),
     })), draw(12))
-    : getCity(country.code, query.city)
+    : getCity(residenceCountry.code, query.city)
   if (!city) throw new RangeError('City is not in the selected country')
 
   if (query.appearance !== undefined && !isAppearance(query.appearance)) {
     throw new RangeError('Unknown appearance category')
   }
-  const appearance = query.appearance ?? chooseWeighted(appearanceDistributionForCountry(country.code).weights, draw(24))
+  const appearance = query.appearance ?? chooseWeighted(appearanceDistributionForCountry(nationality.code).weights, draw(24))
 
-  return { country, city, appearance }
+  return { nationality, residenceCountry, country: nationality, city, appearance }
 }

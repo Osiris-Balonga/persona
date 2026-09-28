@@ -7,6 +7,7 @@ describe('portrait production collections', () => {
     expect(portraitCollections.americas).toHaveLength(2)
     expect(portraitCollections.europe).toHaveLength(4)
     expect(portraitCollections.oceania).toHaveLength(2)
+    expect(isPortraitCollection('asia-central')).toBe(true)
     expect(isPortraitCollection('europe-unassigned')).toBe(false)
     expect(isPortraitCollection('north-american')).toBe(false)
   })

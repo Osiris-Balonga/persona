@@ -1,4 +1,6 @@
 import { getCity } from './cities.js'
+import { getExampleNumber, parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js/max'
+import mobileExamples from 'libphonenumber-js/examples.mobile'
 
 const nanpAreas: Record<string, Readonly<Record<string, string>>> = {
   US: {
@@ -32,10 +34,35 @@ function emailPart(value: string): string {
   return value.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '') || 'person'
 }
 
-export function fictionalEmail(firstName: string, lastName: string, key: string): string {
-  indexFromKey(key, 1)
-  const name = `${emailPart(firstName)}.${emailPart(lastName)}`
-  return `${name}.${key.slice(0, 12)}@example.test`
+export function fictionalEmail(firstName: string, lastName: string, key: string, domain = 'example.test', position = 0): string {
+  if (!Number.isInteger(position) || position < 0 || position >= 36 ** 2) throw new RangeError('Invalid email position')
+  const suffix = indexFromKey(key, 36 ** 3).toString(36).padStart(3, '0')
+    + position.toString(36).padStart(2, '0')
+  const name = `${emailPart(firstName)[0]}.${emailPart(lastName)}`
+  return `${name}.${suffix}@${domain}`
+}
+
+// Outside the reviewed reserved ranges, these are format-valid sample numbers.
+// They may be assigned to real subscribers; callers must not treat them as fictional.
+function exampleBasedPhone(country: string, key: string): string | null {
+  const example = getExampleNumber(country as CountryCode, mobileExamples)
+  if (!example || !example.isValid() || example.country !== country) return null
+
+  const original = example.nationalNumber
+  // Changing only trailing digits retains the numbering plan's mobile prefix.
+  // Try wider suffixes first, then narrow ones for plans with constrained tails.
+  for (let width = Math.min(5, original.length - 1); width >= 1; width--) {
+    const range = 10 ** width
+    const candidate = `+${example.countryCallingCode}${original.slice(0, -width)}${String(indexFromKey(key, range)).padStart(width, '0')}`
+    const parsed = parsePhoneNumberFromString(candidate)
+    if (parsed?.country === country && parsed.isValid()) return parsed.number
+  }
+  return example.number
+}
+
+export function hasMobileExample(country: string): boolean {
+  const example = getExampleNumber(country as CountryCode, mobileExamples)
+  return example?.country === country && example.isValid()
 }
 
 export function fictionalPhone(country: string, city: string, key: string): string | null {
@@ -65,5 +92,5 @@ export function fictionalPhone(country: string, city: string, key: string): stri
   if (country === 'IE') return `+353890110${String(index % 1_000).padStart(3, '0')}`
   if (country === 'SE') return `+467017406${String(5 + index % 95).padStart(2, '0')}`
   if (country === 'NO') return `+476805${String(index).padStart(4, '0')}`
-  return null
+  return exampleBasedPhone(country, key)
 }

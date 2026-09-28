@@ -1,38 +1,32 @@
 # Developer quickstart
 
-Persona's public beta has one generation endpoint: `GET /people`. It needs no API key or credentials. Try the `dev` staging deployment over HTTPS:
+Persona exposes `GET /people` without an API key. For local development, run `npm ci && npm run dev`, then request a seeded profile:
 
 ```sh
-curl -i 'https://persona-dev.onrender.com/people?country=FR&age=30&count=1&seed=demo&asOf=2026-09-26'
+curl -i 'http://localhost:3000/people?nationality=FR&residenceCountry=CG&city=Brazzaville&ageGroup=adult,senior&count=1&seed=demo&asOf=2026-09-28'
 ```
 
 In JavaScript:
 
 ```js
-const response = await fetch('https://persona-dev.onrender.com/people?country=FR&age=30&count=1')
+const response = await fetch('http://localhost:3000/people?nationality=FR&seed=demo&asOf=2026-09-28')
 if (!response.ok) throw new Error(`Persona returned ${response.status}`)
 const { results, meta } = await response.json()
-console.log(results[0], meta)
+console.log(results[0].name.full, results[0].location.city, meta.schemaVersion)
 ```
 
-The staging service uses Render's free plan, so its first request after inactivity can take longer while the service wakes. For local development, start the server with `npm ci && npm run dev`, then run:
+The response has `results` and `meta` (`schemaVersion: "2"`). Each person includes nested `name`, `dob`, `location`, and `picture`. `login` is opt-in with `fields=login` or a nested path such as `fields=login.username`. Other examples are `fields=name.first,location.country.code,location.coordinates.latitude,picture.thumbnail`. `picture` can be `null`. The [full API contract](api.md) lists every field and parameter.
 
-```sh
-curl -i 'http://localhost:3000/people?country=MW&city=Lilongwe&age=27&count=2&seed=demo&asOf=2026-09-24&fields=firstName,lastName,age,ageGroup,address.city,picture.url'
-```
+## Inputs and replay
 
-There is no live production URL yet. The response contains `results` and `meta`; `fields` selects person properties while retaining `meta`. `firstName` and `lastName` are always populated in a full response. `picture.url` points to an approved WebP portrait when the catalog has a match; otherwise `picture` is `null`. The default response omits `ageGroup` and `appearance`; select them with `fields` if needed. `address.line1` is synthetic for every country currently available for profile generation; it does not certify a deliverable address.
+`count` accepts 1–100 and defaults to 1. `gender` is `male` or `female`. `ageGroup` accepts one or more distinct values from `child`, `teen`, `adult`, `senior`, separated by commas. Ages in responses are 6–100. `nationality` chooses a reviewed name pool; `residenceCountry` chooses the location and phone numbering country. `continent` (`africa`, `americas`, `asia`, `europe`, `oceania`) constrains nationality. `city` belongs to residence. If one country is supplied without `continent`, it is used for both nationality and residence; if neither is supplied, one is drawn for both. `age` and `appearance` are not accepted query parameters.
 
-## Inputs
+`emailDomain` selects an ASCII domain and defaults to `example.test`. `seed` accepts up to 128 nonblank characters. `asOf` is a valid `YYYY-MM-DD` date; omitted means the current UTC date. Supply both `seed` and `asOf` to replay a response against the same data, catalog, and algorithm versions. Those requests receive a private `ETag`; send `If-None-Match` to receive 304 when unchanged. `count` and `fields` do not shift the generated people. Changing `emailDomain` changes email addresses and the `ETag`, while keeping identity and portrait choices.
 
-`count` defaults to 1 and accepts 1–100. `age` is an integer from 6–100; `ageGroup` is a separate derived value (`child`, `teen`, `adult`, `senior`) and can also be used as a filter. The two filters must agree. `country` is an uppercase two-letter code with a reviewed local name pool; `city` requires a country and must match an available city. `gender` accepts `male` or `female`; `appearance` accepts a supported lowercase category. `seed` accepts 1–128 characters and `asOf` accepts a valid `YYYY-MM-DD` date. See the [full parameter table](api.md#query-parameters) and [field paths](api.md#selecting-fields).
-
-Supply both `seed` and `asOf` to replay the same result against the same dataset and algorithm versions. Such responses have a private `ETag`; send `If-None-Match` to get `304` when unchanged. Responses without either explicit input, and errors, use `Cache-Control: no-store`.
+Coordinates in `location` are the exact GeoNames point for the selected city, marked `precision: "city"`. They are not street or person coordinates. Addresses are illustrative. Phones use reviewed fictional ranges where available; format-valid fallback numbers elsewhere **may belong to real subscribers**. Do not contact generated email addresses or phone numbers, particularly when using a live `emailDomain`.
 
 ## Errors and limits
 
-Invalid, conflicting, and unsupported filters return `400` with a safe `error.code`, `message`, and optional `parameter`. The encoded query is capped at 2,048 characters; request bodies are capped at 1 KiB, and `GET`/`HEAD` bodies are rejected. The maximum response contains 100 people and is capped at 256 KiB; an unexpectedly larger response returns `503` with `RESPONSE_TOO_LARGE`. Unknown routes return `404`; unsupported methods on documented routes return `405`. Browser access permits `GET` and `HEAD` from any origin, without credentials. A CORS preflight uses `OPTIONS`.
+Invalid, conflicting, and unsupported filters return 400 with `error.code`, `message`, and `parameter`. The encoded query is limited to 2,048 characters. `GET` and `HEAD` bodies are rejected; request bodies are capped at 1 KiB. A response is capped at 256 KiB and returns 503 with `RESPONSE_TOO_LARGE` if exceeded. Unknown routes return 404; unsupported methods on documented routes return 405. Browser access allows `GET` and `HEAD` from any origin without credentials.
 
-The beta permits **30 requests per minute per client IP per server instance**, including conditional requests. An exceeded quota returns `429`, `error.code: RATE_LIMITED`, `Cache-Control: no-store`, and `Retry-After` in seconds. `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` describe the current window. Wait at least `Retry-After` before retrying. People behind one public IP share a quota. The in-memory quota is per process; deployment must use one API instance or a shared limit store before scaling out. The `count` cap and quota bound generation to at most 3,000 people per IP per minute on an instance.
-
-Generated profiles are synthetic test data. Emails use `.test`, phone numbers are populated only for verified fictional ranges, addresses are plausible samples rather than delivery destinations, and ages and country selection are editorial rather than demographic estimates. Some country codes remain unavailable pending review of local name pools. Do not treat a profile as a real identity. See [geographic coverage](geographic-data.md).
+The default limit is **30 requests per minute per client IP per server instance**, including conditional requests. Exceeding it returns 429 with `error.code: RATE_LIMITED`, `Cache-Control: no-store`, and `Retry-After` in seconds. Wait at least that long before retrying. The quota is held in memory per process, so multi-instance deployments need a shared limit store.

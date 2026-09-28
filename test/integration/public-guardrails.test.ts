@@ -6,7 +6,7 @@ describe('public API guardrails', () => {
     const app = buildApp({ rateLimitMax: 2 })
     try {
       const request = (remoteAddress: string, forwarded?: string) => app.inject({
-        method: 'GET', url: '/people?count=1&country=MW', remoteAddress,
+        method: 'GET', url: '/people?count=1&nationality=MW', remoteAddress,
         headers: forwarded ? { 'x-forwarded-for': forwarded } : {},
       })
       expect((await request('198.51.100.1', '203.0.113.1')).statusCode).toBe(200)
@@ -24,9 +24,9 @@ describe('public API guardrails', () => {
     const app = buildApp({ rateLimitMax: 1, trustedProxies: '127.0.0.1', requireHttps: true })
     try {
       const headers = { 'x-forwarded-proto': 'https', 'x-forwarded-for': '198.51.100.3' }
-      expect((await app.inject({ method: 'GET', url: '/people?country=MW', remoteAddress: '127.0.0.1', headers })).statusCode).toBe(200)
-      expect((await app.inject({ method: 'GET', url: '/people?country=MW', remoteAddress: '127.0.0.1', headers })).statusCode).toBe(429)
-      const spoof = await app.inject({ method: 'GET', url: '/people?country=MW', remoteAddress: '203.0.113.8', headers })
+      expect((await app.inject({ method: 'GET', url: '/people?nationality=MW', remoteAddress: '127.0.0.1', headers })).statusCode).toBe(200)
+      expect((await app.inject({ method: 'GET', url: '/people?nationality=MW', remoteAddress: '127.0.0.1', headers })).statusCode).toBe(429)
+      const spoof = await app.inject({ method: 'GET', url: '/people?nationality=MW', remoteAddress: '203.0.113.8', headers })
       expect(spoof.statusCode).toBe(403)
     } finally { await app.close() }
   })
@@ -35,7 +35,7 @@ describe('public API guardrails', () => {
     const app = buildApp({ rateLimitMax: 1, renderClientIp: true })
     try {
       const request = (clientIp: string, forwarded: string) => app.inject({
-        method: 'GET', url: '/people?country=MW', remoteAddress: '10.0.0.1',
+        method: 'GET', url: '/people?nationality=MW', remoteAddress: '10.0.0.1',
         headers: { 'cf-connecting-ip': clientIp, 'x-forwarded-for': forwarded },
       })
       expect((await request('198.51.100.3', '203.0.113.4')).statusCode).toBe(200)
@@ -68,7 +68,7 @@ describe('public API guardrails', () => {
   it('bounds a full response before sending it', async () => {
     const app = buildApp({ maxResponseBytes: 1_024 })
     try {
-      const response = await app.inject({ method: 'GET', url: '/people?count=100&country=MW&seed=large&asOf=2026-09-24' })
+      const response = await app.inject({ method: 'GET', url: '/people?count=100&nationality=MW&seed=large&asOf=2026-09-24' })
       expect(response.statusCode).toBe(503)
       expect(response.headers['cache-control']).toBe('no-store')
       expect(response.json()).toEqual({ error: { code: 'RESPONSE_TOO_LARGE', message: 'Response exceeds the service limit' } })

@@ -33,7 +33,7 @@ export const PersonSchema = Type.Object({
   country: CountryCode,
   city: Type.String({ minLength: 1 }),
   address: AddressSchema,
-  email: Type.String({ format: 'email', pattern: '@example\\.test$' }),
+  email: Type.String({ format: 'email' }),
   phone: Type.Union([Type.String({ minLength: 1 }), Type.Null()]),
   picture: Type.Union([PictureSchema, Type.Null()]),
 }, { $id: 'urn:persona:schema:person:v1', additionalProperties: false })

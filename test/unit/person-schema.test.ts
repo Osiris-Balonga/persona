@@ -7,7 +7,7 @@ const example = JSON.parse(
   readFileSync(new URL('../../examples/person-v1.json', import.meta.url), 'utf8'),
 ) as Record<string, unknown>
 
-describe('public Person v1 schema', () => {
+describe('generation record schema', () => {
   it('accepts the published example with structured address and optional contact data', () => {
     expect(PersonSchema.$id).toBe('urn:persona:schema:person:v1')
     expect(Value.Check(PersonSchema, example)).toBe(true)
@@ -33,11 +33,11 @@ describe('public Person v1 schema', () => {
     expect(Value.Check(PersonSchema, { ...example, dateOfBirth: '1999-02-30' })).toBe(false)
   })
 
-  it('does not accept a real email domain as fictional contact data', () => {
+  it('accepts a caller-selected email domain in the generation record', () => {
     expect(Value.Check(PersonSchema, {
       ...example,
       email: 'grace.mbemba@gmail.com',
-    })).toBe(false)
+    })).toBe(true)
   })
 
   it('rejects internal fields at any level of the public object', () => {

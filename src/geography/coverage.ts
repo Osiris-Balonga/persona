@@ -22,7 +22,7 @@ import { southAmericaReviewedNames, isSouthAmericaReviewedCountry } from './sout
 import { southAmericaTerritoryNames, isSouthAmericaTerritoryCountry } from './south-america-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { hasSyntheticStreet } from './street-data.js'
-import { nanpTerritoryAreas } from './fictional-contact.js'
+import { hasMobileExample, nanpTerritoryAreas } from './fictional-contact.js'
 import { geographicSources, type GeographicSource } from './sources.js'
 import { hasReviewedNamePool, profileGenerationStatus } from './profile-availability.js'
 
@@ -194,7 +194,8 @@ export function listCoverage() {
                     : country.code === 'IE' ? ingested('comreg-drama-numbers')
                       : country.code === 'SE' ? ingested('pts-fictional-numbers')
                         : country.code === 'NO' ? ingested('nkom-fictional-numbers')
-                          : pending(),
+                          : hasMobileExample(country.code) ? { ...partial('libphonenumber-js'), fallback: 'format-valid-unreserved' }
+                            : pending(),
       distributions: resident ? { ...partial('persona-policy'),
         fallback: 'uniform-country,country-aware-appearance', supplementarySources: ['geonames'] } : notApplicable(),
       portraits: resident ? pending() : notApplicable(),

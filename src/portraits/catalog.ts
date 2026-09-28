@@ -3,9 +3,14 @@ import { appearanceCategories, isAppearance, type Appearance } from '../geograph
 import { ageGroupForAge } from '../age.js'
 import { areConsecutivePortraitAgeRanges, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
 import { areAppearanceTags, tagsMatchAppearance, type AppearanceTag } from './appearance-tags.js'
+import { isPortraitCollection, type PortraitCollection } from '../review/collections.js'
 
 type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
 type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
+
+export type PortraitRendition = { objectKey: string; sha256: string }
+export type PortraitVariants = Record<'large' | 'medium' | 'thumbnail', PortraitRendition>
+export const portraitVariantSizes = ['large', 'medium', 'thumbnail'] as const
 
 export interface PortraitAsset {
   id: string
@@ -16,11 +21,13 @@ export interface PortraitAsset {
   gender: Person['gender']
   visualGroup: string
   appearance: Appearance
+  collection?: PortraitCollection
   compatibleAppearances?: readonly Appearance[]
   appearanceTags?: readonly AppearanceTag[]
   skinToneMst?: number
   rights: string
   sha256: string
+  variants?: PortraitVariants
   reviewStatus: 'approved' | 'rejected' | 'withdrawn'
 }
 
@@ -61,6 +68,9 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
     }
     if (asset.skinToneMst !== undefined && (!Number.isInteger(asset.skinToneMst)
       || asset.skinToneMst < 1 || asset.skinToneMst > 10)) errors.push(`Invalid Monk tone ${asset.id}`)
+    if (asset.collection !== undefined && !isPortraitCollection(asset.collection)) {
+      errors.push(`Invalid portrait collection ${asset.id}`)
+    }
     if (asset.compatibleAppearances !== undefined
       && (asset.compatibleAppearances.length === 0
         || !asset.compatibleAppearances.includes(asset.appearance)
@@ -78,11 +88,40 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
     }
     if (!/^[a-f0-9]{64}$/.test(asset.sha256) || hashes.has(asset.sha256)) errors.push(`Invalid or duplicate portrait hash ${asset.id}`)
     hashes.add(asset.sha256)
+    if (asset.variants !== undefined) {
+      for (const size of portraitVariantSizes) {
+        const rendition = asset.variants[size]
+        const expectedKey = `portraits/${catalog.version}/${size}/${asset.id}.webp`
+        if (rendition === undefined || rendition.objectKey !== expectedKey || keys.has(expectedKey)
+          || !/^[a-f0-9]{64}$/.test(rendition.sha256)) {
+          errors.push(`Invalid portrait ${size} variant ${asset.id}`)
+        }
+        keys.add(expectedKey)
+      }
+      if (asset.variants.large?.sha256 !== asset.sha256) {
+        errors.push(`Large portrait variant must match original ${asset.id}`)
+      }
+      if (Object.keys(asset.variants).some((size) => !portraitVariantSizes.includes(size as typeof portraitVariantSizes[number]))) {
+        errors.push(`Unknown portrait variant ${asset.id}`)
+      }
+    }
   }
   if (catalog.assets.some((asset) => asset.reviewStatus === 'approved') && catalog.publicBaseUrl === null) {
     errors.push('Approved portraits require a public base URL')
   }
   return errors
+}
+
+export function approvedPortraitHash(catalog: PortraitCatalog, key: string): string | undefined {
+  for (const asset of catalog.assets) {
+    if (asset.reviewStatus !== 'approved') continue
+    if (asset.objectKey === key) return asset.sha256
+    for (const size of portraitVariantSizes) {
+      const variant = asset.variants?.[size]
+      if (variant?.objectKey === key) return variant.sha256
+    }
+  }
+  return undefined
 }
 
 function compatible(catalog: PortraitCatalog, profile: PortraitProfile) {

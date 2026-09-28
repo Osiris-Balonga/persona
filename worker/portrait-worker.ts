@@ -1,4 +1,4 @@
-import { validatePortraitCatalog, type PortraitCatalog } from '../src/portraits/catalog.js'
+import { approvedPortraitHash, validatePortraitCatalog, type PortraitCatalog } from '../src/portraits/catalog.js'
 import { portraitCatalog } from '../src/portraits/manifest.js'
 
 type StoredPortrait = {
@@ -26,13 +26,13 @@ export async function handlePortraitRequest(
   const url = new URL(request.url)
   if (url.origin !== new URL(catalog.publicBaseUrl).origin || url.search || url.hash) return notFound()
   const key = url.pathname.slice(1)
-  const asset = catalog.assets.find((candidate) => candidate.reviewStatus === 'approved' && candidate.objectKey === key)
-  if (asset === undefined) return notFound()
+  const expectedHash = approvedPortraitHash(catalog, key)
+  if (expectedHash === undefined) return notFound()
 
   try {
     const object = request.method === 'HEAD' ? await store.head(key) : await store.get(key)
     if (object === null || object.size < 1 || object.size >= 50_000 ||
-      object.customMetadata?.sha256 !== asset.sha256 ||
+      object.customMetadata?.sha256 !== expectedHash ||
       (request.method === 'GET' && object.body === undefined)) return notFound()
     const headers = new Headers({
       'Content-Type': 'image/webp',

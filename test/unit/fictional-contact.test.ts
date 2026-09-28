@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { parsePhoneNumberFromString } from 'libphonenumber-js/max'
 import { fictionalEmail, fictionalPhone, nanpTerritoryAreas } from '../../src/geography/fictional-contact.js'
 import { listCities } from '../../src/geography/cities.js'
 
@@ -6,18 +7,21 @@ const key = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
 describe('fictional contact values', () => {
   it('uses the reserved example domain and a stable disambiguator', () => {
-    expect(fictionalEmail('Élodie', 'N’Diaye', key)).toBe('elodie.ndiaye.0123456789ab@example.test')
+    expect(fictionalEmail('Élodie', 'N’Diaye', key)).toBe('e.ndiaye.dwr00@example.test')
     expect(fictionalEmail('Élodie', 'N’Diaye', key)).toBe(fictionalEmail('Élodie', 'N’Diaye', key))
+    expect(fictionalEmail('Élodie', 'N’Diaye', key, 'yopmail.com')).toBe('e.ndiaye.dwr00@yopmail.com')
   })
 
   it('builds a stable address from the two displayed components of a Burmese name', () => {
-    expect(fictionalEmail('Aye Aye', 'Myint', key)).toBe('ayeaye.myint.0123456789ab@example.test')
+    expect(fictionalEmail('Aye Aye', 'Myint', key)).toBe('a.myint.dwr00@example.test')
   })
 
-  it('uses reserved ranges and returns null where no reviewed range exists', () => {
+  it('uses reserved ranges and valid fallback numbers where a mobile example exists', () => {
     expect(fictionalPhone('US', 'Washington', key)).toMatch(/^\+120255501\d{2}$/)
     expect(fictionalPhone('GB', 'London', key)).toMatch(/^\+447700900\d{3}$/)
-    expect(fictionalPhone('CG', 'Brazzaville', key)).toBeNull()
+    const congo = parsePhoneNumberFromString(fictionalPhone('CG', 'Brazzaville', key)!)
+    expect(congo?.country).toBe('CG')
+    expect(congo?.isValid()).toBe(true)
     expect(fictionalPhone('PN', 'Adamstown', key)).toBeNull()
   })
 

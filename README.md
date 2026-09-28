@@ -2,10 +2,11 @@
 
 Persona is an API for generating coherent fictional people for interface design, product development, and testing. A profile combines a name, age, location, contact details, and a synthetic portrait selected from a curated catalog.
 
-The API is under development. Its first release is planned as a public beta with no API key. A small group of developers will help evaluate it first.
+The API is under development as a public beta with no API key. A small group of developers will help evaluate it first.
 
-See the [V1 product definition](docs/product.md) for the approved scope.
-Portraits follow a [human review and import procedure](docs/portrait-review.md). The first 322 approved portraits are published through the [private R2 and Worker delivery path](docs/portrait-delivery.md); profile responses return `picture: null` when no reviewed portrait matches.
+`GET /people` uses the [public v2 contract](docs/api.md). Requests can constrain nationality, residence country, continent, city, age group, and gender; `age` and `appearance` are not public filters. A result has structured `name`, `dob`, and `location` fields. Location coordinates identify the sampled city, not the synthetic street. `picture` has large, medium, and thumbnail URLs or is `null` when no reviewed portrait matches. A synthetic `login` is available only through `fields`.
+
+The [V1 product definition](docs/product.md) records the historical first-release plan; use the v2 contract for the current API. Portraits follow a [human review and import procedure](docs/portrait-review.md) and the [private R2 and Worker delivery path](docs/portrait-delivery.md). The expanded rendition set is being verified for publication.
 The [beta coverage audit](docs/beta-coverage.md) lists the available and pending country codes and current data gaps.
 Start with the [developer API guide](docs/developer-api.md); the full request and response rules are in the [API contract](docs/api.md).
 
@@ -14,7 +15,7 @@ Start with the [developer API guide](docs/developer-api.md); the full request an
 - Generate people, not general-purpose fake data.
 - Respect explicit request parameters and make seeded results reproducible.
 - Resolve cultural and visual context before selecting names and portraits; never infer a name from a face.
-- Use clearly fictional contact details and addresses.
+- Generate synthetic contact details and illustrative addresses; number-format fallbacks may belong to real subscribers.
 
 Development happens on `dev`. Production changes are promoted to `main` through a pull request from `dev`. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

@@ -6,7 +6,7 @@ export interface DataVersions {
   catalogVersion: string
 }
 
-const generationVersion = 'v4'
+const generationVersion = 'v5'
 
 function digest(parts: readonly unknown[]): string {
   return createHash('sha256').update(JSON.stringify(parts)).digest('hex')
@@ -20,10 +20,10 @@ function generationInputs(query: PeopleQuery, versions: DataVersions, requestSee
     versions.dataVersion,
     versions.catalogVersion,
     query.gender ?? null,
-    query.age ?? null,
     query.ageGroup ?? null,
-    query.appearance ?? null,
-    query.country ?? null,
+    query.nationality ?? null,
+    query.residenceCountry ?? null,
+    query.nationality === undefined ? query.continent ?? null : null,
     query.city ?? null,
   ]
 }
@@ -53,8 +53,10 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
   const fingerprint = digest([
     'persona-response',
     ...generationInputs(query, versions, query.seed),
+    'urn:persona:schema:public-person:v2',
     query.count,
     query.fields ?? null,
+    query.emailDomain ?? 'example.test',
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

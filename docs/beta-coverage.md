@@ -1,4 +1,4 @@
-# Public beta HTTP coverage — 2026-09-26
+# Public beta HTTP coverage — 2026-09-28
 
 Run `npm run data:audit:beta` to repeat this audit against the current code and data. The integration suite runs the same checks in CI. This snapshot uses geographic data version `geo-2026-09-26.1` and portrait catalog `v1`.
 
@@ -14,6 +14,6 @@ Run `npm run data:audit:beta` to repeat this audit against the current code and 
 
 **Unavailable (7):** AQ, BV, GS, HM, IO, TF, UM. These codes are recognized but not sampled as resident profiles.
 
-For each available code, the audit requests two people with explicit country, age, gender, appearance, seed, and `asOf`. It checks the response schema, country-linked city and address, nonempty names, calendar age, fictional contact, compatible approved portrait or `null`, exact seeded replay, and field projection. All checks passed with zero audit errors.
+For each available code, the audit requests two people with explicit nationality, adult age group, gender, seed, and `asOf`. It checks the v2 response schema, country-linked city and address, the city's GeoNames latitude and longitude with `precision: "city"`, nonempty names, calendar age, contact values, a portrait from the selected collection or `null`, exact seeded replay, and field projection. All checks passed with zero audit errors.
 
-The coverage matrix still marks 242 resident codes with partial city-level addresses. Phone values use reviewed reserved fictional ranges where available and remain `null` elsewhere. The production portrait catalog contains 322 approved assets and 64/112 ready age-group, gender, and appearance combinations. Thirty-four combinations have no matching portrait; these return `picture: null` and are tracked in #162. Rerun the audit after data or catalog changes and before API deployment.
+The coverage matrix still marks 242 resident codes with partial city-level addresses. Telephone coverage has 32 codes with reviewed reserved ranges (`ingested`), 209 with format-valid mobile-example fallback (`partial`), and Pitcairn without an example (`pending`). Fallback numbers may belong to real subscribers and must not be called. The current catalog and beta audits find no missing collection, gender, and age bands. Publication of the expanded large, medium, and thumbnail rendition set is being verified in R2; the final published counts will be recorded after that check. Rerun the audit after data or catalog changes and before API deployment.

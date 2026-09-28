@@ -11,9 +11,14 @@ export async function optimizePortraitCandidate(master: Buffer, xmp?: string): P
     || metadata.width < deliveredSize || (metadata.pages ?? 1) !== 1) {
     throw new RangeError('Portrait master must be square and at least 512px with one frame')
   }
-  const pipeline = source.resize(deliveredSize, deliveredSize).webp({ quality: 88, effort: 6 })
-  const output = await (xmp === undefined ? pipeline : pipeline.withXmp(xmp)).toBuffer()
-  if (output.length >= maxBytes) throw new RangeError('Optimized portrait exceeds 50000 bytes')
+  let output: Buffer | undefined
+  for (const quality of [88, 82, 76, 70, 64, 58, 52]) {
+    const pipeline = sharp(master, { limitInputPixels: 16_000_000 })
+      .resize(deliveredSize, deliveredSize).webp({ quality, effort: 6 })
+    output = await (xmp === undefined ? pipeline : pipeline.withXmp(xmp)).toBuffer()
+    if (output.length < maxBytes) break
+  }
+  if (!output || output.length >= maxBytes) throw new RangeError('Optimized portrait exceeds 50000 bytes')
   const info = await inspectPortraitBytes(output)
   if (info.format !== 'webp' || info.width !== deliveredSize || info.height !== deliveredSize || info.pages !== 1) {
     throw new RangeError('Optimized portrait is invalid')
