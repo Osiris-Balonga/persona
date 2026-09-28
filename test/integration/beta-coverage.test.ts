@@ -10,12 +10,10 @@ describe('public beta HTTP coverage', () => {
     expect(report.unavailable).toEqual(['AQ', 'BV', 'GS', 'HM', 'IO', 'TF', 'UM'])
     expect(report.available).toContain('MW')
     expect(report.pendingNameReview).toContain('PN')
-    expect(report.portrait.approvedAssets).toBe(1086)
-    expect(report.portrait.coveredAgeBands).toBe(835)
+    expect(report.portrait.approvedAssets).toBe(1764)
+    expect(report.portrait.coveredAgeBands).toBe(836)
     expect(report.portrait.totalAgeBands).toBe(836)
-    expect(report.portrait.missingAgeBands).toEqual([
-      { collection: 'asia-central', gender: 'female', ageRange: [13, 15] },
-    ])
+    expect(report.portrait.missingAgeBands).toEqual([])
     expect([...report.available, ...report.pendingNameReview, ...report.unavailable].sort())
       .toHaveLength(249)
   }, 15_000)
