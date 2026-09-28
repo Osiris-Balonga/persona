@@ -23,6 +23,7 @@ jobs:
       - run: npm run data:availability:check
       - run: npm run typecheck
       - run: npm run typecheck:worker
+      - run: npm run build:analytics-worker
       - run: npm run test:unit
       - run: npm run test:integration
       - run: npm run test:e2e

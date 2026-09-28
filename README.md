@@ -8,6 +8,7 @@ The API is under development as a public beta with no API key. A small group of 
 
 The [product scope](docs/product.md) summarizes current behavior. Portraits follow a [human review and import procedure](docs/portrait-review.md) and the [private R2 and Worker delivery path](docs/portrait-delivery.md). R2 stores one large, medium, and thumbnail WebP for each of the 1,764 approved portraits; the large rendition is also the canonical source.
 The [country availability table](docs/country-availability.md) lists profile, sampled-city postcode, and phone-source coverage for all 249 codes. The [beta audit](docs/beta-coverage.md) explains generation checks and current limits.
+The [usage analytics guide](docs/analytics.md) defines private API request and profile-count statistics for the future project site.
 Start with the [developer API guide](docs/developer-api.md); the full request and response rules are in the [API contract](docs/api.md).
 See a [complete v2 response](examples/people-response-v2.json) for the current JSON structure.
 
