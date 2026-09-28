@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "id": "per_7910eca659bd74e83726e75f",
+      "gender": "male",
+      "name": {
+        "first": "Christian",
+        "last": "Arnaud",
+        "full": "Christian Arnaud"
+      },
+      "nationality": "FR",
+      "dob": {
+        "date": "1993-02-02",
+        "age": 33,
+        "ageGroup": "adult"
+      },
+      "location": {
+        "street": "230, Boulevard Daniel Adoua",
+        "city": "Brazzaville",
+        "state": "Brazzaville",
+        "country": {
+          "code": "CG",
+          "name": "Congo"
+        },
+        "postcode": null,
+        "coordinates": {
+          "latitude": -4.26613,
+          "longitude": 15.28318,
+          "precision": "city"
+        },
+        "formatted": "230, Boulevard Daniel Adoua\nBrazzaville"
+      },
+      "email": "c.arnaud.z2300@example.test",
+      "phone": "+242061242366",
+      "picture": {
+        "large": "https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/large/p_0233.webp",
+        "medium": "https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/medium/p_0233.webp",
+        "thumbnail": "https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/thumbnail/p_0233.webp"
+      }
+    }
+  ],
+  "meta": {
+    "count": 1,
+    "asOf": "2026-09-28",
+    "seed": "guide-v2",
+    "dataVersion": "geo-2026-09-26.1",
+    "catalogVersion": "v1",
+    "schemaVersion": "2"
+  }
+}

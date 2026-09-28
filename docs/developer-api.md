@@ -15,7 +15,7 @@ const { results, meta } = await response.json()
 console.log(results[0].name.full, results[0].location.city, meta.schemaVersion)
 ```
 
-The response has `results` and `meta` (`schemaVersion: "2"`). Each person includes nested `name`, `dob`, `location`, and `picture`. `login` is opt-in with `fields=login` or a nested path such as `fields=login.username`. Other examples are `fields=name.first,location.country.code,location.coordinates.latitude,picture.thumbnail`. `picture` can be `null`. The [full API contract](api.md) lists every field and parameter.
+The response has `results` and `meta` (`schemaVersion: "2"`). Each person includes nested `name`, `dob`, `location`, and `picture`; a [complete response example](../examples/people-response-v2.json) shows the shape. `login` is opt-in with `fields=login` or a nested path such as `fields=login.username`. Other examples are `fields=name.first,location.country.code,location.coordinates.latitude,picture.thumbnail`. `picture` can be `null`. The [full API contract](api.md) lists every field and parameter, and the [country table](country-availability.md) shows current data availability.
 
 ## Inputs and replay
 

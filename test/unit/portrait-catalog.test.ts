@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { portraitCoverage, portraitCoverageMatrix, selectPortrait, validatePortraitCatalog } from '../../src/portraits/catalog.js'
+import { approvedPortraitHash, portraitCoverage, portraitCoverageMatrix, selectPortrait, validatePortraitCatalog } from '../../src/portraits/catalog.js'
 import { appearanceCategories } from '../../src/geography/appearance.js'
 
 const asset = (id: string, overrides: Record<string, unknown> = {}) => ({
@@ -49,6 +49,21 @@ describe('approved portrait catalog', () => {
   it('rejects duplicate IDs, hashes, and mismatched object keys', () => {
     const invalid = catalog([asset('p_0001'), asset('p_0001', { objectKey: 'portraits/v1/adult/female/black/west-african/p_0001.webp' })])
     expect(validatePortraitCatalog(invalid).length).toBeGreaterThan(0)
+  })
+
+  it('uses one canonical large object for the source and public large rendition', () => {
+    const portrait = asset('p_0001', {
+      objectKey: 'portraits/v1/large/p_0001.webp',
+      variants: {
+        large: { objectKey: 'portraits/v1/large/p_0001.webp', sha256: `${'a'.repeat(63)}1` },
+        medium: { objectKey: 'portraits/v1/medium/p_0001.webp', sha256: 'b'.repeat(64) },
+        thumbnail: { objectKey: 'portraits/v1/thumbnail/p_0001.webp', sha256: 'c'.repeat(64) },
+      },
+    })
+    const manifest = catalog([portrait])
+    expect(validatePortraitCatalog(manifest)).toEqual([])
+    expect(approvedPortraitHash(manifest, 'portraits/v1/large/p_0001.webp')).toBe(`${'a'.repeat(63)}1`)
+    expect(approvedPortraitHash(manifest, 'portraits/v1/p_0001.webp')).toBeUndefined()
   })
 
   it('matches either reviewed age band, including a neighboring adult band', () => {
@@ -104,6 +119,7 @@ describe('approved portrait catalog', () => {
     expect(portraitCatalog.assets).toHaveLength(1764)
     expect(portraitCatalog.assets.every((entry) => entry.collection)).toBe(true)
     expect(portraitCatalog.assets.every((entry) => entry.reviewStatus === 'approved')).toBe(true)
+    expect(portraitCatalog.assets.every((entry) => entry.objectKey === entry.variants?.large.objectKey)).toBe(true)
     expect(validatePortraitCatalog(portraitCatalog)).toEqual([])
   })
 })

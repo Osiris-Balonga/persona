@@ -19,7 +19,7 @@ const approved: ReviewItem = {
 describe('reviewed portrait export', () => {
   it('maps approved local metadata to a stable R2 import record', () => {
     expect(reviewedPortraitRecords([approved], 'v1')).toEqual([expect.objectContaining({
-      id: 'p_0049', objectKey: 'portraits/v1/p_0049.webp', catalogVersion: 'v1',
+      id: 'p_0049', objectKey: 'portraits/v1/large/p_0049.webp', catalogVersion: 'v1',
       apparentAgeRanges: [[23, 27], [28, 32], [33, 37]], appearanceTags: ['black'],
       sha256: 'a'.repeat(64), reviewStatus: 'approved', reviewer: 'Osiris Balonga',
       reviewedAt: '2026-09-26', decisionReason: 'Conforme après inspection visuelle',
