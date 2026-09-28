@@ -20,6 +20,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run data:availability:check
       - run: npm run typecheck
       - run: npm run typecheck:worker
       - run: npm run test:unit

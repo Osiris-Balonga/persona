@@ -8,11 +8,11 @@ Only `dev` may be merged into `main`, through a pull request. Do not push direct
 
 ## Testing
 
-For each behavior change, write a focused test first and confirm that it fails for the expected reason. Implement the behavior, make the test pass, then refactor. Choose the smallest useful scope: unit tests for isolated rules, integration tests for component and HTTP boundaries, and a few end-to-end tests for complete API flows. Once the stack is chosen, keep these suites independently runnable.
+For each behavior change, write a focused test first and confirm that it fails for the expected reason. Implement the behavior, make the test pass, then refactor. Choose the smallest useful scope: unit tests for isolated rules, integration tests for component and HTTP boundaries, and a few end-to-end tests for complete API flows. Keep these suites independently runnable.
 
 Use plausible fixtures and assert product behavior rather than duplicating implementation details. Cover meaningful boundaries and failure modes without repeating the same scenario at every scope. State the checks actually run in the pull request.
 
-Run `npm run test:unit` for isolated rules and `npm run test:integration` for application boundaries. `npm run test:e2e` is reserved for complete API flows; that suite has no tests yet. Run `npm run typecheck` and `npm run build` before opening a pull request. CI runs the suites that currently contain tests.
+Run `npm run test:unit` for isolated rules, `npm run test:integration` for application boundaries, and `npm run test:e2e` for complete API flows. Run `npm run data:availability:check`, `npm run typecheck`, and `npm run build` before opening a pull request. CI runs all three test suites.
 
 ## Repository content
 

@@ -14,7 +14,7 @@ export function reviewedPortraitRecords(items: readonly ReviewItem[], version: s
         : [[metadata.secondaryAgeMin, metadata.secondaryAgeMax as number] as const]),
     ]
     return {
-      id: item.id, objectKey: `portraits/${version}/${item.id}.webp`, catalogVersion: version,
+      id: item.id, objectKey: `portraits/${version}/large/${item.id}.webp`, catalogVersion: version,
       ageGroup: metadata.ageGroup, apparentAgeRanges: ranges, gender: metadata.gender,
       visualGroup: metadata.visualGroup, appearance: metadata.appearance,
       ...(item.collection ? { collection: item.collection } : {}),

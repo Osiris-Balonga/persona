@@ -57,8 +57,9 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
     if (!/^p_\d{4,}$/.test(asset.id) || ids.has(asset.id)) errors.push(`Invalid or duplicate portrait ID ${asset.id}`)
     ids.add(asset.id)
     const stableKey = `portraits/${catalog.version}/${asset.id}.webp`
+    const canonicalLargeKey = `portraits/${catalog.version}/large/${asset.id}.webp`
     const legacyKey = `portraits/${catalog.version}/${asset.ageGroup}/${asset.gender}/${asset.visualGroup}/${asset.appearance}/${asset.id}.webp`
-    if (![stableKey, legacyKey].includes(asset.objectKey) || keys.has(asset.objectKey)) errors.push(`Invalid or duplicate portrait key ${asset.id}`)
+    if (![stableKey, canonicalLargeKey, legacyKey].includes(asset.objectKey) || keys.has(asset.objectKey)) errors.push(`Invalid or duplicate portrait key ${asset.id}`)
     keys.add(asset.objectKey)
     if (asset.catalogVersion !== catalog.version || !['child', 'teen', 'adult', 'senior'].includes(asset.ageGroup)
       || !['male', 'female'].includes(asset.gender) || !/^[a-z]+(?:-[a-z]+)*$/.test(asset.visualGroup)
@@ -92,7 +93,8 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
       for (const size of portraitVariantSizes) {
         const rendition = asset.variants[size]
         const expectedKey = `portraits/${catalog.version}/${size}/${asset.id}.webp`
-        if (rendition === undefined || rendition.objectKey !== expectedKey || keys.has(expectedKey)
+        if (rendition === undefined || rendition.objectKey !== expectedKey
+          || (keys.has(expectedKey) && !(size === 'large' && asset.objectKey === expectedKey))
           || !/^[a-f0-9]{64}$/.test(rendition.sha256)) {
           errors.push(`Invalid portrait ${size} variant ${asset.id}`)
         }

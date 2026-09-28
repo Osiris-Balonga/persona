@@ -1,44 +1,11 @@
-# Persona V1
+# Persona product scope
 
-Persona generates coherent fictional people for interface design, development, and testing. The first release is a public HTTP API with no API key. A small group of developers will evaluate the beta first, while access remains public.
+Persona is a public, keyless API for fictional people used in interfaces and tests. A profile combines a reviewed local name, an age and birth date, an illustrative location, contact fields, and a synthetic portrait when the selected collection contains a compatible image. The beta supports a small group of developers first.
 
-## A person
+`GET /people` is the current public interface. Its [v2 contract](api.md) defines the precise query parameters, response schema, errors, and replay rules. Callers may choose nationality independently of residence, filter nationality by continent, choose one or more age groups, select a gender or sampled city, set an email domain, and project public fields. Exact age and visual appearance are not public filters. The response includes a numeric age from 6 to 100, a structured name and location, and large, medium, and thumbnail portrait URLs or `picture: null`.
 
-A V1 person has an identity (`id`, `firstName`, `lastName`, `fullName`), a gender, a numeric `age`, a derived `ageGroup`, and a `dateOfBirth`. It has an appearance category and a location with a country, city, and structured address. It may include a fictional email and phone number and a URL for a reviewed synthetic portrait. The public schema will define exact formats, required fields, and nullability.
+The registry recognizes 249 assigned country and territory codes. Profile generation is available for codes with reviewed local name pools and resident city samples. [Country availability](country-availability.md) distinguishes available, pending, and unavailable codes and reports city-level postcode and phone-source coverage. A recognized code does not imply that every field is available. Street lines are synthetic; coordinates identify the sampled city, not a street or person. Where no city-linked postcode is available, `location.postcode` is `null`. Some phone numbers are format-valid fallbacks that may belong to real subscribers and must not be contacted.
 
-The age group is calculated from the numeric age: `child` is 6–12, `teen` is 13–17, `adult` is 18–64, and `senior` is 65 or older. A request may use `age=14` for an exact age or `ageGroup=teen` when the exact age is left to Persona. `age=teen` is invalid, and an explicit age and age group that disagree are rejected.
+Portraits are generated separately, reviewed by a person, and published only after approval. The production collection and apparent age help choose a compatible portrait; tags and skin-tone annotations support editorial review and are not assertions about ancestry or a country's population. A name is never inferred from a face. See the [review procedure](portrait-review.md) and [delivery architecture](portrait-delivery.md).
 
-`asOf` is a calendar date in `YYYY-MM-DD` format. When omitted, the API uses the current UTC date and returns that resolved date so the request can be replayed. Age changes on the calendar birthday at `asOf`; for a February 29 birth, the anniversary falls on March 1 in non-leap years. A birth date after `asOf` is invalid. The seed and resolved `asOf`, together with request parameters and data versions, determine a reproducible generated result.
-
-The full public object has a [V1 example](../examples/person-v1.json) and a versioned [TypeBox schema](../src/contracts/person.ts). Its fields have these shapes:
-
-| Field | V1 shape |
-| --- | --- |
-| `id` | Nonempty identifier prefixed with `per_` |
-| `firstName`, `lastName`, `fullName` | Three nonempty strings; `fullName` combines the first and last display components |
-| `gender` | `male` or `female` |
-| `age`, `ageGroup`, `dateOfBirth` | Integer from 6 to 100; `child`, `teen`, `adult`, or `senior`; RFC 3339 full date (`YYYY-MM-DD`) |
-| `appearance`, `country`, `city` | Nonempty appearance label; uppercase two-letter code from the registry; nonempty city |
-| `address` | nullable `line1`, `city`, nullable `region`, nullable `postalCode`, `country`, and country-ordered `formatted` |
-| `email`, `phone` | Email at `example.test`; phone from a reviewed fictional range or `null` when no safe range is available |
-| `picture` | Object with an HTTPS `url`, or `null` when no compatible approved portrait is available |
-
-The default response omits the derived `ageGroup` and `appearance`; either can be requested explicitly with `fields`. The [field selection contract](api.md#selecting-fields) may omit public fields, but internal fields are never part of this schema. Format checks do not replace the generation rules that will keep age and birth date, country and city, or address components consistent.
-
-`firstName` and `lastName` are always populated so developers can use them in ordinary two-field forms. Some naming traditions do not use an inherited family surname; in those cases, `lastName` is a second display component of a plausible complete name, not a claim about ancestry. `firstName` can contain more than one word.
-
-Cities belong to their selected countries. Addresses use the available country format and a city-linked postal code when verified; otherwise `postalCode` is `null`. They are fictional and not meant for delivery. Email addresses use a domain reserved for examples. Phone generation follows each country's format and uses non-assignable test ranges where available; limitations must be stated where no safe range is known. Persona does not present these values as real contact details.
-
-The versioned registry recognizes every assigned country and territory code. Beta profile generation is enabled for resident codes only after a local name-pool review; other codes remain visible as pending or unavailable in the coverage matrix. A country does not imply a single appearance. A requested available country and appearance are both respected, and names are selected independently of the portrait.
-
-## Requests and reproducibility
-
-`GET /people` will accept a bounded `count` and filters for gender, numeric age, age group, appearance, country, and city. A `fields` query parameter will select public response fields, including nested fields such as `picture.url`. Unknown or internal fields will be rejected. Selecting fewer fields must not change the retained values for the same generated person.
-
-`seed` and `asOf`, together with the request parameters and the versions of the datasets and portrait catalog, make a response reproducible. Without a seed, responses may differ. The [HTTP contract](api.md) defines request limits, errors, replay, and cache behavior; rate limits will be fixed before the public beta opens.
-
-Portraits come from a pre-generated, reviewed catalog; requests do not generate images. The API selects by country-linked production collection, gender, and apparent age. An absent matching portrait has an explicit outcome. Producing further images remains gated by separate authorization from the project owner.
-
-## Scope
-
-V1 focuses on fictional people. It does not generate employers, income, identity documents, health details, biographies, or unrelated fake-data categories. The JavaScript SDK is a later milestone; the HTTP API is the V1 interface.
+Persona does not generate employers, income, identity documents, health details, or biographies. Its addresses, contacts, and credentials are test data, not verified real-world records. The earlier V1 response and schema remain in `examples/` and `src/contracts/` for project history; the v2 contract is authoritative for current clients.
