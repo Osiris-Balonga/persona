@@ -6,10 +6,10 @@ describe('public API over HTTP', () => {
     const app = buildApp({ rateLimitMax: 1 })
     try {
       const address = await app.listen({ host: '127.0.0.1', port: 0 })
-      const url = `${address}/people?country=MW&seed=pilot&asOf=2026-09-24`
+      const url = `${address}/people?nationality=MW&seed=pilot&asOf=2026-09-24`
       const first = await fetch(url)
       expect(first.status).toBe(200)
-      expect((await first.json()).results[0].country).toBe('MW')
+      expect((await first.json()).results[0].nationality).toBe('MW')
       const second = await fetch(url)
       expect(second.status).toBe(429)
       expect(Number(second.headers.get('retry-after'))).toBeGreaterThan(0)

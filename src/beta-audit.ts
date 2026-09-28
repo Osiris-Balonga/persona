@@ -1,8 +1,7 @@
 import Value from 'typebox/value'
 import { buildApp } from './app.js'
-import { isAgeProfileConsistent } from './age.js'
-import { PeopleResponseSchema } from './contracts/people.js'
-import { PersonSchema } from './contracts/person.js'
+import { ageOn, ageGroupForAge } from './age.js'
+import { DefaultPublicPeopleResponseSchema } from './contracts/public-people.js'
 import { listCountries } from './geography/countries.js'
 import { getCity } from './geography/cities.js'
 import { listCoverage } from './geography/coverage.js'
@@ -26,9 +25,8 @@ export async function auditBetaHttp() {
       if (status === 'available') available.push(code)
       else if (status === 'pending-name-review') pendingNameReview.push(code)
       else unavailable.push(code)
-      const baseUrl = `/people?country=${code}&count=2&age=27&gender=female&appearance=east-asian&seed=beta-audit&asOf=${asOf}`
-      const url = `${baseUrl}&fields=${Object.keys(PersonSchema.properties).join(',')}`
-      const response = await app.inject({ method: 'GET', url })
+      const baseUrl = `/people?nationality=${code}&count=2&ageGroup=adult&gender=female&seed=beta-audit&asOf=${asOf}`
+      const response = await app.inject({ method: 'GET', url: baseUrl })
       if (status !== 'available') {
         if (response.statusCode !== 400 || response.json().error?.code !== 'UNSUPPORTED_VALUE') {
           errors.push(`${code}: unavailable code did not return UNSUPPORTED_VALUE`)
@@ -37,33 +35,38 @@ export async function auditBetaHttp() {
       }
       if (response.statusCode !== 200) { errors.push(`${code}: HTTP ${response.statusCode}`); continue }
       const body = response.json()
-      if (!Value.Check(PeopleResponseSchema, body)) { errors.push(`${code}: invalid response schema`); continue }
+      if (!Value.Check(DefaultPublicPeopleResponseSchema, body)) { errors.push(`${code}: invalid response schema`); continue }
       if (body.meta.count !== 2 || body.meta.seed !== 'beta-audit' || body.meta.asOf !== asOf ||
         body.meta.catalogVersion !== portraitCatalog.version || body.results[0].id === body.results[1].id) {
         errors.push(`${code}: invalid response metadata or duplicate person`)
       }
       for (const person of body.results) {
-        if (person.country !== code || !getCity(code, person.city) || person.address.country !== code ||
-          person.address.city !== person.city || !person.address.formatted.includes(person.city) ||
-          !person.firstName.trim() || !person.lastName.trim() || !person.fullName.trim() ||
-          person.age !== 27 || person.gender !== 'female' || person.appearance !== 'east-asian' ||
-          !isAgeProfileConsistent(person, asOf) || !person.email.endsWith('@example.test') ||
+        const city = getCity(code, person.location.city)
+        if (person.nationality !== code || !city || person.location.country.code !== code ||
+          person.location.coordinates.latitude !== city.latitude ||
+          person.location.coordinates.longitude !== city.longitude ||
+          person.location.coordinates.precision !== 'city' ||
+          !person.location.formatted.includes(person.location.city) ||
+          !person.name.first.trim() || !person.name.last.trim() || !person.name.full.trim() ||
+          person.dob.ageGroup !== 'adult' || person.gender !== 'female' ||
+          ageGroupForAge(person.dob.age) !== person.dob.ageGroup ||
+          ageOn(person.dob.date, asOf) !== person.dob.age || !person.email.endsWith('@example.test') ||
           (person.phone !== null && (!country.callingCode || !person.phone.startsWith(country.callingCode))) ||
           (person.picture !== null && !portraitCatalog.assets.some((asset) =>
             asset.reviewStatus === 'approved' && asset.collection === collectionForCountry(code) &&
             asset.gender === person.gender &&
-            asset.apparentAgeRanges.some(([minimum, maximum]) => person.age >= minimum && person.age <= maximum) &&
-            person.picture?.url === `${portraitCatalog.publicBaseUrl}/${asset.objectKey}`))) {
+            asset.apparentAgeRanges.some(([minimum, maximum]) => person.dob.age >= minimum && person.dob.age <= maximum) &&
+            person.picture?.large === `${portraitCatalog.publicBaseUrl}/portraits/${portraitCatalog.version}/large/${asset.id}.webp`))) {
           errors.push(`${code}: incoherent generated person`)
         }
       }
-      const replay = await app.inject({ method: 'GET', url })
+      const replay = await app.inject({ method: 'GET', url: baseUrl })
       if (replay.statusCode !== 200 || replay.body !== response.body) errors.push(`${code}: seeded replay changed`)
-      const projected = await app.inject({ method: 'GET', url: `${baseUrl}&fields=firstName,address.city,picture.url` })
+      const projected = await app.inject({ method: 'GET', url: `${baseUrl}&fields=name.first,location.city,picture.thumbnail` })
       if (projected.statusCode !== 200 || projected.json().meta.count !== 2 ||
-        projected.json().results.some((person: { firstName: string; address: { city: string }; picture: unknown }, index: number) =>
-          person.firstName !== body.results[index].firstName || person.address.city !== body.results[index].city ||
-          JSON.stringify(person.picture) !== JSON.stringify(body.results[index].picture))) {
+        projected.json().results.some((person: { name: { first: string }; location: { city: string }; picture: { thumbnail: string } | null }, index: number) =>
+          person.name.first !== body.results[index].name.first || person.location.city !== body.results[index].location.city ||
+          person.picture?.thumbnail !== body.results[index].picture?.thumbnail)) {
         errors.push(`${code}: field projection changed generated values`)
       }
     }

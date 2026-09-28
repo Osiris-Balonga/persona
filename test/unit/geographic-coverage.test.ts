@@ -1,15 +1,25 @@
 import { describe, expect, it } from 'vitest'
+import { parsePhoneNumberFromString } from 'libphonenumber-js/max'
 import { listCoverage, validateGeographicData } from '../../src/geography/coverage.js'
 import { fictionalPhone } from '../../src/geography/fictional-contact.js'
 import { listCities } from '../../src/geography/cities.js'
+import { getCountry } from '../../src/geography/countries.js'
 
 describe('geographic source coverage', () => {
-  it('marks phone coverage when every sampled city has a number', () => {
+  it('covers every sampled city with a reserved range or a valid mobile-example fallback', () => {
     const key = '0123456789abcdef'.repeat(4)
     for (const row of listCoverage().filter((entry) => entry.generation === 'eligible')) {
-      const hasPhone = row.phone.status === 'ingested' || row.phone.status === 'partial'
+      const hasReservedRange = row.phone.status === 'ingested' || row.phone.status === 'partial'
       for (const city of listCities(row.country)) {
-        expect(fictionalPhone(row.country, city.name, key) !== null, `${row.country}/${city.name}`).toBe(hasPhone)
+        const phone = fictionalPhone(row.country, city.name, key)
+        if (hasReservedRange || row.profileGeneration === 'available') {
+          expect(phone, `${row.country}/${city.name}`).not.toBeNull()
+        }
+        if (!hasReservedRange && phone !== null) {
+          const parsed = parsePhoneNumberFromString(phone)
+          expect(parsed?.countryCallingCode, row.country).toBe(getCountry(row.country)?.callingCode?.slice(1))
+          expect(parsed?.isValid(), row.country).toBe(true)
+        }
       }
     }
   })
@@ -56,7 +66,9 @@ describe('geographic source coverage', () => {
     ]) {
       expect(rows.find((row) => row.country === country)?.phone).toMatchObject({ status: 'ingested', source })
     }
-    expect(rows.find((row) => row.country === 'CG')?.phone).toMatchObject({ status: 'pending' })
+    expect(rows.find((row) => row.country === 'CG')?.phone).toMatchObject({
+      status: 'partial', source: 'libphonenumber-js', fallback: 'format-valid-unreserved',
+    })
     expect(rows.find((row) => row.country === 'AQ')).toMatchObject({
       cities: { status: 'not-applicable', source: null },
     })

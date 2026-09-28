@@ -16,10 +16,12 @@ describe('generated geographic profiles', () => {
     const failures: string[] = []
     const countries = listCountries().filter(canGenerateProfile)
     for (const country of countries) {
-      const query = parsePeopleQuery(new URLSearchParams(`country=${country.code}&ageGroup=teen&seed=core-audit&asOf=2025-02-28`))
+      const query = parsePeopleQuery(new URLSearchParams(`nationality=${country.code}&ageGroup=teen&seed=core-audit&asOf=2025-02-28`))
       const person = generatePersonWithoutPortrait(query, createGenerationContext(query, versions), 0)
-      if (!Value.Check(PersonSchema, { ...person, picture: null })
+      const { locationCity, ...schemaPerson } = person
+      if (!Value.Check(PersonSchema, { ...schemaPerson, picture: null })
         || person.country !== country.code || !getCity(country.code, person.city)
+        || locationCity.country !== country.code || locationCity.name !== person.city
         || person.address.country !== country.code || person.address.city !== person.city
         || ageOn(person.dateOfBirth, query.asOf) !== person.age
         || person.phone !== null && !person.phone.startsWith(country.callingCode ?? '')) {
