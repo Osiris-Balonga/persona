@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Persona · Revue des portraits</title>
+    <link rel="stylesheet" href="/app.css" />
+    <script src="/app.js" type="module"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-head">
+        <div>
+          <span class="eyebrow">Bibliothèque de portraits</span>
+          <h1>Revue des images</h1>
+          <p>
+            Portraits classés par région de production. Les caractéristiques et la décision
+            se trouvent dans la fiche de chaque image.
+          </p>
+        </div>
+        <div class="import-controls"><label>Lot d’import<select id="uploadCollection"><option value="">À classer plus tard</option></select></label><button class="primary" id="uploadButton" type="button">
+          ＋ Importer des photos</button
+        ></div><input
+          id="fileInput"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          multiple
+          hidden
+        />
+      </header>
+      <div class="workspace">
+        <aside class="sidebar">
+          <div class="sidebar-inner">
+            <div class="side-title">Régions</div>
+            <nav id="appearanceNav" aria-label="Régions des portraits"></nav>
+            <div class="side-footer">
+              <span id="totalCount">0</span> portraits ·
+              <span id="readyCount">0</span> à valider
+            </div>
+          </div>
+        </aside>
+        <section class="content">
+          <div class="toolbar">
+            <div class="status-tabs" id="statusNav" aria-label="Statuts">
+              <button type="button" data-status="all" class="active">
+                Tous <span id="nav-all">0</span></button
+              ><button type="button" data-status="ready-for-review">
+                À valider <span id="nav-ready-for-review">0</span></button
+              ><button type="button" data-status="needs-metadata">
+                À documenter <span id="nav-needs-metadata">0</span></button
+              ><button type="button" data-status="approved">
+                Approuvés <span id="nav-approved">0</span></button
+              ><button type="button" data-status="rejected">
+                Rejetés <span id="nav-rejected">0</span></button
+              ><button type="button" data-status="processing-error">
+                Erreurs <span id="nav-processing-error">0</span>
+              </button>
+            </div>
+            <div class="gallery-filters" aria-label="Filtres des portraits">
+              <label>Catégorie d’âge<select id="filterAgeGroup">
+                <option value="all">Toutes</option>
+                <option value="child">Enfant</option>
+                <option value="teen">Ado</option>
+                <option value="adult">Adulte</option>
+                <option value="senior">Senior</option>
+              </select></label>
+              <label>Tranche d’âge<select id="filterAgeRange">
+                <option value="all">Toutes</option>
+              </select></label>
+              <label>Genre<select id="filterGender">
+                <option value="all">Tous</option>
+                <option value="female">Femme</option>
+                <option value="male">Homme</option>
+              </select></label>
+              <label>Fichier<select id="filterQuality">
+                <option value="all">Tous</option>
+                <option value="compliant">Conforme</option>
+                <option value="noncompliant">À corriger</option>
+              </select></label>
+              <button type="button" id="clearFilters" hidden>Effacer</button>
+              <button type="button" id="startSequence" class="secondary">Validation en série</button>
+              <button type="button" id="selectionToggle" aria-pressed="false">Sélection multiple</button>
+              <button type="button" id="selectVisible" aria-pressed="false" title="Cocher tous les portraits à valider affichés">Tout cocher</button>
+            </div>
+            <div id="selectionBar" class="selection-bar" hidden>
+              <strong id="selectionCount">0 sélectionné</strong>
+              <button type="button" id="clearSelection">Désélectionner</button>
+              <button type="button" class="reject" id="bulkReject" disabled>Rejeter</button>
+              <button type="button" class="primary" id="bulkApprove" disabled>Approuver</button>
+            </div>
+          </div>
+          <div id="dropZone" class="dropzone" tabindex="0">
+            <strong>Déposer des photos ici</strong
+            ><span>PNG, JPG, WebP · carrées · 512 px minimum · 20 Mo max</span
+            ><button type="button" id="dropBrowse">Parcourir</button>
+          </div>
+          <div id="message" class="message" role="status" hidden></div>
+          <div id="groups"></div>
+          <div id="empty" class="empty" hidden>
+            <strong>Aucun portrait dans cette sélection</strong>
+            <p>Choisis une autre région ou importe des photos.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <dialog id="serialDialog" aria-labelledby="serialTitle">
+      <div class="serial-shell">
+        <header class="serial-head">
+          <div>
+            <span class="eyebrow">Bibliothèque de portraits · Mode de revue</span>
+            <h1 id="serialTitle">Validation en série</h1>
+            <p>Un portrait à la fois, puis le suivant.</p>
+          </div>
+          <button type="button" id="closeSequence" class="serial-close" aria-label="Fermer la validation en série">×</button>
+        </header>
+        <div class="serial-progress">
+          <strong id="serialProgressCount">0 / 0 examinés</strong>
+          <progress id="serialProgressBar" max="1" value="0"></progress>
+          <span id="serialRemaining">0 à valider</span>
+          <span id="serialPosition">1er portrait</span>
+        </div>
+        <div id="serialReview">
+          <div class="serial-stage">
+            <button type="button" id="serialPrevious" class="serial-neighbor" aria-label="Portrait précédent">
+              <strong>Précédent</strong><img alt="" /><span></span>
+            </button>
+            <div class="serial-current">
+              <img id="serialImage" alt="Portrait en cours de revue" />
+              <div class="serial-caption"><strong id="serialId"></strong><span id="serialTechnical"></span></div>
+            </div>
+            <button type="button" id="serialNext" class="serial-neighbor" aria-label="Portrait suivant">
+              <strong>Suivant</strong><img alt="" /><span></span>
+            </button>
+          </div>
+          <div class="serial-bottom">
+            <div id="serialFormHost"></div>
+            <div class="serial-actions">
+              <button type="button" class="reject" id="serialReject">Rejeter</button>
+              <button type="button" class="primary" id="serialApprove">Approuver →</button>
+              <button type="button" class="secondary" id="serialReopen" hidden>Remettre à valider</button>
+            </div>
+          </div>
+          <p id="serialError" class="bulk-error" role="alert" hidden></p>
+        </div>
+        <div id="serialDone" class="serial-done" hidden>
+          <h2>Fin de la file</h2>
+          <p id="serialDoneText"></p>
+          <button type="button" class="primary" id="serialDoneClose">Revenir à la galerie</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="serialRejectDialog" class="bulk-dialog" aria-labelledby="serialRejectTitle">
+      <h2 id="serialRejectTitle">Rejeter ce portrait</h2>
+      <label for="serialRejectReason">Motif du rejet</label>
+      <textarea id="serialRejectReason" rows="3" placeholder="Ex. : âge apparent incohérent, artefact visible…"></textarea>
+      <p id="serialRejectError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="serialRejectCancel">Annuler</button>
+        <button type="button" class="reject" id="serialRejectConfirm">Rejeter et suivant →</button>
+      </div>
+    </dialog>
+    <dialog id="detailDialog">
+      <div class="dialog-head">
+        <div>
+          <span class="eyebrow">Fiche de revue</span>
+          <h2 id="detailTitle">Portrait</h2>
+        </div>
+        <div class="dialog-head-actions">
+          <button type="button" id="detailActionsToggle" class="icon-button" aria-label="Plus d’actions" aria-expanded="false" aria-controls="detailActionsMenu" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>
+          </button>
+          <div id="detailActionsMenu" class="detail-actions-menu" hidden>
+            <button type="button" id="reopenButton">Remettre à valider</button>
+          </div>
+          <button type="button" id="closeDialog" class="icon-button" aria-label="Fermer">×</button>
+        </div>
+      </div>
+      <div class="dialog-scroll">
+      <div class="dialog-layout">
+        <div class="preview-column">
+          <img id="detailImage" alt="Portrait à vérifier" />
+          <div id="technicalInfo" class="technical"></div>
+        </div>
+        <div class="review-column">
+          <label class="collection-field">Lot de production<select id="detailCollection"><option value="">À classer</option></select></label>
+          <div class="section-heading">
+            <h3>Caractéristiques proposées</h3>
+            <p>Corrige un choix seulement si nécessaire.</p>
+          </div>
+          <form id="metadataForm">
+            <div class="form-grid">
+              <div class="age-picker-field">
+                <span id="agePickerLabel">Âges apparents</span>
+                <div class="age-picker" id="agePicker">
+                  <button type="button" id="agePickerToggle" aria-labelledby="agePickerLabel agePickerSummary" aria-expanded="false" aria-controls="agePickerMenu">
+                    <span id="agePickerSummary">Choisir une ou plusieurs tranches</span><span aria-hidden="true">⌄</span>
+                  </button>
+                  <div id="agePickerMenu" class="age-picker-menu" hidden>
+                    <p>Choisis des tranches consécutives.</p>
+                    <div id="agePickerOptions"></div>
+                    <button type="button" id="clearAgeRanges">Effacer la sélection</button>
+                  </div>
+                </div>
+              </div>
+              <label
+                >Genre<select name="gender" required>
+                  <option value="">Choisir</option>
+                  <option value="female">Femme</option>
+                  <option value="male">Homme</option>
+                </select></label
+              >
+              <div class="appearance-picker-field">
+                <span id="appearancePickerLabel">Compatibilités visuelles</span>
+                <div class="age-picker" id="appearancePicker">
+                  <button type="button" id="appearancePickerToggle" aria-labelledby="appearancePickerLabel appearancePickerSummary" aria-expanded="false" aria-controls="appearancePickerMenu">
+                    <span id="appearancePickerSummary">Choisir un ou plusieurs tags</span><span aria-hidden="true">⌄</span>
+                  </button>
+                  <div id="appearancePickerMenu" class="age-picker-menu" hidden>
+                    <p>Un portrait peut convenir à plusieurs apparences.</p>
+                    <div id="appearancePickerOptions"></div>
+                  </div>
+                </div>
+              </div>
+              <fieldset class="skin-tone-field">
+                <legend>Teinte visuelle · échelle Monk</legend>
+                <div class="tone-options" role="radiogroup" aria-label="Teinte visuelle">
+                  <label><input type="radio" name="skinToneMst" value="1"/><span class="tone-swatch" style="--tone:#f7ede4"></span><span>1</span></label>
+                  <label><input type="radio" name="skinToneMst" value="2"/><span class="tone-swatch" style="--tone:#f3e7da"></span><span>2</span></label>
+                  <label><input type="radio" name="skinToneMst" value="3"/><span class="tone-swatch" style="--tone:#f6ead0"></span><span>3</span></label>
+                  <label><input type="radio" name="skinToneMst" value="4"/><span class="tone-swatch" style="--tone:#ead9bb"></span><span>4</span></label>
+                  <label><input type="radio" name="skinToneMst" value="5"/><span class="tone-swatch" style="--tone:#d7bd96"></span><span>5</span></label>
+                  <label><input type="radio" name="skinToneMst" value="6"/><span class="tone-swatch" style="--tone:#9f7d54"></span><span>6</span></label>
+                  <label><input type="radio" name="skinToneMst" value="7"/><span class="tone-swatch" style="--tone:#815d44"></span><span>7</span></label>
+                  <label><input type="radio" name="skinToneMst" value="8"/><span class="tone-swatch" style="--tone:#604234"></span><span>8</span></label>
+                  <label><input type="radio" name="skinToneMst" value="9"/><span class="tone-swatch" style="--tone:#3a312a"></span><span>9</span></label>
+                  <label><input type="radio" name="skinToneMst" value="10"/><span class="tone-swatch" style="--tone:#2a2420"></span><span>10</span></label>
+                </div>
+                <div class="tone-help"><span id="toneSelectionLabel">Non renseignée</span><button type="button" id="clearSkinTone" hidden>Effacer</button><a href="https://skintone.google/" target="_blank" rel="noopener noreferrer">Voir l’échelle</a></div>
+              </fieldset>
+            </div>
+            <div class="provenance">
+              <span>Origine et droits</span
+              ><strong id="rightsSummary">À renseigner par l’agent</strong
+              ><small id="evidenceSummary"></small>
+            </div>
+          </form>
+          <div class="decision-area">
+            <h3>Ta décision</h3>
+            <p id="decisionStatus" class="decision-status"></p>
+            <p id="reviewerLabel">Relecteur : Osiris Balonga</p>
+            <label for="decisionReason">Motif du rejet, si nécessaire</label
+            ><textarea
+              id="decisionReason"
+              rows="3"
+              placeholder="Ex. : âge apparent incohérent, artefact visible…"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="dialog-footer">
+        <p id="detailError" class="bulk-error" role="alert" hidden></p>
+        <div class="decision-buttons">
+          <button type="button" class="reject" id="rejectButton">Rejeter</button>
+          <button type="button" class="primary" id="approveButton">Approuver</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="confirmReopenDialog" class="bulk-dialog" aria-labelledby="confirmReopenTitle">
+      <h2 id="confirmReopenTitle">Remettre à valider ?</h2>
+      <p>La décision actuelle sera annulée. Le portrait restera dans la bibliothèque, avec ses caractéristiques et ses droits.</p>
+      <p id="confirmReopenError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="cancelReopen">Annuler</button>
+        <button type="button" class="primary" id="confirmReopen">Remettre à valider</button>
+      </div>
+    </dialog>
+    <dialog id="confirmDecisionDialog" class="bulk-dialog">
+      <h2 id="confirmDecisionTitle">Confirmer la décision</h2>
+      <p id="confirmDecisionText"></p>
+      <p id="confirmDecisionError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="cancelDecision">Annuler</button>
+        <button type="button" class="primary" id="confirmDecision">Confirmer</button>
+      </div>
+    </dialog>
+    <dialog id="bulkDialog" class="bulk-dialog">
+      <h2 id="bulkTitle">Décision groupée</h2>
+      <p id="bulkSummary"></p>
+      <label id="bulkReasonLabel" for="bulkReason">Motif du rejet</label>
+      <textarea id="bulkReason" rows="3" placeholder="Ex. : âge apparent incohérent, artefacts visibles…"></textarea>
+      <p id="bulkError" class="bulk-error" role="alert" hidden></p>
+      <div class="decision-buttons">
+        <button type="button" class="secondary" id="bulkCancel">Annuler</button>
+        <button type="button" class="primary" id="bulkConfirm">Confirmer</button>
+      </div>
+    </dialog>
+  </body>
+</html>
