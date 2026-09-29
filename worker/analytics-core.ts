@@ -26,7 +26,7 @@ const json = (value: unknown, status: number) => Response.json(value, {
   status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
 })
 
-function matchesToken(provided: string | null, expected: string): boolean {
+export function matchesToken(provided: string | null, expected: string): boolean {
   const actual = provided?.startsWith('Bearer ') ? provided.slice(7) : ''
   if (!expected || !actual) return false
   let difference = actual.length ^ expected.length

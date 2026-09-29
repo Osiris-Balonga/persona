@@ -5,10 +5,16 @@
   "account_id": "917acaaedf2bbea5593df5983921d617",
   "compatibility_date": "2026-09-28",
   "workers_dev": true,
+  "triggers": { "crons": ["17 2 * * *"] },
+  "r2_buckets": [{ "binding": "BACKUPS", "bucket_name": "persona-analytics-backups" }],
   "durable_objects": {
-    "bindings": [{ "name": "USAGE", "class_name": "UsageStore" }]
+    "bindings": [
+      { "name": "USAGE", "class_name": "UsageStore" },
+      { "name": "RECOVERY", "class_name": "RecoveryStore" }
+    ]
   },
   "exports": {
-    "UsageStore": { "type": "durable-object", "storage": "sqlite" }
+    "UsageStore": { "type": "durable-object", "storage": "sqlite" },
+    "RecoveryStore": { "type": "durable-object", "storage": "sqlite" }
   }
 }
