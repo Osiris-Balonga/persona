@@ -153,8 +153,9 @@ export default {
           backupPorts(input.environment, env, 'recovered'), new Date())
         return Response.json({ ...result, recoveryObject: `recovered:${input.environment}` },
           { headers: { 'Cache-Control': 'no-store' } })
-      } catch {
-        return Response.json({ error: 'Backup operation failed' }, { status: 503 })
+      } catch (error) {
+        return Response.json({ error: 'Backup operation failed',
+          detail: error instanceof Error ? error.message : 'Unknown error' }, { status: 503 })
       }
     }
     const dispatch: UsageDispatch = (environment: UsageEnvironment, operation, payload) => {
