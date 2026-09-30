@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs'
 
 export const version: string = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version
 
-export function help(command: string | undefined, color: boolean, format?: string): string {
-  const resource = !color ? 'logo.txt' : format === 'sixel' ? 'logo.sixel' : 'logo.ansi'
+export function help(command: string | undefined, color: boolean): string {
+  const resource = color ? 'logo.ansi' : 'logo.txt'
   const logo = readFileSync(new URL(`../assets/${resource}`, import.meta.url), 'utf8').trimEnd()
   const introduction = `${logo}\n\nPERSONA ${version}\nCoherent fictional people for fixtures and seeders.\n`
   const commands: Record<string, string> = {

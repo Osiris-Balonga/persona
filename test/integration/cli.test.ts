@@ -137,10 +137,14 @@ describe('CLI workflows', () => {
     expect(io.fetch).not.toHaveBeenCalled()
   })
 
-  it('renders an opt-in Sixel image only for colored terminal help', async () => {
+  it('renders the logo with Unicode blocks and leaves the terminal background untouched', async () => {
     const io = { ...options(), isTTY: true, env: { PERSONA_LOGO_FORMAT: 'sixel' } }
     expect(await runCli([], io)).toBe(0)
-    expect(stdout).toMatch(/\u001bP[0-9;]*q/)
+    expect(stdout).not.toMatch(/\u001bP[0-9;]*q/)
+    const logo = stdout.split('\n\n')[0]
+    expect(logo).not.toMatch(/\u001b\[[0-9;]*48;/)
+    expect(logo).not.toContain('255;255;255')
+    expect(logo.replace(/\u001b\[[0-9;]*m/g, '')).toMatch(/^[ █▀▄\r\n]+$/)
     expect(stdout).toContain('PERSONA')
     for (const override of [{ isTTY: false }, { env: { ...io.env, NO_COLOR: '' } }]) {
       stdout = ''

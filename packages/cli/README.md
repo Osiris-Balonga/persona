@@ -137,17 +137,17 @@ This creates `scripts/seed.ts` with the same fixture reader and example mapping.
 
 ### Terminal logo
 
-Discovery help uses a Chafa conversion of the original Persona logo, rather than a hand-drawn approximation.
-The default is a portable 48-column Unicode half-block rendering. On a terminal that supports Sixel
-(including Windows Terminal 1.22 or later), opt into the sharper 400 × 320 pixel image:
+Discovery help uses a Chafa character-art conversion of the original Persona logo. Its 40-column
+rendering is made entirely of Unicode `█`, `▀`, `▄` and spaces, colored with ANSI foreground sequences.
+White source areas become transparent negative space, so the terminal's own background stays visible.
+The source is sampled onto a 40 × 32 pixel grid using nearest-neighbor scaling, without smoothing.
+No bitmap image protocol or image is displayed at runtime.
 
 ```powershell
-$env:PERSONA_LOGO_FORMAT = 'sixel'
 npx.cmd --no-install persona
 ```
 
-Remove the variable to return to Unicode. Sixel is explicit because terminal identity alone does not
-prove image support. `--no-color`, `NO_COLOR`, and redirected output always use an escape-free monochrome
+`--no-color`, `NO_COLOR`, and redirected output always use an escape-free monochrome
 rendering; profile JSON never contains branding or image sequences. Logo display is part of discovery
 help (`persona` or `persona --help`); creating a seed template prints only its result.
 
@@ -156,7 +156,8 @@ redrawing. It is retained as the regeneration source and excluded from the npm a
 belongs to the project owner. Generated terminal assets are bundled; users need neither Chafa nor an
 image library. To regenerate them, install [Chafa](https://hpjansson.org/chafa/) 1.18.3 and run
 `node scripts/generate-cli-logo.mjs` from the repository root. Set `CHAFA_BIN` to its executable path if
-it is not on PATH. The generator reduces JPEG noise to a three-color palette before conversion.
+it is not on PATH. The generator snaps JPEG edge noise to the original brand palette, removes white,
+and uses Chafa's `symbols` mode with `--fg-only --symbols space+solid+vhalf`.
 
 ### Package validation
 

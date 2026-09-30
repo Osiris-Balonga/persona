@@ -17,7 +17,7 @@ try {
   const files = archive.files.map((file) => file.path)
   for (const required of ['dist/index.js', 'data/countries.json', 'templates/shared.ts.txt',
     'templates/prisma.ts.txt', 'templates/generic.ts.txt', 'assets/logo.ansi', 'assets/logo.txt',
-    'assets/logo.sixel', 'LICENSE', 'README.md']) {
+    'LICENSE', 'README.md']) {
     assert.ok(files.includes(required), `Missing package resource: ${required}`)
   }
   assert.ok(files.every((file) => /^(dist\/|data\/|templates\/|assets\/|package.json$|LICENSE$|README.md$)/.test(file)),

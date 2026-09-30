@@ -19,8 +19,7 @@ export async function runCli(args: string[], options: CliOptions): Promise<numbe
     const command = parseCommand(args)
     switch (command.kind) {
       case 'help':
-        options.stdout(help(command.command, options.isTTY && !command.noColor && options.env.NO_COLOR === undefined,
-          options.env.PERSONA_LOGO_FORMAT))
+        options.stdout(help(command.command, options.isTTY && !command.noColor && options.env.NO_COLOR === undefined))
         break
       case 'version': options.stdout(`${version}\n`); break
       case 'people': {
