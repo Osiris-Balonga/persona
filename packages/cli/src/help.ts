@@ -2,23 +2,9 @@ import { readFileSync } from 'node:fs'
 
 export const version: string = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version
 
-// Terminal adaptation of persona-web/public/persona-mark.svg (100 x 80).
-const mark = [
-  '######+++++++',
-  '######++ +++++++',
-  '######++++++++ +++',
-  '######++++++++++++++',
-  '######    ++++++++',
-  '######    +++++++',
-  '######    +++++++',
-  '######    +++++++',
-]
-
-export function help(command: string | undefined, color: boolean): string {
-  const logo = mark.map((line) => color
-    ? line.replace(/#+/g, (part) => `\u001b[38;2;46;230;166m${'█'.repeat(part.length)}\u001b[0m`)
-      .replace(/\++/g, (part) => `\u001b[38;2;44;62;191m${'█'.repeat(part.length)}\u001b[0m`)
-    : line.replace(/[#+]/g, '█')).join('\n')
+export function help(command: string | undefined, color: boolean, format?: string): string {
+  const resource = !color ? 'logo.txt' : format === 'sixel' ? 'logo.sixel' : 'logo.ansi'
+  const logo = readFileSync(new URL(`../assets/${resource}`, import.meta.url), 'utf8').trimEnd()
   const introduction = `${logo}\n\nPERSONA ${version}\nCoherent fictional people for fixtures and seeders.\n`
   const commands: Record<string, string> = {
     people: `Usage: persona people [options]

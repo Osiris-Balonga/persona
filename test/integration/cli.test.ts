@@ -136,4 +136,22 @@ describe('CLI workflows', () => {
     expect(stdout).not.toContain('\u001b')
     expect(io.fetch).not.toHaveBeenCalled()
   })
+
+  it('renders an opt-in Sixel image only for colored terminal help', async () => {
+    const io = { ...options(), isTTY: true, env: { PERSONA_LOGO_FORMAT: 'sixel' } }
+    expect(await runCli([], io)).toBe(0)
+    expect(stdout).toMatch(/\u001bP[0-9;]*q/)
+    expect(stdout).toContain('PERSONA')
+    for (const override of [{ isTTY: false }, { env: { ...io.env, NO_COLOR: '' } }]) {
+      stdout = ''
+      await runCli([], { ...io, ...override })
+      expect(stdout).not.toContain('\u001b')
+    }
+    stdout = ''
+    await runCli(['--no-color'], io)
+    expect(stdout).not.toContain('\u001b')
+    stdout = ''
+    await runCli(['people'], io)
+    expect(JSON.parse(stdout)).toEqual(response)
+  })
 })

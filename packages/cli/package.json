@@ -7,7 +7,7 @@
   "type": "module",
   "engines": { "node": ">=24 <25" },
   "bin": { "persona": "dist/index.js" },
-  "files": ["dist", "data", "templates", "LICENSE"],
+  "files": ["dist", "data", "templates", "assets", "LICENSE"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Osiris-Balonga/persona.git",

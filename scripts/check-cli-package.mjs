@@ -16,10 +16,11 @@ try {
   const [archive] = JSON.parse(packed.stdout)
   const files = archive.files.map((file) => file.path)
   for (const required of ['dist/index.js', 'data/countries.json', 'templates/shared.ts.txt',
-    'templates/prisma.ts.txt', 'templates/generic.ts.txt', 'LICENSE', 'README.md']) {
+    'templates/prisma.ts.txt', 'templates/generic.ts.txt', 'assets/logo.ansi', 'assets/logo.txt',
+    'assets/logo.sixel', 'LICENSE', 'README.md']) {
     assert.ok(files.includes(required), `Missing package resource: ${required}`)
   }
-  assert.ok(files.every((file) => /^(dist\/|data\/|templates\/|package.json$|LICENSE$|README.md$)/.test(file)),
+  assert.ok(files.every((file) => /^(dist\/|data\/|templates\/|assets\/|package.json$|LICENSE$|README.md$)/.test(file)),
     'The archive must only contain the executable, required resources and package documentation.')
   await writeFile(join(temporary, 'package.json'), '{"name":"persona-cli-install-check","private":true}')
   await execute(process.execPath, [npmCli, 'install', '--save-dev', join(temporary, archive.filename),
@@ -28,6 +29,7 @@ try {
   const prefix = process.platform === 'win32' ? ['/d', '/c', 'node_modules\\.bin\\persona.cmd'] : []
   const run = (args) => execute(binary, [...prefix, ...args], { cwd: temporary, timeout: 10_000 })
   assert.equal((await run(['--version'])).stdout.trim(), expected.version)
+  assert.match((await run(['--help'])).stdout, /PERSONA/)
   const country = JSON.parse((await run(['countries', '--country', 'CG', '--json'])).stdout)
   assert.equal(country.countries[0].code, 'CG')
   await run(['seed', 'init', '--adapter', 'prisma'])

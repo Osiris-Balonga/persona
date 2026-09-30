@@ -135,6 +135,31 @@ This creates `scripts/seed.ts` with the same fixture reader and example mapping.
 
 ## Maintainer checks
 
+### Terminal logo
+
+Discovery help uses a Chafa conversion of the original Persona logo, rather than a hand-drawn approximation.
+The default is a portable 48-column Unicode half-block rendering. On a terminal that supports Sixel
+(including Windows Terminal 1.22 or later), opt into the sharper 400 × 320 pixel image:
+
+```powershell
+$env:PERSONA_LOGO_FORMAT = 'sixel'
+npx.cmd --no-install persona
+```
+
+Remove the variable to return to Unicode. Sixel is explicit because terminal identity alone does not
+prove image support. `--no-color`, `NO_COLOR`, and redirected output always use an escape-free monochrome
+rendering; profile JSON never contains branding or image sequences. Logo display is part of discovery
+help (`persona` or `persona --help`); creating a seed template prints only its result.
+
+`artwork/persona-mark.png` is the owner's supplied Persona brand image, cropped to its mark without
+redrawing. It is retained as the regeneration source and excluded from the npm archive. Persona branding
+belongs to the project owner. Generated terminal assets are bundled; users need neither Chafa nor an
+image library. To regenerate them, install [Chafa](https://hpjansson.org/chafa/) 1.18.3 and run
+`node scripts/generate-cli-logo.mjs` from the repository root. Set `CHAFA_BIN` to its executable path if
+it is not on PATH. The generator reduces JPEG noise to a three-color palette before conversion.
+
+### Package validation
+
 ```sh
 npm run typecheck:cli
 npm run build:cli
