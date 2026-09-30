@@ -1,0 +1,29 @@
+// Import your application's configured Prisma client, for example:
+// import { prisma } from '../src/lib/prisma.js'
+// Prisma 7 requires a driver adapter; reuse your application's setup.
+// Do not assume the generated client path, database provider or User model.
+
+async function insertPeople(people: ReturnType<typeof mapPerson>[]): Promise<void> {
+  throw new Error('Adapt mapPerson and insertPeople to your Prisma schema before running this seed.')
+
+  // After reviewing the mapping, import your client and replace the guard above
+  // with the insertion below, adapting the model and unique key as necessary:
+  // try {
+  //   await prisma.$transaction(async (tx) => {
+  //     for (const person of people) {
+  //       await tx.user.upsert({
+  //         where: { email: person.email },
+  //         create: person,
+  //         update: person,
+  //       })
+  //     }
+  //   })
+  // } finally {
+  //   await prisma.$disconnect()
+  // }
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : 'Seed failed.')
+  process.exitCode = 1
+})

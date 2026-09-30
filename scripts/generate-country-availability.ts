@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { listCountryAvailability } from '../src/geography/country-availability.js'
 import { geographicDataVersion } from '../src/geography/data-version.js'
@@ -12,7 +12,7 @@ const coveredCountries = available.filter((row) => row.citiesWithPostcode > 0).l
 const lines = [
   '# Country data availability',
   '',
-  `Data version: \`${geographicDataVersion}\`. This table is generated from the checked-in country, city, postal, name-review, and phone catalogues. Run \`npm run data:availability\` after changing those sources; \`npm run data:availability:check\` detects a stale table.`,
+  `Data version: \`${geographicDataVersion}\`. This table is generated from the checked-in country, city, postal, name-review, and phone catalogues. Run \`npm run data:availability\` after changing those sources; it also refreshes the [CLI](../packages/cli/README.md) country snapshot. \`npm run data:availability:check\` detects a stale table or snapshot.`,
   '',
   `${available.length} of ${rows.length} assigned country and territory codes can generate profiles; ${rows.filter((row) => row.profile === 'pending-name-review').length} await local name review and ${rows.filter((row) => row.profile === 'unavailable').length} have no permanent resident profile. Among available codes, ${coveredCities} of ${sampledCities} sampled cities across ${coveredCountries} countries have a city-linked postcode.`,
   '',
@@ -26,12 +26,20 @@ const lines = [
   '',
 ]
 const content = lines.join('\n')
+const cliPath = resolve('packages/cli/data/countries.json')
+const cliContent = `${JSON.stringify({ dataVersion: geographicDataVersion, countries: rows }, null, 2)}\n`
+const readGenerated = async (file: string) => (await readFile(file, 'utf8').catch(() => '')).replaceAll('\r\n', '\n')
 if (process.argv.includes('--check')) {
-  if (await readFile(path, 'utf8').catch(() => '') !== content) {
+  if (await readGenerated(path) !== content) {
     throw new Error('Country availability table is out of date. Run npm run data:availability.')
   }
-  console.log(`Country availability table is current (${rows.length} codes)`)
+  if (await readGenerated(cliPath) !== cliContent) {
+    throw new Error('CLI country availability snapshot is out of date. Run npm run data:availability.')
+  }
+  console.log(`Country availability table and CLI snapshot are current (${rows.length} codes)`)
 } else {
   await writeFile(path, content, 'utf8')
+  await mkdir(resolve('packages/cli/data'), { recursive: true })
+  await writeFile(cliPath, cliContent, 'utf8')
   console.log(`Wrote ${path} (${rows.length} codes)`)
 }

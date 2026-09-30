@@ -1,0 +1,1997 @@
+{
+  "dataVersion": "geo-2026-09-26.1",
+  "countries": [
+    {
+      "code": "AD",
+      "name": "Andorra",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 6,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AE",
+      "name": "United Arab Emirates",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AF",
+      "name": "Afghanistan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AG",
+      "name": "Antigua and Barbuda",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "AI",
+      "name": "Anguilla",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "AL",
+      "name": "Albania",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AM",
+      "name": "Armenia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AO",
+      "name": "Angola",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AQ",
+      "name": "Antarctica",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "AR",
+      "name": "Argentina",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AS",
+      "name": "American Samoa",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "AT",
+      "name": "Austria",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 5,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 8,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "AW",
+      "name": "Aruba",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AX",
+      "name": "Åland Islands",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "AZ",
+      "name": "Azerbaijan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BA",
+      "name": "Bosnia and Herzegovina",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BB",
+      "name": "Barbados",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "BD",
+      "name": "Bangladesh",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 2,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BE",
+      "name": "Belgium",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BF",
+      "name": "Burkina Faso",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BG",
+      "name": "Bulgaria",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BH",
+      "name": "Bahrain",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BI",
+      "name": "Burundi",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BJ",
+      "name": "Benin",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BL",
+      "name": "Saint Barthélemy",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BM",
+      "name": "Bermuda",
+      "profile": "available",
+      "cities": 11,
+      "citiesWithPostcode": 1,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "BN",
+      "name": "Brunei Darussalam",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BO",
+      "name": "Bolivia, Plurinational State of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BQ",
+      "name": "Bonaire, Sint Eustatius and Saba",
+      "profile": "pending-name-review",
+      "cities": 8,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BR",
+      "name": "Brazil",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BS",
+      "name": "Bahamas",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "BT",
+      "name": "Bhutan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BV",
+      "name": "Bouvet Island",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "BW",
+      "name": "Botswana",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BY",
+      "name": "Belarus",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "BZ",
+      "name": "Belize",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "CC",
+      "name": "Cocos (Keeling) Islands",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CD",
+      "name": "Congo, Democratic Republic of the",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CF",
+      "name": "Central African Republic",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CG",
+      "name": "Congo",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CH",
+      "name": "Switzerland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CI",
+      "name": "Côte d'Ivoire",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CK",
+      "name": "Cook Islands",
+      "profile": "available",
+      "cities": 2,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CL",
+      "name": "Chile",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CM",
+      "name": "Cameroon",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CN",
+      "name": "China",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CO",
+      "name": "Colombia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CR",
+      "name": "Costa Rica",
+      "profile": "available",
+      "cities": 11,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CU",
+      "name": "Cuba",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CV",
+      "name": "Cabo Verde",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CW",
+      "name": "Curaçao",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CX",
+      "name": "Christmas Island",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CY",
+      "name": "Cyprus",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 5,
+      "phone": "format-valid"
+    },
+    {
+      "code": "CZ",
+      "name": "Czechia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 3,
+      "phone": "format-valid"
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "DJ",
+      "name": "Djibouti",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "DK",
+      "name": "Denmark",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "DM",
+      "name": "Dominica",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "DO",
+      "name": "Dominican Republic",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "DZ",
+      "name": "Algeria",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "EC",
+      "name": "Ecuador",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "EE",
+      "name": "Estonia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "EG",
+      "name": "Egypt",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "EH",
+      "name": "Western Sahara",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ER",
+      "name": "Eritrea",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ES",
+      "name": "Spain",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ET",
+      "name": "Ethiopia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "FI",
+      "name": "Finland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "FJ",
+      "name": "Fiji",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "FK",
+      "name": "Falkland Islands (Malvinas)",
+      "profile": "available",
+      "cities": 1,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "FM",
+      "name": "Micronesia, Federated States of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "FO",
+      "name": "Faroe Islands",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 9,
+      "phone": "format-valid"
+    },
+    {
+      "code": "FR",
+      "name": "France",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "GA",
+      "name": "Gabon",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom of Great Britain and Northern Ireland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "GD",
+      "name": "Grenada",
+      "profile": "available",
+      "cities": 9,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "GE",
+      "name": "Georgia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GF",
+      "name": "French Guiana",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GG",
+      "name": "Guernsey",
+      "profile": "available",
+      "cities": 11,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GH",
+      "name": "Ghana",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GI",
+      "name": "Gibraltar",
+      "profile": "available",
+      "cities": 6,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GL",
+      "name": "Greenland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GM",
+      "name": "Gambia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GN",
+      "name": "Guinea",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GP",
+      "name": "Guadeloupe",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GQ",
+      "name": "Equatorial Guinea",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GR",
+      "name": "Greece",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GS",
+      "name": "South Georgia and the South Sandwich Islands",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "GT",
+      "name": "Guatemala",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GU",
+      "name": "Guam",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 2,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "GW",
+      "name": "Guinea-Bissau",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "GY",
+      "name": "Guyana",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "HK",
+      "name": "Hong Kong",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "HM",
+      "name": "Heard Island and McDonald Islands",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "HN",
+      "name": "Honduras",
+      "profile": "available",
+      "cities": 11,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "HR",
+      "name": "Croatia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 9,
+      "phone": "format-valid"
+    },
+    {
+      "code": "HT",
+      "name": "Haiti",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "HU",
+      "name": "Hungary",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ID",
+      "name": "Indonesia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IE",
+      "name": "Ireland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "IL",
+      "name": "Israel",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IM",
+      "name": "Isle of Man",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IN",
+      "name": "India",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IO",
+      "name": "British Indian Ocean Territory",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "IQ",
+      "name": "Iraq",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IR",
+      "name": "Iran, Islamic Republic of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IS",
+      "name": "Iceland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 5,
+      "phone": "format-valid"
+    },
+    {
+      "code": "IT",
+      "name": "Italy",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 6,
+      "phone": "format-valid"
+    },
+    {
+      "code": "JE",
+      "name": "Jersey",
+      "profile": "available",
+      "cities": 6,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "JM",
+      "name": "Jamaica",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "JO",
+      "name": "Jordan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "JP",
+      "name": "Japan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KE",
+      "name": "Kenya",
+      "profile": "available",
+      "cities": 11,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KG",
+      "name": "Kyrgyzstan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KH",
+      "name": "Cambodia",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KI",
+      "name": "Kiribati",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KM",
+      "name": "Comoros",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KN",
+      "name": "Saint Kitts and Nevis",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "KP",
+      "name": "Korea, Democratic People's Republic of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KR",
+      "name": "Korea, Republic of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KW",
+      "name": "Kuwait",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "KY",
+      "name": "Cayman Islands",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "KZ",
+      "name": "Kazakhstan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LA",
+      "name": "Lao People's Democratic Republic",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LB",
+      "name": "Lebanon",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LC",
+      "name": "Saint Lucia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "LI",
+      "name": "Liechtenstein",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LK",
+      "name": "Sri Lanka",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LR",
+      "name": "Liberia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LS",
+      "name": "Lesotho",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LT",
+      "name": "Lithuania",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 6,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LU",
+      "name": "Luxembourg",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LV",
+      "name": "Latvia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "LY",
+      "name": "Libya",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MA",
+      "name": "Morocco",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MC",
+      "name": "Monaco",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MD",
+      "name": "Moldova, Republic of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ME",
+      "name": "Montenegro",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MF",
+      "name": "Saint Martin (French part)",
+      "profile": "pending-name-review",
+      "cities": 9,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MG",
+      "name": "Madagascar",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MH",
+      "name": "Marshall Islands",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MK",
+      "name": "North Macedonia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 8,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ML",
+      "name": "Mali",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MM",
+      "name": "Myanmar",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MN",
+      "name": "Mongolia",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MO",
+      "name": "Macao",
+      "profile": "pending-name-review",
+      "cities": 7,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MP",
+      "name": "Northern Mariana Islands",
+      "profile": "pending-name-review",
+      "cities": 6,
+      "citiesWithPostcode": 1,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "MQ",
+      "name": "Martinique",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MR",
+      "name": "Mauritania",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MS",
+      "name": "Montserrat",
+      "profile": "pending-name-review",
+      "cities": 3,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "MT",
+      "name": "Malta",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MU",
+      "name": "Mauritius",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MV",
+      "name": "Maldives",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MW",
+      "name": "Malawi",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MX",
+      "name": "Mexico",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 2,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MY",
+      "name": "Malaysia",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "MZ",
+      "name": "Mozambique",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NA",
+      "name": "Namibia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NC",
+      "name": "New Caledonia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 9,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NE",
+      "name": "Niger",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NF",
+      "name": "Norfolk Island",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NG",
+      "name": "Nigeria",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NI",
+      "name": "Nicaragua",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands, Kingdom of the",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NO",
+      "name": "Norway",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "NP",
+      "name": "Nepal",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NR",
+      "name": "Nauru",
+      "profile": "available",
+      "cities": 10,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NU",
+      "name": "Niue",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "OM",
+      "name": "Oman",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PA",
+      "name": "Panama",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PE",
+      "name": "Peru",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PF",
+      "name": "French Polynesia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 9,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PG",
+      "name": "Papua New Guinea",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PH",
+      "name": "Philippines",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 2,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PK",
+      "name": "Pakistan",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PL",
+      "name": "Poland",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PM",
+      "name": "Saint Pierre and Miquelon",
+      "profile": "pending-name-review",
+      "cities": 2,
+      "citiesWithPostcode": 2,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PN",
+      "name": "Pitcairn",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 1,
+      "phone": "unavailable"
+    },
+    {
+      "code": "PR",
+      "name": "Puerto Rico",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "PS",
+      "name": "Palestine, State of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PT",
+      "name": "Portugal",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PW",
+      "name": "Palau",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "PY",
+      "name": "Paraguay",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "QA",
+      "name": "Qatar",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "RE",
+      "name": "Réunion",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "RO",
+      "name": "Romania",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 6,
+      "phone": "format-valid"
+    },
+    {
+      "code": "RS",
+      "name": "Serbia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "RU",
+      "name": "Russian Federation",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "RW",
+      "name": "Rwanda",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SA",
+      "name": "Saudi Arabia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SB",
+      "name": "Solomon Islands",
+      "profile": "available",
+      "cities": 11,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SC",
+      "name": "Seychelles",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SD",
+      "name": "Sudan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SE",
+      "name": "Sweden",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "SG",
+      "name": "Singapore",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SH",
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "profile": "available",
+      "cities": 4,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SI",
+      "name": "Slovenia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 12,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SJ",
+      "name": "Svalbard and Jan Mayen",
+      "profile": "pending-name-review",
+      "cities": 2,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SK",
+      "name": "Slovakia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 10,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SL",
+      "name": "Sierra Leone",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SM",
+      "name": "San Marino",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SN",
+      "name": "Senegal",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SO",
+      "name": "Somalia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SR",
+      "name": "Suriname",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SS",
+      "name": "South Sudan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ST",
+      "name": "Sao Tome and Principe",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SV",
+      "name": "El Salvador",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SX",
+      "name": "Sint Maarten (Dutch part)",
+      "profile": "pending-name-review",
+      "cities": 6,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "SY",
+      "name": "Syrian Arab Republic",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "SZ",
+      "name": "Eswatini",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TC",
+      "name": "Turks and Caicos Islands",
+      "profile": "pending-name-review",
+      "cities": 7,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "TD",
+      "name": "Chad",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TF",
+      "name": "French Southern Territories",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "TG",
+      "name": "Togo",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TH",
+      "name": "Thailand",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 6,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TJ",
+      "name": "Tajikistan",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TK",
+      "name": "Tokelau",
+      "profile": "pending-name-review",
+      "cities": 3,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TL",
+      "name": "Timor-Leste",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TM",
+      "name": "Turkmenistan",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TN",
+      "name": "Tunisia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TO",
+      "name": "Tonga",
+      "profile": "pending-name-review",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TR",
+      "name": "Türkiye",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TT",
+      "name": "Trinidad and Tobago",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "TV",
+      "name": "Tuvalu",
+      "profile": "pending-name-review",
+      "cities": 9,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TW",
+      "name": "Taiwan, Province of China",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "TZ",
+      "name": "Tanzania, United Republic of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "UA",
+      "name": "Ukraine",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "UG",
+      "name": "Uganda",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "UM",
+      "name": "United States Minor Outlying Islands",
+      "profile": "unavailable",
+      "cities": 0,
+      "citiesWithPostcode": 0,
+      "phone": "not-applicable"
+    },
+    {
+      "code": "US",
+      "name": "United States of America",
+      "profile": "available",
+      "cities": 13,
+      "citiesWithPostcode": 9,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "UY",
+      "name": "Uruguay",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 11,
+      "phone": "format-valid"
+    },
+    {
+      "code": "UZ",
+      "name": "Uzbekistan",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "VA",
+      "name": "Holy See",
+      "profile": "pending-name-review",
+      "cities": 1,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "VC",
+      "name": "Saint Vincent and the Grenadines",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "VE",
+      "name": "Venezuela, Bolivarian Republic of",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "VG",
+      "name": "Virgin Islands (British)",
+      "profile": "pending-name-review",
+      "cities": 2,
+      "citiesWithPostcode": 0,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "VI",
+      "name": "Virgin Islands (U.S.)",
+      "profile": "available",
+      "cities": 6,
+      "citiesWithPostcode": 1,
+      "phone": "reserved-range"
+    },
+    {
+      "code": "VN",
+      "name": "Viet Nam",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "VU",
+      "name": "Vanuatu",
+      "profile": "available",
+      "cities": 9,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "WF",
+      "name": "Wallis and Futuna",
+      "profile": "pending-name-review",
+      "cities": 3,
+      "citiesWithPostcode": 1,
+      "phone": "format-valid"
+    },
+    {
+      "code": "WS",
+      "name": "Samoa",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "YE",
+      "name": "Yemen",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "YT",
+      "name": "Mayotte",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 7,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ZA",
+      "name": "South Africa",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 9,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ZM",
+      "name": "Zambia",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    },
+    {
+      "code": "ZW",
+      "name": "Zimbabwe",
+      "profile": "available",
+      "cities": 12,
+      "citiesWithPostcode": 0,
+      "phone": "format-valid"
+    }
+  ]
+}
