@@ -1,6 +1,6 @@
 # Country data availability
 
-Data version: `geo-2026-09-26.1`. This table is generated from the checked-in country, city, postal, name-review, and phone catalogues. Run `npm run data:availability` after changing those sources; `npm run data:availability:check` detects a stale table.
+Data version: `geo-2026-09-26.1`. This table is generated from the checked-in country, city, postal, name-review, and phone catalogues. Run `npm run data:availability` after changing those sources; it also refreshes the [CLI](../packages/cli/README.md) country snapshot. `npm run data:availability:check` detects a stale table or snapshot.
 
 209 of 249 assigned country and territory codes can generate profiles; 33 await local name review and 7 have no permanent resident profile. Among available codes, 531 of 2454 sampled cities across 73 countries have a city-linked postcode.
 

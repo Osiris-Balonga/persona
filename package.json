@@ -10,6 +10,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "cli": "tsx packages/cli/src/index.ts",
+    "build:cli": "tsc -p packages/cli/tsconfig.json",
+    "typecheck:cli": "tsc --noEmit -p packages/cli/tsconfig.json",
+    "check:cli-package": "npm run build:cli && node scripts/check-cli-package.mjs",
     "data:refresh:countries": "node scripts/refresh-country-data.mjs",
     "data:refresh:cities": "node scripts/refresh-city-data.mjs",
     "data:refresh:names": "node scripts/refresh-name-data.mjs",
