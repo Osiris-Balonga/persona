@@ -4,6 +4,7 @@ const queryOptions = {
   count: 'count', gender: 'gender', 'age-group': 'ageGroup', nationality: 'nationality',
   'residence-country': 'residenceCountry', continent: 'continent', city: 'city',
   'email-domain': 'emailDomain', seed: 'seed', 'as-of': 'asOf', fields: 'fields',
+  'portrait-context': 'portraitContext',
 } as const
 type HelpCommand = 'people' | 'countries' | 'seed init' | undefined
 export type Command =
@@ -52,6 +53,10 @@ export function parseCommand(args: string[]): Command {
   }
   const string = (name: string) => values[name] as string | undefined
   if (command === 'people') {
+    const context = string('portrait-context')
+    if (context !== undefined && !['standard', 'doctor', 'construction', 'business', 'school-pupil', 'university-student'].includes(context)) {
+      throw new Error('Unknown portrait context. Use standard, doctor, construction, business, school-pupil or university-student.')
+    }
     if (values.force && !values.output) throw new Error('--force requires --output.')
     const query: Record<string, string> = {}
     for (const [option, parameter] of Object.entries(queryOptions)) {
