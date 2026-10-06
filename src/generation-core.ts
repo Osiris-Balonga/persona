@@ -81,3 +81,10 @@ export function generatePersonWithoutPortrait(query: PeopleQuery, context: Gener
     phone: fictionalPhone(residenceCountry, city, context.componentKey(index, 'phone')),
   }
 }
+
+export function regeneratePersonName(person: GeneratedPersonWithoutPortrait, query: PeopleQuery,
+  context: GenerationContext, index: number, attempt: number): GeneratedPersonWithoutPortrait {
+  const name = selectName(person.country, person.gender, context.componentKey(index, `identity-${attempt}`))
+  return { ...person, firstName: name.firstName, lastName: name.lastName, fullName: name.fullName,
+    email: fictionalEmail(name.firstName, name.lastName, context.componentKey(index, 'email'), query.emailDomain, index) }
+}
