@@ -15,7 +15,7 @@
 | `city` | City in the residence country, at most 100 characters; requires `residenceCountry` or `nationality` |
 | `emailDomain` | ASCII domain name with at least two labels; normalized to lowercase; default `example.test` |
 | `seed` | Nonblank string of at most 128 characters |
-| `asOf` | Valid `YYYY-MM-DD` date; default current UTC date |
+| `asOf` | Valid `YYYY-MM-DD` date between `0102-01-01` and `9999-12-31`; default current UTC date |
 | `fields` | Comma-separated public field paths, at most 512 characters |
 
 When one country parameter is supplied, it supplies both nationality and residence. A residence without a reviewed name pool therefore needs a separate `nationality` or `continent` filter. With `continent` and an explicit `residenceCountry`, nationality is drawn from that continent while residence stays fixed. If no country is supplied, one country is drawn for both. A supplied `nationality` outside the requested `continent` returns 400. `age` and `appearance` are not query parameters. The encoded query is limited to 2,048 characters; unknown and repeated parameters return 400.
@@ -54,6 +54,6 @@ For example, `fields=name.first,location.city,location.coordinates.latitude,pict
 
 Seeded results repeat when `asOf`, filters, dataset and catalog versions, and generation algorithm version remain the same. Version `v5` derives separate keys per person and component. `count`, `fields`, and `emailDomain` do not change identity or portrait choices. `emailDomain` does change generated email addresses and the response `ETag`.
 
-Successful requests with **explicit** `seed` and `asOf` return `Cache-Control: private, no-cache` and an `ETag`; matching `If-None-Match` returns 304. Other responses and errors use `Cache-Control: no-store`. An unseeded request draws fresh entropy and reports `meta.seed: null`.
+Successful requests with **explicit** `seed` and `asOf` return `Cache-Control: private, no-cache` and an `ETag`; matching `If-None-Match` returns 304 for GET and HEAD using weak comparison (both `"tag"` and `W/"tag"` match). Validator lists and `*` are supported. Invalid queries are rejected before cache revalidation. Other responses and errors use `Cache-Control: no-store`. An unseeded request draws fresh entropy and reports `meta.seed: null`.
 
 Invalid input returns 400 with `error.code`, `message`, and `parameter`. `INVALID_QUERY` covers malformed, unknown, or repeated parameters; `CONFLICTING_FILTERS` covers mismatched continent and nationality or a city without a country; `UNSUPPORTED_VALUE` covers unavailable countries and cities outside the selected residence. See the [developer guide](developer-api.md#errors-and-limits) for service limits and 429 responses.

@@ -8,6 +8,14 @@ import {
 } from '../../src/age.js'
 
 describe('age and reference date', () => {
+  it('limits reference dates to years that can represent every supported age', () => {
+    expect(resolveAsOf('0102-01-01')).toBe('0102-01-01')
+    expect(resolveAsOf('9999-12-31')).toBe('9999-12-31')
+    for (const date of ['0001-01-01', '0101-12-31', '0000-01-01', '10000-01-01']) {
+      expect(() => resolveAsOf(date)).toThrow('Invalid asOf')
+    }
+  })
+
   it('assigns each age at the V1 group boundaries', () => {
     expect([
       ageGroupForAge(12),

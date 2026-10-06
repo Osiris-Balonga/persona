@@ -6,6 +6,7 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from 'typebox'
 import { PeopleQueryError, parsePeopleQuery } from './people-query.js'
 import { peopleCacheHeaders } from './cache-policy.js'
+import { matchesIfNoneMatch } from './conditional-request.js'
 import { geographicDataVersion } from './geography/data-version.js'
 import { projectPeopleResponse } from './field-selection.js'
 import { generatePeopleResponse } from './generate-people.js'
@@ -76,6 +77,11 @@ export function buildApp(options: AppOptions = {}) {
     if (statusCode === 413) {
       return reply.code(413).send({ error: { code: 'REQUEST_TOO_LARGE', message: 'Request body is too large' } })
     }
+    if (Number.isInteger(statusCode) && statusCode >= 400 && statusCode < 500) {
+      const code = statusCode === 400 ? 'BAD_REQUEST' : statusCode === 415 ? 'UNSUPPORTED_MEDIA_TYPE' : 'REQUEST_REJECTED'
+      const message = statusCode === 400 ? 'Invalid request' : statusCode === 415 ? 'Unsupported media type' : 'Request rejected'
+      return reply.code(statusCode).send({ error: { code, message } })
+    }
     request.log.error({ err: error }, 'Request failed')
     return reply.code(500).send({ error: { code: 'INTERNAL_ERROR', message: 'Unable to process request' } })
   })
@@ -119,8 +125,7 @@ export function buildApp(options: AppOptions = {}) {
       reply.header('Cache-Control', headers['Cache-Control'])
       if (headers.ETag !== undefined) {
         reply.header('ETag', headers.ETag)
-        const validators = request.headers['if-none-match']?.split(',').map((value) => value.trim()) ?? []
-        if (validators.includes(headers.ETag) || validators.includes('*')) return reply.code(304).send()
+        if (matchesIfNoneMatch(request.headers['if-none-match'], headers.ETag)) return reply.code(304).send()
       }
       const response = generatePeopleResponse(query, catalog)
       generatedCounts.set(request, response.results.length)

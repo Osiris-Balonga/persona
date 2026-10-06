@@ -20,6 +20,36 @@ const object = () => ({ size: 13, httpEtag: '"r2-etag"', customMetadata: { sha25
   body: new Response('fixture-bytes').body! })
 
 describe('portrait delivery Worker', () => {
+  it('uses weak comparison for GET and HEAD, including opaque tags containing commas', async () => {
+    const store = { get: vi.fn(async () => ({ ...object(), httpEtag: '"r2,etag"' })),
+      head: vi.fn(async () => ({ ...object(), httpEtag: '"r2,etag"' })) }
+    for (const method of ['GET', 'HEAD']) {
+      for (const validator of ['W/"r2,etag"', '"other", W/"r2,etag"', '*']) {
+        const response = await handlePortraitRequest(new Request(`https://images.example.test/${key}`,
+          { method, headers: { 'if-none-match': validator } }), store, catalog)
+        expect(response.status).toBe(304)
+        expect(response.body).toBeNull()
+        expect(response.headers.get('etag')).toBe('"r2,etag"')
+        expect(response.headers.get('content-length')).toBeNull()
+      }
+    }
+    for (const validator of ['W/"other"', '*, "other"', '"r2,etag" trailing']) {
+      const response = await handlePortraitRequest(new Request(`https://images.example.test/${key}`,
+        { headers: { 'if-none-match': validator } }), store, catalog)
+      expect(response.status).toBe(200)
+    }
+  })
+
+  it('checks approval and stored hashes before wildcard cache revalidation', async () => {
+    const store = { get: vi.fn(async () => ({ ...object(), customMetadata: { sha256: 'c'.repeat(64) } })),
+      head: vi.fn(async () => null) }
+    for (const path of [key, catalog.assets[1]!.objectKey]) {
+      const response = await handlePortraitRequest(new Request(`https://images.example.test/${path}`,
+        { headers: { 'if-none-match': '*' } }), store, catalog)
+      expect(response.status).toBe(404)
+    }
+  })
+
   it('denies every object while the production catalog is empty', async () => {
     const store = { get: vi.fn(), head: vi.fn() }
     const emptyCatalog: PortraitCatalog = { version: 'empty-v1', publicBaseUrl: null, assets: [] }

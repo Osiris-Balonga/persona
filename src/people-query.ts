@@ -151,7 +151,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   try {
     asOf = resolveAsOf(params.get('asOf') ?? undefined, now)
   } catch {
-    throw new PeopleQueryError('INVALID_QUERY', 'asOf', 'asOf must be a valid YYYY-MM-DD date')
+    throw new PeopleQueryError('INVALID_QUERY', 'asOf', 'asOf must be a valid YYYY-MM-DD date between 0102-01-01 and 9999-12-31')
   }
 
   return {
