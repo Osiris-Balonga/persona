@@ -1,33 +1,13 @@
 import type { PeopleQuery } from './people-query.js'
 import { ageGroupForAge, ageOn, type AgeGroup } from './age.js'
-import { resolveGeographicContext } from './geography/distribution.js'
+import { resolveLocationContext } from './geography/distribution.js'
 import { nameContextForCountry, selectName } from './geography/names.js'
 import { fictionalAddress } from './geography/address-data.js'
 import { fictionalEmail, fictionalPhone } from './geography/fictional-contact.js'
-import type { City } from './geography/cities.js'
+import type { GeneratedPersonWithoutPortrait } from './generated-person.js'
 import type { createGenerationContext } from './replay.js'
 
 type GenerationContext = ReturnType<typeof createGenerationContext>
-
-// The public v2 response is projected from this generation record. Keeping the
-// source City here preserves the exact GeoNames coordinates and region.
-export interface GeneratedPersonWithoutPortrait {
-  id: string
-  firstName: string
-  lastName: string
-  fullName: string
-  gender: 'male' | 'female'
-  age: number
-  ageGroup: AgeGroup
-  dateOfBirth: string
-  appearance: string
-  country: string
-  city: string
-  locationCity: City
-  address: ReturnType<typeof fictionalAddress>
-  email: string
-  phone: string | null
-}
 
 const ageRanges: Record<AgeGroup, readonly [number, number]> = {
   child: [6, 12], teen: [13, 17], adult: [18, 64], senior: [65, 100],
@@ -65,7 +45,7 @@ function birthDateForAge(age: number, asOf: string, key: string): string {
 }
 
 export function resolveAbstractPerson(query: PeopleQuery, context: GenerationContext, index: number) {
-  const geography = resolveGeographicContext(query, context.componentKey(index, 'geography'))
+  const geography = resolveLocationContext(query, context.componentKey(index, 'geography'))
   const gender = query.gender ?? (draw(context.componentKey(index, 'gender'), 2) === 0 ? 'female' : 'male')
   const allowedGroups = query.ageGroup ?? (['child', 'teen', 'adult', 'senior'] as const)
   const possibleAges = allowedGroups.flatMap((group) => {
@@ -93,7 +73,6 @@ export function generatePersonWithoutPortrait(query: PeopleQuery, context: Gener
     age: resolved.age,
     ageGroup: resolved.ageGroup,
     dateOfBirth: birthDateForAge(resolved.age, query.asOf, context.componentKey(index, 'birth-date')),
-    appearance: resolved.appearance,
     country,
     city,
     locationCity: resolved.city,

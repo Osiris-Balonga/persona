@@ -1,4 +1,4 @@
-import type { PeopleResponse } from './contracts/people.js'
+import type { GeneratedPeopleResponse } from './generated-person.js'
 import type { PeopleQuery } from './people-query.js'
 import { generatePersonWithoutPortrait, regeneratePersonName } from './generation-core.js'
 import { geographicDataVersion } from './geography/data-version.js'
@@ -6,7 +6,7 @@ import { createGenerationContext } from './replay.js'
 import type { PortraitCatalog } from './portraits/catalog.js'
 import { selectPortraitFromCollection } from './portraits/collection-selection.js'
 
-export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCatalog): PeopleResponse {
+export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCatalog): GeneratedPeopleResponse {
   const versions = { dataVersion: geographicDataVersion, catalogVersion: catalog.version }
   const context = createGenerationContext(query, versions)
   const usedPortraits = new Set<string>()

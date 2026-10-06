@@ -44,3 +44,5 @@ export const ProjectedPublicPeopleResponseSchema = Type.Object({
 }, { additionalProperties: false })
 
 export type PublicPeopleResponse = Static<typeof PublicPeopleResponseSchema>
+export type DefaultPublicPeopleResponse = Static<typeof DefaultPublicPeopleResponseSchema>
+export type ProjectedPublicPeopleResponse = Static<typeof ProjectedPublicPeopleResponseSchema>

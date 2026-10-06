@@ -1,15 +1,18 @@
 import { createHash } from 'node:crypto'
-import type { Person } from './contracts/person.js'
-import type { PeopleResponse } from './contracts/people.js'
+import type { GeneratedPerson, GeneratedPeopleResponse } from './generated-person.js'
 import { PublicPersonSchema, type PublicPerson } from './contracts/public-person.js'
-import type { PublicPeopleResponse } from './contracts/public-people.js'
-import { getCity, type City } from './geography/cities.js'
+import type { DefaultPublicPeopleResponse, ProjectedPublicPeopleResponse } from './contracts/public-people.js'
+import { getCity } from './geography/cities.js'
 import { getCountry } from './geography/countries.js'
 
-export type FieldPath = string
+type Paths<T> = { [Key in keyof T & string]: NonNullable<T[Key]> extends object
+  ? Key | `${Key}.${Paths<NonNullable<T[Key]>>}` : Key }[keyof T & string]
+export type FieldPath = Paths<PublicPerson>
 
 const publicFields = Object.keys(PublicPersonSchema.properties)
-export const defaultPersonFields: readonly FieldPath[] = publicFields.filter((field) => field !== 'login')
+export const defaultPersonFields: readonly FieldPath[] = [
+  'id', 'gender', 'name', 'nationality', 'dob', 'location', 'email', 'phone', 'picture',
+]
 const nestedFields: Readonly<Record<string, readonly string[]>> = {
   name: ['first', 'last', 'full'],
   dob: ['date', 'age', 'ageGroup'],
@@ -20,15 +23,17 @@ const nestedFields: Readonly<Record<string, readonly string[]>> = {
   login: ['username', 'password'],
 }
 
+function isFieldPath(field: string): field is FieldPath {
+  const parts = field.split('.')
+  return parts.length === 1 ? publicFields.includes(field)
+    : nestedFields[parts.slice(0, -1).join('.')]?.includes(parts.at(-1) ?? '') === true
+}
+
 export function parseFieldSelection(value: string): readonly FieldPath[] {
   const fields = value.split(',').map((field) => field.trim())
   const seen = new Set<string>()
   for (const field of fields) {
-    const parts = field.split('.')
-    const parent = parts.slice(0, -1).join('.')
-    const valid = parts.length === 1 ? publicFields.includes(field)
-      : nestedFields[parent]?.includes(parts.at(-1) ?? '') === true
-    if (!valid) throw new Error(`Unknown public field: ${field || '(empty)'}`)
+    if (!isFieldPath(field)) throw new Error(`Unknown public field: ${field || '(empty)'}`)
     if (seen.has(field)) throw new Error(`Repeated field: ${field}`)
     if (fields.some((other) => other !== field &&
       (other.startsWith(`${field}.`) || field.startsWith(`${other}.`)))) {
@@ -36,12 +41,10 @@ export function parseFieldSelection(value: string): readonly FieldPath[] {
     }
     seen.add(field)
   }
-  return fields
+  return fields.filter(isFieldPath)
 }
 
-type GeneratedPerson = Person & { locationCity?: City }
-
-function pictureRenditions(picture: Person['picture']): PublicPerson['picture'] {
+function pictureRenditions(picture: GeneratedPerson['picture']): PublicPerson['picture'] {
   if (picture === null) return null
   const source = new URL(picture.url)
   const match = /^\/portraits\/([a-z][a-z0-9-]*)\/(?:.*\/)?(p_\d{4,}\.webp)$/.exec(source.pathname)
@@ -95,22 +98,35 @@ function copyPath(target: Record<string, unknown>, source: Record<string, unknow
     }
     if (typeof value !== 'object' || Array.isArray(value)) throw new RangeError(`Invalid field ${field}`)
     output[part] ??= {}
-    output = output[part] as Record<string, unknown>
-    input = value as Record<string, unknown>
+    const next = output[part]
+    if (!isRecord(next) || !isRecord(value)) throw new RangeError(`Invalid field ${field}`)
+    output = next
+    input = value
   }
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+export function projectPeopleResponse(response: GeneratedPeopleResponse): DefaultPublicPeopleResponse
+export function projectPeopleResponse(response: GeneratedPeopleResponse, fields: readonly FieldPath[] | undefined): ProjectedPublicPeopleResponse
+
 export function projectPeopleResponse(
-  response: PeopleResponse,
-  fields: readonly FieldPath[] = defaultPersonFields,
-): PublicPeopleResponse {
+  response: GeneratedPeopleResponse,
+  fields?: readonly FieldPath[],
+): ProjectedPublicPeopleResponse {
   return {
     results: response.results.map((person) => {
-      const source = publicPerson(person as GeneratedPerson) as Record<string, unknown>
-      const selected: Record<string, unknown> = {}
+      const source = publicPerson(person)
+      if (fields === undefined) {
+        const { login: _login, ...defaults } = source
+        return defaults
+      }
+      const selected: ProjectedPublicPeopleResponse['results'][number] = {}
       for (const field of fields) copyPath(selected, source, field)
       return selected
     }),
     meta: { ...response.meta, schemaVersion: '2' },
-  } as PublicPeopleResponse
+  }
 }
