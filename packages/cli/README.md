@@ -1,5 +1,7 @@
 # Persona CLI
 
+Request contextual imagery with `persona people --nationality CG --portrait-context doctor --age-group adult --seed doctor-demo --as-of 2026-10-06`. Supported contexts are `standard` (default), `doctor`, `construction`, `business`, `school-pupil` and `university-student`. The API intersects age groups with editorial eligibility; incompatible groups return a structured error. Valid requests without matching approved images return `picture: null`, without substituting standard portraits. Keep the requested context and returned `meta.portraitSelectionVersion` for replay. This option requires an API deployment supporting `portraitContext`; introducing the flag does not publish the API or this npm package.
+
 A non-interactive Node.js 24 CLI for public v2 profile fixtures and developer-owned seeders. The executable is `persona`. It does not include the API server or require an API key.
 
 The package is not published to npm yet. Its provisional name is `@osiris-balonga/persona-cli`, and `private: true` prevents accidental publication until registry ownership and release configuration are confirmed. Commands such as `npm install @osiris-balonga/persona-cli` are **not available** at this stage.
