@@ -14,6 +14,8 @@ Use plausible fixtures and assert product behavior rather than duplicating imple
 
 Run `npm run test:unit` for isolated rules, `npm run test:integration` for application boundaries, and `npm run test:e2e` for complete API flows. Run `npm run data:availability:check`, `npm run typecheck`, and `npm run build` before opening a pull request. CI runs all three test suites.
 
+Run `npm run test:worker-integration` separately for the analytics Worker in local workerd/Miniflare with real SQLite Durable Objects and R2. CI runs this suite too. It bundles the actual Worker, blocks outbound network requests, uses fixed test tokens, and creates private temporary storage per test. Persistence is checked by disposing and recreating the runtime against that same directory; cleanup removes only the owned temporary directory. No Cloudflare account credentials, remote bindings or live counters are used. Miniflare and esbuild are pinned to the runtime/bundler versions already used by Wrangler; the exported v4-option converter supplies Miniflare 5's configuration shape.
+
 ## Repository content
 
 Keep code, tests, assets, and durable product or contributor documentation in the repository. Track planning work in GitHub Issues and Projects. Do not commit local reports, drafts, generated builds, secrets, or unreviewed assets. Record the provenance and usage rights of added datasets and images.
