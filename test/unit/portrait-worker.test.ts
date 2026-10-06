@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { handlePortraitRequest } from '../../worker/portrait-worker.js'
+import { createPortraitDelivery, handlePortraitRequest } from '../../worker/portrait-worker.js'
+import * as catalogModule from '../../src/portraits/catalog.js'
 import type { PortraitCatalog } from '../../src/portraits/catalog.js'
 
 const key = 'portraits/v1/adult/female/black/west-african/p_0001.webp'
@@ -20,6 +21,26 @@ const object = () => ({ size: 13, httpEtag: '"r2-etag"', customMetadata: { sha25
   body: new Response('fixture-bytes').body! })
 
 describe('portrait delivery Worker', () => {
+  it('validates once per delivery lifecycle, retaining request-time stored hash checks', async () => {
+    const validation = vi.spyOn(catalogModule, 'validatePortraitCatalog')
+    try {
+      const deliver = createPortraitDelivery(catalog)
+      const store = { get: vi.fn(async () => object()), head: vi.fn(async () => object()) }
+      const request = new Request(`https://images.example.test/${key}`)
+      expect((await deliver(request, store)).status).toBe(200)
+      expect((await deliver(request, store)).status).toBe(200)
+      expect(validation).toHaveBeenCalledOnce()
+      store.get.mockImplementation(async () => ({ ...object(), customMetadata: { sha256: 'c'.repeat(64) } }))
+      expect((await deliver(request, store)).status).toBe(404)
+      store.get.mockImplementation(async () => object())
+      store.get.mockClear()
+      const withdrawn = structuredClone(catalog)
+      withdrawn.assets[0].reviewStatus = 'withdrawn'
+      expect((await createPortraitDelivery(withdrawn)(request, store)).status).toBe(404)
+      expect(store.get).not.toHaveBeenCalled()
+    } finally { validation.mockRestore() }
+  })
+
   it('uses weak comparison for GET and HEAD, including opaque tags containing commas', async () => {
     const store = { get: vi.fn(async () => ({ ...object(), httpEtag: '"r2,etag"' })),
       head: vi.fn(async () => ({ ...object(), httpEtag: '"r2,etag"' })) }
