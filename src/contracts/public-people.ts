@@ -11,6 +11,11 @@ const MetaSchema = Type.Object({
   schemaVersion: Type.Literal('2'),
   dataVersion: Type.String({ minLength: 1 }),
   catalogVersion: Type.String({ minLength: 1 }),
+  portraitContext: Type.Optional(Type.Union([
+    Type.Literal('standard'), Type.Literal('doctor'), Type.Literal('construction'),
+    Type.Literal('business'), Type.Literal('school-pupil'), Type.Literal('university-student'),
+  ])),
+  portraitSelectionVersion: Type.Optional(Type.String({ minLength: 1 })),
 }, { additionalProperties: false })
 
 export const PublicPeopleResponseSchema = Type.Object({

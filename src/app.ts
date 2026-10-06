@@ -12,6 +12,7 @@ import { projectPeopleResponse } from './field-selection.js'
 import { generatePeopleResponse } from './generate-people.js'
 import { validatePortraitCatalog, type PortraitCatalog } from './portraits/catalog.js'
 import { portraitCatalog } from './portraits/manifest.js'
+import { portraitSelectionVersion } from './portraits/contexts.js'
 import type { AnalyticsSink } from './analytics/client.js'
 
 export interface AppOptions {
@@ -130,6 +131,7 @@ export function buildApp(options: AppOptions = {}) {
       const query = parsePeopleQuery(params)
       const headers = peopleCacheHeaders(200, query, params.has('asOf'), {
         dataVersion: geographicDataVersion, catalogVersion: catalog.version,
+        portraitSelectionVersion: catalog.selectionVersion ?? portraitSelectionVersion,
       })
       reply.header('Cache-Control', headers['Cache-Control'])
       if (headers.ETag !== undefined) {

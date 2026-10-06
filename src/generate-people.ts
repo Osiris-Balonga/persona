@@ -5,9 +5,11 @@ import { geographicDataVersion } from './geography/data-version.js'
 import { createGenerationContext } from './replay.js'
 import type { PortraitCatalog } from './portraits/catalog.js'
 import { selectPortraitFromCollection } from './portraits/collection-selection.js'
+import { portraitSelectionVersion } from './portraits/contexts.js'
 
 export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCatalog): GeneratedPeopleResponse {
-  const versions = { dataVersion: geographicDataVersion, catalogVersion: catalog.version }
+  const versions = { dataVersion: geographicDataVersion, catalogVersion: catalog.version,
+    portraitSelectionVersion: catalog.selectionVersion ?? portraitSelectionVersion }
   const context = createGenerationContext(query, versions)
   const usedPortraits = new Set<string>()
   const nameCounts = new Map<string, number>()
@@ -28,8 +30,9 @@ export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCata
     }
     nameCounts.set(nameKey, repetitions + 1)
     const portraitKey = context.componentKey(index, 'portrait')
-    const picture = selectPortraitFromCollection(catalog, person, person.country, portraitKey, usedPortraits)
+    const picture = selectPortraitFromCollection(catalog, person, person.country, portraitKey, usedPortraits, query.portraitContext)
     return { ...person, picture }
   })
-  return { results, meta: { count: query.count, asOf: query.asOf, seed: query.seed ?? null, ...versions } }
+  return { results, meta: { count: query.count, asOf: query.asOf, seed: query.seed ?? null,
+    portraitContext: query.portraitContext ?? 'standard', ...versions } }
 }

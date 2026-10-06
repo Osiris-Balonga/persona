@@ -45,6 +45,8 @@
     "seed": "guide-v2",
     "dataVersion": "geo-2026-09-26.1",
     "catalogVersion": "v1",
-    "schemaVersion": "2"
+    "schemaVersion": "2",
+    "portraitContext": "standard",
+    "portraitSelectionVersion": "contexts-v1"
   }
 }

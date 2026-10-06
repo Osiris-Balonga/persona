@@ -20,11 +20,18 @@ describe('reviewed portrait export', () => {
   it('maps approved local metadata to a stable R2 import record', () => {
     expect(reviewedPortraitRecords([approved], 'v1')).toEqual([expect.objectContaining({
       id: 'p_0049', objectKey: 'portraits/v1/large/p_0049.webp', catalogVersion: 'v1',
+      portraitContext: 'standard',
       apparentAgeRanges: [[23, 27], [28, 32], [33, 37]], appearanceTags: ['black'],
       sha256: 'a'.repeat(64), reviewStatus: 'approved', reviewer: 'Osiris Balonga',
       reviewedAt: '2026-09-26', decisionReason: 'Conforme après inspection visuelle',
     })])
     expect(reviewedPortraitRecords([{ ...approved, status: 'rejected' }], 'v1')).toEqual([])
+  })
+
+  it('exports reviewed contexts without changing delivery identity or rights evidence', () => {
+    const [record] = reviewedPortraitRecords([{ ...approved, metadata: { ...approved.metadata!, portraitContext: 'doctor' } }], 'v1')
+    expect(record).toMatchObject({ portraitContext: 'doctor', id: approved.id,
+      sha256: approved.technical!.sha256, rightsEvidence: approved.metadata!.rightsEvidence })
   })
 
   it('stops export when an approved portrait lacks reviewed metadata', () => {

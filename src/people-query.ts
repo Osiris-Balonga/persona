@@ -5,6 +5,7 @@ import { getCountry } from './geography/countries.js'
 import { listCities, getCity } from './geography/cities.js'
 import { hasReviewedNamePool } from './geography/profile-availability.js'
 import { continentForCountry, type Continent } from './geography/continents.js'
+import { eligibleContextAges, isPortraitContext, type PortraitContext } from './portraits/contexts.js'
 
 export interface PeopleQuery {
   count: number
@@ -18,6 +19,7 @@ export interface PeopleQuery {
   seed?: string
   fields?: readonly FieldPath[]
   emailDomain?: string
+  portraitContext?: PortraitContext
 }
 
 export class PeopleQueryError extends Error {
@@ -35,7 +37,7 @@ export class PeopleQueryError extends Error {
 
 const allowedParameters = new Set([
   'count', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
-  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain',
+  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext',
 ])
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
@@ -112,6 +114,13 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')
   }
   const ageGroup = parseAgeGroups(params.get('ageGroup'))
+  const portraitContext = params.get('portraitContext') ?? 'standard'
+  if (!isPortraitContext(portraitContext)) {
+    throw new PeopleQueryError('UNSUPPORTED_VALUE', 'portraitContext', 'Unknown portraitContext')
+  }
+  if (eligibleContextAges(portraitContext, ageGroup).length === 0) {
+    throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup', 'ageGroup has no ages compatible with portraitContext')
+  }
   let nationality = countryCode(params.get('nationality'), 'nationality', true)
   let residenceCountry = countryCode(params.get('residenceCountry'), 'residenceCountry', false)
   const continentValue = params.get('continent')
@@ -158,6 +167,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     count,
     asOf,
     emailDomain,
+    ...(portraitContext === 'standard' ? {} : { portraitContext }),
     ...(gender === null ? {} : { gender }),
     ...(ageGroup === undefined ? {} : { ageGroup }),
     ...(nationality === undefined ? {} : { nationality }),
