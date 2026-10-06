@@ -38,4 +38,9 @@ describe('reviewed portrait export', () => {
     expect(() => reviewedPortraitRecords([{ ...approved, metadata: undefined }], 'v1'))
       .toThrow('p_0049')
   })
+
+  it('does not export malformed contexts from an externally edited review state', () => {
+    const malformed = { ...approved, metadata: { ...approved.metadata, portraitContext: null } } as unknown as ReviewItem
+    expect(() => reviewedPortraitRecords([malformed], 'v1')).toThrow('portrait context')
+  })
 })
