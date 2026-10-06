@@ -25,4 +25,6 @@ Approved versioned portrait URLs use `Cache-Control: public, max-age=300, must-r
 
 ## Development
 
+Name generation, reviewed availability, and coverage provenance resolve the same typed registry in `src/geography/name-providers.ts`. Register a reviewed table there together with its primary and supplementary sources; retain the source tables and their usage-right declarations. The registry distinguishes paired components, intact full names, and patronymics, including gendered second components. It also retains weighted language/global fallback pools for countries awaiting review. A source-backed name pool does not by itself approve addresses or new geographic datasets.
+
 Change behavior with a focused failing test first, then implement and refactor. Keep unit, integration, and end-to-end suites independently runnable, with realistic fixtures and tests aimed at distinct risks. Work enters `dev` through a pull request from a short-lived branch; production promotion is a pull request from `dev` to `main`.

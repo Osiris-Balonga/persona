@@ -1,25 +1,7 @@
+import { resolveNameProvider, reviewedNameCountryCodes } from './name-providers.js'
 import { listCities } from './cities.js'
 import { listCountries } from './countries.js'
 import { nameContextForCountry } from './names.js'
-import { namePoolData } from './name-pool-data.js'
-import { bhutanGivenNames, myanmarGivenNames } from './surname-free-names.js'
-import { malawiNames } from './malawi-names.js'
-import { ethiopiaGivenNames } from './ethiopia-names.js'
-import { africaReviewedNames, isAfricaReviewedCountry } from './africa-reviewed-names.js'
-import { europeReviewedNames, isEuropeReviewedCountry } from './europe-reviewed-names.js'
-import { europeGenderedNames, isEuropeGenderedCountry } from './europe-gendered-names.js'
-import { europeIslandNames, isEuropeIslandCountry } from './europe-island-names.js'
-import { asiaReviewedNames, isAsiaReviewedCountry } from './asia-reviewed-names.js'
-import { asiaWestNames, isAsiaWestCountry } from './asia-west-names.js'
-import { asiaEastNames, isAsiaEastCountry } from './asia-east-names.js'
-import { asiaCentralNames, isAsiaCentralCountry } from './asia-central-names.js'
-import { asiaAdditionalNames, isAsiaAdditionalCountry } from './asia-additional-names.js'
-import { northAmericaReviewedNames, isNorthAmericaReviewedCountry } from './north-america-reviewed-names.js'
-import { northAmericaTerritoryNames, isNorthAmericaTerritoryCountry } from './north-america-territory-names.js'
-import { oceaniaReviewedNames, isOceaniaReviewedCountry } from './oceania-reviewed-names.js'
-import { oceaniaTerritoryNames, isOceaniaTerritoryCountry } from './oceania-territory-names.js'
-import { southAmericaReviewedNames, isSouthAmericaReviewedCountry } from './south-america-reviewed-names.js'
-import { southAmericaTerritoryNames, isSouthAmericaTerritoryCountry } from './south-america-territory-names.js'
 import { addressRule, fictionalAddress, postalCodeForCity } from './address-data.js'
 import { hasSyntheticStreet } from './street-data.js'
 import { hasMobileExample, nanpTerritoryAreas } from './fictional-contact.js'
@@ -44,41 +26,6 @@ const partial = (source: Exclude<Source, null>): CoverageCell => ({
 })
 const pending = (): CoverageCell => ({ status: 'pending', source: null, fallback: null, review: 'pending', supplementarySources: [] })
 const notApplicable = (): CoverageCell => ({ status: 'not-applicable', source: null, fallback: null, review: 'pending', supplementarySources: [] })
-
-const nameSourceByCountry: Record<string, GeographicSource> = {
-  AO: 'wikidata-africa-name-batch', BF: 'wikidata-africa-name-batch',
-  BI: 'wikidata-africa-qlever-candidates', BJ: 'wikidata-africa-name-batch', BT: 'bhutan-naming-study', BW: 'botswana-parliament-names',
-  CD: 'wikidata-africa-name-batch', CF: 'wikidata-africa-qlever-candidates', CG: 'congo-senate-names',
-  CI: 'wikidata-africa-qlever-candidates', CM: 'wikidata-africa-qlever-candidates',
-  CV: 'wikidata-africa-qlever-candidates', DJ: 'wikidata-africa-qlever-candidates',
-  DZ: 'wikidata-africa-qlever-candidates', EG: 'wikidata-africa-qlever-candidates', EH: 'sahrawi-womens-union-names', ER: 'wikidata-africa-qlever-candidates',
-  ET: 'tesfa-ethiopian-names', GA: 'wikidata-africa-qlever-candidates', GH: 'wikidata-names', GM: 'wikidata-africa-qlever-candidates',
-  GN: 'wikidata-africa-qlever-candidates', GQ: 'wikidata-africa-qlever-candidates', GW: 'wikidata-africa-qlever-candidates', KE: 'wikidata-africa-qlever-candidates', KM: 'wikidata-africa-qlever-candidates',
-  LR: 'wikidata-africa-qlever-candidates', LS: 'lesotho-parliament-names',
-  LY: 'wikidata-africa-qlever-candidates',
-  MA: 'wikidata-africa-qlever-candidates', MG: 'wikidata-africa-qlever-candidates', ML: 'wikidata-africa-qlever-candidates', MM: 'burmese-name-frequencies', MR: 'wikidata-africa-qlever-candidates',
-  MU: 'wikidata-africa-qlever-candidates', MW: 'peace-corps-chichewa-names',
-  MZ: 'wikidata-africa-qlever-candidates',
-  NA: 'namibia-parliament-names', NE: 'wikidata-africa-qlever-candidates', NG: 'wikidata-africa-qlever-candidates',
-  RE: 'insee-reunion-given-names',
-  RW: 'wikidata-names', SC: 'seychelles-parliament-names', SH: 'st-helena-election-names', SL: 'wikidata-africa-qlever-candidates',
-  SD: 'wikidata-africa-qlever-candidates', SN: 'wikidata-names',
-  SO: 'wikidata-africa-qlever-candidates', SS: 'wikidata-africa-qlever-candidates', ST: 'wikidata-africa-qlever-candidates', SZ: 'wikidata-africa-qlever-candidates', TD: 'wikidata-africa-qlever-candidates',
-  TG: 'wikidata-africa-qlever-candidates', TN: 'wikidata-africa-qlever-candidates', TZ: 'wikidata-africa-qlever-candidates',
-  UG: 'wikidata-africa-qlever-candidates', ZA: 'stats-sa-birth-names', ZM: 'wikidata-africa-qlever-candidates',
-  YT: 'insee-mayotte-given-names', ZW: 'wikidata-africa-qlever-candidates',
-}
-const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
-  AD: ['andorra-civil-names'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
-  GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'],
-  DJ: ['wikidata-africa-birthplace-candidates'], ER: ['wikidata-africa-birthplace-candidates'], GW: ['wikidata-africa-birthplace-candidates'],
-  KE: ['kenya-parliament-names'], KM: ['wikidata-africa-birthplace-candidates'], LY: ['wikidata-africa-birthplace-candidates'], MM: ['uk-myanmar-names'], MR: ['wikidata-africa-birthplace-candidates'], MW: ['ifla-malawi-names'],
-  NE: ['wikidata-africa-birthplace-candidates'], SH: ['st-helena-election-names-2021'], ST: ['wikidata-africa-birthplace-candidates'], SZ: ['wikidata-africa-birthplace-candidates'], TD: ['wikidata-africa-birthplace-candidates'],
-  RE: ['insee-reunion-family-names'], RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
-  TZ: ['tanzania-parliament-names'], UG: ['uganda-parliament-names'],
-  YT: ['wikidata-africa-birthplace-candidates', 'mayotte-election-names'],
-  ZM: ['zambia-parliament-names'], ZW: ['zimbabwe-parliament-names'],
-}
 
 const pendingAsianNameReviewNotes: Record<string, string> = {
   BN: 'Mixed-community and title labels need a coherent Brunei sample',
@@ -119,12 +66,7 @@ const pendingOceaniaNameReviewNotes: Record<string, string> = {
 }
 
 const addressReviewedCodes = new Set([
-  ...Object.keys(africaReviewedNames), 'ET', 'MW', ...Object.keys(europeReviewedNames), ...Object.keys(europeGenderedNames),
-  ...Object.keys(europeIslandNames), 'SJ', 'VA', ...Object.keys(asiaReviewedNames), ...Object.keys(asiaWestNames),
-  ...Object.keys(asiaEastNames), ...Object.keys(asiaCentralNames), ...Object.keys(asiaAdditionalNames),
-  ...Object.keys(northAmericaReviewedNames), ...Object.keys(northAmericaTerritoryNames),
-  ...Object.keys(oceaniaReviewedNames), ...Object.keys(oceaniaTerritoryNames),
-  ...Object.keys(southAmericaReviewedNames), ...Object.keys(southAmericaTerritoryNames),
+  ...reviewedNameCountryCodes(), 'SJ', 'VA',
   'AZ', 'BN', 'BT', 'CC', 'ID', 'KG', 'KH', 'KZ', 'LA', 'MM', 'MN', 'MO', 'MV', 'MY', 'OM', 'QA',
   'SG', 'TH', 'TJ', 'TM', 'UZ',
   'AI', 'BL', 'BQ', 'KY', 'MF', 'MS', 'PM', 'SX', 'TC', 'VG',
@@ -154,7 +96,8 @@ function addressCoverage(country: string): CoverageCell {
 export function listCoverage() {
   return listCountries().map((country) => {
     const resident = country.generation === 'eligible'
-    const nameContext = nameContextForCountry(country.code)
+    const provider = resolveNameProvider(country.code)
+    const nameContext = provider?.context
     const nameFallback = nameContext?.pools.filter((pool) => pool.tier !== 'local')
       .map((pool) => `${pool.tier}:${pool.locale}`).join(',') || null
     return {
@@ -164,24 +107,13 @@ export function listCoverage() {
       registry: ingested('iso-3166'),
       callingCode: country.callingCode === null ? pending() : ingested('libphonenumber-js'),
       cities: resident && listCities(country.code).length > 0 ? { ...ingested('geonames'), supplementarySources: ['geonames-admin1'] } : resident ? pending() : notApplicable(),
-      names: !resident ? notApplicable() : nameContext ? { ...ingested(isSouthAmericaReviewedCountry(country.code)
-        ? 'wikidata-south-america-qlever-candidates' : isSouthAmericaTerritoryCountry(country.code)
-          ? 'wikidata-south-america-birthplace-candidates' : isOceaniaReviewedCountry(country.code)
-        ? 'wikidata-oceania-qlever-candidates' : isOceaniaTerritoryCountry(country.code)
-          ? 'wikidata-oceania-birthplace-candidates' : isNorthAmericaReviewedCountry(country.code)
-        ? 'wikidata-north-america-qlever-candidates' : isNorthAmericaTerritoryCountry(country.code)
-          ? 'wikidata-north-america-birthplace-candidates' : isAsiaReviewedCountry(country.code) || isAsiaWestCountry(country.code) || isAsiaEastCountry(country.code) || isAsiaCentralCountry(country.code) || isAsiaAdditionalCountry(country.code)
-        ? 'wikidata-asia-qlever-candidates' : isEuropeIslandCountry(country.code)
-        ? 'wikidata-europe-birthplace-candidates' : isEuropeReviewedCountry(country.code) || isEuropeGenderedCountry(country.code)
-          ? 'wikidata-europe-qlever-candidates' : nameSourceByCountry[country.code] ?? 'faker'),
+      names: !resident ? notApplicable() : provider ? { ...ingested(provider.source),
         fallback: nameFallback,
         review: hasReviewedNamePool(country.code) ? 'reviewed' as const : 'automated' as const,
         reviewNote: pendingAsianNameReviewNotes[country.code]
           ?? pendingNorthAmericaNameReviewNotes[country.code]
           ?? pendingOceaniaNameReviewNotes[country.code] ?? null,
-        supplementarySources: isEuropeGenderedCountry(country.code)
-          ? ['wikidata-europe-gendered-families'] : country.code === 'FO' && isEuropeIslandCountry(country.code)
-            ? ['faroe-name-statistics'] : nameSupplementaryByCountry[country.code] ?? ['geonames-country-info'],
+        supplementarySources: provider.supplementarySources,
       } : pending(),
       addresses: resident ? addressCoverage(country.code) : notApplicable(),
       phone: !resident ? notApplicable() : country.code === 'GB' ? ingested('ofcom')
@@ -251,27 +183,10 @@ export function validateGeographicData(): string[] {
         errors.push(`Reviewed name pool is not local ${country.code}`)
       }
       for (const pool of context?.pools ?? []) {
-        const names = pool.locale === 'my_MM' ? myanmarGivenNames
-          : pool.locale === 'bt_BT' ? bhutanGivenNames
-              : pool.locale === 'mw_MW' ? malawiNames
-                : pool.locale === 'et_ET' ? ethiopiaGivenNames
-                  : isAfricaReviewedCountry(country.code) ? africaReviewedNames[country.code]
-                    : isEuropeReviewedCountry(country.code) ? europeReviewedNames[country.code]
-                      : isEuropeGenderedCountry(country.code) ? europeGenderedNames[country.code]
-                        : isEuropeIslandCountry(country.code) ? europeIslandNames[country.code]
-                          : isAsiaReviewedCountry(country.code) ? asiaReviewedNames[country.code]
-                            : isAsiaWestCountry(country.code) ? asiaWestNames[country.code]
-                              : isAsiaEastCountry(country.code) ? asiaEastNames[country.code]
-                                : isAsiaCentralCountry(country.code) ? asiaCentralNames[country.code]
-                                  : isAsiaAdditionalCountry(country.code) ? asiaAdditionalNames[country.code]
-                                    : isNorthAmericaReviewedCountry(country.code) ? northAmericaReviewedNames[country.code]
-                                      : isNorthAmericaTerritoryCountry(country.code) ? northAmericaTerritoryNames[country.code]
-                                        : isOceaniaReviewedCountry(country.code) ? oceaniaReviewedNames[country.code]
-                                          : isOceaniaTerritoryCountry(country.code) ? oceaniaTerritoryNames[country.code]
-                                            : isSouthAmericaReviewedCountry(country.code) ? southAmericaReviewedNames[country.code]
-                                              : isSouthAmericaTerritoryCountry(country.code) ? southAmericaTerritoryNames[country.code] : namePoolData[pool.locale]
-        if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !names
-          || Object.values(names).some((part) => part.length === 0 || new Set(part).size !== part.length)) {
+        const components = resolveNameProvider(country.code)?.pools[pool.locale]
+        const parts = components ? [...Object.values(components.given), ...('second' in components ? Object.values(components.second) : [])] : undefined
+        if (!Number.isSafeInteger(pool.weight) || pool.weight < 1 || !parts
+          || parts.some((part) => part.length === 0 || new Set(part).size !== part.length)) {
           errors.push(`Invalid name pool ${country.code}/${pool.locale}`)
         }
       }
