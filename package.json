@@ -37,6 +37,7 @@
     "test": "vitest run --project unit --project integration",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
+    "test:worker-integration": "vitest run --project worker-integration",
     "test:e2e": "vitest run --project e2e --passWithNoTests"
   },
   "dependencies": {
@@ -51,8 +52,10 @@
     "@cloudflare/workers-types": "^5.20260925.1",
     "@faker-js/faker": "10.6.0",
     "@types/node": "^24.13.6",
+    "esbuild": "0.28.2",
     "fflate": "0.8.3",
     "iso-3166": "4.4.0",
+    "miniflare": "5.20260923.0-alpha",
     "sharp": "^0.35.4",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
