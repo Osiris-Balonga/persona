@@ -36,14 +36,22 @@ export function buildApp(options: AppOptions = {}) {
     bodyLimit: 1_024,
   }).withTypeProvider<TypeBoxTypeProvider>()
   const generatedCounts = new WeakMap<object, number>()
+  let draining = false
+  app.addHook('preClose', async () => { draining = true })
+  const pendingAnalytics = new Set<Promise<void>>()
+  app.addHook('onClose', async () => {
+    await Promise.allSettled(pendingAnalytics)
+  })
 
   app.addHook('onResponse', async (request, reply) => {
     if (!options.analytics || request.method !== 'GET' ||
       new URL(request.raw.url ?? '/', 'http://localhost').pathname !== '/people') return
     try {
-      await options.analytics.record({ statusCode: reply.statusCode,
+      const recording = options.analytics.record({ statusCode: reply.statusCode,
         profileCount: reply.statusCode === 200 ? (generatedCounts.get(request) ?? 0) : 0,
         durationMs: Math.max(0, reply.elapsedTime) })
+      pendingAnalytics.add(recording)
+      try { await recording } finally { pendingAnalytics.delete(recording) }
     } catch {
       request.log.warn('Analytics recording failed')
     }
@@ -94,6 +102,7 @@ export function buildApp(options: AppOptions = {}) {
   })
 
   app.addHook('onSend', async (_request, reply, payload) => {
+    if (draining) reply.header('Connection', 'close')
     if (reply.statusCode < 400 && (typeof payload === 'string' || Buffer.isBuffer(payload)) &&
       Buffer.byteLength(payload) > (options.maxResponseBytes ?? 256 * 1_024)) {
       reply.code(503).header('Cache-Control', 'no-store').removeHeader('ETag')

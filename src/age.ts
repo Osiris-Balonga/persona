@@ -1,6 +1,6 @@
-import type { Person } from './contracts/person.js'
+import type { PublicPerson } from './contracts/public-person.js'
 
-export type AgeGroup = Person['ageGroup']
+export type AgeGroup = PublicPerson['dob']['ageGroup']
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
 
@@ -64,7 +64,7 @@ export function ageOn(dateOfBirth: string, asOf: string): number {
 }
 
 export function isAgeProfileConsistent(
-  profile: Pick<Person, 'age' | 'ageGroup' | 'dateOfBirth'>,
+  profile: { age: number; ageGroup: AgeGroup; dateOfBirth: string },
   asOf: string,
 ): boolean {
   return ageOn(profile.dateOfBirth, asOf) === profile.age &&

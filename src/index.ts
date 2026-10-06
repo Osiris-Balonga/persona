@@ -1,6 +1,7 @@
 import { buildApp } from './app.js'
 import { readServerConfig } from './server-config.js'
 import { createAnalyticsSink } from './analytics/client.js'
+import { installShutdown } from './shutdown.js'
 
 const config = readServerConfig(process.env)
 const analyticsUrl = process.env.ANALYTICS_INGEST_URL
@@ -14,6 +15,7 @@ const app = buildApp({ logger: true, trustedProxies: config.trustedProxies, requ
 
 try {
   await app.listen({ host: config.host, port: config.port })
+  installShutdown(app)
 } catch (error) {
   app.log.error(error)
   process.exitCode = 1

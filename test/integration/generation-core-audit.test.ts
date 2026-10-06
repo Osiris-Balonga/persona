@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import Value from 'typebox/value'
 import { ageOn } from '../../src/age.js'
-import { PersonSchema } from '../../src/contracts/person.js'
+import { DefaultPublicPeopleResponseSchema } from '../../src/contracts/public-people.js'
+import { projectPeopleResponse } from '../../src/field-selection.js'
 import { generatePersonWithoutPortrait } from '../../src/generation-core.js'
 import { listCountries } from '../../src/geography/countries.js'
 import { getCity } from '../../src/geography/cities.js'
@@ -18,8 +19,10 @@ describe('generated geographic profiles', () => {
     for (const country of countries) {
       const query = parsePeopleQuery(new URLSearchParams(`nationality=${country.code}&ageGroup=teen&seed=core-audit&asOf=2025-02-28`))
       const person = generatePersonWithoutPortrait(query, createGenerationContext(query, versions), 0)
-      const { locationCity, ...schemaPerson } = person
-      if (!Value.Check(PersonSchema, { ...schemaPerson, picture: null })
+      const { locationCity } = person
+      const publicResponse = projectPeopleResponse({ results: [{ ...person, picture: null }],
+        meta: { count: 1, asOf: query.asOf, seed: query.seed ?? null, ...versions } })
+      if (!Value.Check(DefaultPublicPeopleResponseSchema, publicResponse)
         || person.country !== country.code || !getCity(country.code, person.city)
         || locationCity.country !== country.code || locationCity.name !== person.city
         || person.address.country !== country.code || person.address.city !== person.city
