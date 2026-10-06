@@ -18,6 +18,8 @@ Run `npm run test:worker-integration` separately for the analytics Worker in loc
 
 ## Repository content
 
+Run `npm run benchmark:backend -- 20` for observational performance checks. The output records runtime/data/catalogue versions, three warmups, per-case median/p95/mean, heap deltas and response hashes. Cases cover 1/100-person CG, FR and MW batches (including sparse pools) and the production portrait entry point with a local store fixture. These Node measurements exclude workerd, R2 and network latency; heap deltas include GC and do not represent peak memory. Record comparative results in the issue/PR, keep temporary output outside Git, and never use timing thresholds as CI tests.
+
 Keep code, tests, assets, and durable product or contributor documentation in the repository. Track planning work in GitHub Issues and Projects. Do not commit local reports, drafts, generated builds, secrets, or unreviewed assets. Record the provenance and usage rights of added datasets and images.
 
 Write repository documentation, code identifiers, commit messages, and pull request descriptions in English. Localize user-facing product content when applicable.
