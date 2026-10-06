@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
@@ -92,6 +92,61 @@ describe('portrait sheet extraction CLI', () => {
     expect(conflict.status).not.toBe(0)
     expect(conflict.stderr).toMatch(/Duplicate portrait ID portrait-tl/)
     expect((await readdir(output)).sort()).toEqual(['ac-doctor-001', 'portrait-index.json'])
+  }, 60_000)
+
+  it('merges a second sheet into the shared ID index and preserves prior output across retries', async () => {
+    const { source, brief, output } = await fixtureDirectory()
+    const first = runCli(source, brief, output)
+    expect(first.status, first.stderr).toBe(0)
+    const firstSheetDirectory = join(output, 'ac-doctor-001')
+    const firstTileNames = await readdir(join(firstSheetDirectory, 'tiles'))
+    const firstBytes = new Map(await Promise.all([
+      ...firstTileNames.map(async (name) => [name, await readFile(join(firstSheetDirectory, 'tiles', name))] as const),
+      ['sheet-manifest.json', await readFile(join(firstSheetDirectory, 'sheet-manifest.json'))] as const,
+    ]))
+
+    const secondSource = join(dirname(source), 'second-sheet.png')
+    await sharp({ create: { width: 1200, height: 1200, channels: 3, background: '#a34e82' } })
+      .png().toFile(secondSource)
+    const secondBrief = join(dirname(brief), 'second-brief.json')
+    const secondMetadata = { ...metadata, sheetId: 'ac-doctor-002',
+      tiles: metadata.tiles.map((tile) => ({ ...tile, portraitId: `second-${tile.portraitId}` })) }
+    await writeFile(secondBrief, `${JSON.stringify(secondMetadata)}\n`)
+    const second = runCli(secondSource, secondBrief, output)
+    expect(second.status, second.stderr).toBe(0)
+
+    const indexPath = join(output, 'portrait-index.json')
+    const index = JSON.parse(await readFile(indexPath, 'utf8'))
+    expect(index.portraits).toHaveLength(8)
+    expect(new Set(index.portraits.map((entry: { portraitId: string }) => entry.portraitId)).size).toBe(8)
+    for (const [name, bytes] of firstBytes) {
+      const file = name === 'sheet-manifest.json' ? join(firstSheetDirectory, name) : join(firstSheetDirectory, 'tiles', name)
+      expect(await readFile(file)).toEqual(bytes)
+    }
+    const secondIndexBytes = await readFile(indexPath)
+    const secondSheetDirectory = join(output, 'ac-doctor-002')
+    const secondTileNames = await readdir(join(secondSheetDirectory, 'tiles'))
+    const secondBytes = new Map(await Promise.all([
+      ...secondTileNames.map(async (name) => [name, await readFile(join(secondSheetDirectory, 'tiles', name))] as const),
+      ['sheet-manifest.json', await readFile(join(secondSheetDirectory, 'sheet-manifest.json'))] as const,
+    ]))
+    const repeated = runCli(secondSource, secondBrief, output)
+    expect(repeated.status, repeated.stderr).toBe(0)
+    expect(await readFile(indexPath)).toEqual(secondIndexBytes)
+    for (const [name, bytes] of secondBytes) {
+      const file = name === 'sheet-manifest.json' ? join(secondSheetDirectory, name) : join(secondSheetDirectory, 'tiles', name)
+      expect(await readFile(file)).toEqual(bytes)
+    }
+  }, 60_000)
+
+  it('fails closed when another process owns the output index lock', async () => {
+    const { source, brief, output } = await fixtureDirectory()
+    await mkdir(output, { recursive: true })
+    await writeFile(join(output, '.portrait-index.lock'), 'another process\n', { flag: 'wx' })
+    const result = runCli(source, brief, output)
+    expect(result.status).not.toBe(0)
+    expect(result.stderr).toMatch(/run extractions for this output directory one at a time/)
+    expect(await readdir(output)).toEqual(['.portrait-index.lock'])
   }, 60_000)
 
   it('accepts a generation record with explicit context, gender, age, and matching source integrity fields', async () => {
