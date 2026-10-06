@@ -21,6 +21,27 @@ const fixedAgeContext = (offset: number): ReturnType<typeof createGenerationCont
 })
 
 describe('generation core', () => {
+  it.each([
+    ['0102-01-01', 35, 365, '0001-12-31', 100],
+    ['0149-03-01', 0, 59, '0084-02-29', 65],
+    ['0165-03-01', 0, 59, '0100-02-28', 65],
+    ['2065-03-01', 0, 59, '2000-02-29', 65],
+    ['1965-03-01', 0, 59, '1900-02-28', 65],
+  ])('generates a calendar birthday at %s without remapping early years', (asOf, offset, birthday, dateOfBirth, age) => {
+    const query = parse(`nationality=CG&ageGroup=senior&seed=calendar&asOf=${asOf}`)
+    const context = fixedAgeContext(offset)
+    const result = generatePersonWithoutPortrait(query, {
+      componentKey(index, component) {
+        return component === 'birth-date'
+          ? `${birthday.toString(16).padStart(12, '0')}${'0'.repeat(52)}`
+          : context.componentKey(index, component)
+      },
+    }, 0)
+    expect(result.dateOfBirth).toBe(dateOfBirth)
+    expect(result.age).toBe(age)
+    expect(ageOn(result.dateOfBirth, asOf)).toBe(age)
+  })
+
   it('resolves explicit constraints before selecting details', () => {
     const query = parse('nationality=FR&residenceCountry=MW&city=Lilongwe&gender=female&ageGroup=teen&seed=school-demo&asOf=2026-09-24')
     const resolved = resolveAbstractPerson(query, createGenerationContext(query, versions), 0)

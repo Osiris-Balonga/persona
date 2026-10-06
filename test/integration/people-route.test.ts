@@ -2,12 +2,55 @@ import { describe, expect, it } from 'vitest'
 import Value from 'typebox/value'
 import { parsePhoneNumberFromString } from 'libphonenumber-js/max'
 import { buildApp } from '../../src/app.js'
+import { ageOn } from '../../src/age.js'
 import { DefaultPublicPeopleResponseSchema } from '../../src/contracts/public-people.js'
 import type { PortraitCatalog } from '../../src/portraits/catalog.js'
 import { listCountries } from '../../src/geography/countries.js'
 import { canGenerateProfile } from '../../src/geography/profile-availability.js'
 
 const base = '/people?nationality=MW&city=Lilongwe&ageGroup=teen&gender=female&seed=route-demo&asOf=2026-09-24'
+
+describe('audit regressions', () => {
+  it('rejects unsupported reference dates before cache revalidation', async () => {
+    const app = buildApp()
+    try {
+      const response = await app.inject({ url: '/people?nationality=CG&seed=audit&asOf=0001-01-01',
+        headers: { 'if-none-match': '*' } })
+      expect(response.statusCode).toBe(400)
+      expect(response.json().error).toMatchObject({ code: 'INVALID_QUERY', parameter: 'asOf' })
+      expect(response.headers['cache-control']).toBe('no-store')
+      expect(response.headers.etag).toBeUndefined()
+    } finally { await app.close() }
+  })
+
+  it.each(['0102-01-01', '0150-01-01', '9999-12-31'])('generates coherent batches at %s', async (asOf) => {
+    const app = buildApp()
+    try {
+      const response = await app.inject({ url: `/people?nationality=CG&seed=audit&asOf=${asOf}&count=100` })
+      expect(response.statusCode).toBe(200)
+      for (const person of response.json().results) {
+        expect(ageOn(person.dob.date, asOf)).toBe(person.dob.age)
+      }
+    } finally { await app.close() }
+  })
+
+  it('revalidates weak ETags and validator lists for GET and HEAD', async () => {
+    const app = buildApp()
+    try {
+      const initial = await app.inject({ url: base })
+      const etag = initial.headers.etag!
+      for (const method of ['GET', 'HEAD'] as const) {
+        for (const validator of [`W/${etag}`, `"other", W/${etag}`, '*']) {
+          const response = await app.inject({ method, url: base, headers: { 'if-none-match': validator } })
+          expect(response.statusCode).toBe(304)
+          expect(response.body).toBe('')
+          expect(response.headers.etag).toBe(etag)
+        }
+      }
+      expect((await app.inject({ url: base, headers: { 'if-none-match': 'W/"different"' } })).statusCode).toBe(200)
+    } finally { await app.close() }
+  })
+})
 
 describe('GET /people', () => {
   it('never uses a portrait from another collection for a selected country', async () => {

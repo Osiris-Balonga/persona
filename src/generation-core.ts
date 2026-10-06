@@ -49,8 +49,11 @@ function birthDateForAge(age: number, asOf: string, key: string): string {
   const selectedMonthDay = `${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')}`
   const year = referenceYear - age - (selectedMonthDay > referenceMonthDay ? 1 : 0)
   if (year < 1) throw new RangeError('Age cannot be represented at asOf')
-  const lastDayOfMonth = new Date(Date.UTC(year, month, 0)).getUTCDate()
-  const candidate = new Date(Date.UTC(year, month - 1, Math.min(date, lastDayOfMonth)))
+  // Date.UTC remaps years 0–99 to 1900–1999; setUTCFullYear preserves them.
+  const candidate = new Date(0)
+  candidate.setUTCFullYear(year, month, 0)
+  const lastDayOfMonth = candidate.getUTCDate()
+  candidate.setUTCFullYear(year, month - 1, Math.min(date, lastDayOfMonth))
   let value = candidate.toISOString().slice(0, 10)
   const actualAge = ageOn(value, asOf)
   if (actualAge !== age) {

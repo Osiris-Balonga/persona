@@ -9,6 +9,9 @@ describe('API usage collection', () => {
       await app.inject({ method: 'GET', url: '/health' })
       await app.inject({ method: 'HEAD', url: '/people?count=2' })
       await app.inject({ method: 'GET', url: '/unknown' })
+      const malformed = await app.inject({ method: 'POST', url: '/people',
+        headers: { 'content-type': 'application/json' }, payload: '{' })
+      expect(malformed.statusCode).toBe(400)
       expect(record).not.toHaveBeenCalled()
 
       const response = await app.inject({ method: 'GET', url: '/people?nationality=CG&count=3&seed=analytics&asOf=2026-09-28' })

@@ -1,5 +1,6 @@
 import { approvedPortraitHash, validatePortraitCatalog, type PortraitCatalog } from '../src/portraits/catalog.js'
 import { portraitCatalog } from '../src/portraits/manifest.js'
+import { matchesIfNoneMatch } from '../src/conditional-request.js'
 
 type StoredPortrait = {
   size: number
@@ -42,8 +43,7 @@ export async function handlePortraitRequest(
       'X-Content-Type-Options': 'nosniff',
       'Access-Control-Allow-Origin': '*',
     })
-    const validators = request.headers.get('if-none-match')?.split(',').map((value) => value.trim()) ?? []
-    if (validators.includes(object.httpEtag) || validators.includes('*')) {
+    if (matchesIfNoneMatch(request.headers.get('if-none-match'), object.httpEtag)) {
       headers.delete('Content-Length')
       return new Response(null, { status: 304, headers })
     }

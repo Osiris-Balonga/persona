@@ -45,6 +45,9 @@ export function resolveAgeConstraint(input: { age?: number; ageGroup?: AgeGroup 
 export function resolveAsOf(asOf?: string, now: Date = new Date()): string {
   const value = asOf ?? now.toISOString().slice(0, 10)
   calendarDate(value, 'asOf')
+  // A 100-year-old profile can have a birthday later in the reference year.
+  // Keep every generated birth year within the four-digit calendar contract.
+  if (value < '0102-01-01') throw new RangeError('Invalid asOf')
   return value
 }
 
