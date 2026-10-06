@@ -1,5 +1,5 @@
 import { resolveAsOf, type AgeGroup } from './age.js'
-import type { Person } from './contracts/person.js'
+import type { PublicPerson } from './contracts/public-person.js'
 import { parseFieldSelection, type FieldPath } from './field-selection.js'
 import { getCountry } from './geography/countries.js'
 import { listCities, getCity } from './geography/cities.js'
@@ -9,7 +9,7 @@ import { continentForCountry, type Continent } from './geography/continents.js'
 export interface PeopleQuery {
   count: number
   asOf: string
-  gender?: Person['gender']
+  gender?: PublicPerson['gender']
   ageGroup?: readonly AgeGroup[]
   nationality?: string
   residenceCountry?: string

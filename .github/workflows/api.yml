@@ -22,6 +22,7 @@ jobs:
       - run: npm ci
       - run: npm run data:availability:check
       - run: npm run typecheck
+      - run: npm run typecheck:contracts
       - run: npm run typecheck:worker
       - run: npm run check:analytics-storage
       - run: npm run build:analytics-worker
