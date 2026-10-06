@@ -24,6 +24,7 @@
     "data:audit:beta": "tsx scripts/audit-beta-http.ts",
     "portraits:prepare": "tsx scripts/prepare-portrait-import.ts",
     "portraits:optimize": "tsx scripts/optimize-portrait-candidates.ts",
+    "portraits:extract-sheet": "tsx scripts/extract-portrait-sheet.ts",
     "portraits:review": "tsx src/review/index.ts",
     "portraits:import-review": "tsx scripts/import-review-portraits.ts",
     "portraits:audit-review": "tsx scripts/audit-reviewed-portraits.ts",
