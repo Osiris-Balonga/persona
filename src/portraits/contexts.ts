@@ -3,11 +3,11 @@ import type { AgeGroup } from '../age.js'
 // Visual production briefs, not assertions about an individual's occupation.
 export const portraitContexts = {
   standard: { minimumAge: 6, maximumAge: 100, brief: 'Everyday clothing' },
-  doctor: { minimumAge: 25, maximumAge: 100, brief: 'Recognizable medical coat and accessories' },
-  construction: { minimumAge: 18, maximumAge: 100, brief: 'Construction safety helmet and workwear' },
-  business: { minimumAge: 18, maximumAge: 100, brief: 'Formal business clothing' },
+  doctor: { minimumAge: 25, maximumAge: 64, brief: 'Recognizable medical coat and accessories' },
+  construction: { minimumAge: 18, maximumAge: 64, brief: 'Construction safety helmet and workwear' },
+  business: { minimumAge: 18, maximumAge: 64, brief: 'Formal business clothing' },
   'school-pupil': { minimumAge: 6, maximumAge: 17, brief: 'School clothing or accessories' },
-  'university-student': { minimumAge: 18, maximumAge: 100, brief: 'University study clothing or accessories' },
+  'university-student': { minimumAge: 18, maximumAge: 34, brief: 'University study clothing or accessories' },
 } as const
 
 export type PortraitContext = keyof typeof portraitContexts

@@ -6,6 +6,7 @@ import { parsePeopleQuery } from '../../src/people-query.js'
 import { generatePeopleResponse } from '../../src/generate-people.js'
 import { responseETag } from '../../src/replay.js'
 import { ageGroupForAge, ageOn } from '../../src/age.js'
+import { contextAllowsAge, eligibleContextAges } from '../../src/portraits/contexts.js'
 
 const key = '0'.repeat(64)
 const parse = (query: string) => parsePeopleQuery(new URLSearchParams(query))
@@ -14,6 +15,29 @@ const base = { ...portraitCatalog.assets.find(asset => asset.collection === 'afr
 const catalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [base] }
 
 describe('portrait contexts', () => {
+  it('uses plausible bounded production ages for professional and university contexts', () => {
+    for (const context of ['construction', 'business', 'university-student'] as const) {
+      const maximum = context === 'university-student' ? 34 : 64
+      expect(contextAllowsAge(context, 18)).toBe(true)
+      expect(contextAllowsAge(context, maximum)).toBe(true)
+      expect(contextAllowsAge(context, maximum + 1)).toBe(false)
+      expect(eligibleContextAges(context, ['senior'])).toEqual([])
+      const response = generatePeopleResponse(parse(`nationality=CG&portraitContext=${context}&seed=bounded-context&asOf=2026-10-07&count=100`), catalog)
+      expect(response.results.every(person => person.age >= 18 && person.age <= maximum)).toBe(true)
+    }
+  })
+  it('bounds doctor portraits to the approved working-age production brief', () => {
+    expect(contextAllowsAge('doctor', 25)).toBe(true)
+    expect(contextAllowsAge('doctor', 64)).toBe(true)
+    expect(contextAllowsAge('doctor', 65)).toBe(false)
+    expect(contextAllowsAge('doctor', 100)).toBe(false)
+    expect(eligibleContextAges('doctor', ['senior'])).toEqual([])
+    const response = generatePeopleResponse(parse('nationality=CG&portraitContext=doctor&seed=doctor-age-limit&asOf=2026-10-07&count=100'), catalog)
+    expect(response.results.every(person => person.age >= 25 && person.age <= 64)).toBe(true)
+    const seniorDoctor = { ...base, portraitContext: 'doctor', ageGroup: 'senior', apparentAgeRanges: [[65, 69]] } as PortraitAsset
+    expect(validatePortraitCatalog({ ...catalog, assets: [seniorDoctor] })).toContain(`Portrait age ranges do not match context ${base.id}`)
+    expect(contextAllowsAge('standard', 100)).toBe(true)
+  })
   it('rejects an explicit null context instead of treating it as absent', () => {
     const asset = { ...base, portraitContext: null } as unknown as PortraitAsset
     expect(validatePortraitCatalog({ ...catalog, assets: [asset] })).toContain(`Invalid portrait context ${base.id}`)

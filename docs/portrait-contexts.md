@@ -5,13 +5,13 @@
 | Context | Editorial age eligibility | Visual brief |
 | --- | --- | --- |
 | `standard` | 6–100 | Everyday clothing |
-| `doctor` | 25–100 | Medical coat and accessories |
-| `construction` | 18–100 | Safety helmet and workwear |
-| `business` | 18–100 | Formal business clothing |
+| `doctor` | 25–64 | Medical coat and accessories |
+| `construction` | 18–64 | Safety helmet and workwear |
+| `business` | 18–64 | Formal business clothing |
 | `school-pupil` | 6–17 | School clothing or accessories |
-| `university-student` | 18–100 | University study clothing or accessories |
+| `university-student` | 18–34 | University study clothing or accessories |
 
-These are product rules, not legal qualifications. Without `ageGroup`, generation chooses an eligible age. An explicit group list is intersected with eligibility; an empty intersection returns HTTP 400 with `CONFLICTING_FILTERS` and parameter `ageGroup`. A doctor request with `child,adult` uses ages 25–64; `doctor` with `child` is invalid. Unknown and repeated contexts are rejected.
+These are editorial limits for the initial contextual catalogue, not legal qualifications or retirement rules. Without `ageGroup`, generation chooses an eligible age. An explicit group list is intersected with eligibility; an empty intersection returns HTTP 400 with `CONFLICTING_FILTERS` and parameter `ageGroup`. A doctor request with `child,adult` uses ages 25–64; `doctor` with `child` or `senior` is invalid. Unknown and repeated contexts are rejected.
 
 ```text
 GET /people?nationality=CG&portraitContext=doctor&ageGroup=adult&seed=doctor-demo&asOf=2026-10-06
