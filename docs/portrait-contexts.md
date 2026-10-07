@@ -17,7 +17,7 @@ These are editorial limits for the initial contextual catalogue, not legal quali
 GET /people?nationality=CG&portraitContext=doctor&ageGroup=adult&seed=doctor-demo&asOf=2026-10-06
 ```
 
-Selection requires approval, requested context, geographical production collection, gender and exact reviewed apparent-age compatibility. It avoids repeated portraits while unused matching choices remain. Valid requests without an approved match return `picture: null`, without substituting another context or changing explicit filters. The current 1,764 approved images are all `standard`; other contexts have no approved coverage yet. The planned 24-person Africa Central doctor pilot is not an ingested or published dataset.
+Selection requires approval, requested context, geographical production collection, gender and exact reviewed apparent-age compatibility. It avoids repeated portraits while unused matching choices remain. Valid requests without an approved match return `picture: null`, without substituting another context or changing explicit filters. The catalog contains 1,764 `standard` portraits and 396 `doctor` portraits across the six African and five Asian collections. Each doctor collection has 36 portraits: two per gender per eligible five-year review band from 25 to 64. Other doctor collections and the remaining contextual categories have no approved coverage yet.
 
 ## Review and compatibility
 
@@ -27,7 +27,7 @@ Reviewed age ranges retain the existing consecutive five-year bands. Every band 
 
 The local review editor stores an explicit context, filters the gallery by context, and serves an approved-only coverage matrix at `GET /api/coverage`. Each row groups collection, context and gender; age-band counts show effective intersections with context eligibility and include empty combinations. Older records without context are counted as `standard`. Candidates, rejected records and extracted or generated source counts do not represent approved coverage.
 
-The catalogue's storage version remains `v1` to preserve all object keys and rendition URLs. Its selection revision is `contexts-v1`. Existing deployed Workers can continue reading approved `v1` objects; this metadata migration requires no image upload. A future contextual catalogue still needs independent human approval, import checks, publication and live verification.
+The catalogue's storage version remains `v1` to preserve all object keys and rendition URLs. Its selection revision is `contexts-v1`. The original standard classification required no image upload. New contextual batches require owner or explicitly delegated approval, import checks, publication and live verification; the named reviewer and retained authorization distinguish delegated decisions from independent human inspection.
 
 ## Replay and response metadata
 

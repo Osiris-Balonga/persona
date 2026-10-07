@@ -2,6 +2,8 @@
 
 Only approved and explicitly released images enter the versioned production catalog. This procedure prepares and validates review metadata; publication is described in [private portrait delivery](portrait-delivery.md).
 
+The owner may explicitly delegate final review and release of a bounded batch to an agent. Retain that instruction with the private release evidence and identify the actual agent reviewer in each decision; never record an independent human inspection that did not happen. Preserve source-association uncertainties in the evidence. Production IDs must be allocated after the highest existing ID, with a retained crosswalk to local review IDs; local IDs are not globally unique.
+
 ## Local review console
 
 Run `npm run portraits:review` from the repository root and open `http://127.0.0.1:4317`. The console listens on the local loopback interface only. Upload one or more PNG, JPEG, or WebP masters with the import button, or place them in `staging/portraits/review/inbox/`; the running console scans that folder every five seconds. To import an existing directory without moving its originals, run `npm run portraits:import-review -- <image-directory>`.
