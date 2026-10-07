@@ -15,6 +15,9 @@ export function isPortraitCompliant(item) {
 
 export function matchesPortraitFilters(item, filters) {
   const metadata = item.metadata;
+  const context = metadata
+    ? metadata.portraitContext ?? "standard"
+    : item.sourceProvenance?.intendedContext ?? "standard";
   const ranges = metadata?.apparentAgeRanges ?? [
     [metadata?.apparentAgeMin, metadata?.apparentAgeMax],
     ...(metadata?.secondaryAgeMin == null ? [] : [[metadata.secondaryAgeMin, metadata.secondaryAgeMax]]),
@@ -23,6 +26,8 @@ export function matchesPortraitFilters(item, filters) {
   return (
     (filters.status === "all" || item.status === filters.status) &&
     regionMatches(item, filters.region) &&
+    (!filters.portraitContext || filters.portraitContext === "all" ||
+      context === filters.portraitContext) &&
     (!filters.appearance || filters.appearance === "all" ||
       (metadata?.appearance ?? "unclassified") === filters.appearance) &&
     (!filters.collection || filters.collection === "all" ||

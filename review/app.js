@@ -8,12 +8,14 @@ const state = {
   items: [],
   appearanceTags: [],
   ageRanges: {},
+  coverageLoaded: false,
   region: "all",
   openRegions: new Set(),
   uploadCollection: "",
   status: "all",
   ageGroup: "all",
   ageRange: "all",
+  portraitContext: "all",
   gender: "all",
   quality: "all",
   selected: null,
@@ -68,6 +70,14 @@ const ageLabels = {
   adult: "Adulte",
   senior: "Senior",
 };
+const portraitContextLabels = {
+  standard: "Quotidien",
+  doctor: "Médecin",
+  construction: "Construction",
+  business: "Affaires",
+  "school-pupil": "Élève",
+  "university-student": "Étudiant·e",
+};
 const escapeHtml = (value) =>
   String(value ?? "").replace(
     /[&<>"']/g,
@@ -106,9 +116,22 @@ function notify(message, error = false) {
 }
 async function refresh() {
   const next = await request("/api/items");
-  if (JSON.stringify(next) === JSON.stringify(state.items)) return;
-  state.items = next;
+  const changed = JSON.stringify(next) !== JSON.stringify(state.items);
+  if (changed) state.items = next;
+  if (changed || !state.coverageLoaded) {
+    renderCoverage(await request("/api/coverage"));
+    state.coverageLoaded = true;
+  }
+  if (!changed) return;
   render();
+}
+function renderCoverage(rows) {
+  const bands = (row) => row.ageBands.map((band) =>
+    `${band.minimumAge}–${band.maximumAge} (${band.approved})`).join(", ");
+  const body = rows.map((row) => `<tr><td>${escapeHtml(regionLabels[row.collection] ?? row.collection)}</td>`
+    + `<td>${escapeHtml(portraitContextLabels[row.portraitContext] ?? row.portraitContext)}</td>`
+    + `<td>${row.gender === "female" ? "Femme" : "Homme"}</td><td>${bands(row)}</td></tr>`).join("");
+  $("#coverageReport").innerHTML = `<table><thead><tr><th>Collection</th><th>Contexte</th><th>Genre</th><th>Tranches · approuvés</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 function renderSidebar() {
   const counts = new Map();
@@ -223,7 +246,7 @@ function fillGalleryAgeRanges() {
   select.value = state.ageRange;
 }
 function updateClearFilters() {
-  $("#clearFilters").hidden = ["ageGroup", "ageRange", "gender", "quality"]
+  $("#clearFilters").hidden = ["portraitContext", "ageGroup", "ageRange", "gender", "quality"]
     .every((key) => state[key] === "all");
 }
 const allAgeRanges = () => Object.values(state.ageRanges).flat();
@@ -328,16 +351,20 @@ function populateDetail(id) {
     ? `/api/items/${id}/image?v=${item.technical.sha256}`
     : "";
   $("#detailImage").hidden = !item.technical;
+  const source = item.sourceProvenance;
+  const sourceDetail = source
+    ? `<br><strong>Source sheet</strong> · ${escapeHtml(source.sheetId)} · ${source.quadrant}<br><strong>Brief</strong> · ${escapeHtml(source.generationProvenance)}<br><strong>Provenance suggérée</strong> · ${escapeHtml(portraitContextLabels[source.intendedContext] ?? source.intendedContext)}, ${source.intendedAge} ans, ${source.intendedGender === "female" ? "femme" : "homme"}<br><strong>Droits</strong> · ${escapeHtml(source.rightsEvidence)}`
+    : "";
   $("#technicalInfo").innerHTML =
-    `<strong>Fichier</strong> · ${escapeHtml(item.originalName)}<br><strong>Dimensions</strong> · ${item.technical ? `${item.technical.width} × ${item.technical.height} px` : "—"}<br><strong>Format</strong> · ${item.technical?.format?.toUpperCase() ?? "—"}<br><strong>Taille</strong> · ${formatBytes(item.technical?.bytes)} / 50 Ko${item.error ? `<br><strong>Erreur</strong> · ${escapeHtml(item.error)}` : ""}${item.decision ? `<br><strong>Décision</strong> · ${escapeHtml(item.decision.reviewer)} · ${escapeHtml(item.decision.reason)}` : ""}`;
+    `<strong>Fichier</strong> · ${escapeHtml(item.originalName)}<br><strong>Dimensions</strong> · ${item.technical ? `${item.technical.width} × ${item.technical.height} px` : "—"}<br><strong>Format</strong> · ${item.technical?.format?.toUpperCase() ?? "—"}<br><strong>Taille</strong> · ${formatBytes(item.technical?.bytes)} / 50 Ko${sourceDetail}${item.error ? `<br><strong>Erreur</strong> · ${escapeHtml(item.error)}` : ""}${item.decision ? `<br><strong>Décision</strong> · ${escapeHtml(item.decision.reviewer)} · ${escapeHtml(item.decision.reason)}` : ""}`;
   const form = $("#metadataForm");
   form.reset();
   const metadata = item.metadata;
   $("#detailCollection").value = item.collection ?? "";
+  form.elements.namedItem("portraitContext").value = metadata?.portraitContext ?? item.sourceProvenance?.intendedContext ?? "standard";
   $(".review-column .section-heading p").textContent = metadata?.reviewNotes
     ? `À vérifier : ${metadata.reviewNotes}` : "Corrige un choix seulement si nécessaire.";
-  for (const key of ["gender"])
-    form.elements.namedItem(key).value = metadata?.[key] ?? "";
+  form.elements.namedItem("gender").value = metadata?.gender ?? item.sourceProvenance?.intendedGender ?? "";
   const tone = form.querySelector(`input[name="skinToneMst"][value="${metadata?.skinToneMst ?? ""}"]`);
   if (tone) tone.checked = true;
   renderSkinToneSelection();
@@ -431,6 +458,8 @@ function metadataPayload() {
   const [apparentAgeMin, apparentAgeMax] = state.editAgeRanges[0];
   const payload = {
     ...item.metadata,
+    ...(item.metadata.portraitContext === undefined && values.portraitContext === "standard"
+      ? {} : { portraitContext: values.portraitContext }),
     ageGroup: ageGroupForRange(apparentAgeMin),
     gender: values.gender,
     appearanceTags: [...state.editAppearanceTags],
@@ -446,7 +475,8 @@ function metadataPayload() {
 }
 function metadataChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
-  return ["ageGroup", "gender"].some((key) => payload[key] !== metadata?.[key])
+  return (payload.portraitContext ?? "standard") !== (metadata?.portraitContext ?? "standard")
+    || ["ageGroup", "gender"].some((key) => payload[key] !== metadata?.[key])
     || JSON.stringify(payload.apparentAgeRanges) !== JSON.stringify(metadataAgeRanges(metadata))
     || JSON.stringify(payload.appearanceTags) !== JSON.stringify(metadata?.appearanceTags ?? [])
     || payload.skinToneMst !== metadata?.skinToneMst;
@@ -455,6 +485,7 @@ function onlyVisualChanged(payload) {
   const metadata = state.items.find((item) => item.id === state.selected)?.metadata;
   return (payload.skinToneMst !== metadata?.skinToneMst
       || JSON.stringify(payload.appearanceTags) !== JSON.stringify(metadata?.appearanceTags ?? []))
+    && (payload.portraitContext ?? "standard") === (metadata?.portraitContext ?? "standard")
     && ["ageGroup", "gender", "appearance", "visualGroup"].every((key) => payload[key] === metadata?.[key])
     && JSON.stringify(payload.apparentAgeRanges) === JSON.stringify(metadataAgeRanges(metadata));
 }
@@ -757,6 +788,7 @@ $("#appearanceNav").addEventListener("click", (event) => {
   }
 });
 for (const [id, key] of [
+  ["filterContext", "portraitContext"],
   ["filterAgeGroup", "ageGroup"],
   ["filterAgeRange", "ageRange"],
   ["filterGender", "gender"],
@@ -771,9 +803,9 @@ for (const [id, key] of [
   });
 }
 $("#clearFilters").addEventListener("click", () => {
-  for (const key of ["ageGroup", "ageRange", "gender", "quality"])
+  for (const key of ["portraitContext", "ageGroup", "ageRange", "gender", "quality"])
     state[key] = "all";
-  for (const id of ["filterAgeGroup", "filterGender", "filterQuality"])
+  for (const id of ["filterContext", "filterAgeGroup", "filterGender", "filterQuality"])
     $(`#${id}`).value = "all";
   fillGalleryAgeRanges();
   updateClearFilters();
@@ -949,9 +981,21 @@ $("#confirmReopen").addEventListener("click", async () => {
 });
 $("#uploadCollection").addEventListener("change", (event) => { state.uploadCollection = event.target.value; });
 request("/api/options")
-  .then(({ appearanceTags, portraitAgeRanges, portraitCollectionOptions }) => {
+  .then(({ appearanceTags, portraitAgeRanges, portraitCollectionOptions, portraitContexts }) => {
     state.appearanceTags = appearanceTags;
     state.ageRanges = portraitAgeRanges;
+    for (const context of portraitContexts) {
+      for (const id of ["filterContext"]) {
+        const option = document.createElement("option");
+        option.value = context;
+        option.textContent = portraitContextLabels[context] ?? context;
+        $(`#${id}`).append(option);
+      }
+      const option = document.createElement("option");
+      option.value = context;
+      option.textContent = portraitContextLabels[context] ?? context;
+      $("#metadataForm [name=portraitContext]").append(option);
+    }
     for (const collection of portraitCollectionOptions) {
       for (const id of ["uploadCollection", "detailCollection"]) {
         const option = document.createElement("option");

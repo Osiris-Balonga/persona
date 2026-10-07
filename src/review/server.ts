@@ -6,6 +6,8 @@ import { PortraitReviewStore, type PortraitMetadata, type ReviewDecision } from 
 import { portraitAgeRanges } from './age-ranges.js'
 import { portraitCollectionOptions, type PortraitCollection } from './collections.js'
 import { appearanceTags, type AppearanceTag } from '../portraits/appearance-tags.js'
+import { portraitContextIds } from '../portraits/contexts.js'
+import { portraitReviewCoverage } from './coverage.js'
 
 const pageRoot = join(process.cwd(), 'review')
 function localOrigin(value: unknown): boolean {
@@ -39,8 +41,9 @@ export function createReviewApp(root: string) {
   app.get('/gallery-regions.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'gallery-regions.js'))))
   app.get('/review-sequence.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'review-sequence.js'))))
   app.get('/decision-flow.js', async (_request, reply) => reply.type('text/javascript; charset=utf-8').send(await readFile(join(pageRoot, 'decision-flow.js'))))
-  app.get('/api/options', async () => ({ appearanceCategories, appearanceTags, portraitAgeRanges, portraitCollectionOptions }))
+  app.get('/api/options', async () => ({ appearanceCategories, appearanceTags, portraitAgeRanges, portraitCollectionOptions, portraitContexts: portraitContextIds }))
   app.get('/api/items', async () => store.list())
+  app.get('/api/coverage', async () => portraitReviewCoverage(await store.list()))
   app.get<{ Params: { id: string } }>('/api/items/:id/image', async (request, reply) => {
     try { return reply.type('image/webp').header('cache-control', 'no-store').send(await store.image(request.params.id)) }
     catch { return reply.code(404).send({ error: 'Image unavailable' }) }
