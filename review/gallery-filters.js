@@ -23,6 +23,8 @@ export function matchesPortraitFilters(item, filters) {
   return (
     (filters.status === "all" || item.status === filters.status) &&
     regionMatches(item, filters.region) &&
+    (!filters.portraitContext || filters.portraitContext === "all" ||
+      (metadata?.portraitContext ?? "standard") === filters.portraitContext) &&
     (!filters.appearance || filters.appearance === "all" ||
       (metadata?.appearance ?? "unclassified") === filters.appearance) &&
     (!filters.collection || filters.collection === "all" ||

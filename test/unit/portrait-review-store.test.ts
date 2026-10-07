@@ -55,6 +55,19 @@ describe('portrait review storage', () => {
     expect((await store.ingest(bytes, 'the-same-image-again.png')).id).toBe(candidate.id)
   })
 
+  it('keeps extracted tile provenance visible while leaving the tile unreviewed', async () => {
+    const { store } = await createStore()
+    const provenance = { sheetId: 'central-doctors-01', quadrant: 'TL' as const,
+      generationProvenance: 'Image generator (2026-10-06)', sourceSha256: 'b'.repeat(64),
+      rightsEvidence: 'Generation record retained privately', intendedContext: 'doctor' as const,
+      intendedGender: 'female' as const, intendedAge: 29 }
+    const candidate = await store.ingest(await squarePortrait(), 'central-doctors-01-TL.png', 'africa-central', provenance)
+    expect(candidate).toMatchObject({ status: 'needs-metadata', collection: 'africa-central', sourceProvenance: provenance })
+    expect(candidate.decision).toBeUndefined()
+    await expect(store.ingest(await squarePortrait(), 'invalid.png', undefined,
+      { ...provenance, intendedAge: 70 })).rejects.toThrow('provenance')
+  })
+
   it('embeds proposed apparent age and category before review, then records a human decision', async () => {
     const { root, store } = await createStore()
     const candidate = await store.ingest(await squarePortrait(), 'adult-portrait.png')

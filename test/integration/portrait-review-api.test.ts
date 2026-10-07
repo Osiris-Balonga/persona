@@ -10,6 +10,22 @@ const roots: string[] = []
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('local portrait review API', () => {
+  it('exposes explicit context choices in the editor and approved-only contextual coverage', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-coverage-'))
+    roots.push(root)
+    const app = createReviewApp(root)
+    const page = await app.inject({ method: 'GET', url: '/' })
+    expect(page.body).toContain('name="portraitContext"')
+    const options = await app.inject({ method: 'GET', url: '/api/options' })
+    expect(options.json().portraitContexts).toContain('doctor')
+    const coverage = await app.inject({ method: 'GET', url: '/api/coverage' })
+    expect(coverage.statusCode).toBe(200)
+    expect(coverage.json()).toEqual(expect.arrayContaining([
+      expect.objectContaining({ collection: 'africa-central', portraitContext: 'doctor', gender: 'female', ageBands: expect.any(Array) }),
+    ]))
+    await app.close()
+  })
+
   it('serves the decision flow module used by the review page', async () => {
     const root = await mkdtemp(join(tmpdir(), 'persona-review-assets-'))
     roots.push(root)
@@ -154,6 +170,34 @@ describe('local portrait review API', () => {
     } })).statusCode).toBe(200)
     expect((await app.inject({ method: 'POST', url: `/api/items/${id}/reopen` })).json().status)
       .toBe('ready-for-review')
+    await app.close()
+  })
+
+  it('records context edits as a new review and keeps context separate from the collection', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'persona-review-context-edit-'))
+    roots.push(root)
+    const app = createReviewApp(root)
+    const bytes = await sharp({ create: { width: 768, height: 768, channels: 3, background: '#aa806a' } }).png().toBuffer()
+    const upload = await app.inject({ method: 'POST', url: '/api/upload', headers: {
+      'content-type': 'application/octet-stream', 'x-file-name': 'context.png', origin: 'http://localhost:4317',
+      'x-portrait-collection': 'africa-central',
+    }, payload: bytes })
+    const id = upload.json().id as string
+    const metadata = { portraitContext: 'doctor', ageGroup: 'adult', apparentAgeMin: 23, apparentAgeMax: 27,
+      gender: 'female', appearance: 'west-african', visualGroup: 'black',
+      rights: 'Synthetic portrait for Persona', rightsEvidence: 'Generation record retained locally' }
+    expect((await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`, payload: metadata })).statusCode).toBe(200)
+    const approved = await app.inject({ method: 'POST', url: `/api/items/${id}/decision`, payload: {
+      decision: 'approved', reviewer: 'Reviewer', reason: 'Inspected',
+    } })
+    expect(approved.statusCode).toBe(200)
+    const edited = await app.inject({ method: 'POST', url: `/api/items/${id}/metadata`, payload: {
+      ...metadata, portraitContext: 'construction',
+    } })
+    expect(edited.statusCode).toBe(200)
+    expect(edited.json()).toMatchObject({ status: 'ready-for-review', collection: 'africa-central',
+      metadata: { portraitContext: 'construction' } })
+    expect(edited.json().decision).toBeUndefined()
     await app.close()
   })
 })

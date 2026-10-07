@@ -25,6 +25,8 @@ Selection requires approval, requested context, geographical production collecti
 
 Reviewed age ranges retain the existing consecutive five-year bands. Every band must overlap context eligibility. Delivery applies the intersection: a doctor's reviewed 23–27 band can supply ages 25–27 only, and a fully disjoint 18–22 band is rejected. Coverage must report this effective intersection, not claim the entire editorial age range from a few candidates. The review interface and contextual coverage reporting are separate work in issue #195.
 
+The local review editor stores an explicit context, filters the gallery by context, and serves an approved-only coverage matrix at `GET /api/coverage`. Each row groups collection, context and gender; age-band counts show effective intersections with context eligibility and include empty combinations. Older records without context are counted as `standard`. Candidates, rejected records and extracted or generated source counts do not represent approved coverage.
+
 The catalogue's storage version remains `v1` to preserve all object keys and rendition URLs. Its selection revision is `contexts-v1`. Existing deployed Workers can continue reading approved `v1` objects; this metadata migration requires no image upload. A future contextual catalogue still needs independent human approval, import checks, publication and live verification.
 
 ## Replay and response metadata
