@@ -50,8 +50,9 @@ describe('portrait contexts', () => {
   })
 
   it('classifies every existing portrait as standard without losing catalogue approval', () => {
-    expect(portraitCatalog.assets).toHaveLength(1764)
-    expect(portraitCatalog.assets.every(asset => asset.portraitContext === 'standard')).toBe(true)
+    const standards = portraitCatalog.assets.filter(asset => Number(asset.id.slice(2)) <= 1767)
+    expect(standards).toHaveLength(1764)
+    expect(standards.every(asset => asset.portraitContext === 'standard')).toBe(true)
     expect(validatePortraitCatalog(portraitCatalog)).toEqual([])
   })
 

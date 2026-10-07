@@ -1,6 +1,8 @@
 # Private portrait delivery
 
-The portrait Worker reads a private R2 bucket through its binding. It has no upload, delete, or listing route. The versioned production manifest lists 1,764 approved portraits and 5,292 WebP objects: one large, medium, and thumbnail rendition per portrait, each with a SHA-256 value. The 512-pixel `large` object is also the canonical reviewed source. The public API selects approved images by production collection, gender, and apparent age range, and returns the three rendition URLs in `picture`.
+The portrait Worker reads a private R2 bucket through its binding. It has no upload, delete, or listing route. The versioned production manifest lists 2,160 approved portraits (1,764 standard and 396 doctor portraits) and 6,480 WebP objects: one large, medium, and thumbnail rendition per portrait, each with a SHA-256 value. Doctors cover all six African and five Asian collections, with 36 portraits per collection and two per gender per eligible review band from ages 25 to 64. Other doctor collections remain uncovered. The 512-pixel `large` object is also the canonical reviewed source. The public API selects approved images by production collection, gender, and apparent age range, and returns the three rendition URLs in `picture`.
+
+The doctor release uses production IDs `p_1768` through `p_2163`, retaining all standard IDs, keys and hashes. Its owner-authorized delegated review decisions, source-to-quadrant hashes, local-to-production ID crosswalk and recovered-prompt association caveats are retained outside Git with the release evidence. All three renditions must pass the existing strict 50,000-byte limit before upload.
 
 ## Publication boundary
 

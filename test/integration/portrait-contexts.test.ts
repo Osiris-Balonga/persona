@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildApp } from '../../src/app.js'
 
 describe('public portrait context filter', () => {
-  it('serves a coherent uncovered doctor profile and context-specific HEAD/304', async () => {
+  it('serves a released doctor profile and context-specific HEAD/304', async () => {
     const app = buildApp({ rateLimitMax: 100 })
     try {
       const query = '/people?nationality=CG&portraitContext=doctor&ageGroup=adult&seed=doctor-pilot&asOf=2026-10-06'
@@ -11,7 +11,7 @@ describe('public portrait context filter', () => {
       const body = doctor.json()
       expect(body.results[0].dob.age).toBeGreaterThanOrEqual(25)
       expect(body.results[0].dob.age).toBeLessThanOrEqual(64)
-      expect(body.results[0].picture).toBeNull()
+      expect(body.results[0].picture.large).toMatch(/\/portraits\/v1\/large\/p_\d+\.webp$/)
       expect(body.meta.portraitContext).toBe('doctor')
       expect(body.meta.portraitSelectionVersion).toBe('contexts-v1')
       const standard = await app.inject(query.replace('portraitContext=doctor', 'portraitContext=standard'))
