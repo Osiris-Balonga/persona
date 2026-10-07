@@ -1,9 +1,11 @@
 import { createHash, randomBytes } from 'node:crypto'
 import type { PeopleQuery } from './people-query.js'
+import { portraitSelectionVersion } from './portraits/contexts.js'
 
 export interface DataVersions {
   dataVersion: string
   catalogVersion: string
+  portraitSelectionVersion?: string
 }
 
 const generationVersion = 'v5'
@@ -41,7 +43,10 @@ export function createGenerationContext(
       if (!Number.isSafeInteger(personIndex) || personIndex < 0 || !/^[a-z][a-z0-9-]*$/.test(component)) {
         throw new RangeError('Invalid generation component')
       }
-      return digest(['persona-component', ...inputs, personIndex, component])
+      const scope = query.portraitContext !== undefined && query.portraitContext !== 'standard'
+        && (component === 'age' || component === 'portrait')
+        ? [query.portraitContext, versions.portraitSelectionVersion ?? portraitSelectionVersion] : []
+      return digest(['persona-component', ...inputs, personIndex, component, ...scope])
     },
   }
 }
@@ -57,6 +62,8 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     query.count,
     query.fields ?? null,
     query.emailDomain ?? 'example.test',
+    query.portraitContext ?? 'standard',
+    versions.portraitSelectionVersion ?? portraitSelectionVersion,
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

@@ -1,17 +1,14 @@
 import type { PeopleQuery } from './people-query.js'
-import { ageGroupForAge, ageOn, type AgeGroup } from './age.js'
+import { ageGroupForAge, ageOn } from './age.js'
 import { resolveLocationContext } from './geography/distribution.js'
 import { nameContextForCountry, selectName } from './geography/names.js'
 import { fictionalAddress } from './geography/address-data.js'
 import { fictionalEmail, fictionalPhone } from './geography/fictional-contact.js'
 import type { GeneratedPersonWithoutPortrait } from './generated-person.js'
 import type { createGenerationContext } from './replay.js'
+import { eligibleContextAges } from './portraits/contexts.js'
 
 type GenerationContext = ReturnType<typeof createGenerationContext>
-
-const ageRanges: Record<AgeGroup, readonly [number, number]> = {
-  child: [6, 12], teen: [13, 17], adult: [18, 64], senior: [65, 100],
-}
 
 function draw(key: string, range: number): number {
   if (!/^[0-9a-f]{64}$/.test(key) || !Number.isSafeInteger(range) || range < 1) {
@@ -48,10 +45,7 @@ export function resolveAbstractPerson(query: PeopleQuery, context: GenerationCon
   const geography = resolveLocationContext(query, context.componentKey(index, 'geography'))
   const gender = query.gender ?? (draw(context.componentKey(index, 'gender'), 2) === 0 ? 'female' : 'male')
   const allowedGroups = query.ageGroup ?? (['child', 'teen', 'adult', 'senior'] as const)
-  const possibleAges = allowedGroups.flatMap((group) => {
-    const [minimum, maximum] = ageRanges[group]
-    return Array.from({ length: maximum - minimum + 1 }, (_, offset) => minimum + offset)
-  })
+  const possibleAges = eligibleContextAges(query.portraitContext ?? 'standard', allowedGroups)
   const age = possibleAges[draw(context.componentKey(index, 'age'), possibleAges.length)]
   const nameContext = nameContextForCountry(geography.nationality.code)
   if (!nameContext) throw new RangeError('Country has no name context')

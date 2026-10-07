@@ -17,6 +17,22 @@ const squarePortrait = () => sharp({ create: { width: 768, height: 768, channels
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('portrait review storage', () => {
+  it('embeds an explicit doctor context and rejects incompatible or null contexts before review', async () => {
+    const { root, store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'doctor-female-30.png')
+    const metadata = { ageGroup: 'adult' as const, apparentAgeMin: 28, apparentAgeMax: 32,
+      gender: 'female' as const, appearance: 'central-african' as const, visualGroup: 'black',
+      portraitContext: 'doctor' as const, rights: 'Synthetic portrait for Persona', rightsEvidence: 'Manual generation record' }
+    const ready = await store.setMetadata(candidate.id, metadata)
+    expect(ready.metadata?.portraitContext).toBe('doctor')
+    const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
+    expect(embedded).toContain('portraitContext="doctor"')
+    await expect(store.setMetadata(candidate.id, { ...metadata, portraitContext: null } as unknown as typeof metadata))
+      .rejects.toThrow('context')
+    await expect(store.setMetadata(candidate.id, { ...metadata, ageGroup: 'child', apparentAgeMin: 6, apparentAgeMax: 8 }))
+      .rejects.toThrow('context')
+    expect((await store.get(candidate.id))?.status).toBe('ready-for-review')
+  })
   it('assigns a production collection without claiming a visual origin or changing approval', async () => {
     const { store } = await createStore()
     const candidate = await store.ingest(await squarePortrait(), 'european-batch.png')

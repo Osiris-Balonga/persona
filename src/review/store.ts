@@ -8,9 +8,11 @@ import { optimizePortraitCandidate } from '../portraits/optimize.js'
 import { areConsecutivePortraitAgeRanges, isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
 import { isPortraitCollection, type PortraitCollection } from './collections.js'
 import { areAppearanceTags, type AppearanceTag } from '../portraits/appearance-tags.js'
+import { contextIntersectsRange, isPortraitContext, type PortraitContext } from '../portraits/contexts.js'
 
 export type ReviewStatus = 'processing-error' | 'needs-metadata' | 'ready-for-review' | 'approved' | 'rejected'
 export interface PortraitMetadata {
+  portraitContext?: PortraitContext
   ageGroup: 'child' | 'teen' | 'adult' | 'senior'
   apparentAgeMin: number
   apparentAgeMax: number
@@ -59,6 +61,12 @@ function validateMetadata(input: PortraitMetadata): void {
       input.secondaryAgeMin as number, input.secondaryAgeMax as number)) {
     throw new RangeError('Secondary age range must be adjacent to the primary range')
   }
+  const context = input.portraitContext === undefined ? 'standard' : input.portraitContext
+  const ranges = input.apparentAgeRanges ?? [[input.apparentAgeMin, input.apparentAgeMax],
+    ...(input.secondaryAgeMin === undefined ? [] : [[input.secondaryAgeMin, input.secondaryAgeMax!]])]
+  if (!isPortraitContext(context) || !ranges.every(([minimum, maximum]) => contextIntersectsRange(context, minimum, maximum))) {
+    throw new RangeError('Portrait age ranges do not match context')
+  }
   if (!['female', 'male'].includes(input.gender) || !isAppearance(input.appearance)
     || !/^[a-z]+(?:-[a-z]+)*$/.test(input.visualGroup)
     || (input.appearanceTags !== undefined && !areAppearanceTags(input.appearanceTags))
@@ -68,6 +76,7 @@ function validateMetadata(input: PortraitMetadata): void {
 }
 function xmp(input: PortraitMetadata): string {
   const fields = {
+    portraitContext: input.portraitContext,
     ageGroup: input.ageGroup, apparentAgeMin: input.apparentAgeMin, apparentAgeMax: input.apparentAgeMax,
     apparentAgeRanges: input.apparentAgeRanges?.map(([min, max]) => `${min}-${max}`).join(','),
     gender: input.gender, appearance: input.appearance, visualGroup: input.visualGroup,

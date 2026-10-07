@@ -3,6 +3,7 @@ import { ageGroupForAge } from '../age.js'
 import { m49RegionByCountry } from '../geography/m49-region-data.js'
 import type { PortraitCollection } from '../review/collections.js'
 import type { PortraitCatalog } from './catalog.js'
+import { contextAllowsAge, type PortraitContext } from './contexts.js'
 
 const islandCountries = new Set(['KM', 'MG', 'MU', 'RE', 'SC', 'YT'])
 
@@ -32,11 +33,14 @@ export function selectPortraitFromCollection(
   country: string,
   key: string,
   usedIds?: Set<string>,
+  portraitContext: PortraitContext = 'standard',
 ): Person['picture'] {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid portrait key')
   const collection = collectionForCountry(country)
-  if (!collection || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup) return null
+  if (!collection || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup
+    || !contextAllowsAge(portraitContext, profile.age)) return null
   const candidates = catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
+    && (asset.portraitContext ?? 'standard') === portraitContext
     && asset.collection === collection && asset.gender === profile.gender
     && asset.apparentAgeRanges.some(([minimum, maximum]) => profile.age >= minimum && profile.age <= maximum))
   if (!candidates.length) return null

@@ -9,6 +9,7 @@
 | `count` | Integer 1–100; default 1 |
 | `gender` | `male` or `female` |
 | `ageGroup` | One or more distinct groups separated by commas: `child` (6–12), `teen` (13–17), `adult` (18–64), `senior` (65–100) |
+| `portraitContext` | `standard` (default), `doctor`, `construction`, `business`, `school-pupil`, `university-student`; intersects editorial eligibility with `ageGroup` |
 | `nationality` | Uppercase ISO two-letter code with a reviewed name pool |
 | `residenceCountry` | Uppercase ISO two-letter code with an available city; a reviewed name pool is not required for residence |
 | `continent` | `africa`, `americas`, `asia`, `europe`, or `oceania`; restricts **nationality**, not residence |
@@ -30,7 +31,7 @@ GET /people?nationality=FR&residenceCountry=CG&city=Brazzaville&ageGroup=adult,s
 
 Each item in `results` has `id`, `gender`, `name` (`first`, `last`, `full`), `nationality`, `dob` (`date`, `age`, `ageGroup`), `location`, `email`, `phone`, and `picture`. See a [complete v2 response](../examples/people-response-v2.json). `dob.age` is 6–100 at `meta.asOf`. `location` contains `street`, `city`, `state`, `country` (`code`, `name`), `postcode`, `coordinates` (`latitude`, `longitude`, `precision`), and `formatted`. `street`, `state`, and `postcode` can be `null`. Addresses are illustrative, not verified delivery destinations. Coordinates are the selected city's **exact GeoNames point**, with `precision: "city"`; they do not locate the street or a person. The [country availability table](country-availability.md) reports postcode coverage by sampled city, profile readiness, and phone-source status for each ISO code.
 
-`picture` is `null` when no approved portrait matches. Otherwise it has HTTPS `large`, `medium`, and `thumbnail` WebP URLs. `login` (`username`, `password`) is omitted by default and is available through `fields`; these are synthetic demonstration credentials. `meta` contains `count`, `asOf`, `seed` (or `null`), `schemaVersion: "2"`, `dataVersion`, and `catalogVersion`.
+`picture` is `null` when no approved portrait matches the requested context, production collection, gender and reviewed age. Otherwise it has HTTPS `large`, `medium`, and `thumbnail` WebP URLs. `login` (`username`, `password`) is omitted by default and is available through `fields`; these are synthetic demonstration credentials. `meta` contains `count`, `asOf`, `seed` (or `null`), `schemaVersion: "2"`, `dataVersion`, and `catalogVersion`. Current responses also emit `portraitContext` and `portraitSelectionVersion` (optional in the v2 schemas for legacy envelopes). See [context eligibility, null coverage and replay](portrait-contexts.md).
 
 Generated email addresses use an initial, family name, and short suffix on `emailDomain`. The default `.test` domain is reserved for examples ([RFC 2606](https://www.rfc-editor.org/rfc/rfc2606)); a caller-selected domain might be live. Phone numbers use reviewed fictional ranges where available. Other countries use format-valid fallback numbers that **may be assigned to real subscribers**; `phone` can also be `null`. Do not send email, SMS, or calls to generated contacts.
 
