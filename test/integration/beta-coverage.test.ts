@@ -10,7 +10,7 @@ describe('public beta HTTP coverage', () => {
     expect(report.unavailable).toEqual(['AQ', 'BV', 'GS', 'HM', 'IO', 'TF', 'UM'])
     expect(report.available).toContain('MW')
     expect(report.pendingNameReview).toContain('PN')
-    expect(report.portrait.approvedAssets).toBe(2160)
+    expect(report.portrait.approvedAssets).toBe(2448)
     expect(report.portrait.coveredAgeBands).toBe(836)
     expect(report.portrait.totalAgeBands).toBe(836)
     expect(report.portrait.missingAgeBands).toEqual([])

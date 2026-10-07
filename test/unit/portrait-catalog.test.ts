@@ -116,7 +116,7 @@ describe('approved portrait catalog', () => {
   it('publishes only reviewed portraits in the production manifest', async () => {
     const { portraitCatalog } = await import('../../src/portraits/manifest.js')
     expect(portraitCatalog.version).toBe('v1')
-    expect(portraitCatalog.assets).toHaveLength(2160)
+    expect(portraitCatalog.assets).toHaveLength(2448)
     expect(portraitCatalog.assets.every((entry) => entry.collection)).toBe(true)
     expect(portraitCatalog.assets.every((entry) => entry.reviewStatus === 'approved')).toBe(true)
     expect(portraitCatalog.assets.every((entry) => entry.objectKey === entry.variants?.large.objectKey)).toBe(true)
