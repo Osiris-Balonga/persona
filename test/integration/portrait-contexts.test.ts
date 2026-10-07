@@ -31,6 +31,7 @@ describe('public portrait context filter', () => {
     try {
       for (const [query, code, parameter] of [
         ['portraitContext=doctor&ageGroup=child', 'CONFLICTING_FILTERS', 'ageGroup'],
+        ['portraitContext=doctor&ageGroup=senior', 'CONFLICTING_FILTERS', 'ageGroup'],
         ['portraitContext=astronaut', 'UNSUPPORTED_VALUE', 'portraitContext'],
         ['portraitContext=doctor&portraitContext=business', 'INVALID_QUERY', 'portraitContext'],
       ]) {
