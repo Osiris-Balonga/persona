@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | `standard` | 6–100 | Everyday clothing |
 | `doctor` | 25–64 | Medical coat and accessories |
-| `construction` | 18–64 | Safety helmet and workwear |
+| `construction` | 18–64 | Practical workwear, with varied helmet use |
 | `business` | 18–64 | Formal business clothing |
 | `school-pupil` | 6–17 | School clothing or accessories |
 | `university-student` | 18–34 | University study clothing or accessories |
@@ -17,7 +17,7 @@ These are editorial limits for the initial contextual catalogue, not legal quali
 GET /people?nationality=CG&portraitContext=doctor&ageGroup=adult&seed=doctor-demo&asOf=2026-10-06
 ```
 
-Selection requires approval, requested context, geographical production collection, gender and exact reviewed apparent-age compatibility. It avoids repeated portraits while unused matching choices remain. Valid requests without an approved match return `picture: null`, without substituting another context or changing explicit filters. The catalog contains 1,764 `standard` portraits and 684 `doctor` portraits across all 19 production collections. Each doctor collection has 36 portraits: two per gender per eligible five-year review band from 25 to 64. The remaining contextual categories have no approved coverage yet.
+Selection requires approval, requested context, geographical production collection, gender and exact reviewed apparent-age compatibility. It avoids repeated portraits while unused matching choices remain. Valid requests without an approved match return `picture: null`, without substituting another context or changing explicit filters. The catalog contains 1,764 `standard` portraits and 684 `doctor` portraits across all 19 production collections. Each doctor collection has 36 portraits: two per gender per eligible five-year review band from 25 to 64. The catalogue also contains 760 `construction` portraits, 40 per collection: two per gender per five-year adult band from 18 to 64. Business, school-pupil and university-student have no approved coverage yet.
 
 ## Review and compatibility
 
