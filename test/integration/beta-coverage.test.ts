@@ -18,4 +18,3 @@ describe('public beta HTTP coverage', () => {
       .toHaveLength(249)
   }, 15_000)
 })
-

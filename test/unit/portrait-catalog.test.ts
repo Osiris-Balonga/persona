@@ -123,4 +123,3 @@ describe('approved portrait catalog', () => {
     expect(validatePortraitCatalog(portraitCatalog)).toEqual([])
   })
 })
-

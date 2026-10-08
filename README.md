@@ -37,4 +37,3 @@ The server handles `SIGTERM` and `SIGINT` by closing Fastify once, rejecting new
 ## License
 
 Persona's original code and documentation are licensed under [MIT](LICENSE). Third-party data and derived snapshots retain their source terms and attributions, documented in [geographic data](docs/geographic-data.md). Portrait images are stored outside this repository on R2 and are not covered by the repository's MIT license.
-
