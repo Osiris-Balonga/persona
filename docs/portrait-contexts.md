@@ -2,6 +2,16 @@
 
 `portraitContext` is a visual production brief, independent of geographical collection or appearance tags. It does not verify a person's profession, qualification or school. The API defaults to `standard`.
 
+For multiple selections, use `portraitContexts=standard,doctor,construction,business,school-pupil`.
+This comma-separated allowlist is mutually exclusive with `portraitContext`; unknown, duplicate,
+or repeated values are rejected. Order is canonicalized for seeded replay and validators.
+Generated ages lie in the union of selected context age windows, intersected with `ageGroup`.
+Portrait selection draws from approved matching assets in the selected contexts only; proportions
+depend on available assets and do not guarantee that every selected context appears in a batch.
+`portraitContexts=` explicitly disables pictures (`picture: null`) while retaining ordinary profile
+age eligibility. Omitting both parameters keeps the existing `standard` default.
+Multiple-selection responses emit `meta.portraitContexts` instead of `meta.portraitContext`.
+
 | Context | Editorial age eligibility | Visual brief |
 | --- | --- | --- |
 | `standard` | 6–100 | Everyday clothing |

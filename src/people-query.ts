@@ -5,7 +5,7 @@ import { getCountry } from './geography/countries.js'
 import { listCities, getCity } from './geography/cities.js'
 import { hasReviewedNamePool } from './geography/profile-availability.js'
 import { continentForCountry, type Continent } from './geography/continents.js'
-import { eligibleContextAges, isPortraitContext, type PortraitContext } from './portraits/contexts.js'
+import { eligibleContextAges, eligibleSelectedContextAges, isPortraitContext, portraitContextIds, type PortraitContext } from './portraits/contexts.js'
 
 export interface PeopleQuery {
   count: number
@@ -20,6 +20,7 @@ export interface PeopleQuery {
   fields?: readonly FieldPath[]
   emailDomain?: string
   portraitContext?: PortraitContext
+  portraitContexts?: readonly PortraitContext[]
 }
 
 export class PeopleQueryError extends Error {
@@ -37,7 +38,7 @@ export class PeopleQueryError extends Error {
 
 const allowedParameters = new Set([
   'count', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
-  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext',
+  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts',
 ])
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
@@ -114,11 +115,24 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')
   }
   const ageGroup = parseAgeGroups(params.get('ageGroup'))
+  const selection = params.get('portraitContexts')
+  if (selection !== null && params.has('portraitContext')) {
+    throw new PeopleQueryError('CONFLICTING_FILTERS', 'portraitContexts', 'Use portraitContext or portraitContexts, not both')
+  }
+  let portraitContexts: readonly PortraitContext[] | undefined
+  if (selection !== null) {
+    const supplied = selection === '' ? [] : selection.split(',').map(value => value.trim())
+    if (supplied.some(value => !isPortraitContext(value)) || new Set(supplied).size !== supplied.length) {
+      throw new PeopleQueryError('INVALID_QUERY', 'portraitContexts', 'portraitContexts must contain distinct known contexts or be empty')
+    }
+    portraitContexts = portraitContextIds.filter(value => supplied.includes(value))
+  }
   const portraitContext = params.get('portraitContext') ?? 'standard'
   if (!isPortraitContext(portraitContext)) {
     throw new PeopleQueryError('UNSUPPORTED_VALUE', 'portraitContext', 'Unknown portraitContext')
   }
-  if (eligibleContextAges(portraitContext, ageGroup).length === 0) {
+  if ((portraitContexts === undefined ? eligibleContextAges(portraitContext, ageGroup)
+    : eligibleSelectedContextAges(portraitContexts, ageGroup)).length === 0) {
     throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup', 'ageGroup has no ages compatible with portraitContext')
   }
   let nationality = countryCode(params.get('nationality'), 'nationality', true)
@@ -168,6 +182,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     asOf,
     emailDomain,
     ...(portraitContext === 'standard' ? {} : { portraitContext }),
+    ...(portraitContexts === undefined ? {} : { portraitContexts }),
     ...(gender === null ? {} : { gender }),
     ...(ageGroup === undefined ? {} : { ageGroup }),
     ...(nationality === undefined ? {} : { nationality }),

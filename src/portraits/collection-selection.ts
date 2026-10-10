@@ -33,14 +33,16 @@ export function selectPortraitFromCollection(
   country: string,
   key: string,
   usedIds?: Set<string>,
-  portraitContext: PortraitContext = 'standard',
+  portraitContext: PortraitContext | readonly PortraitContext[] = 'standard',
 ): Person['picture'] {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid portrait key')
   const collection = collectionForCountry(country)
+  const contexts = typeof portraitContext === 'string' ? [portraitContext] : portraitContext
   if (!collection || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup
-    || !contextAllowsAge(portraitContext, profile.age)) return null
+    || !contexts.some(context => contextAllowsAge(context, profile.age))) return null
   const candidates = catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
-    && (asset.portraitContext ?? 'standard') === portraitContext
+    && contexts.includes(asset.portraitContext ?? 'standard')
+    && contextAllowsAge(asset.portraitContext ?? 'standard', profile.age)
     && asset.collection === collection && asset.gender === profile.gender
     && asset.apparentAgeRanges.some(([minimum, maximum]) => profile.age >= minimum && profile.age <= maximum))
   if (!candidates.length) return null
