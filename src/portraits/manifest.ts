@@ -1,4 +1,5 @@
 import { constructionPortraits } from './construction-manifest.js'
+import { businessPortraits } from './business-manifest.js'
 import type { PortraitAsset, PortraitCatalog } from './catalog.js'
 
 const standardAssets: PortraitAsset[] = [
@@ -2459,5 +2460,5 @@ export const portraitCatalog: PortraitCatalog = {
   version: 'v1',
   selectionVersion: 'contexts-v1',
   publicBaseUrl: 'https://persona-portraits.osirisbalonga.workers.dev',
-  assets: [...standardAssets, ...doctorAssets, ...constructionPortraits],
+  assets: [...standardAssets, ...doctorAssets, ...constructionPortraits, ...businessPortraits],
 }
