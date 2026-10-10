@@ -16,6 +16,10 @@ const MetaSchema = Type.Object({
     Type.Literal('business'), Type.Literal('school-pupil'), Type.Literal('university-student'),
   ])),
   portraitSelectionVersion: Type.Optional(Type.String({ minLength: 1 })),
+  portraitContexts: Type.Optional(Type.Array(Type.Union([
+    Type.Literal('standard'), Type.Literal('doctor'), Type.Literal('construction'),
+    Type.Literal('business'), Type.Literal('school-pupil'), Type.Literal('university-student'),
+  ]), { maxItems: 6, uniqueItems: true })),
 }, { additionalProperties: false })
 
 export const PublicPeopleResponseSchema = Type.Object({

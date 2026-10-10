@@ -30,9 +30,11 @@ export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCata
     }
     nameCounts.set(nameKey, repetitions + 1)
     const portraitKey = context.componentKey(index, 'portrait')
-    const picture = selectPortraitFromCollection(catalog, person, person.country, portraitKey, usedPortraits, query.portraitContext)
+    const picture = selectPortraitFromCollection(catalog, person, person.country, portraitKey, usedPortraits,
+      query.portraitContexts ?? query.portraitContext)
     return { ...person, picture }
   })
   return { results, meta: { count: query.count, asOf: query.asOf, seed: query.seed ?? null,
-    portraitContext: query.portraitContext ?? 'standard', ...versions } }
+    ...(query.portraitContexts === undefined ? { portraitContext: query.portraitContext ?? 'standard' }
+      : { portraitContexts: [...query.portraitContexts] }), ...versions } }
 }

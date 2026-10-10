@@ -10,6 +10,7 @@
 | `gender` | `male` or `female` |
 | `ageGroup` | One or more distinct groups separated by commas: `child` (6–12), `teen` (13–17), `adult` (18–64), `senior` (65–100) |
 | `portraitContext` | `standard` (default), `doctor`, `construction`, `business`, `school-pupil`, `university-student`; intersects editorial eligibility with `ageGroup` |
+| `portraitContexts` | Comma-separated distinct context allowlist, mutually exclusive with `portraitContext`; empty value disables pictures; ages use the union of selected context windows |
 | `nationality` | Uppercase ISO two-letter code with a reviewed name pool |
 | `residenceCountry` | Uppercase ISO two-letter code with an available city; a reviewed name pool is not required for residence |
 | `continent` | `africa`, `americas`, `asia`, `europe`, or `oceania`; restricts **nationality**, not residence |

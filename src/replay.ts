@@ -43,9 +43,10 @@ export function createGenerationContext(
       if (!Number.isSafeInteger(personIndex) || personIndex < 0 || !/^[a-z][a-z0-9-]*$/.test(component)) {
         throw new RangeError('Invalid generation component')
       }
-      const scope = query.portraitContext !== undefined && query.portraitContext !== 'standard'
+      const selected = query.portraitContexts ?? query.portraitContext
+      const scope = selected !== undefined && selected !== 'standard'
         && (component === 'age' || component === 'portrait')
-        ? [query.portraitContext, versions.portraitSelectionVersion ?? portraitSelectionVersion] : []
+        ? [selected, versions.portraitSelectionVersion ?? portraitSelectionVersion] : []
       return digest(['persona-component', ...inputs, personIndex, component, ...scope])
     },
   }
@@ -62,7 +63,7 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     query.count,
     query.fields ?? null,
     query.emailDomain ?? 'example.test',
-    query.portraitContext ?? 'standard',
+    query.portraitContexts ?? query.portraitContext ?? 'standard',
     versions.portraitSelectionVersion ?? portraitSelectionVersion,
   ])
   return `"persona-${generationVersion}-${fingerprint}"`

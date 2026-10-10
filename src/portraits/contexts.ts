@@ -39,3 +39,9 @@ export function eligibleContextAges(context: PortraitContext, groups: readonly A
       .filter(age => contextAllowsAge(context, age))
   })
 }
+
+export function eligibleSelectedContextAges(contexts: readonly PortraitContext[], groups?: readonly AgeGroup[]): number[] {
+  // No pictures selected leaves the ordinary profile age range available.
+  if (contexts.length === 0) return eligibleContextAges('standard', groups)
+  return [...new Set(contexts.flatMap(context => eligibleContextAges(context, groups)))].sort((a, b) => a - b)
+}
