@@ -1,7 +1,7 @@
 import { DurableObject } from 'cloudflare:workers'
-import { handleAnalyticsRequest, matchesToken, summarizeUsage, type StatsQuery, type UsageDispatch,
+import { handleAnalyticsRequest, matchesToken, readLimitedBody, summarizeUsage, type StatsQuery, type UsageDispatch,
   type UsageEnvironment, type UsageEvent, type UsageRow } from './analytics-core.js'
-import { runBackup, verifyStoredBackup, type BackupPorts } from './analytics-backup.js'
+import { parseSnapshot, runBackup, verifyStoredBackup, type BackupPorts } from './analytics-backup.js'
 
 interface AnalyticsEnv {
   USAGE: DurableObjectNamespace<UsageStore>
@@ -41,10 +41,40 @@ export class UsageStore extends DurableObject<AnalyticsEnv> {
   constructor(ctx: DurableObjectState, env: AnalyticsEnv) {
     super(ctx, env)
     this.ctx.storage.sql.exec(createTable)
+    this.ctx.storage.sql.exec(`CREATE TABLE IF NOT EXISTS usage_history_import (
+      id TEXT PRIMARY KEY, sourceKey TEXT NOT NULL, checksumSha256 TEXT NOT NULL,
+      importedAt TEXT NOT NULL, rows INTEGER NOT NULL)`)
   }
 
   async fetch(request: Request): Promise<Response> {
     const pathname = new URL(request.url).pathname
+    if (pathname === '/import-beta' && request.method === 'POST') {
+      const input = await request.json() as { key: string; checksumSha256: string; rows: UsageRow[] }
+      const result = this.ctx.storage.transactionSync(() => {
+        const previous = this.ctx.storage.sql.exec(
+          'SELECT * FROM usage_history_import WHERE id = ?', 'beta-history-v1').toArray()[0]
+        if (previous) {
+          if (previous.sourceKey !== input.key || previous.checksumSha256 !== input.checksumSha256) {
+            return { conflict: true }
+          }
+          return { alreadyImported: true, ...previous }
+        }
+        const importedAt = new Date().toISOString()
+        for (const row of input.rows) {
+          const existing = this.ctx.storage.sql.exec('SELECT * FROM usage_hour WHERE hour = ?', row.hour).toArray()[0]
+          if (columns.slice(1).some((column) => !Number.isSafeInteger(Number(existing?.[column] ?? 0) + Number(row[column])))) {
+            return { conflict: true, error: 'History import would exceed safe counter limits' }
+          }
+        }
+        for (const row of input.rows) this.ctx.storage.sql.exec(upsert, ...columns.map((column) => row[column]))
+        this.ctx.storage.sql.exec('INSERT INTO usage_history_import VALUES (?, ?, ?, ?, ?)',
+          'beta-history-v1', input.key, input.checksumSha256, importedAt, input.rows.length)
+        return { alreadyImported: false, sourceKey: input.key, checksumSha256: input.checksumSha256,
+          importedAt, rows: input.rows.length }
+      })
+      return Response.json(result, { status: 'conflict' in result ? 409 : 200,
+        headers: { 'Cache-Control': 'no-store' } })
+    }
     if (pathname === '/record' && request.method === 'POST') {
       const event = await request.json() as UsageEvent
       const hour = new Date().toISOString().slice(0, 13) + ':00:00Z'
@@ -87,9 +117,10 @@ export class RecoveryStore extends UsageStore {
 }
 
 function backupPorts(environment: UsageEnvironment, env: AnalyticsEnv,
-  target: 'verification' | 'recovered' = 'verification'): BackupPorts {
+  target: 'verification' | 'recovered' = 'verification', historyChecksum?: string): BackupPorts {
   const source = activeStore(environment, env)
-  const recoveryName = target === 'verification' ? `verification:${environment}` : `recovered:${environment}`
+  const recoveryName = historyChecksum ? `history-verification:${historyChecksum}`
+    : target === 'verification' ? `verification:${environment}` : `recovered:${environment}`
   const recovery = env.RECOVERY.get(env.RECOVERY.idFromName(recoveryName))
   const readRows = async (stub: DurableObjectStub, path: string) => {
     const response = await stub.fetch(`https://usage.internal/${path}`)
@@ -122,7 +153,7 @@ export default {
   async fetch(request: Request, env: AnalyticsEnv): Promise<Response> {
     const url = new URL(request.url)
     if (request.method === 'POST' &&
-      (url.pathname === '/v1/backups/run' || url.pathname === '/v1/backups/verify') && !url.search) {
+      ['/v1/backups/run', '/v1/backups/verify', '/v1/history/import-beta'].includes(url.pathname) && !url.search) {
       if (!matchesToken(request.headers.get('authorization'), env.ANALYTICS_BACKUP_TOKEN)) {
         return Response.json({ error: 'Unauthorized' }, { status: 401 })
       }
@@ -138,9 +169,30 @@ export default {
           Number(request.headers.get('content-length') ?? 0) > 512) {
           return Response.json({ error: 'Invalid request' }, { status: 400 })
         }
-        const body = await request.text()
-        if (body.length > 512) return Response.json({ error: 'Invalid request' }, { status: 400 })
-        const input = JSON.parse(body) as Record<string, unknown>
+        const body = await readLimitedBody(request, 512)
+        if (body === null) return Response.json({ error: 'Invalid request' }, { status: 400 })
+        let input: Record<string, unknown>
+        try { input = JSON.parse(body) as Record<string, unknown> }
+        catch { return Response.json({ error: 'Invalid request' }, { status: 400 }) }
+        if (url.pathname === '/v1/history/import-beta') {
+          if (!input || Object.keys(input).join(',') !== 'key' || typeof input.key !== 'string') {
+            return Response.json({ error: 'Invalid request' }, { status: 400 })
+          }
+          if (productionStore !== 'primary') {
+            return Response.json({ error: 'History import is disabled on recovered storage' }, { status: 409 })
+          }
+          const raw = await (await env.BACKUPS.get(input.key))?.text()
+          if (raw === undefined) throw new Error('Analytics backup was not readable from R2')
+          const snapshot = await parseSnapshot(raw)
+          const ports = backupPorts('staging', env, 'verification', snapshot.checksumSha256)
+          // Verify exactly the bytes imported, even if the R2 key changes during this request.
+          const verified = await verifyStoredBackup('staging', input.key, { ...ports, get: async () => raw }, new Date())
+          if (snapshot.rows.length === 0) return Response.json({ error: 'Beta history is empty' }, { status: 400 })
+          return await activeStore('production', env).fetch('https://usage.internal/import-beta', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: verified.key, checksumSha256: verified.checksumSha256, rows: snapshot.rows }),
+          })
+        }
         if (!input || Object.keys(input).sort().join(',') !== 'environment,key' ||
           (input.environment !== 'staging' && input.environment !== 'production') ||
           typeof input.key !== 'string') {
