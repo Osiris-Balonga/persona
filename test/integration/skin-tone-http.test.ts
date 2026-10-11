@@ -3,6 +3,24 @@ import { buildApp } from '../../src/app.js'
 import { portraitCatalog } from '../../src/portraits/manifest.js'
 
 describe('public skinTone query', () => {
+  it('delivers a union of tones with canonical metadata, replay and validators', async () => {
+    const app = buildApp()
+    try {
+      const base = '/people?nationality=CG&ageGroup=adult&count=12&seed=tone-union&asOf=2026-10-11'
+      const selected = await app.inject(`${base}&skinTone=8,7`)
+      expect(selected.statusCode).toBe(200)
+      expect(selected.json().meta.skinTone).toEqual([7, 8])
+      const pictures = selected.json().results.filter((person: { picture: unknown }) => person.picture !== null)
+      expect(pictures.length).toBeGreaterThan(0)
+      for (const person of pictures) {
+        const id = person.picture.large.split('/').at(-1).replace('.webp', '')
+        expect([7, 8]).toContain(portraitCatalog.assets.find(asset => asset.id === id)?.skinToneMst)
+      }
+      const reordered = await app.inject(`${base}&skinTone=7,8`)
+      expect(reordered.json()).toEqual(selected.json())
+      expect(reordered.headers.etag).toBe(selected.headers.etag)
+    } finally { await app.close() }
+  })
   it('strictly filters reviewed annotations, preserves seeded profile fields, and exposes the applied filter', async () => {
     const app = buildApp()
     try {

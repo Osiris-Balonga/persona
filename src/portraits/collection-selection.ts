@@ -34,7 +34,7 @@ export function selectPortraitFromCollection(
   key: string,
   usedIds?: Set<string>,
   portraitContext: PortraitContext | readonly PortraitContext[] = 'standard',
-  skinTone?: number,
+  skinTone?: number | readonly number[],
 ): Person['picture'] {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid portrait key')
   const collection = collectionForCountry(country)
@@ -42,8 +42,9 @@ export function selectPortraitFromCollection(
   const contexts = isSingleContext ? [portraitContext] : portraitContext
   if (!collection || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup
     || !contexts.some(context => contextAllowsAge(context, profile.age))) return null
+  const tones = skinTone === undefined ? undefined : typeof skinTone === 'number' ? [skinTone] : skinTone
   const matchingAssets = catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
-    && (skinTone === undefined || asset.skinToneMst === skinTone)
+    && (tones === undefined || (asset.skinToneMst !== undefined && tones.includes(asset.skinToneMst)))
     && contexts.includes(asset.portraitContext ?? 'standard')
     && contextAllowsAge(asset.portraitContext ?? 'standard', profile.age)
     && asset.collection === collection && asset.gender === profile.gender

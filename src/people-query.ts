@@ -21,7 +21,7 @@ export interface PeopleQuery {
   emailDomain?: string
   portraitContext?: PortraitContext
   portraitContexts?: readonly PortraitContext[]
-  skinTone?: number
+  skinTone?: number | readonly number[]
 }
 
 export class PeopleQueryError extends Error {
@@ -62,6 +62,17 @@ function boundedString(value: string | null, name: string, maximum: number) {
     throw new PeopleQueryError('INVALID_QUERY', name, `${name} must contain 1 to ${maximum} characters`)
   }
   return value
+}
+
+function parseSkinTone(value: string | null): PeopleQuery['skinTone'] {
+  if (value === null) return undefined
+  const values = value.split(',')
+  if (values.length > 10 || values.some(tone => !/^(?:[1-9]|10)$/.test(tone))
+    || new Set(values).size !== values.length) {
+    throw new PeopleQueryError('INVALID_QUERY', 'skinTone', 'skinTone must contain distinct integers from 1 to 10, separated by commas')
+  }
+  const tones = values.map(Number).sort((a, b) => a - b)
+  return tones.length === 1 ? tones[0] : tones
 }
 
 function countryCode(value: string | null, parameter: string, needsNames: boolean) {
@@ -112,7 +123,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   }
 
   const count = integerParameter(params.get('count'), 'count', 1, 100) ?? 1
-  const skinTone = integerParameter(params.get('skinTone'), 'skinTone', 1, 10)
+  const skinTone = parseSkinTone(params.get('skinTone'))
   const gender = params.get('gender')
   if (gender !== null && gender !== 'male' && gender !== 'female') {
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')

@@ -23,9 +23,21 @@ describe('editorial portrait skin tone filter', () => {
     expect(parse('skinTone=1')).toHaveProperty('skinTone', 1)
     expect(parse('skinTone=10')).toHaveProperty('skinTone', 10)
     expect(parse('')).not.toHaveProperty('skinTone')
-    for (const value of ['0', '11', '1.5', '01', '', '6,8', 'dark']) {
+    for (const value of ['0', '11', '1.5', '01', '', '6,6', '6,11', '6,', 'dark']) {
       expect(() => parse(`skinTone=${value}`)).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'skinTone' }))
     }
+  })
+
+  it('normalizes distinct tone lists and selects their union without unannotated fallback', () => {
+    expect(parse('skinTone=8,6').skinTone).toEqual([6, 8])
+    const used = new Set<string>()
+    expect(selectPortraitFromCollection(catalog, profile, 'CG', key, used, 'standard', [6, 8])?.url).toContain('p_0002')
+    expect(selectPortraitFromCollection(catalog, profile, 'CG', key, used, 'standard', [6, 8])?.url).toContain('p_0003')
+    expect(selectPortraitFromCollection(catalog, profile, 'CG', key, undefined, 'standard', [1, 2])).toBeNull()
+    const versions = { dataVersion: 'geo-v1', catalogVersion: 'portraits-v1' }
+    const first = parse('seed=tone-demo&skinTone=8,6')
+    const reordered = parse('seed=tone-demo&skinTone=6,8')
+    expect(responseETag(first, versions)).toBe(responseETag(reordered, versions))
   })
 
   it('selects the requested annotation and never substitutes an unannotated or different tone', () => {

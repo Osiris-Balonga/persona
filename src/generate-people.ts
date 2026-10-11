@@ -35,7 +35,7 @@ export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCata
     return { ...person, picture }
   })
   return { results, meta: { count: query.count, asOf: query.asOf, seed: query.seed ?? null,
-    ...(query.skinTone === undefined ? {} : { skinTone: query.skinTone }),
+    ...(query.skinTone === undefined ? {} : { skinTone: typeof query.skinTone === 'number' ? query.skinTone : [...query.skinTone] }),
     ...(query.portraitContexts === undefined && query.portraitContext !== undefined ? { portraitContext: query.portraitContext }
       : { portraitContexts: [...resolvePortraitContexts(query)] }), ...versions } }
 }
