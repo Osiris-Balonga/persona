@@ -22,6 +22,16 @@ CI rejects accidental changes to the Worker name, Durable Object classes, bindin
 
 ## Deployment
 
+### Preserve beta history during the first production launch
+
+Keep the existing Worker, Durable Object identities, bindings and R2 bucket. Before routing public traffic to the production API, take a fresh `POST /v1/backups/run` backup and retain both staging and pre-import production snapshot keys and checksums. Import the verified staging snapshot once with `POST /v1/history/import-beta`, authenticated with `ANALYTICS_BACKUP_TOKEN`, `Content-Type: application/json`, and body `{ "key": "analytics/v1/staging/...json" }`. The key must identify a real staging backup; placeholders are not valid requests.
+
+The import checks the snapshot checksum and its isolated SQLite restore, then adds its hourly counters to production without removing any existing production rows. A durable receipt and all hourly writes commit in one transaction. Retrying the same key and checksum returns `alreadyImported: true` without adding counts. A different key or checksum returns 409, even after an application restart. Invalid bodies return 400; unreadable or corrupted backups return 503 without changing production. An empty history or unsafe counter sum is rejected. History import is disabled while production uses recovered storage.
+
+The public production series then contains historical beta usage up to that snapshot plus subsequent production usage. Staging is retained unchanged; later development traffic is not copied automatically. The site must label this historical inclusion accurately. Normal production backups include the copied hourly data. The import receipt lives in primary SQLite storage; the existing aggregate-only backup format does not include it, so recovered storage must not be imported again.
+
+Retain the original staging snapshot and the pre-import production backup as migration evidence. Do not restore the pre-import backup over an actively used production store: that would discard newer events. Reverting application code does not remove the imported history. A deliberate data correction needs a separate reviewed reconciliation against the retained snapshot and current counters.
+
 Deploy the analytics Worker with `npx wrangler deploy --config wrangler.analytics.jsonc`. Configure four distinct Worker secrets: `ANALYTICS_STAGING_TOKEN`, `ANALYTICS_PRODUCTION_TOKEN`, `ANALYTICS_READ_TOKEN`, and `ANALYTICS_BACKUP_TOKEN`. On Render's `persona-dev` service, set `ANALYTICS_INGEST_URL` to the Worker's HTTPS `/v1/events` URL and `ANALYTICS_INGEST_TOKEN` to the staging token. The API requires both values together; a Render process refuses to start without them. The future production service must use the production token. Keep all four tokens out of Git and browser code.
 
 The separate Next.js site can fetch `GET /v1/stats` **from its server only**, using `Authorization: Bearer <read token>`. The Worker does not enable browser CORS. Required query parameters are `environment=staging|production`, `from=YYYY-MM-DD`, `to=YYYY-MM-DD`, and `granularity=hour|day`. `from` is inclusive, `to` is exclusive, and the period must be at most 366 days. A response has this shape:

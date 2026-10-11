@@ -68,7 +68,7 @@ function parseStatsQuery(params: URLSearchParams): { environment: UsageEnvironme
   return { environment, query: { from: from!, to: to!, granularity } }
 }
 
-async function readLimitedBody(request: Request, limit: number): Promise<string | null> {
+export async function readLimitedBody(request: Request, limit: number): Promise<string | null> {
   const reader = request.body?.getReader()
   if (!reader) return null
   const decoder = new TextDecoder()
