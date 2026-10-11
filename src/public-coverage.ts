@@ -53,4 +53,3 @@ export function createPublicCoverage(catalog: PortraitCatalog) {
   const etag = `"${createHash('sha256').update(serialized).digest('hex')}"`
   return { body, etag }
 }
-
