@@ -13,10 +13,9 @@ const app = buildApp({ logger: true, trustedProxies: config.trustedProxies, requ
   renderClientIp: config.renderClientIp,
   analytics: analyticsUrl && analyticsToken ? createAnalyticsSink(analyticsUrl, analyticsToken) : undefined })
 
-try {
-  await app.listen({ host: config.host, port: config.port })
-  installShutdown(app)
-} catch (error) {
-  app.log.error(error)
-  process.exitCode = 1
-}
+void app.listen({ host: config.host, port: config.port })
+  .then(() => { installShutdown(app) })
+  .catch((error) => {
+    app.log.error(error)
+    process.exitCode = 1
+  })

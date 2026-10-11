@@ -1,6 +1,6 @@
 # API usage analytics
 
-Persona counts `GET /people` responses in a private Cloudflare Worker backed by a SQLite Durable Object. Render sends one small event after each response. The Worker accepts only a status code, the number of profiles returned, and elapsed milliseconds. Its credential determines whether the event belongs to staging or production. The same store exposes aggregate statistics to a server-side client holding a separate read credential.
+Persona counts `GET /people` responses in a private Cloudflare Worker backed by a SQLite Durable Object. Each API service sends one small event after each response. The Worker accepts only a status code, the number of profiles returned, and elapsed milliseconds. Its credential determines whether the event belongs to staging or production. Render uses the staging credential; Hostinger uses the production credential. The same store exposes aggregate statistics to a server-side client holding a separate read credential.
 
 ## Definitions
 
@@ -32,7 +32,7 @@ The public production series then contains historical beta usage up to that snap
 
 Retain the original staging snapshot and the pre-import production backup as migration evidence. Do not restore the pre-import backup over an actively used production store: that would discard newer events. Reverting application code does not remove the imported history. A deliberate data correction needs a separate reviewed reconciliation against the retained snapshot and current counters.
 
-Deploy the analytics Worker with `npx wrangler deploy --config wrangler.analytics.jsonc`. Configure four distinct Worker secrets: `ANALYTICS_STAGING_TOKEN`, `ANALYTICS_PRODUCTION_TOKEN`, `ANALYTICS_READ_TOKEN`, and `ANALYTICS_BACKUP_TOKEN`. On Render's `persona-dev` service, set `ANALYTICS_INGEST_URL` to the Worker's HTTPS `/v1/events` URL and `ANALYTICS_INGEST_TOKEN` to the staging token. The API requires both values together; a Render process refuses to start without them. The future production service must use the production token. Keep all four tokens out of Git and browser code.
+Deploy the analytics Worker with `npx wrangler deploy --config wrangler.analytics.jsonc`. Configure four distinct Worker secrets: `ANALYTICS_STAGING_TOKEN`, `ANALYTICS_PRODUCTION_TOKEN`, `ANALYTICS_READ_TOKEN`, and `ANALYTICS_BACKUP_TOKEN`. On Render's `persona-dev` service, set `ANALYTICS_INGEST_URL` to the Worker's HTTPS `/v1/events` URL and `ANALYTICS_INGEST_TOKEN` to the staging token. The API requires both values together; a Render process refuses to start without them. The Hostinger production service uses the production token. Keep all four tokens out of Git and browser code.
 
 The separate Next.js site can fetch `GET /v1/stats` **from its server only**, using `Authorization: Bearer <read token>`. The Worker does not enable browser CORS. Required query parameters are `environment=staging|production`, `from=YYYY-MM-DD`, `to=YYYY-MM-DD`, and `granularity=hour|day`. `from` is inclusive, `to` is exclusive, and the period must be at most 366 days. A response has this shape:
 
