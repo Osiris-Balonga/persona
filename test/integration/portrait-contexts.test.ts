@@ -13,7 +13,7 @@ describe('public portrait context filter', () => {
       expect(body.results[0].dob.age).toBeLessThanOrEqual(64)
       expect(body.results[0].picture.large).toMatch(/\/portraits\/v1\/large\/p_\d+\.webp$/)
       expect(body.meta.portraitContext).toBe('doctor')
-      expect(body.meta.portraitSelectionVersion).toBe('contexts-v1')
+      expect(body.meta.portraitSelectionVersion).toBe('contexts-v2-weighted')
       const standard = await app.inject(query.replace('portraitContext=doctor', 'portraitContext=standard'))
       expect(standard.statusCode).toBe(200)
       expect(standard.headers.etag).not.toBe(doctor.headers.etag)

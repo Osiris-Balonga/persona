@@ -2459,7 +2459,7 @@ const doctorAssets: PortraitAsset[] = [
 
 export const portraitCatalog: PortraitCatalog = {
   version: 'v1',
-  selectionVersion: 'contexts-v1',
+  selectionVersion: 'contexts-v2-weighted',
   publicBaseUrl: 'https://persona-portraits.osirisbalonga.workers.dev',
   assets: [...standardAssets, ...doctorAssets, ...constructionPortraits, ...businessPortraits, ...pupilPortraits],
 }

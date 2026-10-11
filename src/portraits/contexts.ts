@@ -12,7 +12,19 @@ export const portraitContexts = {
 
 export type PortraitContext = keyof typeof portraitContexts
 export const portraitContextIds = Object.keys(portraitContexts) as PortraitContext[]
-export const portraitSelectionVersion = 'contexts-v1'
+export const defaultPortraitContexts: readonly PortraitContext[] = [
+  'standard', 'doctor', 'construction', 'business', 'school-pupil',
+]
+export const portraitSelectionVersion = 'contexts-v2-weighted'
+
+export function resolvePortraitContexts(query: {
+  portraitContexts?: readonly PortraitContext[]
+  portraitContext?: PortraitContext
+}): readonly PortraitContext[] {
+  if (query.portraitContexts !== undefined) return query.portraitContexts
+  if (query.portraitContext !== undefined) return [query.portraitContext]
+  return defaultPortraitContexts
+}
 
 export function isPortraitContext(value: unknown): value is PortraitContext {
   return typeof value === 'string' && Object.hasOwn(portraitContexts, value)

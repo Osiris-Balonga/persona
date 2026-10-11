@@ -6,7 +6,7 @@ import { parsePeopleQuery } from '../../src/people-query.js'
 import { generatePeopleResponse } from '../../src/generate-people.js'
 import { responseETag } from '../../src/replay.js'
 import { ageGroupForAge, ageOn } from '../../src/age.js'
-import { contextAllowsAge, eligibleContextAges } from '../../src/portraits/contexts.js'
+import { contextAllowsAge, defaultPortraitContexts, eligibleContextAges, resolvePortraitContexts } from '../../src/portraits/contexts.js'
 
 const key = '0'.repeat(64)
 const parse = (query: string) => parsePeopleQuery(new URLSearchParams(query))
@@ -15,6 +15,13 @@ const base = { ...portraitCatalog.assets.find(asset => asset.collection === 'afr
 const catalog = { version: 'v1', publicBaseUrl: 'https://images.example.test', assets: [base] }
 
 describe('portrait contexts', () => {
+  it('uses the five released contexts as defaults and preserves explicit context selections', () => {
+    expect(defaultPortraitContexts).toEqual(['standard', 'doctor', 'construction', 'business', 'school-pupil'])
+    expect(resolvePortraitContexts({})).toEqual(defaultPortraitContexts)
+    expect(resolvePortraitContexts({ portraitContext: 'standard' })).toEqual(['standard'])
+    expect(resolvePortraitContexts({ portraitContexts: ['business', 'doctor'] })).toEqual(['business', 'doctor'])
+    expect(defaultPortraitContexts).not.toContain('university-student')
+  })
   it('uses plausible bounded production ages for professional and university contexts', () => {
     for (const context of ['construction', 'business', 'university-student'] as const) {
       const maximum = context === 'university-student' ? 34 : 64
@@ -88,10 +95,10 @@ describe('portrait contexts', () => {
     }
   })
 
-  it('normalizes standard defaults and gives different contexts different validators', () => {
+  it('distinguishes the mixed default from an explicit standard validator', () => {
     const query = 'seed=context-pilot&asOf=2026-10-06'
     const versions = { dataVersion: 'geo-v1', catalogVersion: 'v1' }
-    expect(responseETag(parse(query), versions)).toBe(responseETag(parse(`${query}&portraitContext=standard`), versions))
+    expect(responseETag(parse(query), versions)).not.toBe(responseETag(parse(`${query}&portraitContext=standard`), versions))
     expect(responseETag(parse(`${query}&portraitContext=doctor`), versions)).not.toBe(responseETag(parse(query), versions))
     expect(responseETag(parse(query), { ...versions, portraitSelectionVersion: 'contexts-v2' }))
       .not.toBe(responseETag(parse(query), versions))
