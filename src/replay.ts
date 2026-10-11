@@ -6,9 +6,11 @@ export interface DataVersions {
   dataVersion: string
   catalogVersion: string
   portraitSelectionVersion?: string
+  portraitCatalogFingerprint?: string
 }
 
 const generationVersion = 'v5'
+const skinToneSelectionVersion = 'global-collections-v1'
 
 function digest(parts: readonly unknown[]): string {
   return createHash('sha256').update(JSON.stringify(parts)).digest('hex')
@@ -47,7 +49,8 @@ export function createGenerationContext(
       const scope = selected !== undefined && selected !== 'standard'
         && (component === 'age' || component === 'portrait')
         ? [selected, versions.portraitSelectionVersion ?? portraitSelectionVersion] : []
-      const toneScope = component === 'portrait' && query.skinTone !== undefined ? ['skinTone', query.skinTone] : []
+      const toneScope = component === 'portrait' && query.skinTone !== undefined
+        ? ['skinTone', query.skinTone, skinToneSelectionVersion] : []
       return digest(['persona-component', ...inputs, personIndex, component, ...scope, ...toneScope])
     },
   }
@@ -66,7 +69,8 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     query.emailDomain ?? 'example.test',
     query.portraitContexts ?? query.portraitContext ?? resolvePortraitContexts(query),
     versions.portraitSelectionVersion ?? portraitSelectionVersion,
-    ...(query.skinTone === undefined ? [] : ['skinTone', query.skinTone]),
+    ...(versions.portraitCatalogFingerprint === undefined ? [] : ['portraitCatalog', versions.portraitCatalogFingerprint]),
+    ...(query.skinTone === undefined ? [] : ['skinTone', query.skinTone, skinToneSelectionVersion]),
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

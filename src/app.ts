@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import { createHash } from 'node:crypto'
 import { isIP } from 'node:net'
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
@@ -31,6 +32,7 @@ export function buildApp(options: AppOptions = {}) {
   const catalog = options.portraitCatalog ?? portraitCatalog
   const catalogErrors = validatePortraitCatalog(catalog)
   if (catalogErrors.length) throw new Error(`Invalid portrait catalog: ${catalogErrors.join('; ')}`)
+  const portraitCatalogFingerprint = createHash('sha256').update(JSON.stringify(catalog)).digest('hex')
   const app = Fastify({
     logger: options.logger ? { serializers: { req: (request) => ({ method: request.method }),
       res: (reply) => ({ statusCode: reply.statusCode }) } } : false,
@@ -165,6 +167,7 @@ export function buildApp(options: AppOptions = {}) {
       const headers = peopleCacheHeaders(200, query, params.has('asOf'), {
         dataVersion: geographicDataVersion, catalogVersion: catalog.version,
         portraitSelectionVersion: catalog.selectionVersion ?? portraitSelectionVersion,
+        portraitCatalogFingerprint,
       })
       reply.header('Cache-Control', headers['Cache-Control'])
       if (headers.ETag !== undefined) {

@@ -42,7 +42,9 @@ export interface PortraitCatalog {
 
 export const minimumApprovedPortraits = 2
 
-export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
+export function validatePortraitCatalog(
+  catalog: PortraitCatalog, options: { requireSkinTone?: boolean } = {},
+): string[] {
   const errors: string[] = []
   if (!/^[a-z][a-z0-9-]*$/.test(catalog.version)) errors.push('Invalid catalog version')
   if (catalog.selectionVersion !== undefined && !/^[a-z][a-z0-9-]*$/.test(catalog.selectionVersion)) errors.push('Invalid portrait selection version')
@@ -73,6 +75,9 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
     }
     if (asset.skinToneMst !== undefined && (!Number.isInteger(asset.skinToneMst)
       || asset.skinToneMst < 1 || asset.skinToneMst > 10)) errors.push(`Invalid Monk tone ${asset.id}`)
+    if (options.requireSkinTone && asset.reviewStatus === 'approved' && asset.skinToneMst === undefined) {
+      errors.push(`${asset.id}: skin-tone annotation is required for publication`)
+    }
     if (asset.collection !== undefined && !isPortraitCollection(asset.collection)) {
       errors.push(`Invalid portrait collection ${asset.id}`)
     }

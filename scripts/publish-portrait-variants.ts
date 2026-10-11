@@ -21,7 +21,7 @@ if (origin.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(origin.h
 }
 
 const plan = JSON.parse(await readFile(join(outputRoot, 'plan.json'), 'utf8')) as Plan
-const errors = validatePortraitCatalog(portraitCatalog)
+const errors = validatePortraitCatalog(portraitCatalog, { requireSkinTone: true })
 if (errors.length || portraitCatalog.version !== plan.catalogVersion
   || portraitCatalog.publicBaseUrl !== plan.publicBaseUrl) throw new Error('Plan does not match the production catalog')
 if (!Array.isArray(plan.assets) || new Set(plan.assets.map((asset) => asset.id)).size !== plan.assets.length) {

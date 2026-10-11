@@ -65,6 +65,7 @@ function boundedString(value: string | null, name: string, maximum: number) {
 }
 
 function parseSkinTone(value: string | null): PeopleQuery['skinTone'] {
+  if (value === '') return []
   if (value === null) return undefined
   const values = value.split(',')
   if (values.length > 10 || values.some(tone => !/^(?:[1-9]|10)$/.test(tone))
