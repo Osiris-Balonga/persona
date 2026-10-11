@@ -13,7 +13,7 @@ const MetaSchema = Type.Object({
   catalogVersion: Type.String({ minLength: 1 }),
   skinTone: Type.Optional(Type.Union([
     Type.Integer({ minimum: 1, maximum: 10 }),
-    Type.Array(Type.Integer({ minimum: 1, maximum: 10 }), { minItems: 2, maxItems: 10, uniqueItems: true }),
+    Type.Array(Type.Integer({ minimum: 1, maximum: 10 }), { minItems: 0, maxItems: 10, uniqueItems: true }),
   ])),
   portraitContext: Type.Optional(Type.Union([
     Type.Literal('standard'), Type.Literal('doctor'), Type.Literal('construction'),

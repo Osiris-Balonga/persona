@@ -19,7 +19,7 @@ describe('public coverage endpoint', () => {
       postcodeCities: expect.any(Number), phone: expect.any(String), continent: '002', subregion: '014',
     })
     expect(body.portraits.total).toBeGreaterThan(0)
-    expect(body.portraits.annotatedSkinTone).toBeGreaterThan(0)
+    expect(body.portraits.annotatedSkinTone).toBe(body.portraits.total)
     expect(body.portraits.contexts).toEqual(expect.arrayContaining([
       { id: 'standard', minAge: 6, maxAge: 100, count: expect.any(Number), weight: 50 },
       { id: 'business', minAge: 18, maxAge: 64, count: expect.any(Number), weight: 25 },

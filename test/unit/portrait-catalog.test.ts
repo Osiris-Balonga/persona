@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { approvedPortraitHash, portraitCoverage, portraitCoverageMatrix, selectPortrait, validatePortraitCatalog } from '../../src/portraits/catalog.js'
 import { appearanceCategories } from '../../src/geography/appearance.js'
+import { portraitCatalog } from '../../src/portraits/manifest.js'
 
 const asset = (id: string, overrides: Record<string, unknown> = {}) => ({
   id,
@@ -44,6 +45,17 @@ describe('approved portrait catalog', () => {
     expect(rows).toHaveLength(4 * 2 * appearanceCategories.length)
     expect(rows.filter((row) => row.ready)).toEqual([{ ageGroup: profile.ageGroup, gender: profile.gender,
       appearance: profile.appearance, approved: 2, minimum: 2, ready: true }])
+  })
+
+  it('requires tone metadata for publication while retaining readable legacy and rejected records', () => {
+    const legacy = catalog([asset('p_0001')])
+    expect(validatePortraitCatalog(legacy)).toEqual([])
+    expect(validatePortraitCatalog(legacy, { requireSkinTone: true }))
+      .toContain('p_0001: skin-tone annotation is required for publication')
+    expect(validatePortraitCatalog(catalog([asset('p_0001', { skinToneMst: 7 }),
+      asset('p_0002', { reviewStatus: 'rejected' })]), { requireSkinTone: true })).toEqual([])
+    expect(validatePortraitCatalog(catalog([asset('p_0001', { skinToneMst: 11 })]), { requireSkinTone: true }))
+      .toContain('Invalid Monk tone p_0001')
   })
 
   it('rejects duplicate IDs, hashes, and mismatched object keys', () => {
@@ -113,12 +125,12 @@ describe('approved portrait catalog', () => {
     expect(selectPortrait(mixed, { ...profile, appearance: 'mixed' }, key)).not.toBeNull()
   })
 
-  it('publishes only reviewed portraits in the production manifest', async () => {
-    const { portraitCatalog } = await import('../../src/portraits/manifest.js')
+  it('publishes only reviewed portraits in the production manifest', () => {
     expect(portraitCatalog.version).toBe('v1')
     expect(portraitCatalog.assets).toHaveLength(4272)
     expect(portraitCatalog.assets.every((entry) => entry.collection)).toBe(true)
     expect(portraitCatalog.assets.every((entry) => entry.reviewStatus === 'approved')).toBe(true)
+    expect(portraitCatalog.assets.filter((entry) => entry.skinToneMst === undefined)).toHaveLength(0)
     expect(portraitCatalog.assets.every((entry) => entry.objectKey === entry.variants?.large.objectKey)).toBe(true)
     expect(validatePortraitCatalog(portraitCatalog)).toEqual([])
   })

@@ -20,10 +20,12 @@ const parse = (query: string) => parsePeopleQuery(new URLSearchParams(query))
 
 describe('editorial portrait skin tone filter', () => {
   it('accepts only integer Monk scale values 1–10 and omission leaves the filter absent', () => {
+    expect(parse('skinTone=')).toHaveProperty('skinTone', [])
+    expect(selectPortraitFromCollection(catalog, profile, 'CG', key, undefined, 'standard', [])).toBeNull()
     expect(parse('skinTone=1')).toHaveProperty('skinTone', 1)
     expect(parse('skinTone=10')).toHaveProperty('skinTone', 10)
     expect(parse('')).not.toHaveProperty('skinTone')
-    for (const value of ['0', '11', '1.5', '01', '', '6,6', '6,11', '6,', 'dark']) {
+    for (const value of ['0', '11', '1.5', '01', '6,6', '6,11', '6,', 'dark']) {
       expect(() => parse(`skinTone=${value}`)).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'skinTone' }))
     }
   })
@@ -46,7 +48,38 @@ describe('editorial portrait skin tone filter', () => {
     expect(selectPortraitFromCollection(catalog, profile, 'CG', key, undefined, 'standard', 5)).toBeNull()
     expect(selectPortraitFromCollection(catalog, profile, 'CG', key)?.url).toContain('p_0001')
     expect(selectPortraitFromCollection(catalog, profile, 'CG', key, undefined, [], 6)).toBeNull()
-    expect(selectPortraitFromCollection(catalog, profile, 'SN', key, undefined, 'standard', 6)).toBeNull()
+  })
+
+  it('searches all collections for an explicit tone, even when a local match exists', () => {
+    const globalCatalog: PortraitCatalog = { ...catalog, assets: [
+      { ...asset, id: 'p_0004', objectKey: 'portraits/v1/p_0004.webp', collection: 'europe-west', skinToneMst: 6 },
+      catalog.assets[1],
+    ] }
+    expect(selectPortraitFromCollection(globalCatalog, profile, 'CG', key)?.url).toContain('p_0002')
+    expect(selectPortraitFromCollection(globalCatalog, profile, 'SN', key)).toBeNull()
+    for (const country of ['CG', 'SN', 'AQ']) {
+      expect(selectPortraitFromCollection(globalCatalog, profile, country, key, undefined, 'standard', 6)?.url).toContain('p_0004')
+    }
+    const used = new Set<string>()
+    expect(selectPortraitFromCollection(globalCatalog, profile, 'CG', key, used, 'standard', [6])?.url).toContain('p_0004')
+    expect(selectPortraitFromCollection(globalCatalog, profile, 'CG', key, used, 'standard', [6])?.url).toContain('p_0002')
+    expect(selectPortraitFromCollection(globalCatalog, profile, 'CG', key, used, 'standard', [6])?.url).toContain('p_0004')
+  })
+
+  it('keeps gender, reviewed age, context and approval requirements when searching globally', () => {
+    const foreign = { ...catalog.assets[1], collection: 'europe-west' as const }
+    const incompatible: PortraitCatalog = { ...catalog, assets: [
+      { ...foreign, gender: 'male' },
+      { ...foreign, apparentAgeRanges: [[33, 37]] },
+      { ...foreign, portraitContext: 'construction' },
+      { ...foreign, reviewStatus: 'rejected' },
+      { ...foreign, reviewStatus: 'withdrawn' },
+      { ...foreign, skinToneMst: undefined },
+      { ...foreign, skinToneMst: 8 },
+    ] }
+    expect(selectPortraitFromCollection(incompatible, profile, 'CG', key, undefined, 'standard', 6)).toBeNull()
+    expect(selectPortraitFromCollection({ ...incompatible, assets: [...incompatible.assets, foreign] },
+      profile, 'CG', key, undefined, 'standard', 6)?.url).toContain('p_0002')
   })
 
   it('scopes the tone to portrait replay and its validator without changing generated identity or age', () => {

@@ -6,7 +6,7 @@ const hash = 'a'.repeat(64)
 const review = (overrides: Partial<PortraitReview> = {}): PortraitReview => ({
   id: 'p_0001', catalogVersion: 'v1', ageGroup: 'adult', gender: 'female',
   apparentAgeRanges: [[28, 32]],
-  visualGroup: 'black', appearance: 'west-african', appearanceTags: ['black'],
+  visualGroup: 'black', appearance: 'west-african', appearanceTags: ['black'], skinToneMst: 7,
   objectKey: 'portraits/v1/adult/female/black/west-african/p_0001.webp',
   rights: 'project-owned synthetic image', rightsEvidence: 'review-record-0001',
   sha256: hash, reviewStatus: 'approved', reviewer: 'reviewer-1',
@@ -28,6 +28,14 @@ describe('portrait import review', () => {
       .toContain('p_0001: SHA-256 does not match')
   })
 
+  it('blocks an approved batch with a missing tone instead of proposing unfilterable portraits', () => {
+    const file = { format: 'webp', width: 512, height: 512, pages: 1, bytes: 40_000, sha256: hash }
+    const result = evaluatePortraitImport([review({ skinToneMst: undefined })],
+      new Map([['p_0001', file]]), 'https://images.example.test')
+    expect(result.errors).toContain('p_0001: skin-tone annotation is required for publication')
+    expect(result.approved).toEqual([])
+  })
+
   it('requires named decisions, rights evidence, and consistent catalog metadata', () => {
     const file = { format: 'webp', width: 512, height: 512, pages: 1, bytes: 1_000, sha256: hash }
     expect(validatePortraitReview(review({ reviewer: '', rightsEvidence: '', decisionReason: '' }), file).length).toBeGreaterThanOrEqual(3)
@@ -41,9 +49,9 @@ describe('portrait import review', () => {
   it('proposes only explicitly approved records from a fully valid reviewed batch', () => {
     const approved = review({ apparentAgeRanges: [[28, 32], [33, 37], [38, 42]] })
     const rejected = review({ id: 'p_0002', objectKey: 'portraits/v1/adult/female/black/west-african/p_0002.webp',
-      reviewStatus: 'rejected', decisionReason: 'Visible artifact', sha256: 'b'.repeat(64) })
+      reviewStatus: 'rejected', decisionReason: 'Visible artifact', sha256: 'b'.repeat(64), skinToneMst: undefined })
     const withdrawn = review({ id: 'p_0003', objectKey: 'portraits/v1/adult/female/black/west-african/p_0003.webp',
-      reviewStatus: 'withdrawn', decisionReason: 'Rights withdrawn', sha256: 'c'.repeat(64) })
+      reviewStatus: 'withdrawn', decisionReason: 'Rights withdrawn', sha256: 'c'.repeat(64), skinToneMst: undefined })
     const files = new Map([['p_0001', { format: 'webp', width: 512, height: 512, pages: 1, bytes: 40_000, sha256: hash }]])
     const result = evaluatePortraitImport([approved, rejected, withdrawn], files, 'https://images.example.test')
     expect(result.errors).toEqual([])
