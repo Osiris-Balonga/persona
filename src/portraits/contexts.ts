@@ -16,6 +16,10 @@ export const defaultPortraitContexts: readonly PortraitContext[] = [
   'standard', 'doctor', 'construction', 'business', 'school-pupil',
 ]
 export const portraitSelectionVersion = 'contexts-v2-weighted'
+export const portraitContextWeights: Readonly<Record<PortraitContext, number>> = {
+  standard: 50, business: 25, 'school-pupil': 15, doctor: 5, construction: 5,
+  'university-student': 1,
+}
 
 export function resolvePortraitContexts(query: {
   portraitContexts?: readonly PortraitContext[]

@@ -47,7 +47,8 @@ export function createGenerationContext(
       const scope = selected !== undefined && selected !== 'standard'
         && (component === 'age' || component === 'portrait')
         ? [selected, versions.portraitSelectionVersion ?? portraitSelectionVersion] : []
-      return digest(['persona-component', ...inputs, personIndex, component, ...scope])
+      const toneScope = component === 'portrait' && query.skinTone !== undefined ? ['skinTone', query.skinTone] : []
+      return digest(['persona-component', ...inputs, personIndex, component, ...scope, ...toneScope])
     },
   }
 }
@@ -65,6 +66,7 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     query.emailDomain ?? 'example.test',
     query.portraitContexts ?? query.portraitContext ?? resolvePortraitContexts(query),
     versions.portraitSelectionVersion ?? portraitSelectionVersion,
+    ...(query.skinTone === undefined ? [] : ['skinTone', query.skinTone]),
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

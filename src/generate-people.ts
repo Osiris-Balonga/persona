@@ -31,10 +31,11 @@ export function generatePeopleResponse(query: PeopleQuery, catalog: PortraitCata
     nameCounts.set(nameKey, repetitions + 1)
     const portraitKey = context.componentKey(index, 'portrait')
     const picture = selectPortraitFromCollection(catalog, person, person.country, portraitKey, usedPortraits,
-      resolvePortraitContexts(query))
+      resolvePortraitContexts(query), query.skinTone)
     return { ...person, picture }
   })
   return { results, meta: { count: query.count, asOf: query.asOf, seed: query.seed ?? null,
+    ...(query.skinTone === undefined ? {} : { skinTone: query.skinTone }),
     ...(query.portraitContexts === undefined && query.portraitContext !== undefined ? { portraitContext: query.portraitContext }
       : { portraitContexts: [...resolvePortraitContexts(query)] }), ...versions } }
 }

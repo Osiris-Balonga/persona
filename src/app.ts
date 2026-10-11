@@ -13,6 +13,7 @@ import { generatePeopleResponse } from './generate-people.js'
 import { validatePortraitCatalog, type PortraitCatalog } from './portraits/catalog.js'
 import { portraitCatalog } from './portraits/manifest.js'
 import { portraitSelectionVersion } from './portraits/contexts.js'
+import { createPublicCoverage } from './public-coverage.js'
 import type { AnalyticsSink } from './analytics/client.js'
 
 export interface AppOptions {
@@ -96,7 +97,7 @@ export function buildApp(options: AppOptions = {}) {
   })
 
   app.setNotFoundHandler((request, reply) => {
-    if (request.url.split('?')[0] === '/people' || request.url.split('?')[0] === '/health') {
+    if (request.url.split('?')[0] === '/people' || request.url.split('?')[0] === '/health' || request.url.split('?')[0] === '/coverage') {
       return reply.code(405).header('Allow', 'GET, HEAD, OPTIONS').send({ error: { code: 'METHOD_NOT_ALLOWED', message: 'Method not allowed' } })
     }
     return reply.code(404).send({ error: { code: 'NOT_FOUND', message: 'Route not found' } })
@@ -123,6 +124,38 @@ export function buildApp(options: AppOptions = {}) {
   }, (_request, reply) => {
     reply.header('Cache-Control', 'no-store')
     return { status: 'ok' as const }
+  })
+
+  app.get('/coverage', {
+    schema: {
+      response: {
+        200: Type.Object({
+          meta: Type.Object({ dataVersion: Type.String(), catalogVersion: Type.String(), portraitSelectionVersion: Type.String() }),
+          countries: Type.Array(Type.Object({
+            code: Type.String(), name: Type.String(), status: Type.Union([
+              Type.Literal('available'), Type.Literal('pending-name-review'), Type.Literal('unavailable'),
+            ]), sampledCities: Type.Number(), postcodeCities: Type.Number(), phone: Type.String(),
+            continent: Type.Union([Type.String(), Type.Null()]), subregion: Type.Union([Type.String(), Type.Null()]),
+          })),
+          portraits: Type.Object({
+            total: Type.Number(), annotatedSkinTone: Type.Number(),
+            contexts: Type.Array(Type.Object({ id: Type.String(), minAge: Type.Number(), maxAge: Type.Number(), count: Type.Number(), weight: Type.Number() })),
+            skinTones: Type.Array(Type.Object({ value: Type.Number(), count: Type.Number() })),
+          }),
+        }),
+        304: Type.Null(),
+        400: Type.Object({ error: Type.Object({ code: Type.String(), message: Type.String() }) }),
+      },
+    },
+  }, (request, reply) => {
+    const params = new URL(request.raw.url ?? '/coverage', 'http://localhost').searchParams
+    if ([...params.keys()].length) {
+      return reply.code(400).send({ error: { code: 'UNKNOWN_QUERY_PARAMETER', message: 'Coverage does not accept query parameters' } }) as never
+    }
+    const { body, etag } = createPublicCoverage(catalog)
+    reply.header('Cache-Control', 'public, max-age=300').header('ETag', etag)
+    if (matchesIfNoneMatch(request.headers['if-none-match'], etag)) return reply.code(304).send(null) as never
+    return body
   })
 
   app.get('/people', (request, reply) => {

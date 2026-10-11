@@ -21,6 +21,7 @@ export interface PeopleQuery {
   emailDomain?: string
   portraitContext?: PortraitContext
   portraitContexts?: readonly PortraitContext[]
+  skinTone?: number
 }
 
 export class PeopleQueryError extends Error {
@@ -38,7 +39,7 @@ export class PeopleQueryError extends Error {
 
 const allowedParameters = new Set([
   'count', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
-  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts',
+  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts', 'skinTone',
 ])
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
@@ -104,12 +105,14 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   const seen = new Set<string>()
   for (const name of params.keys()) {
     if (!allowedParameters.has(name) || seen.has(name)) {
-      throw new PeopleQueryError('INVALID_QUERY', name, `Unknown or repeated parameter: ${name}`)
+      throw new PeopleQueryError('INVALID_QUERY', name.length <= 64 ? name : 'query',
+        'Use only documented query parameters, each at most once')
     }
     seen.add(name)
   }
 
   const count = integerParameter(params.get('count'), 'count', 1, 100) ?? 1
+  const skinTone = integerParameter(params.get('skinTone'), 'skinTone', 1, 10)
   const gender = params.get('gender')
   if (gender !== null && gender !== 'male' && gender !== 'female') {
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')
@@ -133,7 +136,8 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   }
   if ((portraitContexts === undefined ? eligibleContextAges(portraitContext, ageGroup)
     : eligibleSelectedContextAges(portraitContexts, ageGroup)).length === 0) {
-    throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup', 'ageGroup has no ages compatible with portraitContext')
+    throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup',
+      'ageGroup has no eligible ages for the selected portrait types; change ageGroup or add a compatible portrait type')
   }
   let nationality = countryCode(params.get('nationality'), 'nationality', true)
   let residenceCountry = countryCode(params.get('residenceCountry'), 'residenceCountry', false)
@@ -165,8 +169,9 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   if (fieldsValue !== undefined) {
     try {
       fields = parseFieldSelection(fieldsValue)
-    } catch (error) {
-      throw new PeopleQueryError('INVALID_QUERY', 'fields', (error as Error).message)
+    } catch {
+      throw new PeopleQueryError('INVALID_QUERY', 'fields',
+        'fields must contain distinct public paths without parent/child overlaps; see the API field list')
     }
   }
 
@@ -181,6 +186,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     count,
     asOf,
     emailDomain,
+    ...(skinTone === undefined ? {} : { skinTone }),
     ...(params.has('portraitContext') ? { portraitContext } : {}),
     ...(portraitContexts === undefined ? {} : { portraitContexts }),
     ...(gender === null ? {} : { gender }),

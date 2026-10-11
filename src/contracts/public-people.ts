@@ -11,6 +11,7 @@ const MetaSchema = Type.Object({
   schemaVersion: Type.Literal('2'),
   dataVersion: Type.String({ minLength: 1 }),
   catalogVersion: Type.String({ minLength: 1 }),
+  skinTone: Type.Optional(Type.Integer({ minimum: 1, maximum: 10 })),
   portraitContext: Type.Optional(Type.Union([
     Type.Literal('standard'), Type.Literal('doctor'), Type.Literal('construction'),
     Type.Literal('business'), Type.Literal('school-pupil'), Type.Literal('university-student'),
