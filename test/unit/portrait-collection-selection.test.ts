@@ -50,4 +50,61 @@ describe('collection-only portrait experiment', () => {
     expect(selectPortraitFromCollection(portraits, { ...profile, age: 36 }, 'CG', key)).toBeNull()
     expect(selectPortraitFromCollection(portraits, { ...profile, gender: 'male' }, 'CG', key)).toBeNull()
   })
+
+  it('draws an available context by fixed weights, independently from its asset draw', () => {
+    const assets = [
+      { ...base, id: 'p_std', objectKey: 'portraits/v1/p_std.webp', portraitContext: 'standard' as const, collection: 'africa-central' as const },
+      { ...base, id: 'p_doc', objectKey: 'portraits/v1/p_doc.webp', portraitContext: 'doctor' as const, collection: 'africa-central' as const },
+      { ...base, id: 'p_biz', objectKey: 'portraits/v1/p_biz.webp', portraitContext: 'business' as const, collection: 'africa-central' as const },
+    ]
+    const multi = (draw: number, assetDraw = 0) => `${assetDraw.toString(16).padStart(12, '0')}${draw.toString(16).padStart(12, '0')}${'0'.repeat(40)}`
+    const requested = ['standard', 'doctor', 'business'] as const
+    expect(selectPortraitFromCollection(catalog(assets), profile, 'CG', multi(0), undefined, requested)?.url).toContain('p_std')
+    // Weights are renormalized over available contexts: total 80, intervals 50/5/25.
+    expect(selectPortraitFromCollection(catalog(assets), profile, 'CG', multi(50), undefined, requested)?.url).toContain('p_doc')
+    expect(selectPortraitFromCollection(catalog(assets), profile, 'CG', multi(55), undefined, requested)?.url).toContain('p_biz')
+    expect(selectPortraitFromCollection(catalog(assets), profile, 'CG', multi(0, 1), undefined, requested)?.url).toContain('p_std')
+  })
+
+  it('keeps normalized context frequencies independent of catalogue counts and age exclusions', () => {
+    const standard = { ...base, id: 'p_std', objectKey: 'portraits/v1/p_std.webp', collection: 'africa-central' as const }
+    const business = Array.from({ length: 9 }, (_, index) => ({
+      ...base, id: `p_biz${index}`, objectKey: `portraits/v1/p_biz${index}.webp`,
+      portraitContext: 'business' as const, collection: 'africa-central' as const,
+    }))
+    const doctors = [{ ...base, id: 'p_doc', objectKey: 'portraits/v1/p_doc.webp', portraitContext: 'doctor' as const, collection: 'africa-central' as const }]
+    const construction = [{ ...base, id: 'p_con', objectKey: 'portraits/v1/p_con.webp', portraitContext: 'construction' as const, collection: 'africa-central' as const }]
+    const assets = [standard, ...business, ...doctors, ...construction]
+    const contexts = ['standard', 'business', 'doctor', 'construction'] as const
+    const counts = new Map<string, number>()
+    for (let draw = 0; draw < 85; draw++) {
+      const contextDrawKey = `${'0'.repeat(12)}${draw.toString(16).padStart(12, '0')}${'0'.repeat(40)}`
+      const url = selectPortraitFromCollection(catalog(assets), profile, 'CG', contextDrawKey, undefined, contexts)?.url
+      const match = assets.find(asset => url?.endsWith(asset.objectKey))
+      const context = match?.portraitContext ?? 'standard'
+      counts.set(context, (counts.get(context) ?? 0) + 1)
+    }
+    expect(Object.fromEntries(counts)).toEqual({ standard: 50, business: 25, doctor: 5, construction: 5 })
+
+    const childPortrait = { ...base, id: 'p_pupil', objectKey: 'portraits/v1/p_pupil.webp', ageGroup: 'child' as const,
+      apparentAgeRanges: [[8, 12] as [number, number]], portraitContext: 'school-pupil' as const, collection: 'africa-central' as const }
+    const adultContexts = ['standard', 'school-pupil'] as const
+    const adultKey = `${'0'.repeat(24)}${'0'.repeat(40)}`
+    expect(selectPortraitFromCollection(catalog([standard, childPortrait]), profile, 'CG', adultKey, undefined, adultContexts)?.url)
+      .toContain('p_std')
+    const seniorPortrait = { ...base, id: 'p_senior', objectKey: 'portraits/v1/p_senior.webp', ageGroup: 'senior' as const,
+      apparentAgeRanges: [[65, 69] as [number, number]], collection: 'africa-central' as const }
+    expect(selectPortraitFromCollection(catalog([seniorPortrait, ...doctors]), { ...profile, age: 67, ageGroup: 'senior' },
+      'CG', adultKey, undefined, ['standard', 'doctor'])?.url).toContain('p_senior')
+  })
+
+  it('does not shift context weights when the chosen context has no unused assets', () => {
+    const assets = [
+      { ...base, id: 'p_std', objectKey: 'portraits/v1/p_std.webp', collection: 'africa-central' as const },
+      { ...base, id: 'p_doc', objectKey: 'portraits/v1/p_doc.webp', portraitContext: 'doctor' as const, collection: 'africa-central' as const },
+    ]
+    const used = new Set(['p_std'])
+    const drawStandard = `${'0'.repeat(12)}${'0'.repeat(12)}${'0'.repeat(40)}`
+    expect(selectPortraitFromCollection(catalog(assets), profile, 'CG', drawStandard, used, ['standard', 'doctor'])?.url).toContain('p_std')
+  })
 })

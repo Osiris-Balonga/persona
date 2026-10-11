@@ -181,7 +181,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     count,
     asOf,
     emailDomain,
-    ...(portraitContext === 'standard' ? {} : { portraitContext }),
+    ...(params.has('portraitContext') ? { portraitContext } : {}),
     ...(portraitContexts === undefined ? {} : { portraitContexts }),
     ...(gender === null ? {} : { gender }),
     ...(ageGroup === undefined ? {} : { ageGroup }),
