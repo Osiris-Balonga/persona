@@ -3,12 +3,7 @@ import { ageGroupForAge } from '../age.js'
 import { m49RegionByCountry } from '../geography/m49-region-data.js'
 import type { PortraitCollection } from '../review/collections.js'
 import type { PortraitCatalog } from './catalog.js'
-import { contextAllowsAge, type PortraitContext } from './contexts.js'
-
-const contextWeights: Record<PortraitContext, number> = {
-  standard: 50, business: 25, 'school-pupil': 15, doctor: 5, construction: 5,
-  'university-student': 1,
-}
+import { contextAllowsAge, portraitContextWeights, type PortraitContext } from './contexts.js'
 
 const islandCountries = new Set(['KM', 'MG', 'MU', 'RE', 'SC', 'YT'])
 
@@ -39,6 +34,7 @@ export function selectPortraitFromCollection(
   key: string,
   usedIds?: Set<string>,
   portraitContext: PortraitContext | readonly PortraitContext[] = 'standard',
+  skinTone?: number | readonly number[],
 ): Person['picture'] {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid portrait key')
   const collection = collectionForCountry(country)
@@ -46,7 +42,9 @@ export function selectPortraitFromCollection(
   const contexts = isSingleContext ? [portraitContext] : portraitContext
   if (!collection || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup
     || !contexts.some(context => contextAllowsAge(context, profile.age))) return null
+  const tones = skinTone === undefined ? undefined : typeof skinTone === 'number' ? [skinTone] : skinTone
   const matchingAssets = catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
+    && (tones === undefined || (asset.skinToneMst !== undefined && tones.includes(asset.skinToneMst)))
     && contexts.includes(asset.portraitContext ?? 'standard')
     && contextAllowsAge(asset.portraitContext ?? 'standard', profile.age)
     && asset.collection === collection && asset.gender === profile.gender
@@ -58,11 +56,11 @@ export function selectPortraitFromCollection(
     selectedContext = portraitContext
   } else {
     const availableContexts = contexts.filter(context => matchingAssets.some(asset => (asset.portraitContext ?? 'standard') === context))
-    const totalWeight = availableContexts.reduce((total, context) => total + contextWeights[context], 0)
+    const totalWeight = availableContexts.reduce((total, context) => total + portraitContextWeights[context], 0)
     const draw = Number.parseInt(key.slice(12, 24), 16) % totalWeight
     let cumulative = 0
     selectedContext = availableContexts.find(context => {
-      cumulative += contextWeights[context]
+      cumulative += portraitContextWeights[context]
       return draw < cumulative
     })
   }

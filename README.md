@@ -23,7 +23,7 @@ Development happens on `dev`. Production changes are promoted to `main` through 
 
 ## Local development
 
-The local server exposes `GET /health` and `GET /people`.
+The local server exposes `GET /health`, `GET /people`, and `GET /coverage` for current country and portrait availability.
 
 ```sh
 npm ci

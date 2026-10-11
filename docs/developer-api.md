@@ -29,6 +29,10 @@ Coordinates in `location` are the exact GeoNames point for the selected city, ma
 
 ## Errors and limits
 
+Use `skinTone=1` through `skinTone=10`, or a comma-separated union such as `skinTone=6,8`, to request existing portrait annotations on the Monk scale. Values must be distinct integers; their order does not affect replay. This filter does not infer ethnicity or change generated identity, age, nationality or residence. Unannotated portraits and different tones do not match; if no eligible asset remains, `picture` is `null`. Omit the filter to retain the usual catalog selection. The current contextual portraits are unannotated. `meta.skinTone` reports a single number or an ascending array of requested values. Use `GET /coverage` for deployed country availability, approved delivered portrait counts, context eligibility and weights, and tone annotation counts; its response is public-cacheable for five minutes with an ETag.
+
+For translated interfaces, use the stable `error.code` and `error.parameter` to choose user guidance and show the original response separately for debugging. Do not parse the English `error.message` to identify a validation rule.
+
 Invalid, conflicting, and unsupported filters return 400 with `error.code`, `message`, and `parameter`. The encoded query is limited to 2,048 characters. `GET` and `HEAD` bodies are rejected; request bodies are capped at 1 KiB. A response is capped at 256 KiB and returns 503 with `RESPONSE_TOO_LARGE` if exceeded. Unknown routes return 404; unsupported methods on documented routes return 405. Browser access allows `GET` and `HEAD` from any origin without credentials.
 
 Body parsing happens before method rejection: malformed or empty JSON returns 400 with `BAD_REQUEST`, while a well-formed body on an unsupported method returns 405. Unsupported media types detected by the parser return 415 with `UNSUPPORTED_MEDIA_TYPE`; oversized bodies return 413 with `REQUEST_TOO_LARGE`. Client errors use safe messages and `Cache-Control: no-store`. Unexpected server failures return 500 with `INTERNAL_ERROR` and are logged internally.

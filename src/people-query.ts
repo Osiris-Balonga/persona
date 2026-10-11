@@ -21,6 +21,7 @@ export interface PeopleQuery {
   emailDomain?: string
   portraitContext?: PortraitContext
   portraitContexts?: readonly PortraitContext[]
+  skinTone?: number | readonly number[]
 }
 
 export class PeopleQueryError extends Error {
@@ -38,7 +39,7 @@ export class PeopleQueryError extends Error {
 
 const allowedParameters = new Set([
   'count', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
-  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts',
+  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts', 'skinTone',
 ])
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
@@ -61,6 +62,17 @@ function boundedString(value: string | null, name: string, maximum: number) {
     throw new PeopleQueryError('INVALID_QUERY', name, `${name} must contain 1 to ${maximum} characters`)
   }
   return value
+}
+
+function parseSkinTone(value: string | null): PeopleQuery['skinTone'] {
+  if (value === null) return undefined
+  const values = value.split(',')
+  if (values.length > 10 || values.some(tone => !/^(?:[1-9]|10)$/.test(tone))
+    || new Set(values).size !== values.length) {
+    throw new PeopleQueryError('INVALID_QUERY', 'skinTone', 'skinTone must contain distinct integers from 1 to 10, separated by commas')
+  }
+  const tones = values.map(Number).sort((a, b) => a - b)
+  return tones.length === 1 ? tones[0] : tones
 }
 
 function countryCode(value: string | null, parameter: string, needsNames: boolean) {
@@ -104,12 +116,14 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   const seen = new Set<string>()
   for (const name of params.keys()) {
     if (!allowedParameters.has(name) || seen.has(name)) {
-      throw new PeopleQueryError('INVALID_QUERY', name, `Unknown or repeated parameter: ${name}`)
+      throw new PeopleQueryError('INVALID_QUERY', name.length <= 64 ? name : 'query',
+        'Use only documented query parameters, each at most once')
     }
     seen.add(name)
   }
 
   const count = integerParameter(params.get('count'), 'count', 1, 100) ?? 1
+  const skinTone = parseSkinTone(params.get('skinTone'))
   const gender = params.get('gender')
   if (gender !== null && gender !== 'male' && gender !== 'female') {
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')
@@ -133,7 +147,8 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   }
   if ((portraitContexts === undefined ? eligibleContextAges(portraitContext, ageGroup)
     : eligibleSelectedContextAges(portraitContexts, ageGroup)).length === 0) {
-    throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup', 'ageGroup has no ages compatible with portraitContext')
+    throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup',
+      'ageGroup has no eligible ages for the selected portrait types; change ageGroup or add a compatible portrait type')
   }
   let nationality = countryCode(params.get('nationality'), 'nationality', true)
   let residenceCountry = countryCode(params.get('residenceCountry'), 'residenceCountry', false)
@@ -165,8 +180,9 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   if (fieldsValue !== undefined) {
     try {
       fields = parseFieldSelection(fieldsValue)
-    } catch (error) {
-      throw new PeopleQueryError('INVALID_QUERY', 'fields', (error as Error).message)
+    } catch {
+      throw new PeopleQueryError('INVALID_QUERY', 'fields',
+        'fields must contain distinct public paths without parent/child overlaps; see the API field list')
     }
   }
 
@@ -181,6 +197,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     count,
     asOf,
     emailDomain,
+    ...(skinTone === undefined ? {} : { skinTone }),
     ...(params.has('portraitContext') ? { portraitContext } : {}),
     ...(portraitContexts === undefined ? {} : { portraitContexts }),
     ...(gender === null ? {} : { gender }),
