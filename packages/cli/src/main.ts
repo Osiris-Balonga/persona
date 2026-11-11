@@ -1,6 +1,6 @@
 import { parseCommand } from './arguments.js'
 import { help, version } from './help.js'
-import { fetchPeople } from './people.js'
+import { fetchPeople, fetchPeoplePages, peopleJson } from './people.js'
 import { countryOutput } from './countries.js'
 import { initializeSeed } from './seed.js'
 import { writeOutput } from './files.js'
@@ -23,12 +23,15 @@ export async function runCli(args: string[], options: CliOptions): Promise<numbe
         break
       case 'version': options.stdout(`${version}\n`); break
       case 'people': {
-        const response = await fetchPeople(command, options.env, options.fetch)
-        const content = `${JSON.stringify(response, null, 2)}\n`
         if (command.output) {
+          let count = 0
+          const content = peopleJson(fetchPeoplePages(command, options.env, options.fetch), total => { count = total })
           await writeOutput(options.cwd, command.output, content, command.force)
-          options.stderr(`Saved ${response.results.length} people to ${command.output}.\n`)
-        } else options.stdout(content)
+          options.stderr(`Saved ${count} people to ${command.output}.\n`)
+        } else {
+          const response = await fetchPeople(command, options.env, options.fetch)
+          options.stdout(`${JSON.stringify(response, null, 2)}\n`)
+        }
         break
       }
       case 'countries': options.stdout(await countryOutput(command)); break
