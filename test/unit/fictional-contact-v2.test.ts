@@ -31,6 +31,15 @@ describe('contact values for the second people contract', () => {
     expect(fictionalPhone('GB', 'London', key)).toMatch(/^\+447700900\d{3}$/)
   })
 
+  it('disambiguates positions throughout a 10,000-person collection without changing legacy suffixes', () => {
+    const zeroKey = '0'.repeat(64)
+    expect(fictionalEmail('Maya', 'Banda', zeroKey, 'example.test', 99)).toBe('m.banda.0002r@example.test')
+    expect(fictionalEmail('Maya', 'Banda', zeroKey, 'example.test', 9999)).toBe('m.banda.0007pr@example.test')
+    for (const position of [-1, 0.5, 10000]) {
+      expect(() => fictionalEmail('Maya', 'Banda', zeroKey, 'example.test', position)).toThrow(RangeError)
+    }
+  })
+
   it.each([['AF', 'Kabul'], ['LY', 'Tripoli'], ['CG', 'Brazzaville'], ['RW', 'Kigali']])(
     'produces a valid country-format mobile sample for %s', (country, city) => {
       const phone = fictionalPhone(country, city, key)

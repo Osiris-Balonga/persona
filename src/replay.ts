@@ -9,7 +9,7 @@ export interface DataVersions {
   portraitCatalogFingerprint?: string
 }
 
-const generationVersion = 'v5'
+export const generationVersion = 'v5'
 const skinToneSelectionVersion = 'global-collections-v1'
 
 function digest(parts: readonly unknown[]): string {
@@ -71,6 +71,7 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     versions.portraitSelectionVersion ?? portraitSelectionVersion,
     ...(versions.portraitCatalogFingerprint === undefined ? [] : ['portraitCatalog', versions.portraitCatalogFingerprint]),
     ...(query.skinTone === undefined ? [] : ['skinTone', query.skinTone, skinToneSelectionVersion]),
+    ...(query.pagination === undefined ? [] : ['pagination-v1', query.pagination.total, query.pagination.limit, query.pagination.offset]),
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

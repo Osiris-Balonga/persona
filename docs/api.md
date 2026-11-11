@@ -8,7 +8,9 @@
 
 | Parameter | Rule |
 | --- | --- |
-| `count` | Integer 1–100; default 1 |
+| `count` | Total people, integer 1–10,000; default 1 |
+| `limit` | Maximum people per page, integer 1–100; default 100; explicitly providing it enables pagination |
+| `cursor` | Opaque continuation from `meta.pagination.nextCursor`; only `limit` may accompany it |
 | `gender` | `male` or `female` |
 | `ageGroup` | One or more distinct groups separated by commas: `child` (6–12), `teen` (13–17), `adult` (18–64), `senior` (65–100) |
 | `portraitContext` | `standard`, `doctor`, `construction`, `business`, `school-pupil`, `university-student`; intersects editorial eligibility with `ageGroup` |
@@ -30,6 +32,23 @@ For example:
 ```http
 GET /people?nationality=FR&residenceCountry=CG&city=Brazzaville&ageGroup=adult,senior&emailDomain=example.test&seed=demo&asOf=2026-09-28
 ```
+
+## Pagination
+
+Request a collection with `GET /people?count=1000&limit=100&seed=bulk-demo&asOf=2026-11-12`.
+Pagination is enabled when `count > 100` or `limit` is explicitly supplied. Requests for at most 100 people without `limit` retain their existing response, seeded results and ETags.
+
+`results` contains the current page and `meta.count` is its size. Paginated responses add:
+
+```json
+{ "pagination": { "total": 1000, "limit": 100, "offset": 0, "nextCursor": "opaque-cursor-from-the-response" } }
+```
+
+This object is inside `meta`. `offset` is zero-based; the final page has `nextCursor: null`. Continue with `GET /people?cursor=<URL-encoded-nextCursor>`. Use `URLSearchParams` to encode the actual returned cursor. Do not repeat filters, `count`, `seed` or `asOf`; only `limit` may be supplied to resize subsequent pages. Changing it preserves the ordered sequence. IDs are unique within the collection; finite name and portrait pools may repeat. Canonical blocks of 100 preserve legacy prefixes and batch diversity without replaying all earlier pages for late offsets.
+
+The cursor fixes filters, seed, UTC reference date and generation/data/catalog versions. An unseeded initial paginated request returns its generated seed in `meta.seed`. Save it with `meta.asOf` to reproduce the collection while versions remain unchanged. Cursors are public request state, not credentials; clients must treat them as opaque. Malformed, excessive, conflicting or incompatible cursors return `400 INVALID_QUERY` with `parameter: "cursor"`. A data, catalog, portrait policy or algorithm update invalidates old cursors; start a new collection instead of mixing versions.
+
+Every page counts toward the existing request quota and has the same 256 KiB response cap. On 429, wait at least `Retry-After` before retrying the same cursor. On `503 RESPONSE_TOO_LARGE`, reduce `limit`, or select fewer fields in the initial request. Initial encoded queries remain limited to 2,048 characters; cursor continuations allow 8,192, including at most 4,096 characters for the cursor.
 
 ## Response
 
@@ -61,7 +80,7 @@ For example, `fields=name.first,location.city,location.coordinates.latitude,pict
 
 Seeded results repeat when `asOf`, filters, dataset and catalog versions, and generation algorithm version remain the same. Version `v5` derives separate keys per person and component. `count`, `fields`, and `emailDomain` do not change identity or portrait choices. `emailDomain` does change generated email addresses and the response `ETag`.
 
-Successful requests with **explicit** `seed` and `asOf` return `Cache-Control: private, no-cache` and an `ETag`; matching `If-None-Match` returns 304 for GET and HEAD using weak comparison (both `"tag"` and `W/"tag"` match). Validator lists and `*` are supported. Invalid queries are rejected before cache revalidation. Other responses and errors use `Cache-Control: no-store`. An unseeded request draws fresh entropy and reports `meta.seed: null`.
+Successful requests with **explicit** `seed` and `asOf`, and cursor continuations, return `Cache-Control: private, no-cache` and an `ETag`; matching `If-None-Match` returns 304 for GET and HEAD using weak comparison (both `"tag"` and `W/"tag"` match). Each paginated validator includes the total, page limit and offset. Validator lists and `*` are supported. Invalid queries are rejected before cache revalidation. Other responses and errors use `Cache-Control: no-store`. An unseeded request draws fresh entropy and reports `meta.seed: null` outside pagination, or the generated collection seed in paginated mode.
 
 Invalid input returns 400 with `error.code`, `message`, and `parameter`. `INVALID_QUERY` covers malformed, unknown, or repeated parameters; `CONFLICTING_FILTERS` covers mismatched continent and nationality or a city without a country; `UNSUPPORTED_VALUE` covers unavailable countries and cities outside the selected residence. See the [developer guide](developer-api.md#errors-and-limits) for service limits and 429 responses.
 

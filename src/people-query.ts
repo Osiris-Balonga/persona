@@ -6,9 +6,11 @@ import { listCities, getCity } from './geography/cities.js'
 import { hasReviewedNamePool } from './geography/profile-availability.js'
 import { continentForCountry, type Continent } from './geography/continents.js'
 import { eligibleContextAges, eligibleSelectedContextAges, isPortraitContext, portraitContextIds, type PortraitContext } from './portraits/contexts.js'
+import { maximumPeopleTotal, maximumPageLimit, type PeoplePage } from './people-limits.js'
 
 export interface PeopleQuery {
   count: number
+  pagination?: PeoplePage
   asOf: string
   gender?: PublicPerson['gender']
   ageGroup?: readonly AgeGroup[]
@@ -38,7 +40,7 @@ export class PeopleQueryError extends Error {
 }
 
 const allowedParameters = new Set([
-  'count', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
+  'count', 'limit', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
   'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts', 'skinTone',
 ])
 
@@ -123,7 +125,10 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
     seen.add(name)
   }
 
-  const count = integerParameter(params.get('count'), 'count', 1, 100) ?? 1
+  const total = integerParameter(params.get('count'), 'count', 1, maximumPeopleTotal) ?? 1
+  const limit = integerParameter(params.get('limit'), 'limit', 1, maximumPageLimit) ?? maximumPageLimit
+  const paginated = params.has('limit') || total > maximumPageLimit
+  const count = paginated ? Math.min(total, limit) : total
   const skinTone = parseSkinTone(params.get('skinTone'))
   const gender = params.get('gender')
   if (gender !== null && gender !== 'male' && gender !== 'female') {
@@ -196,6 +201,7 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
 
   return {
     count,
+    ...(paginated ? { pagination: { total, limit, offset: 0 } } : {}),
     asOf,
     emailDomain,
     ...(skinTone === undefined ? {} : { skinTone }),
