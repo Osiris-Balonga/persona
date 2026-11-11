@@ -1,0 +1,41 @@
+// Reviewed European territory name components from the pinned birth-place report and Faroese statistics.
+// JE name sources: wikidata-europe-birthplace-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Elizabeth", "Ann", "Caroline", "Ellen", "Florence", "Kathleen",
+    "Agnes", "Alice", "Alison", "Alma", "Amélia", "Anthea",
+    "Augusta", "Babette", "Carly", "Carol", "Cecilia", "Danielle",
+    "Edith", "Elinor", "Elise", "Emilie", "Emily", "Fanny",
+    "Fleur", "Frances", "Helen", "Jean", "Jenny", "Joan",
+    "Juanita", "Judith", "Karen", "Katharine", "Kimberley", "Kristina",
+    "Lilian", "Lillie", "Lindsey", "Louisa", "Louise", "Margaret",
+    "Marguerite", "Marian", "Mariana", "Mary", "Monique", "Nerina",
+    "Rachel", "Rose",
+  ],
+  male: [
+    "John", "William", "George", "Thomas", "Charles", "Jean",
+    "Philip", "Philippe", "Robert", "Edward", "Henry", "James",
+    "Daniel", "Francis", "Paul", "Alexander", "Jack", "Arthur",
+    "Clement", "Frank", "Frederick", "Herbert", "Alfred", "Andrew",
+    "Augustus", "Bob", "Cameron", "Cecil", "Dave", "Édouard",
+    "Edwin", "Ferdinand", "Guy", "Hugh", "Kenneth", "Mark",
+    "Matt", "Matthew", "Michael", "Oliver", "Peter", "Phil",
+    "Richard", "Roger", "Steve", "Ted", "Tim", "Tom",
+    "Trevor", "Alastair",
+  ],
+  family: [
+    "Gaudin", "Le Breton", "Bailhache", "Carteret", "Cavill", "Dumaresq",
+    "Renouf", "Atkinson", "Davis", "Ford", "Hill", "Jones",
+    "Le Boutillier", "Le Sueur", "Lemprière", "Marett", "Oliver", "Perrot",
+    "Pitman", "Savage", "Smith", "Vardon", "Walker", "Adams",
+    "Adlington", "Agathangelou", "Anderson", "Ara", "Ashton", "Avard",
+    "Banahan", "Banks", "Barsby", "Bartley", "Bedford", "Bedwell",
+    "Bennett", "Benson", "Bettison", "Bignell", "Boot", "Boycott",
+    "Boyle", "Brennan", "Buesnel", "Campbell", "Carrel", "Carrington",
+    "Chads", "Chevalier", "Child Villiers", "Clare", "Clayton", "Close",
+    "Cole", "Connolly", "Cook", "Coutanche", "Coxon", "d'Auvergne",
+    "Dalgliesh", "Davey", "Delamain", "Dickens", "Dix", "Dixon",
+    "Dorey", "Downs", "Durell", "Etienne", "Fallaize", "Falle",
+    "Farley", "Farnham", "Fyers",
+  ],
+} as const

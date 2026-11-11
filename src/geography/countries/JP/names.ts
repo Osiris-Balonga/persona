@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// JP name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Yōko", "Aya", "Keiko", "Yūko", "Akiko", "Kaori",
+    "Noriko", "Tomoko", "Mika", "Miki", "Hiroko", "Megumi",
+    "Kyōko", "Junko", "Hitomi", "Mari", "Mai", "Miho",
+    "Ai", "Yui", "Maki", "Michiko", "Rika", "Mariko",
+    "Rie", "Naoko", "Reiko", "Mayumi", "Yoshiko", "Yukiko",
+    "Hiromi", "Ayako", "Sayaka", "Ayaka", "Rina", "Haruka",
+    "Naomi", "Ayumi", "Yumi", "Masako", "Yumiko", "Yuri",
+    "Sachiko", "Mio", "Saki", "Mizuki", "Yuka", "Aki",
+    "Miyuki", "Yuki",
+  ],
+  male: [
+    "Hiroshi", "Akira", "Takashi", "Hiroyuki", "Takeshi", "Kenji",
+    "Makoto", "Kōji", "Jun", "Kazuo", "Ryō", "Tadashi",
+    "Kōichi", "Hideo", "Tōru", "Toshio", "Daisuke", "Masahiro",
+    "Yoshio", "Atsushi", "Satoshi", "Ken", "Masao", "Kiyoshi",
+    "Yutaka", "Osamu", "Yūji", "Ken'ichi", "Shigeru", "Eiji",
+    "Shinji", "Yūsuke", "Naoki", "Shin'ichi", "Masayuki", "Takahiro",
+    "Tetsuya", "Kōsuke", "Takeo", "Hiroki", "Hitoshi", "Takayuki",
+    "Ichirō", "Hajime", "Masato", "Tsutomu", "Hiroaki", "Takuya",
+    "Yasuo", "Minoru",
+  ],
+  family: [
+    "Tanaka", "Satō", "Takahashi", "Suzuki", "Nakamura", "Itō",
+    "Kobayashi", "Katō", "Yamamoto", "Watanabe", "Yoshida", "Saitō",
+    "Inoue", "Yamada", "Sasaki", "Matsumoto", "Kimura", "Mori",
+    "Hayashi", "Abe", "Shimizu", "Yamaguchi", "Okada", "Murakami",
+    "Fujii", "Endō", "Ishikawa", "Ikeda", "Maeda", "Hasegawa",
+    "Honda", "Miura", "Nakajima", "Gotō", "Fujita", "Nakano",
+    "Ono", "Ogawa", "Okamoto", "Hashimoto", "Sakai", "Ishii",
+    "Nakayama", "Aoki", "Morita", "Nakagawa", "Yamashita", "Mizuno",
+    "Kondō", "Sakamoto", "Takeuchi", "Ōta", "Ueda", "Maruyama",
+    "Yamazaki", "Yokoyama", "Hoshino", "Murata", "Kaneko", "Kikuchi",
+    "Takeda", "Sugiyama", "Arai", "Nishimura", "Uchida", "Matsuda",
+    "Ishida", "Ōno", "Andō", "Yoshikawa", "Sakurai", "Fukuda",
+    "Tachibana", "Harada", "Wada",
+  ],
+} as const

@@ -1,246 +1,490 @@
 // GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.
+import { nameContext as AD } from './countries/AD/name-context.js'
+import { nameContext as AE } from './countries/AE/name-context.js'
+import { nameContext as AF } from './countries/AF/name-context.js'
+import { nameContext as AG } from './countries/AG/name-context.js'
+import { nameContext as AI } from './countries/AI/name-context.js'
+import { nameContext as AL } from './countries/AL/name-context.js'
+import { nameContext as AM } from './countries/AM/name-context.js'
+import { nameContext as AO } from './countries/AO/name-context.js'
+import { nameContext as AR } from './countries/AR/name-context.js'
+import { nameContext as AS } from './countries/AS/name-context.js'
+import { nameContext as AT } from './countries/AT/name-context.js'
+import { nameContext as AU } from './countries/AU/name-context.js'
+import { nameContext as AW } from './countries/AW/name-context.js'
+import { nameContext as AX } from './countries/AX/name-context.js'
+import { nameContext as AZ } from './countries/AZ/name-context.js'
+import { nameContext as BA } from './countries/BA/name-context.js'
+import { nameContext as BB } from './countries/BB/name-context.js'
+import { nameContext as BD } from './countries/BD/name-context.js'
+import { nameContext as BE } from './countries/BE/name-context.js'
+import { nameContext as BF } from './countries/BF/name-context.js'
+import { nameContext as BG } from './countries/BG/name-context.js'
+import { nameContext as BH } from './countries/BH/name-context.js'
+import { nameContext as BI } from './countries/BI/name-context.js'
+import { nameContext as BJ } from './countries/BJ/name-context.js'
+import { nameContext as BL } from './countries/BL/name-context.js'
+import { nameContext as BM } from './countries/BM/name-context.js'
+import { nameContext as BN } from './countries/BN/name-context.js'
+import { nameContext as BO } from './countries/BO/name-context.js'
+import { nameContext as BQ } from './countries/BQ/name-context.js'
+import { nameContext as BR } from './countries/BR/name-context.js'
+import { nameContext as BS } from './countries/BS/name-context.js'
+import { nameContext as BT } from './countries/BT/name-context.js'
+import { nameContext as BW } from './countries/BW/name-context.js'
+import { nameContext as BY } from './countries/BY/name-context.js'
+import { nameContext as BZ } from './countries/BZ/name-context.js'
+import { nameContext as CA } from './countries/CA/name-context.js'
+import { nameContext as CC } from './countries/CC/name-context.js'
+import { nameContext as CD } from './countries/CD/name-context.js'
+import { nameContext as CF } from './countries/CF/name-context.js'
+import { nameContext as CG } from './countries/CG/name-context.js'
+import { nameContext as CH } from './countries/CH/name-context.js'
+import { nameContext as CI } from './countries/CI/name-context.js'
+import { nameContext as CK } from './countries/CK/name-context.js'
+import { nameContext as CL } from './countries/CL/name-context.js'
+import { nameContext as CM } from './countries/CM/name-context.js'
+import { nameContext as CN } from './countries/CN/name-context.js'
+import { nameContext as CO } from './countries/CO/name-context.js'
+import { nameContext as CR } from './countries/CR/name-context.js'
+import { nameContext as CU } from './countries/CU/name-context.js'
+import { nameContext as CV } from './countries/CV/name-context.js'
+import { nameContext as CW } from './countries/CW/name-context.js'
+import { nameContext as CX } from './countries/CX/name-context.js'
+import { nameContext as CY } from './countries/CY/name-context.js'
+import { nameContext as CZ } from './countries/CZ/name-context.js'
+import { nameContext as DE } from './countries/DE/name-context.js'
+import { nameContext as DJ } from './countries/DJ/name-context.js'
+import { nameContext as DK } from './countries/DK/name-context.js'
+import { nameContext as DM } from './countries/DM/name-context.js'
+import { nameContext as DO } from './countries/DO/name-context.js'
+import { nameContext as DZ } from './countries/DZ/name-context.js'
+import { nameContext as EC } from './countries/EC/name-context.js'
+import { nameContext as EE } from './countries/EE/name-context.js'
+import { nameContext as EG } from './countries/EG/name-context.js'
+import { nameContext as EH } from './countries/EH/name-context.js'
+import { nameContext as ER } from './countries/ER/name-context.js'
+import { nameContext as ES } from './countries/ES/name-context.js'
+import { nameContext as ET } from './countries/ET/name-context.js'
+import { nameContext as FI } from './countries/FI/name-context.js'
+import { nameContext as FJ } from './countries/FJ/name-context.js'
+import { nameContext as FK } from './countries/FK/name-context.js'
+import { nameContext as FM } from './countries/FM/name-context.js'
+import { nameContext as FO } from './countries/FO/name-context.js'
+import { nameContext as FR } from './countries/FR/name-context.js'
+import { nameContext as GA } from './countries/GA/name-context.js'
+import { nameContext as GB } from './countries/GB/name-context.js'
+import { nameContext as GD } from './countries/GD/name-context.js'
+import { nameContext as GE } from './countries/GE/name-context.js'
+import { nameContext as GF } from './countries/GF/name-context.js'
+import { nameContext as GG } from './countries/GG/name-context.js'
+import { nameContext as GH } from './countries/GH/name-context.js'
+import { nameContext as GI } from './countries/GI/name-context.js'
+import { nameContext as GL } from './countries/GL/name-context.js'
+import { nameContext as GM } from './countries/GM/name-context.js'
+import { nameContext as GN } from './countries/GN/name-context.js'
+import { nameContext as GP } from './countries/GP/name-context.js'
+import { nameContext as GQ } from './countries/GQ/name-context.js'
+import { nameContext as GR } from './countries/GR/name-context.js'
+import { nameContext as GT } from './countries/GT/name-context.js'
+import { nameContext as GU } from './countries/GU/name-context.js'
+import { nameContext as GW } from './countries/GW/name-context.js'
+import { nameContext as GY } from './countries/GY/name-context.js'
+import { nameContext as HK } from './countries/HK/name-context.js'
+import { nameContext as HN } from './countries/HN/name-context.js'
+import { nameContext as HR } from './countries/HR/name-context.js'
+import { nameContext as HT } from './countries/HT/name-context.js'
+import { nameContext as HU } from './countries/HU/name-context.js'
+import { nameContext as ID } from './countries/ID/name-context.js'
+import { nameContext as IE } from './countries/IE/name-context.js'
+import { nameContext as IL } from './countries/IL/name-context.js'
+import { nameContext as IM } from './countries/IM/name-context.js'
+import { nameContext as IN } from './countries/IN/name-context.js'
+import { nameContext as IQ } from './countries/IQ/name-context.js'
+import { nameContext as IR } from './countries/IR/name-context.js'
+import { nameContext as IS } from './countries/IS/name-context.js'
+import { nameContext as IT } from './countries/IT/name-context.js'
+import { nameContext as JE } from './countries/JE/name-context.js'
+import { nameContext as JM } from './countries/JM/name-context.js'
+import { nameContext as JO } from './countries/JO/name-context.js'
+import { nameContext as JP } from './countries/JP/name-context.js'
+import { nameContext as KE } from './countries/KE/name-context.js'
+import { nameContext as KG } from './countries/KG/name-context.js'
+import { nameContext as KH } from './countries/KH/name-context.js'
+import { nameContext as KI } from './countries/KI/name-context.js'
+import { nameContext as KM } from './countries/KM/name-context.js'
+import { nameContext as KN } from './countries/KN/name-context.js'
+import { nameContext as KP } from './countries/KP/name-context.js'
+import { nameContext as KR } from './countries/KR/name-context.js'
+import { nameContext as KW } from './countries/KW/name-context.js'
+import { nameContext as KY } from './countries/KY/name-context.js'
+import { nameContext as KZ } from './countries/KZ/name-context.js'
+import { nameContext as LA } from './countries/LA/name-context.js'
+import { nameContext as LB } from './countries/LB/name-context.js'
+import { nameContext as LC } from './countries/LC/name-context.js'
+import { nameContext as LI } from './countries/LI/name-context.js'
+import { nameContext as LK } from './countries/LK/name-context.js'
+import { nameContext as LR } from './countries/LR/name-context.js'
+import { nameContext as LS } from './countries/LS/name-context.js'
+import { nameContext as LT } from './countries/LT/name-context.js'
+import { nameContext as LU } from './countries/LU/name-context.js'
+import { nameContext as LV } from './countries/LV/name-context.js'
+import { nameContext as LY } from './countries/LY/name-context.js'
+import { nameContext as MA } from './countries/MA/name-context.js'
+import { nameContext as MC } from './countries/MC/name-context.js'
+import { nameContext as MD } from './countries/MD/name-context.js'
+import { nameContext as ME } from './countries/ME/name-context.js'
+import { nameContext as MF } from './countries/MF/name-context.js'
+import { nameContext as MG } from './countries/MG/name-context.js'
+import { nameContext as MH } from './countries/MH/name-context.js'
+import { nameContext as MK } from './countries/MK/name-context.js'
+import { nameContext as ML } from './countries/ML/name-context.js'
+import { nameContext as MM } from './countries/MM/name-context.js'
+import { nameContext as MN } from './countries/MN/name-context.js'
+import { nameContext as MO } from './countries/MO/name-context.js'
+import { nameContext as MP } from './countries/MP/name-context.js'
+import { nameContext as MQ } from './countries/MQ/name-context.js'
+import { nameContext as MR } from './countries/MR/name-context.js'
+import { nameContext as MS } from './countries/MS/name-context.js'
+import { nameContext as MT } from './countries/MT/name-context.js'
+import { nameContext as MU } from './countries/MU/name-context.js'
+import { nameContext as MV } from './countries/MV/name-context.js'
+import { nameContext as MW } from './countries/MW/name-context.js'
+import { nameContext as MX } from './countries/MX/name-context.js'
+import { nameContext as MY } from './countries/MY/name-context.js'
+import { nameContext as MZ } from './countries/MZ/name-context.js'
+import { nameContext as NA } from './countries/NA/name-context.js'
+import { nameContext as NC } from './countries/NC/name-context.js'
+import { nameContext as NE } from './countries/NE/name-context.js'
+import { nameContext as NF } from './countries/NF/name-context.js'
+import { nameContext as NG } from './countries/NG/name-context.js'
+import { nameContext as NI } from './countries/NI/name-context.js'
+import { nameContext as NL } from './countries/NL/name-context.js'
+import { nameContext as NO } from './countries/NO/name-context.js'
+import { nameContext as NP } from './countries/NP/name-context.js'
+import { nameContext as NR } from './countries/NR/name-context.js'
+import { nameContext as NU } from './countries/NU/name-context.js'
+import { nameContext as NZ } from './countries/NZ/name-context.js'
+import { nameContext as OM } from './countries/OM/name-context.js'
+import { nameContext as PA } from './countries/PA/name-context.js'
+import { nameContext as PE } from './countries/PE/name-context.js'
+import { nameContext as PF } from './countries/PF/name-context.js'
+import { nameContext as PG } from './countries/PG/name-context.js'
+import { nameContext as PH } from './countries/PH/name-context.js'
+import { nameContext as PK } from './countries/PK/name-context.js'
+import { nameContext as PL } from './countries/PL/name-context.js'
+import { nameContext as PM } from './countries/PM/name-context.js'
+import { nameContext as PN } from './countries/PN/name-context.js'
+import { nameContext as PR } from './countries/PR/name-context.js'
+import { nameContext as PS } from './countries/PS/name-context.js'
+import { nameContext as PT } from './countries/PT/name-context.js'
+import { nameContext as PW } from './countries/PW/name-context.js'
+import { nameContext as PY } from './countries/PY/name-context.js'
+import { nameContext as QA } from './countries/QA/name-context.js'
+import { nameContext as RE } from './countries/RE/name-context.js'
+import { nameContext as RO } from './countries/RO/name-context.js'
+import { nameContext as RS } from './countries/RS/name-context.js'
+import { nameContext as RU } from './countries/RU/name-context.js'
+import { nameContext as RW } from './countries/RW/name-context.js'
+import { nameContext as SA } from './countries/SA/name-context.js'
+import { nameContext as SB } from './countries/SB/name-context.js'
+import { nameContext as SC } from './countries/SC/name-context.js'
+import { nameContext as SD } from './countries/SD/name-context.js'
+import { nameContext as SE } from './countries/SE/name-context.js'
+import { nameContext as SG } from './countries/SG/name-context.js'
+import { nameContext as SH } from './countries/SH/name-context.js'
+import { nameContext as SI } from './countries/SI/name-context.js'
+import { nameContext as SJ } from './countries/SJ/name-context.js'
+import { nameContext as SK } from './countries/SK/name-context.js'
+import { nameContext as SL } from './countries/SL/name-context.js'
+import { nameContext as SM } from './countries/SM/name-context.js'
+import { nameContext as SN } from './countries/SN/name-context.js'
+import { nameContext as SO } from './countries/SO/name-context.js'
+import { nameContext as SR } from './countries/SR/name-context.js'
+import { nameContext as SS } from './countries/SS/name-context.js'
+import { nameContext as ST } from './countries/ST/name-context.js'
+import { nameContext as SV } from './countries/SV/name-context.js'
+import { nameContext as SX } from './countries/SX/name-context.js'
+import { nameContext as SY } from './countries/SY/name-context.js'
+import { nameContext as SZ } from './countries/SZ/name-context.js'
+import { nameContext as TC } from './countries/TC/name-context.js'
+import { nameContext as TD } from './countries/TD/name-context.js'
+import { nameContext as TG } from './countries/TG/name-context.js'
+import { nameContext as TH } from './countries/TH/name-context.js'
+import { nameContext as TJ } from './countries/TJ/name-context.js'
+import { nameContext as TK } from './countries/TK/name-context.js'
+import { nameContext as TL } from './countries/TL/name-context.js'
+import { nameContext as TM } from './countries/TM/name-context.js'
+import { nameContext as TN } from './countries/TN/name-context.js'
+import { nameContext as TO } from './countries/TO/name-context.js'
+import { nameContext as TR } from './countries/TR/name-context.js'
+import { nameContext as TT } from './countries/TT/name-context.js'
+import { nameContext as TV } from './countries/TV/name-context.js'
+import { nameContext as TW } from './countries/TW/name-context.js'
+import { nameContext as TZ } from './countries/TZ/name-context.js'
+import { nameContext as UA } from './countries/UA/name-context.js'
+import { nameContext as UG } from './countries/UG/name-context.js'
+import { nameContext as US } from './countries/US/name-context.js'
+import { nameContext as UY } from './countries/UY/name-context.js'
+import { nameContext as UZ } from './countries/UZ/name-context.js'
+import { nameContext as VA } from './countries/VA/name-context.js'
+import { nameContext as VC } from './countries/VC/name-context.js'
+import { nameContext as VE } from './countries/VE/name-context.js'
+import { nameContext as VG } from './countries/VG/name-context.js'
+import { nameContext as VI } from './countries/VI/name-context.js'
+import { nameContext as VN } from './countries/VN/name-context.js'
+import { nameContext as VU } from './countries/VU/name-context.js'
+import { nameContext as WF } from './countries/WF/name-context.js'
+import { nameContext as WS } from './countries/WS/name-context.js'
+import { nameContext as YE } from './countries/YE/name-context.js'
+import { nameContext as YT } from './countries/YT/name-context.js'
+import { nameContext as ZA } from './countries/ZA/name-context.js'
+import { nameContext as ZM } from './countries/ZM/name-context.js'
+import { nameContext as ZW } from './countries/ZW/name-context.js'
+
 export type NameContext = { pools: readonly { locale: string; tier: 'local' | 'language' | 'global'; weight: number }[]; fallback: 'local' | 'language' | 'global' }
+
 export const nameContextData: Record<string, NameContext> = {
-  "AD": {"pools":[{"locale":"en","tier":"global","weight":1}],"fallback":"global"},
-  "AE": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"fa","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1},{"locale":"ur","tier":"language","weight":1}],"fallback":"language"},
-  "AF": {"pools":[{"locale":"fa","tier":"language","weight":4},{"locale":"uz_UZ_latin","tier":"language","weight":1}],"fallback":"language"},
-  "AG": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "AI": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "AL": {"pools":[{"locale":"el","tier":"language","weight":2}],"fallback":"language"},
-  "AM": {"pools":[{"locale":"hy","tier":"language","weight":4}],"fallback":"language"},
-  "AO": {"pools":[{"locale":"pt_PT","tier":"language","weight":4}],"fallback":"language"},
-  "AR": {"pools":[{"locale":"es","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"it","tier":"language","weight":1},{"locale":"de","tier":"language","weight":1},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "AS": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "AT": {"pools":[{"locale":"de_AT","tier":"local","weight":4}],"fallback":"local"},
-  "AU": {"pools":[{"locale":"en_AU","tier":"local","weight":4}],"fallback":"local"},
-  "AW": {"pools":[{"locale":"nl","tier":"language","weight":4},{"locale":"es","tier":"language","weight":1},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "AX": {"pools":[{"locale":"sv","tier":"language","weight":4}],"fallback":"language"},
-  "AZ": {"pools":[{"locale":"az","tier":"language","weight":4},{"locale":"ru","tier":"language","weight":2},{"locale":"hy","tier":"language","weight":1}],"fallback":"language"},
-  "BA": {"pools":[{"locale":"hr","tier":"language","weight":2},{"locale":"sr_RS_latin","tier":"language","weight":1}],"fallback":"language"},
-  "BB": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "BD": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "BE": {"pools":[{"locale":"nl_BE","tier":"local","weight":4},{"locale":"fr_BE","tier":"local","weight":2}],"fallback":"local"},
-  "BF": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "BG": {"pools":[{"locale":"tr","tier":"language","weight":2}],"fallback":"language"},
-  "BH": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"fa","tier":"language","weight":1},{"locale":"ur","tier":"language","weight":1}],"fallback":"language"},
-  "BI": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "BJ": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "BL": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "BM": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"pt_PT","tier":"language","weight":2}],"fallback":"language"},
-  "BN": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "BO": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "BQ": {"pools":[{"locale":"nl","tier":"language","weight":4},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "BR": {"pools":[{"locale":"pt_BR","tier":"local","weight":4}],"fallback":"local"},
-  "BS": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "BT": {"pools":[{"locale":"en","tier":"global","weight":1}],"fallback":"global"},
-  "BW": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "BY": {"pools":[{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "BZ": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"es","tier":"language","weight":2}],"fallback":"language"},
-  "CA": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "CC": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "CD": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "CF": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "CG": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "CH": {"pools":[{"locale":"de_CH","tier":"local","weight":4},{"locale":"fr_CH","tier":"local","weight":2}],"fallback":"local"},
-  "CI": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "CK": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "CL": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "CM": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "CN": {"pools":[{"locale":"zh_CN","tier":"local","weight":4}],"fallback":"local"},
-  "CO": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "CR": {"pools":[{"locale":"es","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "CU": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "CV": {"pools":[{"locale":"pt_PT","tier":"language","weight":4}],"fallback":"language"},
-  "CW": {"pools":[{"locale":"nl","tier":"language","weight":4}],"fallback":"language"},
-  "CX": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"zh_CN","tier":"language","weight":2}],"fallback":"language"},
-  "CY": {"pools":[{"locale":"el","tier":"language","weight":4},{"locale":"tr","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "CZ": {"pools":[{"locale":"cs_CZ","tier":"local","weight":4}],"fallback":"local"},
-  "DE": {"pools":[{"locale":"de","tier":"language","weight":4}],"fallback":"language"},
-  "DJ": {"pools":[{"locale":"fr","tier":"language","weight":4},{"locale":"ar","tier":"language","weight":2}],"fallback":"language"},
-  "DK": {"pools":[{"locale":"da","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"de","tier":"language","weight":1}],"fallback":"language"},
-  "DM": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "DO": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "DZ": {"pools":[{"locale":"ar","tier":"language","weight":4}],"fallback":"language"},
-  "EC": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "EE": {"pools":[{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "EG": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "EH": {"pools":[{"locale":"ar","tier":"language","weight":4}],"fallback":"language"},
-  "ER": {"pools":[{"locale":"ar","tier":"language","weight":2}],"fallback":"language"},
-  "ES": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "ET": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "FI": {"pools":[{"locale":"fi","tier":"language","weight":4},{"locale":"sv","tier":"language","weight":2}],"fallback":"language"},
-  "FJ": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "FK": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "FM": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "FO": {"pools":[{"locale":"da","tier":"language","weight":2}],"fallback":"language"},
-  "FR": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "GA": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "GB": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "GD": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "GE": {"pools":[{"locale":"ka_GE","tier":"local","weight":4}],"fallback":"local"},
-  "GF": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "GG": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "GH": {"pools":[{"locale":"en_GH","tier":"local","weight":4}],"fallback":"local"},
-  "GI": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"es","tier":"language","weight":2},{"locale":"it","tier":"language","weight":1},{"locale":"pt_PT","tier":"language","weight":1}],"fallback":"language"},
-  "GL": {"pools":[{"locale":"da","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "GM": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "GN": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "GP": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "GQ": {"pools":[{"locale":"es","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2},{"locale":"pt_PT","tier":"language","weight":1}],"fallback":"language"},
-  "GR": {"pools":[{"locale":"el","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "GT": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "GU": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "GW": {"pools":[{"locale":"pt_PT","tier":"language","weight":4}],"fallback":"language"},
-  "GY": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "HK": {"pools":[{"locale":"zh_CN","tier":"language","weight":4},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "HN": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "HR": {"pools":[{"locale":"hr","tier":"language","weight":4},{"locale":"sr_RS_latin","tier":"language","weight":2}],"fallback":"language"},
-  "HT": {"pools":[{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "HU": {"pools":[{"locale":"hu","tier":"language","weight":4}],"fallback":"language"},
-  "ID": {"pools":[{"locale":"id_ID","tier":"local","weight":4}],"fallback":"local"},
-  "IE": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "IL": {"pools":[{"locale":"he","tier":"language","weight":4},{"locale":"ar","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "IM": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "IN": {"pools":[{"locale":"en_IN","tier":"local","weight":4}],"fallback":"local"},
-  "IQ": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"hy","tier":"language","weight":1}],"fallback":"language"},
-  "IR": {"pools":[{"locale":"fa","tier":"language","weight":4}],"fallback":"language"},
-  "IS": {"pools":[{"locale":"en","tier":"language","weight":2},{"locale":"de","tier":"language","weight":1},{"locale":"da","tier":"language","weight":1},{"locale":"sv","tier":"language","weight":1}],"fallback":"language"},
-  "IT": {"pools":[{"locale":"it","tier":"language","weight":4},{"locale":"de","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1},{"locale":"sl_SI","tier":"language","weight":1}],"fallback":"language"},
-  "JE": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "JM": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "JO": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "JP": {"pools":[{"locale":"ja","tier":"language","weight":4}],"fallback":"language"},
-  "KE": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "KG": {"pools":[{"locale":"uz_UZ_latin","tier":"language","weight":2},{"locale":"ru","tier":"language","weight":1}],"fallback":"language"},
-  "KH": {"pools":[{"locale":"fr","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "KI": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "KM": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "KN": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "KP": {"pools":[{"locale":"ko","tier":"language","weight":4}],"fallback":"language"},
-  "KR": {"pools":[{"locale":"ko","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "KW": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "KY": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "KZ": {"pools":[{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "LA": {"pools":[{"locale":"fr","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "LB": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1},{"locale":"hy","tier":"language","weight":1}],"fallback":"language"},
-  "LC": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "LI": {"pools":[{"locale":"de","tier":"language","weight":4}],"fallback":"language"},
-  "LK": {"pools":[{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "LR": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "LS": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"zu_ZA","tier":"language","weight":1}],"fallback":"language"},
-  "LT": {"pools":[{"locale":"ru","tier":"language","weight":2},{"locale":"pl","tier":"language","weight":1}],"fallback":"language"},
-  "LU": {"pools":[{"locale":"de","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "LV": {"pools":[{"locale":"lv","tier":"language","weight":4},{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "LY": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"it","tier":"language","weight":2},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "MA": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "MC": {"pools":[{"locale":"fr","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"it","tier":"language","weight":1}],"fallback":"language"},
-  "MD": {"pools":[{"locale":"ro","tier":"language","weight":4},{"locale":"ru","tier":"language","weight":2},{"locale":"tr","tier":"language","weight":1}],"fallback":"language"},
-  "ME": {"pools":[{"locale":"sr_RS_latin","tier":"language","weight":4},{"locale":"hu","tier":"language","weight":2},{"locale":"hr","tier":"language","weight":1}],"fallback":"language"},
-  "MF": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "MG": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "MH": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "MK": {"pools":[{"locale":"mk","tier":"language","weight":4},{"locale":"tr","tier":"language","weight":1},{"locale":"sr_RS_latin","tier":"language","weight":1}],"fallback":"language"},
-  "ML": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "MM": {"pools":[{"locale":"en","tier":"global","weight":1}],"fallback":"global"},
-  "MN": {"pools":[{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "MO": {"pools":[{"locale":"zh_CN","tier":"language","weight":4},{"locale":"pt_PT","tier":"language","weight":1}],"fallback":"language"},
-  "MP": {"pools":[{"locale":"zh_CN","tier":"language","weight":1},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "MQ": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "MR": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "MS": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "MT": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "MU": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "MV": {"pools":[{"locale":"dv","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "MW": {"pools":[{"locale":"en","tier":"global","weight":1}],"fallback":"global"},
-  "MX": {"pools":[{"locale":"es_MX","tier":"local","weight":4}],"fallback":"local"},
-  "MY": {"pools":[{"locale":"en","tier":"language","weight":2},{"locale":"zh_CN","tier":"language","weight":1},{"locale":"th","tier":"language","weight":1}],"fallback":"language"},
-  "MZ": {"pools":[{"locale":"pt_PT","tier":"language","weight":4}],"fallback":"language"},
-  "NA": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"af_ZA","tier":"language","weight":2},{"locale":"de","tier":"language","weight":1}],"fallback":"language"},
-  "NC": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "NE": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "NF": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "NG": {"pools":[{"locale":"en_NG","tier":"local","weight":4},{"locale":"yo_NG","tier":"local","weight":1}],"fallback":"local"},
-  "NI": {"pools":[{"locale":"es","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "NL": {"pools":[{"locale":"nl","tier":"language","weight":4}],"fallback":"language"},
-  "NO": {"pools":[{"locale":"nb_NO","tier":"local","weight":2}],"fallback":"local"},
-  "NP": {"pools":[{"locale":"ne","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "NR": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "NU": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "NZ": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "OM": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"ur","tier":"language","weight":1}],"fallback":"language"},
-  "PA": {"pools":[{"locale":"es","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "PE": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "PF": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "PG": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "PH": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "PK": {"pools":[{"locale":"ur","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "PL": {"pools":[{"locale":"pl","tier":"language","weight":4}],"fallback":"language"},
-  "PM": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "PN": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "PR": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"es","tier":"language","weight":2}],"fallback":"language"},
-  "PS": {"pools":[{"locale":"ar","tier":"language","weight":4}],"fallback":"language"},
-  "PT": {"pools":[{"locale":"pt_PT","tier":"local","weight":4}],"fallback":"local"},
-  "PW": {"pools":[{"locale":"en","tier":"language","weight":1},{"locale":"ja","tier":"language","weight":1},{"locale":"zh_CN","tier":"language","weight":1}],"fallback":"language"},
-  "PY": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "QA": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"es","tier":"language","weight":2}],"fallback":"language"},
-  "RE": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "RO": {"pools":[{"locale":"ro","tier":"language","weight":4},{"locale":"hu","tier":"language","weight":2}],"fallback":"language"},
-  "RS": {"pools":[{"locale":"sr_RS_latin","tier":"language","weight":4},{"locale":"hu","tier":"language","weight":2}],"fallback":"language"},
-  "RU": {"pools":[{"locale":"ru","tier":"language","weight":4}],"fallback":"language"},
-  "RW": {"pools":[{"locale":"en","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "SA": {"pools":[{"locale":"ar","tier":"language","weight":4}],"fallback":"language"},
-  "SB": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "SC": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "SD": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "SE": {"pools":[{"locale":"sv","tier":"language","weight":4},{"locale":"fi","tier":"language","weight":1}],"fallback":"language"},
-  "SG": {"pools":[{"locale":"en","tier":"language","weight":2},{"locale":"zh_CN","tier":"language","weight":1}],"fallback":"language"},
-  "SH": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "SI": {"pools":[{"locale":"sl_SI","tier":"local","weight":4}],"fallback":"local"},
-  "SJ": {"pools":[{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "SK": {"pools":[{"locale":"sk","tier":"language","weight":4},{"locale":"hu","tier":"language","weight":2}],"fallback":"language"},
-  "SL": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "SM": {"pools":[{"locale":"it","tier":"language","weight":4}],"fallback":"language"},
-  "SN": {"pools":[{"locale":"fr_SN","tier":"local","weight":4}],"fallback":"local"},
-  "SO": {"pools":[{"locale":"ar","tier":"language","weight":2},{"locale":"it","tier":"language","weight":1},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "SR": {"pools":[{"locale":"nl","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "SS": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "ST": {"pools":[{"locale":"pt_PT","tier":"language","weight":4}],"fallback":"language"},
-  "SV": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "SX": {"pools":[{"locale":"nl","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "SY": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"hy","tier":"language","weight":1},{"locale":"fr","tier":"language","weight":1},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "SZ": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "TC": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "TD": {"pools":[{"locale":"fr","tier":"language","weight":4},{"locale":"ar","tier":"language","weight":2}],"fallback":"language"},
-  "TG": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "TH": {"pools":[{"locale":"th","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "TJ": {"pools":[{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "TK": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "TL": {"pools":[{"locale":"pt_PT","tier":"language","weight":2},{"locale":"id_ID","tier":"language","weight":1},{"locale":"en","tier":"language","weight":1}],"fallback":"language"},
-  "TM": {"pools":[{"locale":"ru","tier":"language","weight":2},{"locale":"uz_UZ_latin","tier":"language","weight":1}],"fallback":"language"},
-  "TN": {"pools":[{"locale":"ar","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "TO": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "TR": {"pools":[{"locale":"tr","tier":"language","weight":4},{"locale":"az","tier":"language","weight":1}],"fallback":"language"},
-  "TT": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":1},{"locale":"es","tier":"language","weight":1},{"locale":"zh_CN","tier":"language","weight":1}],"fallback":"language"},
-  "TV": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "TW": {"pools":[{"locale":"zh_TW","tier":"local","weight":4}],"fallback":"local"},
-  "TZ": {"pools":[{"locale":"en","tier":"language","weight":2},{"locale":"ar","tier":"language","weight":1}],"fallback":"language"},
-  "UA": {"pools":[{"locale":"uk","tier":"language","weight":4},{"locale":"ru","tier":"language","weight":2},{"locale":"pl","tier":"language","weight":1},{"locale":"hu","tier":"language","weight":1}],"fallback":"language"},
-  "UG": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"ar","tier":"language","weight":1}],"fallback":"language"},
-  "US": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"es","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "UY": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "UZ": {"pools":[{"locale":"uz_UZ_latin","tier":"language","weight":4},{"locale":"ru","tier":"language","weight":2}],"fallback":"language"},
-  "VA": {"pools":[{"locale":"it","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "VC": {"pools":[{"locale":"en","tier":"language","weight":4},{"locale":"fr","tier":"language","weight":2}],"fallback":"language"},
-  "VE": {"pools":[{"locale":"es","tier":"language","weight":4}],"fallback":"language"},
-  "VG": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "VI": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "VN": {"pools":[{"locale":"vi","tier":"language","weight":4},{"locale":"en","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1},{"locale":"zh_CN","tier":"language","weight":1}],"fallback":"language"},
-  "VU": {"pools":[{"locale":"en","tier":"language","weight":2},{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "WF": {"pools":[{"locale":"fr","tier":"language","weight":1}],"fallback":"language"},
-  "WS": {"pools":[{"locale":"en","tier":"language","weight":2}],"fallback":"language"},
-  "YE": {"pools":[{"locale":"ar","tier":"language","weight":4}],"fallback":"language"},
-  "YT": {"pools":[{"locale":"fr","tier":"language","weight":4}],"fallback":"language"},
-  "ZA": {"pools":[{"locale":"zu_ZA","tier":"local","weight":4},{"locale":"af_ZA","tier":"local","weight":1},{"locale":"en_ZA","tier":"local","weight":1}],"fallback":"local"},
-  "ZM": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
-  "ZW": {"pools":[{"locale":"en","tier":"language","weight":4}],"fallback":"language"},
+  AD,
+  AE,
+  AF,
+  AG,
+  AI,
+  AL,
+  AM,
+  AO,
+  AR,
+  AS,
+  AT,
+  AU,
+  AW,
+  AX,
+  AZ,
+  BA,
+  BB,
+  BD,
+  BE,
+  BF,
+  BG,
+  BH,
+  BI,
+  BJ,
+  BL,
+  BM,
+  BN,
+  BO,
+  BQ,
+  BR,
+  BS,
+  BT,
+  BW,
+  BY,
+  BZ,
+  CA,
+  CC,
+  CD,
+  CF,
+  CG,
+  CH,
+  CI,
+  CK,
+  CL,
+  CM,
+  CN,
+  CO,
+  CR,
+  CU,
+  CV,
+  CW,
+  CX,
+  CY,
+  CZ,
+  DE,
+  DJ,
+  DK,
+  DM,
+  DO,
+  DZ,
+  EC,
+  EE,
+  EG,
+  EH,
+  ER,
+  ES,
+  ET,
+  FI,
+  FJ,
+  FK,
+  FM,
+  FO,
+  FR,
+  GA,
+  GB,
+  GD,
+  GE,
+  GF,
+  GG,
+  GH,
+  GI,
+  GL,
+  GM,
+  GN,
+  GP,
+  GQ,
+  GR,
+  GT,
+  GU,
+  GW,
+  GY,
+  HK,
+  HN,
+  HR,
+  HT,
+  HU,
+  ID,
+  IE,
+  IL,
+  IM,
+  IN,
+  IQ,
+  IR,
+  IS,
+  IT,
+  JE,
+  JM,
+  JO,
+  JP,
+  KE,
+  KG,
+  KH,
+  KI,
+  KM,
+  KN,
+  KP,
+  KR,
+  KW,
+  KY,
+  KZ,
+  LA,
+  LB,
+  LC,
+  LI,
+  LK,
+  LR,
+  LS,
+  LT,
+  LU,
+  LV,
+  LY,
+  MA,
+  MC,
+  MD,
+  ME,
+  MF,
+  MG,
+  MH,
+  MK,
+  ML,
+  MM,
+  MN,
+  MO,
+  MP,
+  MQ,
+  MR,
+  MS,
+  MT,
+  MU,
+  MV,
+  MW,
+  MX,
+  MY,
+  MZ,
+  NA,
+  NC,
+  NE,
+  NF,
+  NG,
+  NI,
+  NL,
+  NO,
+  NP,
+  NR,
+  NU,
+  NZ,
+  OM,
+  PA,
+  PE,
+  PF,
+  PG,
+  PH,
+  PK,
+  PL,
+  PM,
+  PN,
+  PR,
+  PS,
+  PT,
+  PW,
+  PY,
+  QA,
+  RE,
+  RO,
+  RS,
+  RU,
+  RW,
+  SA,
+  SB,
+  SC,
+  SD,
+  SE,
+  SG,
+  SH,
+  SI,
+  SJ,
+  SK,
+  SL,
+  SM,
+  SN,
+  SO,
+  SR,
+  SS,
+  ST,
+  SV,
+  SX,
+  SY,
+  SZ,
+  TC,
+  TD,
+  TG,
+  TH,
+  TJ,
+  TK,
+  TL,
+  TM,
+  TN,
+  TO,
+  TR,
+  TT,
+  TV,
+  TW,
+  TZ,
+  UA,
+  UG,
+  US,
+  UY,
+  UZ,
+  VA,
+  VC,
+  VE,
+  VG,
+  VI,
+  VN,
+  VU,
+  WF,
+  WS,
+  YE,
+  YT,
+  ZA,
+  ZM,
+  ZW,
 }

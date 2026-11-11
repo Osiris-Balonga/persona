@@ -1,0 +1,41 @@
+// Reviewed European territory name components from the pinned birth-place report and Faroese statistics.
+// AX name sources: wikidata-europe-birthplace-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Alexandra", "Linda", "Adelina", "Aili", "Alie", "Alina",
+    "Amanda", "Anna", "Annette", "Anni", "Annica", "Annie",
+    "Barbro", "Britt", "Camilla", "Carina", "Carol", "Caroline",
+    "Constance", "Elisabeth", "Ella", "Emilia", "Erika", "Fanny",
+    "Greta", "Gun", "Gyrid", "Hanna", "Helena", "Helle",
+    "Henriette", "Hilda", "Ilmi", "Ingeborg", "Jenny", "Jonna",
+    "Katarina", "Katrin", "Linnea", "Louise", "Lovisa", "Maria",
+    "Michaela", "Mikaela", "Nanna", "Olivia", "Sally", "Sara",
+    "Ulla-Lena", "Veronica",
+  ],
+  male: [
+    "Anders", "Karl", "Henrik", "Folke", "Johan", "Erik",
+    "Viktor", "August", "Emanuel", "Georg", "Gunnar", "Gustaf",
+    "Lars", "Mats", "Peter", "Robert", "Wilhelm", "Alexander",
+    "Anton", "Daniel", "Eliel", "Emil", "Gabriel", "Hugo",
+    "Joel", "Jonas", "Julius", "Matthias", "Mikael", "Oskar",
+    "Paul", "Roger", "Runar", "Stig", "Uno", "Werner",
+    "Adam", "Adolf", "Åke", "Alarik", "Albert", "Aldur",
+    "Algot", "Alonzo", "André", "Arthur", "Arvid", "Atos",
+    "Axel", "Berndt",
+  ],
+  family: [
+    "Eriksson", "Karlsson", "Lundberg", "Salminen", "Jansson", "Andersson",
+    "Häggblom", "Johansson", "Lindberg", "Mattson", "Mattsson", "Sjölund",
+    "Brotherus", "Brummer", "Gustafsson", "Holmberg", "Holmén", "Jorpes",
+    "Lindqvist", "Nordgren", "Nordlund", "Pettersson", "Slotte", "Sundman",
+    "Sundström", "Wallin", "Wirtanen", "Abrahamsson", "Åkerman", "Alander",
+    "Alanus", "Backman", "Bengtz", "Bergman", "Bergroth", "Björklund",
+    "Blomqvist", "Bomanson", "Bonds", "Britschgi", "Carpelan", "Chmielowski",
+    "Cromwell-Morgan", "Danielsson", "Dührkop", "Dyggve", "Ehn", "Eklund",
+    "Eliasson", "Englund", "Engman", "Erikson", "Federley", "Fellman",
+    "Fliflet", "Fontell", "Forsberg", "Granskog", "Grönroos", "Gustavson",
+    "Gustavsson", "Hägerstrand", "Hagman", "Hallsten", "Hansell", "Hartman",
+    "Hassel", "Hausen", "Heikel", "Hellberg", "Höglund", "Högman",
+    "Holmsten", "Hongell", "Hultin",
+  ],
+} as const

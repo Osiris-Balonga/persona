@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// IN name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Anita", "Priya", "Rita", "Aditi", "Geeta", "Seema",
+    "Asha", "Priyanka", "Uma", "Anjali", "Archana", "Indira",
+    "Kiran", "Tara", "Amrita", "Divya", "Sonia", "Kavita",
+    "Aishwarya", "Mary", "Pooja", "Krishna", "Chitra", "Rani",
+    "Maya", "Vandana", "Varsha", "Aparna", "Kamala", "Nandita",
+    "Rekha", "Lakshmi", "Sheila", "Deepa", "Leena", "Manisha",
+    "Monica", "Monika", "Radha", "Radhika", "Sandhya", "Sujata",
+    "Anna", "Meenakshi", "Mona", "Natasha", "Prachi", "Shobha",
+    "Ananya", "Gayatri",
+  ],
+  male: [
+    "Ram", "Anil", "Vijay", "Ashok", "Muhammad", "Arun",
+    "Sunil", "Rahul", "Rajesh", "Deepak", "Joseph", "Ajay",
+    "John", "Ramesh", "Suresh", "Krishna", "Mohammad", "Prakash",
+    "Ravi", "Thomas", "Amit", "Anand", "Kumar", "Arjun",
+    "Rakesh", "Sanjay", "Sanjeev", "George", "Satish", "Vinod",
+    "Arvind", "Narayan", "Prem", "Sandeep", "Abhishek", "Pankaj",
+    "Samir", "Gopal", "Manish", "Narendra", "Karan", "Shankar",
+    "Mahesh", "Raj", "Rajiv", "Ali", "Chandra", "Mahendra",
+    "Paul", "Vikram",
+  ],
+  family: [
+    "Singh", "Sharma", "Mishra", "Roy", "Ghosh", "Joshi",
+    "Jena", "Kumar", "Khan", "Mohanty", "Das", "Gupta",
+    "Kaur", "Patel", "Dutta", "Gandhi", "Banerjee", "Rath",
+    "Chatterjee", "Pattnaik", "Basu", "Shukla", "Agarwal", "D'Souza",
+    "Malhotra", "Shah", "Mehta", "Mukherjee", "Kulkarni", "Fernandes",
+    "Sengupta", "Jain", "Dasgupta", "George", "Paul", "Rao",
+    "Chakrabarti", "Dubey", "Sen", "Reddy", "Devi", "Thomas",
+    "Dey", "Trivedi", "Verma", "Bhattacharya", "Chakraborty", "Desai",
+    "Chaturvedi", "Mehra", "Barik", "Chowdhury", "Pandey", "Yadav",
+    "Anand", "Sinha", "Deshmukh", "Bose", "Prasad", "Ganguly",
+    "Hansda", "Menon", "Bhatt", "Jacob", "Sarkar", "Arora",
+    "Dwivedi", "Murmu", "Nair", "Patil", "Biswas", "Chauhan",
+    "Modi", "Chopra", "John",
+  ],
+} as const

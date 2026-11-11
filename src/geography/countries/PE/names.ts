@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// PE name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Rosa", "Patricia", "Ana", "Carmen", "Elizabeth",
+    "Isabel", "Cecilia", "Luz", "Milagros", "Andrea", "Claudia",
+    "Mercedes", "Teresa", "Elena", "Alejandra", "Gabriela", "Carolina",
+    "Cristina", "Lucía", "Rocío", "Diana", "Paola", "Beatriz",
+    "Karina", "Julia", "Rosario", "Esther", "Sofía", "Luisa",
+    "Mónica", "Sandra", "Silvia", "Victoria", "Gloria", "Valeria",
+    "Angélica", "Gladys", "Alexandra", "Margarita", "Roxana", "Daniela",
+    "Fiorella", "Liliana", "Edith", "Susana", "Fernanda", "Jessica",
+    "Lourdes", "Martha",
+  ],
+  male: [
+    "José", "Luis", "Carlos", "Juan", "Manuel", "Jorge",
+    "Alberto", "Enrique", "Antonio", "César", "Miguel", "Eduardo",
+    "Fernando", "Pedro", "Víctor", "Francisco", "Augusto", "Javier",
+    "Alejandro", "Ricardo", "Guillermo", "Julio", "Daniel", "Alfredo",
+    "Jesús", "Martín", "Raúl", "Roberto", "David", "Ernesto",
+    "Rafael", "Andrés", "Ángel", "Hugo", "Mario", "Arturo",
+    "Diego", "Pablo", "Alfonso", "Gustavo", "Jaime", "Felipe",
+    "Alonso", "Gonzalo", "Humberto", "Mariano", "Óscar", "Santiago",
+    "Héctor", "Marco",
+  ],
+  family: [
+    "García", "Rodríguez", "Flores", "Sánchez", "Fernández", "López",
+    "Castillo", "Chávez", "Díaz", "Vásquez", "Castro", "Rojas",
+    "Espinoza", "León", "Quispe", "Ramírez", "Torres", "Pérez",
+    "Gonzales", "Romero", "Delgado", "Morales", "Mendoza", "Salazar",
+    "Martínez", "González", "Ramos", "Ruiz", "Paredes", "Aguilar",
+    "Álvarez", "Cáceres", "Herrera", "Gómez", "Huamán", "Jiménez",
+    "Bustamante", "Soto", "Alvarado", "Guevara", "Medina", "Pacheco",
+    "Vega", "Luna", "Silva", "Reyes", "Cárdenas", "Hurtado",
+    "Calderón", "Cornejo", "Villanueva", "Ortiz", "Aguirre", "Campos",
+    "Cruz", "Guzmán", "Muñoz", "Figueroa", "Hernández", "Salas",
+    "Velásquez", "Cabrera", "Palomino", "Gamarra", "Benavides", "Bravo",
+    "Moreno", "Núñez", "Zegarra", "Arce", "Carrasco", "Castañeda",
+    "Ponce", "Córdova", "Guerrero",
+  ],
+} as const
