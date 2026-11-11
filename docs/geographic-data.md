@@ -2,6 +2,30 @@
 
 This document records the current data sources and the sequence of regional reviews. The [v2 API contract](api.md) is authoritative for public fields and filters; older paragraphs below describe the internal V1 data pipeline. For a current, generated per-country summary of profile, postcode, and phone availability, see [country data availability](country-availability.md).
 
+## Name dataset layout
+
+Country-specific reviewed name components live in `src/geography/countries/<ISO>/names.ts`,
+for example `countries/CG/names.ts`. Edit that country's file to maintain its given names,
+family names, gendered forms or two-part name samples. The file records the existing source
+identifiers; the full source and usage-right declarations remain in `sources.ts` and this guide.
+
+Generated fallback language contexts live alongside them in `countries/<ISO>/name-context.ts`.
+These are the GeoNames/Faker fallback contexts; the reviewed providers in `name-providers.ts`
+continue to take precedence. Shared locale datasets live in `src/geography/name-pools/<locale>.ts`
+so countries that use the same language do not acquire separate copies of its name arrays.
+
+The continental `*-names.ts` modules, `name-context-data.ts` and `name-pool-data.ts` are
+registries that retain the existing imports and registration order. Runtime selection rules,
+country availability, weighting, source identifiers and array order are unchanged by this layout.
+`npm run data:refresh:names -- <countryInfo.txt>` refreshes the generated country contexts,
+shared locale pools and their registries; it never overwrites reviewed `countries/<ISO>/names.ts`.
+
+The migration replay fixture in `test/fixtures/country-name-replay.json` was captured from
+the `sourceRevision` recorded in that file before moving any data. Its tests cover all provider
+contents, complete profiles across genders and age groups, and HTTP batch bodies and ETags.
+An intentional future data or generation-policy change must review these expectations and
+bump the relevant data or algorithm version. This file reorganization does not require a bump.
+
 ## Country and territory registry
 
 The V1 registry is a snapshot dated 2026-09-24 of the 249 assigned ISO 3166-1 alpha-2 codes. It also records the alpha-3 and numeric codes, an English name, a generation eligibility flag, and a telephone calling code when the source has one. The snapshot is regenerated with `npm run data:refresh:countries`; the two pinned source packages are development dependencies, so the API does not depend on a live external country service.

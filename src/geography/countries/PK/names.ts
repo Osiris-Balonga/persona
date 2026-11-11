@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// PK name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Samina", "Fatima", "Nadia", "Rubina", "Sara", "Sadia",
+    "Laila", "Mariam", "Farida", "Maryam", "Sarah", "Asma",
+    "Bushra", "Faraḥ", "Fauzia", "Kiran", "Sonia", "Zara",
+    "Azra", "Khadija", "Saba", "Tahira", "Abida", "Anita",
+    "Ayesha", "Farzana", "Ghazala", "Maria", "Naila", "Palwasha",
+    "Parvin", "Rabia", "Saira", "Shahla", "Sidra", "Tehmina",
+    "Yasmin", "Anwara", "Nasim", "Natasha", "Rehana", "Sabiha",
+    "Saima", "Sanam", "Selina", "Shamim", "Shazia", "Tasneem",
+    "Zahida", "Zainab",
+  ],
+  male: [
+    "Muhammad", "Mohammad", "Ali", "Ahmed", "İmran", "Tariq",
+    "Anwar", "Shahid", "Asif", "Abdullah", "Ahmad", "Iqbal",
+    "Rashid", "Saeed", "Amir", "Akhtar", "Faisal", "Amjad",
+    "Hasan", "Hassan", "Aziz", "Adnan", "Hamid", "Mustafa",
+    "Bilal", "Arsalan", "Rizwan", "Irfan", "Kamran", "Shaukat",
+    "Aamir", "Imtiaz", "Tahir", "Abid", "Adil", "Arif",
+    "Ijaz", "Jamal", "Sajid", "Abdur Rashid", "Asim", "Eḥsan",
+    "Fawad", "Ghulam", "Hameed", "Hamza", "Kamal", "Shabbir",
+    "Abbas", "Abd al-Aziz",
+  ],
+  family: [
+    "Khan", "Ali", "Ahmad", "Ahmed", "Chowdhury", "Hussain",
+    "Rahman", "Butt", "Saeed", "Iqbal", "Shah", "Malik",
+    "Aziz", "Hassan", "Siddiqui", "Akhtar", "Baig", "Haq",
+    "Hossain", "Qureshi", "Raza", "Abbas", "Alam", "Chaudhry",
+    "Mahmood", "Muhammad", "Sarwar", "Abbasi", "Anwar", "Baloch",
+    "Bashir", "Haider", "Hayat", "Islam", "Nadeem", "Sadiq",
+    "Saleem", "Tahir", "Waqas", "Afridi", "Choudhury", "Hasan",
+    "Hashmi", "Sharif", "Usmani", "Akram", "Aslam", "Bhutto",
+    "Bukhari", "Farooq", "Hamid", "Husain", "Hussein", "Karim",
+    "Masood", "Mohammad", "Syed", "Abidi", "Azam", "Gilani",
+    "Ilyas", "Kaiser", "Kamal", "Mir", "Mirza", "Naeem",
+    "Qadir", "Rashid", "Rehman", "Riaz", "Roy", "Zaidi",
+    "Ansari", "Arshad", "Asghar",
+  ],
+} as const

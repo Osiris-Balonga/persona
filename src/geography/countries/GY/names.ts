@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// GY name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Anaya", "Annalisa", "Annette", "Brenda", "Catherine", "Dawn",
+    "Hannah", "Jennifer", "June", "Karen", "Melissa", "Philomena",
+    "Samantha", "Alice", "Alisha", "Alison", "Aliyah", "Alyssa",
+    "Ambika", "Andrea", "Angel", "Ann", "Arya", "Asha",
+    "Ashley", "Aubrey", "Barbara", "Bernadette", "Bria", "Briana",
+    "Brianna", "Brianne", "Britany", "Candace", "Carol", "Carolyn",
+    "Caron", "Cassie", "Chelsea", "Cheryl", "Christa", "Christine",
+    "Claire", "Claudette", "Coretta", "Cyndie", "Daniela", "Deborah",
+    "Demelza", "Denise",
+  ],
+  male: [
+    "Andrew", "Anthony", "Colin", "Mark", "Aubrey", "Frank",
+    "James", "Michael", "Robert", "Arthur", "Carl", "Charles",
+    "Christopher", "David", "Edward", "George", "Jason", "John",
+    "Keith", "Leon", "Neville", "Randolph", "Richard", "Samuel",
+    "Shawn", "Travis", "Winston", "Alfred", "Andre", "Basil",
+    "Clayton", "Clive", "Clyde", "Cyril", "Donald", "Edmond",
+    "Gordon", "Howard", "Hugh", "Ian", "İmran", "Jermaine",
+    "Kevin", "Lennox", "Lloyd", "Neil", "Nigel", "Paul",
+    "Ralph", "Ricardo",
+  ],
+  family: [
+    "Adams", "Williams", "Harris", "James", "Abrams", "Hooper",
+    "Jeffrey", "Moore", "Roberts", "Thomas", "Burnett", "Campbell",
+    "Charles", "Fraser", "George", "Glasgow", "Johnson", "Rogers",
+    "Singh", "Thompson", "Baird", "Browne", "Cameron", "Cort",
+    "Griffith", "Hunter", "Jones", "Joseph", "Lewis", "Persaud",
+    "Phillips", "Ramdhani", "Rose", "Smith", "Anderson", "Archer",
+    "Benjamin", "Blackman", "Bowen", "Braithwaite", "Butts", "Carter",
+    "Crandon", "David", "de Souza", "Dover", "Duncan", "Edwards",
+    "Fernandes", "Gaskin", "Gilkes", "Gill", "Granger", "Grant",
+    "Greene", "Hastings", "Ifill", "Jacobs", "Jagan", "John",
+    "Jordan", "King", "Kissoon", "Lloyd", "Locke", "Matthews",
+    "McDonald", "McKenzie", "McPherson", "McWatt", "Mitchell", "Murray",
+    "Newton", "Nurse", "Peters",
+  ],
+} as const

@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// CL name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Carmen", "Carolina", "Francisca", "Catalina", "Claudia",
+    "Alejandra", "Javiera", "Daniela", "Ana", "Patricia", "Paula",
+    "Andrea", "Camila", "Cecilia", "Valentina", "Marcela", "Fernanda",
+    "Marta", "Constanza", "Gabriela", "Paulina", "Gloria", "Ximena",
+    "Teresa", "Antonia", "Isabel", "Macarena", "María José", "Laura",
+    "Mónica", "Rosa", "Verónica", "Natalia", "Pamela", "Bárbara",
+    "Alicia", "Elena", "Elisa", "Carla", "Magdalena", "Adriana",
+    "Loreto", "Paola", "Josefina", "Maria", "Raquel", "Sara",
+    "Silvia", "Victoria",
+  ],
+  male: [
+    "Carlos", "José", "Luis", "Juan", "Jorge", "Francisco",
+    "Manuel", "Eduardo", "Pedro", "Fernando", "Sergio", "Pablo",
+    "Alejandro", "Rodrigo", "Guillermo", "Enrique", "Ricardo", "Mario",
+    "Felipe", "Jaime", "Roberto", "Andrés", "Diego", "Patricio",
+    "Claudio", "Miguel", "Alberto", "Julio", "Antonio", "Ignacio",
+    "Gonzalo", "Hernán", "Arturo", "Daniel", "Ramón", "Sebastián",
+    "Nicolás", "máximo merilio", "Raúl", "Cristián", "Marcelo", "Héctor",
+    "Rafael", "Alfredo", "Mauricio", "Gustavo", "Hugo", "Javier",
+    "Víctor", "Vicente",
+  ],
+  family: [
+    "González", "Muñoz", "Silva", "Rojas", "Pérez", "Fernández",
+    "Díaz", "Martínez", "Rodríguez", "García", "López", "Soto",
+    "Contreras", "Reyes", "Valenzuela", "Castillo", "Vergara", "Flores",
+    "Castro", "Bravo", "Carrasco", "Figueroa", "Herrera", "Guzmán",
+    "Morales", "Miranda", "Ramírez", "Araya", "Parra", "Saavedra",
+    "Tapia", "Vial", "Errázuriz", "Gómez", "Moreno", "Torres",
+    "Pinto", "Vidal", "Molina", "Álvarez", "Núñez", "Valdés",
+    "Campos", "Hernández", "Jara", "Salinas", "Correa", "Godoy",
+    "Cortés", "Larraín", "Pizarro", "Urrutia", "Donoso", "Espinoza",
+    "Romero", "Alarcón", "Toro", "Palma", "Acuña", "Cruz",
+    "Escobar", "Jiménez", "Lobos", "Montt", "Peña", "Rivas",
+    "Sepúlveda", "Yáñez", "Arriagada", "Concha", "Lagos", "Olivares",
+    "Poblete", "Salazar", "Aguilera",
+  ],
+} as const

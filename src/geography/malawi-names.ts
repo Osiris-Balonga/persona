@@ -1,5 +1,2 @@
-// Small Chichewa given-name and Malawian clan-name samples; see docs/geographic-data.md.
-export const malawiNames = {
-  given: ['Chikondi', 'Chimwemwe', 'Mtendere', 'Ufulu', 'Mphatso'],
-  family: ['Banda', 'Phiri', 'Nkhoma', 'Chisale'],
-} as const
+// Edit country datasets in countries/<ISO>/names.ts.
+export { names as malawiNames } from './countries/MW/names.js'

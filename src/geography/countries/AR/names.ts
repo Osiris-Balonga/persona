@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// AR name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Ana", "Laura", "Cecilia", "Susana", "Silvia",
+    "Alicia", "Gabriela", "Graciela", "Beatriz", "Maria", "Patricia",
+    "Florencia", "Mariana", "Carolina", "Cristina", "Liliana", "Paula",
+    "Andrea", "Marta", "Mónica", "Adriana", "Claudia", "Victoria",
+    "Inés", "Alejandra", "Natalia", "Marcela", "Elena", "Mercedes",
+    "Agustina", "Julia", "Sofía", "Julieta", "Sandra", "Virginia",
+    "Nora", "Daniela", "Carmen", "Verónica", "Juana", "Rosa",
+    "Valeria", "Elsa", "Lucía", "Diana", "Norma", "Isabel",
+    "Luciana", "Marina",
+  ],
+  male: [
+    "Carlos", "Juan", "José", "Jorge", "Luis", "Pablo",
+    "Alberto", "Eduardo", "Roberto", "Alejandro", "Daniel", "Francisco",
+    "Fernando", "Nicolás", "Ricardo", "Pedro", "Diego", "Guillermo",
+    "Enrique", "Manuel", "Mario", "Marcelo", "Federico", "Antonio",
+    "Martín", "Héctor", "Gustavo", "Miguel", "Julio", "Oscar",
+    "máximo merilio", "Raúl", "Santiago", "anal", "Lucas", "Alfredo",
+    "Juan Carlos", "Gabriel", "Mariano", "Sergio", "Horacio", "Agustín",
+    "Hugo", "Sebastián", "Javier", "Rodolfo", "Ángel", "Andrés",
+    "Tomás", "Emilio",
+  ],
+  family: [
+    "González", "Martínez", "Fernández", "López", "García", "Rodríguez",
+    "Gómez", "Díaz", "Pérez", "Álvarez", "Romero", "Sánchez",
+    "Molina", "Aguirre", "Torres", "Castro", "Acosta", "Rossi",
+    "Suárez", "Ruiz", "Moreno", "Giménez", "Herrera", "Ramírez",
+    "Méndez", "Ramos", "Blanco", "Quiroga", "Ferrari", "Medina",
+    "Muñoz", "Alonso", "Navarro", "Figueroa", "Núñez", "Vidal",
+    "Gil", "Morales", "Pereyra", "Rojas", "Flores", "Silva",
+    "Domínguez", "Ledesma", "Peralta", "Vega", "Acuña", "Godoy",
+    "Ortiz", "Costa", "Franco", "Varela", "Castillo", "Iglesias",
+    "Mendoza", "Ojeda", "Ortega", "Rodriguez", "Vázquez", "Aguilar",
+    "Delgado", "Otero", "Paz", "Soto", "Arias", "Ayala",
+    "Ferreyra", "Martinez", "Cabrera", "Gallo", "Romano", "Villanueva",
+    "Martín", "Palacios", "Colombo",
+  ],
+} as const
