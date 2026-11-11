@@ -1,0 +1,51 @@
+// GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.
+import type { NamePool } from '../name-pool-data.js'
+
+export const names: NamePool = {
+  female: [
+    "Amalie", "Andrea", "Anna", "Aurora", "Camilla", "Celine", "Eline", "Elise",
+    "Emilie", "Emma", "Frida", "Hanna", "Hedda", "Helene", "Ida", "Ingrid",
+    "Jenny", "Julie", "Kaja", "Karoline", "Kristine", "Leah", "Linnea", "Madeleine",
+    "Maja", "Malin", "Maren", "Mari", "Maria", "Marie", "Marte", "Martine",
+    "Mathilde", "Mia", "Mina", "Natalie", "Nora", "Oda", "Sandra", "Sara",
+    "Selma", "Silje", "Sofie", "Sunniva", "Synne", "Thea", "Tiril", "Tuva",
+    "Victoria", "Vilde",
+  ],
+  male: [
+    "Adrian", "Aksel", "Alexander", "Anders", "Andreas", "Benjamin", "Daniel", "Eirik",
+    "Elias", "Emil", "Erik", "Even", "Filip", "Fredrik", "Henrik", "Herman",
+    "Håkon", "Isak", "Jakob", "Joakim", "Johannes", "Jonas", "Jonathan", "Jørgen",
+    "Kasper", "Kristian", "Kristoffer", "Lars", "Lucas", "Magnus", "Marius", "Markus",
+    "Martin", "Mathias", "Mats", "Mikkel", "Nikolai", "Noah", "Ole", "Oliver",
+    "Oskar", "Sander", "Sebastian", "Simen", "Sindre", "Sondre", "Theodor", "Thomas",
+    "Tobias", "William",
+  ],
+  lastFemale: [
+    "Aalerud", "Aas", "Aasen", "Amundsen", "Andersen", "Andreassen", "Andresen", "Arnesen",
+    "Bakke", "Bakken", "Berg", "Berge", "Berntsen", "Bjerke", "Bjørnstad", "Borge",
+    "Carlsen", "Christiansen", "Dahl", "Danielsen", "Edvardsen", "Eide", "Eriksen", "Evensen",
+    "Fjeld", "Fossum", "Fredriksen", "Glosli", "Gran", "Gundersen", "Hagen", "Halvorsen",
+    "Hansen", "Haugen", "Haukelidsæter", "Henriksen", "Holm", "Hopland", "Huseby", "Jacobsen",
+    "Jakobsen", "Jensen", "Johannessen", "Johansen", "Johnsen", "Jørgensen", "Karlsen", "Kleven",
+    "Kristiansen", "Kristoffersen", "Krogh", "Kvarme", "Larsen", "Lie", "Lunde", "Løken",
+    "Martinsen", "Mathisen", "Moe", "Moen", "Myhrer", "Nguyen", "Nielsen", "Nilsen",
+    "Nordby", "Nordskaug", "Nygård", "Olsen", "Olstad", "Pedersen", "Pettersen", "Rasmussen",
+    "Ryan", "Røed", "Skoglund", "Skuterud", "Smedsrud", "Smogeli", "Solberg", "Solheim",
+    "Solli", "Stensrud", "Strand", "Svendsen", "Sæther", "Sørensen", "Sørlie", "Tangen",
+    "Thoresen", "Torgersen", "Torp", "Vedvik", "Vegge", "Wold", "Ødegård", "Østby",
+  ],
+  lastMale: [
+    "Aalerud", "Aas", "Aasen", "Amundsen", "Andersen", "Andreassen", "Andresen", "Arnesen",
+    "Bakke", "Bakken", "Berg", "Berge", "Berntsen", "Bjerke", "Bjørnstad", "Borge",
+    "Carlsen", "Christiansen", "Dahl", "Danielsen", "Edvardsen", "Eide", "Eriksen", "Evensen",
+    "Fjeld", "Fossum", "Fredriksen", "Glosli", "Gran", "Gundersen", "Hagen", "Halvorsen",
+    "Hansen", "Haugen", "Haukelidsæter", "Henriksen", "Holm", "Hopland", "Huseby", "Jacobsen",
+    "Jakobsen", "Jensen", "Johannessen", "Johansen", "Johnsen", "Jørgensen", "Karlsen", "Kleven",
+    "Kristiansen", "Kristoffersen", "Krogh", "Kvarme", "Larsen", "Lie", "Lunde", "Løken",
+    "Martinsen", "Mathisen", "Moe", "Moen", "Myhrer", "Nguyen", "Nielsen", "Nilsen",
+    "Nordby", "Nordskaug", "Nygård", "Olsen", "Olstad", "Pedersen", "Pettersen", "Rasmussen",
+    "Ryan", "Røed", "Skoglund", "Skuterud", "Smedsrud", "Smogeli", "Solberg", "Solheim",
+    "Solli", "Stensrud", "Strand", "Svendsen", "Sæther", "Sørensen", "Sørlie", "Tangen",
+    "Thoresen", "Torgersen", "Torp", "Vedvik", "Vegge", "Wold", "Ødegård", "Østby",
+  ],
+}

@@ -1,0 +1,240 @@
+{
+  "sourceRevision": "49c5f2334026a9f48ec9365bc08fec11bbacc3f8",
+  "countries": {
+    "MM": {
+      "female": [
+        "Aye Aye Myint",
+        "Than Than Aye",
+        "Tin Tin Win",
+        "San San Myint",
+        "Khin Myint",
+        "Hla Hla Win"
+      ],
+      "male": [
+        "Maung Maung",
+        "Tin Win",
+        "Kyaw Win",
+        "Soe Myint",
+        "Aung Myint",
+        "Myint Thein"
+      ]
+    },
+    "BT": {
+      "first": [
+        "Karma",
+        "Sangay",
+        "Pema",
+        "Tashi"
+      ],
+      "femaleSecond": [
+        "Chöden",
+        "Wangmo",
+        "Zangmo"
+      ],
+      "maleSecond": [
+        "Dorjé",
+        "Wangyal",
+        "Jamtsho"
+      ]
+    },
+    "ET": {
+      "female": [
+        "Abeba",
+        "Almaz",
+        "Birtukan",
+        "Tigist",
+        "Tseday"
+      ],
+      "male": [
+        "Abebe",
+        "Bekele",
+        "Tesfaye",
+        "Aklilu",
+        "Dawit"
+      ]
+    },
+    "MW": {
+      "given": [
+        "Chikondi",
+        "Chimwemwe",
+        "Mtendere",
+        "Ufulu",
+        "Mphatso"
+      ],
+      "family": [
+        "Banda",
+        "Phiri",
+        "Nkhoma",
+        "Chisale"
+      ]
+    },
+    "CG": {
+      "female": [
+        "Pascaline",
+        "Simone",
+        "Hortense",
+        "Charlotte",
+        "Jeanne"
+      ],
+      "male": [
+        "Daniel",
+        "Théophile",
+        "Michel",
+        "Pascal",
+        "Guillaume"
+      ],
+      "family": [
+        "Adoua",
+        "Mahinga",
+        "Okoula",
+        "Ngoto",
+        "Assassa",
+        "Banvidi"
+      ]
+    },
+    "LS": {
+      "female": [
+        "Matumelo",
+        "Mamoipone",
+        "Likeleli",
+        "Mathato",
+        "Manthabiseng"
+      ],
+      "male": [
+        "Tello",
+        "Thabo",
+        "Motlatsi",
+        "Moshoeshoe",
+        "Tseliso"
+      ],
+      "family": [
+        "Sekatle",
+        "Senauoane",
+        "Monare",
+        "Phafoli",
+        "Phohleli",
+        "Kibane",
+        "Maqelepo",
+        "Fako"
+      ]
+    },
+    "BW": {
+      "female": [
+        "Unity",
+        "Beauty",
+        "Talita",
+        "Phildah",
+        "Peggy",
+        "Annah"
+      ],
+      "male": [
+        "Duma",
+        "Dithapelo",
+        "Dumelang",
+        "Wynter",
+        "Polson",
+        "Mokwaledi"
+      ],
+      "family": [
+        "Dow",
+        "Manake",
+        "Monnakgotla",
+        "Keorapetse",
+        "Saleshando",
+        "Mmolotsi",
+        "Kedikilwe"
+      ]
+    },
+    "NA": {
+      "female": [
+        "Saara",
+        "Emma",
+        "Alexia",
+        "Lucia",
+        "Hilma",
+        "Selma"
+      ],
+      "male": [
+        "Phillipus",
+        "Paulus",
+        "Immanuel",
+        "Veikko",
+        "Salomon",
+        "Willem"
+      ],
+      "family": [
+        "Kuugongelwa-Amadhila",
+        "Kantema",
+        "Manombe-Ncube",
+        "Iipumbu",
+        "Iita",
+        "Nekundi",
+        "Katamelo"
+      ]
+    },
+    "SC": {
+      "female": [
+        "Audrey",
+        "Denise",
+        "Azarel",
+        "Sandra",
+        "Sylvanne",
+        "Valdana"
+      ],
+      "male": [
+        "Egbert",
+        "Bernard",
+        "Alvin",
+        "Andy",
+        "Churchill",
+        "Trevor"
+      ],
+      "family": [
+        "Vidot",
+        "Clarisse",
+        "Ernesta",
+        "Sultan",
+        "Lemiel",
+        "Georges",
+        "Labonte",
+        "Gill"
+      ]
+    },
+    "ZA": {
+      "female": [
+        "Onalerona",
+        "Zanokuhle",
+        "Melokuhle",
+        "Lisakhanya",
+        "Lethabo",
+        "Nkanyezi",
+        "Lesedi",
+        "Omphile",
+        "Olwemihla"
+      ],
+      "male": [
+        "Lethabo",
+        "Lubanzi",
+        "Nkazimulo",
+        "Nkanyezi",
+        "Langelihle",
+        "Lesedi",
+        "Lethokuhle",
+        "Siphosethu",
+        "Leano"
+      ],
+      "family": [
+        "Dlamini",
+        "Ndlovu",
+        "Nkosi",
+        "Khumalo",
+        "Sithole",
+        "Mkhize",
+        "Mokoena",
+        "Mthembu",
+        "Gumede",
+        "Ngcobo"
+      ]
+    }
+  }
+}

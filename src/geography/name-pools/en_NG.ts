@@ -1,0 +1,50 @@
+// GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.
+import type { NamePool } from '../name-pool-data.js'
+
+export const names: NamePool = {
+  female: [
+    "Adaugo", "Akunna", "Aminat", "Aminu", "Augustina", "Ayebatari", "Cherechi", "Chiamaka",
+    "Chimamanda", "Chinyere", "Chizoba", "Ebiere", "Efe", "Fatima", "Ifeoma", "Ifunanya",
+    "Isioma", "Jolayemi", "Lola", "Obioma", "Omawunmi", "Omolara", "Onome", "Rasheedah",
+    "Sekinat", "Simisola", "Sumayyah", "Titi", "Titilayo", "Toluwani", "Zainab",
+  ],
+  male: [
+    "Abimbola", "Abisola", "Abisoye", "Adeboye", "Adedayo", "Adegoke", "Akande", "Akanni",
+    "Alade", "Ayinde", "Azubuike", "Banji", "Bankole", "Buchi", "Bukola", "Chinedu",
+    "Chisom", "Chukwu", "Damilare", "Damilola", "Danjuma", "Ebiowei", "Emeka", "Emmanuel",
+    "Esse", "Funmilade", "Funmilayo", "Gbeminiyi", "Gbemisola", "Habiba", "Ifeanyichukwu", "Ikenna",
+    "Ikhidie", "Ireti", "Jadesola", "Johnson", "Kayode", "Kemi", "Kubra", "Kubura",
+    "Lolade", "Makinwa", "Mohammed", "Musa", "Muyiwa", "Nnamdi", "Olaide", "Olufunmi",
+    "Olumide", "Oluwunmi", "Onoriode", "Remilekun", "Rotimi", "Shade", "Shalewa", "Sname",
+    "Tari", "Temitope", "Titilope", "Tobiloba", "Toke", "Tomiloba", "Tope", "Uzodimma",
+    "Wale", "Yakubu", "Yusuf",
+  ],
+  lastFemale: [
+    "Abiodun", "Abiola", "Abosede", "Adaobi", "Adegboye", "Ademayowa", "Ademola", "Adeoluwa",
+    "Aderonke", "Adesina", "Adewunmi", "Adewura", "Afolabi", "Agboola", "Agnes", "Ajakaiye",
+    "Akeem-omosanya", "Akerele", "Aligbe", "Amaechi", "Aremu", "Ayisat", "Ayobami", "Babalola",
+    "Balogun", "Bamisebi", "Busari", "Chibike", "Chidinma", "Christian", "Clare", "Ebubechukwu",
+    "Ehigiator", "Ekwueme", "Elizabeth", "Emmanuel", "Funmilayo", "Gbogboade", "Grace", "Hanifat",
+    "Ismail", "Isokun", "Iyalla", "Jamiu", "Joshua", "Katherine", "Kayode", "Ladega",
+    "Lawal", "Leonard", "Maryam", "Maryjane", "Miracle", "Mogbadunade", "Motalo", "Mukaram",
+    "Mutiat", "Ndukwu", "Nojeem", "Nwachukwu", "Nwuzor", "Obianuju", "Odunayo", "Ogunwande",
+    "Okunola", "Oladeji", "Olaoluwa", "Olasunkanmi", "Olawale", "Olubunmi", "Olufeyikemi", "Olutola",
+    "Oluwanisola", "Oluwaseun", "Oluwashina", "Oluwatosin", "Omobolanle", "Omowale", "Onohinosen", "Onyinyechukwu",
+    "Osuagwu", "Oyebola", "Oyinkansola", "Peter", "Saheed", "Samuel", "Sanusi", "Segunmaru",
+    "Sulaimon", "Sylvester", "Tamunoemi", "Tella", "Tolulope", "Wasiu", "Wilcox", "Yaqub",
+  ],
+  lastMale: [
+    "Abiodun", "Abiola", "Abosede", "Adaobi", "Adegboye", "Ademayowa", "Ademola", "Adeoluwa",
+    "Aderonke", "Adesina", "Adewunmi", "Adewura", "Afolabi", "Agboola", "Agnes", "Ajakaiye",
+    "Akeem-omosanya", "Akerele", "Aligbe", "Amaechi", "Aremu", "Ayisat", "Ayobami", "Babalola",
+    "Balogun", "Bamisebi", "Busari", "Chibike", "Chidinma", "Christian", "Clare", "Ebubechukwu",
+    "Ehigiator", "Ekwueme", "Elizabeth", "Emmanuel", "Funmilayo", "Gbogboade", "Grace", "Hanifat",
+    "Ismail", "Isokun", "Iyalla", "Jamiu", "Joshua", "Katherine", "Kayode", "Ladega",
+    "Lawal", "Leonard", "Maryam", "Maryjane", "Miracle", "Mogbadunade", "Motalo", "Mukaram",
+    "Mutiat", "Ndukwu", "Nojeem", "Nwachukwu", "Nwuzor", "Obianuju", "Odunayo", "Ogunwande",
+    "Okunola", "Oladeji", "Olaoluwa", "Olasunkanmi", "Olawale", "Olubunmi", "Olufeyikemi", "Olutola",
+    "Oluwanisola", "Oluwaseun", "Oluwashina", "Oluwatosin", "Omobolanle", "Omowale", "Onohinosen", "Onyinyechukwu",
+    "Osuagwu", "Oyebola", "Oyinkansola", "Peter", "Saheed", "Samuel", "Sanusi", "Segunmaru",
+    "Sulaimon", "Sylvester", "Tamunoemi", "Tella", "Tolulope", "Wasiu", "Wilcox", "Yaqub",
+  ],
+}

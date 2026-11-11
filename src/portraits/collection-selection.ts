@@ -3,6 +3,7 @@ import { ageGroupForAge } from '../age.js'
 import { m49RegionByCountry } from '../geography/m49-region-data.js'
 import type { PortraitCollection } from '../review/collections.js'
 import type { PortraitCatalog } from './catalog.js'
+import { contextAllowsAge, portraitContextWeights, type PortraitContext } from './contexts.js'
 
 const islandCountries = new Set(['KM', 'MG', 'MU', 'RE', 'SC', 'YT'])
 
@@ -32,14 +33,39 @@ export function selectPortraitFromCollection(
   country: string,
   key: string,
   usedIds?: Set<string>,
+  portraitContext: PortraitContext | readonly PortraitContext[] = 'standard',
+  skinTone?: number | readonly number[],
 ): Person['picture'] {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid portrait key')
   const collection = collectionForCountry(country)
-  if (!collection || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup) return null
-  const candidates = catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
-    && asset.collection === collection && asset.gender === profile.gender
+  const tones = skinTone === undefined ? undefined : typeof skinTone === 'number' ? [skinTone] : skinTone
+  const isSingleContext = typeof portraitContext === 'string'
+  const contexts = isSingleContext ? [portraitContext] : portraitContext
+  if ((tones === undefined && !collection) || !catalog.publicBaseUrl || ageGroupForAge(profile.age) !== profile.ageGroup
+    || !contexts.some(context => contextAllowsAge(context, profile.age))) return null
+  const matchingAssets = catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
+    && (tones === undefined || (asset.skinToneMst !== undefined && tones.includes(asset.skinToneMst)))
+    && contexts.includes(asset.portraitContext ?? 'standard')
+    && contextAllowsAge(asset.portraitContext ?? 'standard', profile.age)
+    && (tones !== undefined || asset.collection === collection) && asset.gender === profile.gender
     && asset.apparentAgeRanges.some(([minimum, maximum]) => profile.age >= minimum && profile.age <= maximum))
-  if (!candidates.length) return null
+  if (!matchingAssets.length) return null
+  // A singular exact context retains the original selector and key segment.
+  let selectedContext: PortraitContext | undefined
+  if (isSingleContext) {
+    selectedContext = portraitContext
+  } else {
+    const availableContexts = contexts.filter(context => matchingAssets.some(asset => (asset.portraitContext ?? 'standard') === context))
+    const totalWeight = availableContexts.reduce((total, context) => total + portraitContextWeights[context], 0)
+    const draw = Number.parseInt(key.slice(12, 24), 16) % totalWeight
+    let cumulative = 0
+    selectedContext = availableContexts.find(context => {
+      cumulative += portraitContextWeights[context]
+      return draw < cumulative
+    })
+  }
+  if (!selectedContext) return null
+  const candidates = matchingAssets.filter(asset => (asset.portraitContext ?? 'standard') === selectedContext)
   const unused = usedIds === undefined ? candidates : candidates.filter((asset) => !usedIds.has(asset.id))
   const choices = unused.length ? unused : candidates
   const asset = choices[Number.parseInt(key.slice(0, 12), 16) % choices.length]

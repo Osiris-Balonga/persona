@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// BR name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Maria", "Ana", "Fernanda", "Adriana", "Juliana", "Mariana",
+    "Renata", "Vera", "Beatriz", "Cristina", "Patrícia", "Aline",
+    "Daniela", "Regina", "Helena", "Gabriela", "Carolina", "Bruna",
+    "Carla", "Paula", "Sandra", "Luciana", "Camila", "Laura",
+    "Vanessa", "Cláudia", "Denise", "Marina", "Claudia", "Cristiane",
+    "Márcia", "Anna", "Marcia", "Larissa", "Amanda", "Bianca",
+    "Lúcia", "Raquel", "Luiza", "Alice", "Rita", "Tatiana",
+    "Alessandra", "Luana", "Roberta", "Flávia", "Viviane", "Julia",
+    "Letícia", "Sonia",
+  ],
+  male: [
+    "José", "João", "Carlos", "Antônio", "Paulo", "Francisco",
+    "Luiz", "Antonio", "Pedro", "Marcelo", "Marcos", "Eduardo",
+    "Fernando", "Ricardo", "Roberto", "Jose", "Alexandre", "Rodrigo",
+    "Jorge", "Bruno", "Rafael", "Joaquim", "André", "Luís",
+    "Manuel", "Lucas", "Sérgio", "Daniel", "Felipe", "Henrique",
+    "Guilherme", "Mário", "Renato", "Gabriel", "Gustavo", "Leonardo",
+    "Fábio", "Thiago", "Augusto", "Leandro", "Geraldo", "Luis",
+    "Márcio", "Marco", "Edson", "Luciano", "Raimundo", "Alberto",
+    "Sebastião", "Diego",
+  ],
+  family: [
+    "Silva", "Alves", "da Silva", "Santos", "Pereira", "Oliveira",
+    "Lima", "Ferreira", "Costa", "Martins", "Rodrigues", "Ribeiro",
+    "de Oliveira", "Gomes", "Gonçalves", "Barbosa", "Rocha", "Machado",
+    "Soares", "Dias", "Fernandes", "Souza", "Araújo", "de Souza",
+    "Almeida", "Lopes", "Nunes", "Cardoso", "Andrade", "Carvalho",
+    "Guimarães", "Campos", "Ramos", "Vieira", "Borges", "Neto",
+    "Pinheiro", "Nascimento", "Leite", "Monteiro", "Pinto", "Teixeira",
+    "Filho", "Nogueira", "Santana", "Reis", "Moreira", "Miranda",
+    "Castro", "Braga", "Cunha", "Barros", "Marques", "Moura",
+    "Maia", "Da Silva", "de Almeida", "Pires", "Freitas", "Rosa",
+    "Azevedo", "Fonseca", "Magalhães", "Brito", "Mendes", "Cruz",
+    "Barreto", "de Carvalho", "Duarte", "Melo", "Menezes", "Amaral",
+    "Aguiar", "Coelho", "Batista",
+  ],
+} as const

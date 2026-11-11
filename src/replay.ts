@@ -1,12 +1,16 @@
 import { createHash, randomBytes } from 'node:crypto'
 import type { PeopleQuery } from './people-query.js'
+import { portraitSelectionVersion, resolvePortraitContexts } from './portraits/contexts.js'
 
 export interface DataVersions {
   dataVersion: string
   catalogVersion: string
+  portraitSelectionVersion?: string
+  portraitCatalogFingerprint?: string
 }
 
-const generationVersion = 'v5'
+export const generationVersion = 'v5'
+const skinToneSelectionVersion = 'global-collections-v1'
 
 function digest(parts: readonly unknown[]): string {
   return createHash('sha256').update(JSON.stringify(parts)).digest('hex')
@@ -41,7 +45,13 @@ export function createGenerationContext(
       if (!Number.isSafeInteger(personIndex) || personIndex < 0 || !/^[a-z][a-z0-9-]*$/.test(component)) {
         throw new RangeError('Invalid generation component')
       }
-      return digest(['persona-component', ...inputs, personIndex, component])
+      const selected = query.portraitContexts ?? query.portraitContext ?? resolvePortraitContexts(query)
+      const scope = selected !== undefined && selected !== 'standard'
+        && (component === 'age' || component === 'portrait')
+        ? [selected, versions.portraitSelectionVersion ?? portraitSelectionVersion] : []
+      const toneScope = component === 'portrait' && query.skinTone !== undefined
+        ? ['skinTone', query.skinTone, skinToneSelectionVersion] : []
+      return digest(['persona-component', ...inputs, personIndex, component, ...scope, ...toneScope])
     },
   }
 }
@@ -57,6 +67,11 @@ export function responseETag(query: PeopleQuery, versions: DataVersions): string
     query.count,
     query.fields ?? null,
     query.emailDomain ?? 'example.test',
+    query.portraitContexts ?? query.portraitContext ?? resolvePortraitContexts(query),
+    versions.portraitSelectionVersion ?? portraitSelectionVersion,
+    ...(versions.portraitCatalogFingerprint === undefined ? [] : ['portraitCatalog', versions.portraitCatalogFingerprint]),
+    ...(query.skinTone === undefined ? [] : ['skinTone', query.skinTone, skinToneSelectionVersion]),
+    ...(query.pagination === undefined ? [] : ['pagination-v1', query.pagination.total, query.pagination.limit, query.pagination.offset]),
   ])
   return `"persona-${generationVersion}-${fingerprint}"`
 }

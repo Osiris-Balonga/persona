@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// TR name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Zeynep", "Ayşe", "Özlem", "Esra", "Elif", "Emine",
+    "Fatma", "Pınar", "Merve", "Burcu", "Hatice", "Ebru",
+    "Deniz", "Özge", "Yasemin", "Ayşegül", "Meltem", "Tuğba",
+    "Çiğdem", "Sibel", "Asli", "Dilek", "Ceren", "Derya",
+    "Gizem", "Yeşim", "Duygu", "Hülya", "Ezgi", "Filiz",
+    "Seda", "Büşra", "Gözde", "Zehra", "Arzu", "Leyla",
+    "Betül", "Canan", "Nur", "Sema", "Emel", "Cansu",
+    "Aylin", "Başak", "Eda", "Demet", "Ece", "Didem",
+    "Gamze", "Tuğçe",
+  ],
+  male: [
+    "Mehmet", "Ahmet", "Mustafa", "Ali", "Hüseyin", "Murat",
+    "Hasan", "Ömer", "Emre", "İbrahim", "Osman", "Fatih",
+    "İsmail", "Burak", "Orhan", "Hakan", "Yusuf", "Kemal",
+    "Bülent", "Can", "Cem", "Metin", "Gökhan", "Onur",
+    "Serdar", "Uğur", "Abdullah", "Halil", "Mahmut", "Süleyman",
+    "Sinan", "Erol", "Özgür", "Alper", "Serkan", "Ümit",
+    "Barış", "Deniz", "Mert", "Umut", "Erkan", "Ibrahim",
+    "Muhammed", "Recep", "Cemal", "Erhan", "Levent", "İhsan",
+    "Muhammet", "Zeki",
+  ],
+  family: [
+    "Yılmaz", "Öztürk", "Şahin", "Kaya", "Yıldırım", "Yıldız",
+    "Aydın", "Özdemir", "Çelik", "Arslan", "Kılıç", "Demir",
+    "Doğan", "Özcan", "Çetin", "Aksoy", "Erdoğan", "Özkan",
+    "Can", "Yüksel", "Turan", "Yalcin", "Şimşek", "Aslan",
+    "Şen", "Güler", "Bozkurt", "Köse", "Erdem", "Aktaş",
+    "Bulut", "Ünal", "Yücel", "Koç", "Özer", "Acar",
+    "Çakır", "Güneş", "Sönmez", "Korkmaz", "Yavuz", "Güven",
+    "Mutlu", "Demirci", "Polat", "Işık", "Coşkun", "Yiğit",
+    "Akın", "Eren", "Ceylan", "Tekin", "Keskin", "Albayrak",
+    "Kara", "Güngör", "Ateş", "Gündüz", "Deniz", "Kurt",
+    "Yazıcı", "Avcı", "Uzun", "Uysal", "Gül", "Koçak",
+    "Genç", "Kahraman", "Turgut", "Güner", "Kaplan", "Çınar",
+    "Başaran", "Gümüş", "Uğur",
+  ],
+} as const

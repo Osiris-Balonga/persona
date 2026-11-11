@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// LK name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Chandrika", "Doreen", "Nanda", "Samantha", "Thilini", "Anne",
+    "Chitra", "Damitha", "Inoka", "Kumari", "Maureen", "Michelle",
+    "Nadeesha", "Rita", "Rosemary", "Samanthi", "Tamara", "Vivienne",
+    "Achini", "Adele", "Agnes", "Amali", "Amara", "Amitha",
+    "Anarkali", "Angeline", "Anoma", "Anthea", "Antoinette", "Anula",
+    "Aruni", "Aseka", "Asha", "Barbara", "Benuri", "Caroline",
+    "Chandi", "Chandra", "Christine", "Deepika", "Dilhani", "Dilmi",
+    "Dona", "Dorothy", "Dulanya", "Edna", "Ellis", "Eva",
+    "Fathima", "Ferial",
+  ],
+  male: [
+    "Mohamed", "James", "Rohan", "Ananda", "Anton", "Charles",
+    "Cyril", "John", "Lakshman", "Sunil", "Don", "Henry",
+    "Joseph", "Romesh", "Stanley", "Thomas", "Victor", "Basil",
+    "Chandra", "Kamal", "Muhammad", "Sam", "Shantha", "Ajith",
+    "Amal", "Arthur", "Bernard", "Douglas", "Edward", "Eric",
+    "George", "Harold", "Lal", "Lionel", "Mahesh", "Neville",
+    "Ravindra", "Rex", "Richard", "Suresh", "Upali", "William",
+    "Albert", "Alfred", "Angelo", "Asela", "Hector", "Justin",
+    "Kingsley", "Leslie",
+  ],
+  family: [
+    "Silva", "Fernando", "Perera", "Dias", "de Silva", "Dissanayake",
+    "Peiris", "Gunasekera", "Corea", "Gamage", "Gunathilake", "Karunaratne",
+    "Wijesekera", "Amarasuriya", "Amerasinghe", "Cooray", "Dahanayaka", "Dahanayake",
+    "Jayasinghe", "Liyanage", "Ratnayake", "Weerasinghe", "Abeykoon", "Bandaranaike",
+    "Bawa", "David", "Jayawardena", "Kannangara", "Kumarasinghe", "Mendis",
+    "Nagasinghe", "Ranasinghe", "White", "Wickremasinghe", "Abeysinghe", "Abeywickrama",
+    "Adikaram", "Alexander", "Amarasinghe", "Anthony", "Aponsu", "Ariyadasa",
+    "Arulpragasam", "Bandara", "Basnayake", "Chandrasena", "da Silva", "Dassanayake",
+    "de Kretser", "Dharmadasa", "Ediriweera", "Francis", "Geeganage", "Gunasekara",
+    "Gunawardana", "Hettiarachchi", "Iddamalgoda", "Jansz", "John", "Kuruppu",
+    "Lanka", "Maheswaran", "Majeed", "Mallawarachchi", "Muralitharan", "Nadarajah",
+    "Paul", "Premadasa", "Raheem", "Rajapaksa", "Ranaweera", "Samaraweera",
+    "Sansoni", "Selvadurai", "Sirisena",
+  ],
+} as const

@@ -1,6 +1,6 @@
-import type { Person } from './contracts/person.js'
+import type { PublicPerson } from './contracts/public-person.js'
 
-export type AgeGroup = Person['ageGroup']
+export type AgeGroup = PublicPerson['dob']['ageGroup']
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
 
@@ -45,6 +45,9 @@ export function resolveAgeConstraint(input: { age?: number; ageGroup?: AgeGroup 
 export function resolveAsOf(asOf?: string, now: Date = new Date()): string {
   const value = asOf ?? now.toISOString().slice(0, 10)
   calendarDate(value, 'asOf')
+  // A 100-year-old profile can have a birthday later in the reference year.
+  // Keep every generated birth year within the four-digit calendar contract.
+  if (value < '0102-01-01') throw new RangeError('Invalid asOf')
   return value
 }
 
@@ -61,7 +64,7 @@ export function ageOn(dateOfBirth: string, asOf: string): number {
 }
 
 export function isAgeProfileConsistent(
-  profile: Pick<Person, 'age' | 'ageGroup' | 'dateOfBirth'>,
+  profile: { age: number; ageGroup: AgeGroup; dateOfBirth: string },
   asOf: string,
 ): boolean {
   return ageOn(profile.dateOfBirth, asOf) === profile.age &&

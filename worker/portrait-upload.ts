@@ -20,7 +20,7 @@ export async function handlePortraitUpload(request: Request, store: UploadStore,
   if (!/^portraits\/[a-z][a-z0-9-]*\/(?:large\/|medium\/|thumbnail\/)?p_\d{4,}\.webp$/.test(key) || url.search
     || !/^[a-f0-9]{64}$/.test(expected) || request.headers.get('Content-Type') !== 'image/webp') return reply(400)
   if (catalog !== undefined) {
-    if (validatePortraitCatalog(catalog).length || catalog.publicBaseUrl === null) return reply(403)
+    if (validatePortraitCatalog(catalog, { requireSkinTone: true }).length || catalog.publicBaseUrl === null) return reply(403)
     if (approvedPortraitHash(catalog, key) !== expected) return reply(403)
   } else if (!/^portraits\/[a-z][a-z0-9-]*\/p_\d{4,}\.webp$/.test(key)) return reply(400)
   const bytes = new Uint8Array(await request.arrayBuffer())

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { handlePortraitRequest } from '../../worker/portrait-worker.js'
+import { createPortraitDelivery, handlePortraitRequest } from '../../worker/portrait-worker.js'
+import * as catalogModule from '../../src/portraits/catalog.js'
 import type { PortraitCatalog } from '../../src/portraits/catalog.js'
 
 const key = 'portraits/v1/adult/female/black/west-african/p_0001.webp'
@@ -20,6 +21,56 @@ const object = () => ({ size: 13, httpEtag: '"r2-etag"', customMetadata: { sha25
   body: new Response('fixture-bytes').body! })
 
 describe('portrait delivery Worker', () => {
+  it('validates once per delivery lifecycle, retaining request-time stored hash checks', async () => {
+    const validation = vi.spyOn(catalogModule, 'validatePortraitCatalog')
+    try {
+      const deliver = createPortraitDelivery(catalog)
+      const store = { get: vi.fn(async () => object()), head: vi.fn(async () => object()) }
+      const request = new Request(`https://images.example.test/${key}`)
+      expect((await deliver(request, store)).status).toBe(200)
+      expect((await deliver(request, store)).status).toBe(200)
+      expect(validation).toHaveBeenCalledOnce()
+      store.get.mockImplementation(async () => ({ ...object(), customMetadata: { sha256: 'c'.repeat(64) } }))
+      expect((await deliver(request, store)).status).toBe(404)
+      store.get.mockImplementation(async () => object())
+      store.get.mockClear()
+      const withdrawn = structuredClone(catalog)
+      withdrawn.assets[0].reviewStatus = 'withdrawn'
+      expect((await createPortraitDelivery(withdrawn)(request, store)).status).toBe(404)
+      expect(store.get).not.toHaveBeenCalled()
+    } finally { validation.mockRestore() }
+  })
+
+  it('uses weak comparison for GET and HEAD, including opaque tags containing commas', async () => {
+    const store = { get: vi.fn(async () => ({ ...object(), httpEtag: '"r2,etag"' })),
+      head: vi.fn(async () => ({ ...object(), httpEtag: '"r2,etag"' })) }
+    for (const method of ['GET', 'HEAD']) {
+      for (const validator of ['W/"r2,etag"', '"other", W/"r2,etag"', '*']) {
+        const response = await handlePortraitRequest(new Request(`https://images.example.test/${key}`,
+          { method, headers: { 'if-none-match': validator } }), store, catalog)
+        expect(response.status).toBe(304)
+        expect(response.body).toBeNull()
+        expect(response.headers.get('etag')).toBe('"r2,etag"')
+        expect(response.headers.get('content-length')).toBeNull()
+      }
+    }
+    for (const validator of ['W/"other"', '*, "other"', '"r2,etag" trailing']) {
+      const response = await handlePortraitRequest(new Request(`https://images.example.test/${key}`,
+        { headers: { 'if-none-match': validator } }), store, catalog)
+      expect(response.status).toBe(200)
+    }
+  })
+
+  it('checks approval and stored hashes before wildcard cache revalidation', async () => {
+    const store = { get: vi.fn(async () => ({ ...object(), customMetadata: { sha256: 'c'.repeat(64) } })),
+      head: vi.fn(async () => null) }
+    for (const path of [key, catalog.assets[1]!.objectKey]) {
+      const response = await handlePortraitRequest(new Request(`https://images.example.test/${path}`,
+        { headers: { 'if-none-match': '*' } }), store, catalog)
+      expect(response.status).toBe(404)
+    }
+  })
+
   it('denies every object while the production catalog is empty', async () => {
     const store = { get: vi.fn(), head: vi.fn() }
     const emptyCatalog: PortraitCatalog = { version: 'empty-v1', publicBaseUrl: null, assets: [] }

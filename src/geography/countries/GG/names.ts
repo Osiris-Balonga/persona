@@ -1,0 +1,41 @@
+// Reviewed European territory name components from the pinned birth-place report and Faroese statistics.
+// GG name sources: wikidata-europe-birthplace-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Mary", "Alice", "Marjorie", "Ann", "Annabelle", "Annie",
+    "Beatrice", "Caroline", "Charlotte", "Chloe", "Claire", "Clare",
+    "Claudia", "Crystal", "Edith", "Elena", "Elise", "Eliza",
+    "Elizabeth", "Ellen", "Emma", "Fanny", "Francesca", "Harriet",
+    "Heather", "Helen", "Jayne", "Jill", "Karen", "Krista",
+    "Linda", "Lisa", "Mabel", "Margaret", "Maria", "Marianne",
+    "Martha", "Martine", "Maud", "Maya", "Meg", "Molly",
+    "Olivia", "Patricia", "Pauline", "Philipa", "Rebecca", "Rosie",
+    "Sally", "Sarah",
+  ],
+  male: [
+    "John", "Peter", "Thomas", "William", "James", "Charles",
+    "Paul", "Frederick", "Henry", "Richard", "Chris", "Christopher",
+    "George", "Herbert", "Lee", "Philippe", "Robert", "Andrew",
+    "David", "Ernest", "Hugh", "Joshua", "Michael", "Oliver",
+    "Philip", "Pierre", "Sam", "Victor", "Adrian", "Alan",
+    "Alastair", "Albert", "Alex", "Alexander", "Ambrose", "Andy",
+    "Arthur", "Barry", "Bill", "Billy", "Bramwell", "Brayley",
+    "Cameron", "Carl", "Craig", "Cyril", "Dale", "Darren",
+    "Dave", "Denys",
+  ],
+  family: [
+    "Le Tissier", "Brock", "Chalmers", "Collings", "Le Mesurier", "Ozanne",
+    "Saumarez", "Allen", "Beaumont", "Carey", "Dotrice", "Jones",
+    "Le Lievre", "Le Tocq", "Lukis", "MacCulloch", "Priaulx", "Rhodes",
+    "Wood", "Allan", "Ansted", "Arscott", "Austin", "Avard",
+    "Banks", "Barber", "Bennett", "Benoît", "Bidmead", "Bishop",
+    "Black", "Bowditch", "Brehaut", "Breton", "Caire", "Catelinet",
+    "Clark", "Collas", "Collenette", "Collett", "Collins", "Colquhoun",
+    "Cooney", "Cooper", "Crossan", "Davey", "Davidson", "Davies",
+    "De Garis", "De Gruchy", "de La Rue", "Deverell", "Dobree", "Dobrée",
+    "Doyle", "Edwards", "Ellis", "Evans", "Falla", "Ferbrache",
+    "Finch", "Fink", "Fleure", "Foss", "Fox", "Frampton",
+    "Fraser", "Frossard", "Garland", "Gauvain", "Gosselin", "Grant",
+    "Grut", "Hamon", "Hansen",
+  ],
+} as const

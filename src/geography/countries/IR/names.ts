@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// IR name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Maryam", "Zohreh", "Fatemeh", "Samaneh", "Zahra", "Fahimeh",
+    "Afsaneh", "Bahareh", "Sara", "Leila", "Ruqayyah", "Farzaneh",
+    "Mahsa", "Nafiseh", "Sepideh", "Mina", "Sahar", "Soudabeh",
+    "Fereshteh", "Maliheh", "Massumeh", "Negar", "Parvin", "Shirin",
+    "Elham", "Katayoun", "Mahdieh", "Raheleh", "Azadeh", "Khadija",
+    "Marjan", "Marzieh", "Farideh", "Homa", "Fariba", "Nazanín",
+    "Nazila", "Nilufar", "Samira", "Atefeh", "Elaheh", "Neda",
+    "Roya", "Shahla", "Somayyeh", "Zhila", "Farnaz", "Maedeh",
+    "Mona", "Mozhgan",
+  ],
+  male: [
+    "Mohammad", "Ali", "Reza", "Ahmad", "Hossein", "Amir",
+    "Mohammad-Ali", "Hassan", "Ali Reza", "Mohsen", "Hamid", "Abbas",
+    "Mahmoud", "Muhammad", "Murtuza", "Mohammad-Reza", "Hussein", "Saeed",
+    "Behnam", "Mostafa", "Saeid", "Ebrahim", "Parviz", "Majid",
+    "Hadi", "Masoud", "Nasser", "Farhad", "Ali Akbar", "Ruhollah",
+    "Akbar", "Gholamreza", "Javad", "Ali-Asghar", "Hamed", "Omid",
+    "Mojtaba", "Eḥsan", "Iraj", "Milad", "Siavash", "Abdullah",
+    "Abolfazl", "Babak", "Bahman", "Mahdi", "Mehrdad", "Behrouz",
+    "Manouchehr", "Mansour",
+  ],
+  family: [
+    "Ebrahimi", "Heidari", "Ghorbani", "Tehrani", "Mohammadi", "Hosseini",
+    "Ahmadi", "Karimi", "Sadeghi", "Mousavi", "Afshar", "Kazemi",
+    "Hashemi", "Bagheri", "Asadi", "Jafari", "Abbasi", "Rezaee",
+    "Soltani", "Moradi", "Alizadeh", "Amini", "Amiri", "Ansari",
+    "Nouri", "Gholami", "Soleimani", "Akbarzadeh", "Azizi", "Raḥimi",
+    "Tabatabaei", "Yazdi", "Jafarian", "Najafi", "Rahmani", "Bahrami",
+    "Hatami", "Zamani", "Asgari", "Emami", "Farahani", "Khosravi",
+    "Moghaddam", "Nazari", "Norouzi", "Shariati", "Abdi", "Abdollahi",
+    "Akbari", "Bayat", "Ghaffari", "Ghasemi", "Latifi", "Moradian",
+    "Shahbazi", "Shirazi", "Esmaeili", "Habibi", "Kalhor", "Kiani",
+    "Rajabi", "Rouhani", "Salehi", "Salimi", "Sharifi", "Taheri",
+    "Aghaei", "Aslani", "Eslami", "Fallah", "Hejazi", "Kashani",
+    "Mahmoudi", "Mirzaei", "Pahlavi",
+  ],
+} as const

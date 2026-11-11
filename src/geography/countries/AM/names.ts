@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// AM name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Anna", "Karine", "Anahit", "Mariam", "Emma", "Vardouhi",
+    "Nelly", "Susanna", "Gohar", "Armine", "Diana", "Margarita",
+    "Alla", "Irina", "Kristine", "Laura", "Liana", "Hasmik",
+    "Mary", "Nune", "Tamara", "Alina", "Ani", "Anush",
+    "Gayane", "Nina", "Aida", "Eva", "Larisa", "Lena",
+    "Lilit", "Margarit", "Marine", "Naira", "Seda", "Sona",
+    "Elena", "Elina", "Greta", "Maria", "Natalia", "Silva",
+    "Sofia", "Tatevik", "Valentina", "Angela", "Arevik", "Karina",
+    "Lusine", "Lyudmila",
+  ],
+  male: [
+    "Karen", "Armen", "David", "Ashot", "Aram", "Artur",
+    "Ruben", "Albert", "Robert", "Arthur", "Eduard", "Hrant",
+    "Hayk", "Ara", "Arman", "Henrik", "Vladimir", "Alexander",
+    "Suren", "Vardan", "Stepan", "Andranik", "Sergey", "Yury",
+    "Edward", "Arsen", "Martin", "Georgy", "Levon", "Harutyun",
+    "Rafik", "Boris", "Sargis", "Vahe", "Norayr", "Edgar",
+    "Hovhannes", "Mher", "Rafayel", "Arshak", "Felix", "Gregory",
+    "Simon", "Petros", "Roman", "Aramayis", "Gevorg", "Karapet",
+    "Michael", "Rafael",
+  ],
+  family: [
+    "Grigorian", "Hovhannisyan", "Sargsyan", "Harutyunyan", "Margaryan", "Hakobyan",
+    "Petrossian", "Arutyunyan", "Mkrtchyan", "Ghazaryan", "Karapetyan", "Abrahamyan",
+    "Martirosyan", "Manukyan", "Akopyan", "Avetisyan", "Poghossian", "Davtyan",
+    "Khachatryan", "Tovmasyan", "Vardanyan", "Gevorgyan", "Mnatsakanyan", "Minassjan",
+    "Barseghyan", "Hayrapetyan", "Nazarian", "Sahakian", "Vartanian", "Ambartsumian",
+    "Arakelyan", "Grigoryan", "Howhannisjan", "Kocharyan", "Melkonyan", "Shahinyan",
+    "Voskanyan", "Arzumanyan", "Galstyan", "Mkhitaryan", "Movsisyan", "Muradyan",
+    "Safaryan", "Babayan", "Badalyan", "Darbinyan", "Ghukasyan", "Manasyan",
+    "Melikyan", "Nalbandian", "Zakaryan", "Baghdasaryan", "Nersessian", "Ohanian",
+    "Petrosyan", "Poghosyan", "Sahakyan", "Simonian", "Sukiasyan", "Yeritsyan",
+    "Aslanyan", "Mirzoyan", "Tumanyan", "Aleksanyan", "Azatyan", "Gabrielyan",
+    "Galstian", "Gasparian", "Gasparyan", "Papikyan", "Simonyan", "Stepanyan",
+    "Tadevosyan", "Tsaturyan", "Vartapetian",
+  ],
+} as const

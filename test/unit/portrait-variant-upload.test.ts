@@ -10,7 +10,7 @@ const catalog: PortraitCatalog = {
   version: 'v1', publicBaseUrl: 'https://images.example.test',
   assets: [{ id: 'p_0001', objectKey: 'portraits/v1/p_0001.webp', catalogVersion: 'v1',
     ageGroup: 'adult', apparentAgeRanges: [[28, 32]], gender: 'female', visualGroup: 'european',
-    appearance: 'european', rights: 'Reviewed synthetic portrait', sha256: 'a'.repeat(64),
+    appearance: 'european', skinToneMst: 2, rights: 'Reviewed synthetic portrait', sha256: 'a'.repeat(64),
     variants: {
       large: { objectKey: 'portraits/v1/large/p_0001.webp', sha256: 'a'.repeat(64) },
       medium: { objectKey: key, sha256: hash },
@@ -24,6 +24,16 @@ function request(path: string) {
 }
 
 describe('local variant publisher', () => {
+  it('refuses an unannotated approved catalogue before writing any object', async () => {
+    const store = { head: vi.fn(async () => null), put: vi.fn(async () => ({
+      size: bytes.length, customMetadata: { sha256: hash },
+    })) }
+    const unannotated = { ...catalog, assets: [{ ...catalog.assets[0], skinToneMst: undefined }] }
+    expect((await handlePortraitUpload(request(key), store, unannotated)).status).toBe(403)
+    expect(store.head).not.toHaveBeenCalled()
+    expect(store.put).not.toHaveBeenCalled()
+  })
+
   it('accepts only exact approved manifest keys and hashes', async () => {
     const store = { head: vi.fn(async () => null), put: vi.fn(async () => ({
       size: bytes.length, customMetadata: { sha256: hash },
