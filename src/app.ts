@@ -5,7 +5,8 @@ import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from 'typebox'
-import { PeopleQueryError, parsePeopleQuery } from './people-query.js'
+import { PeopleQueryError } from './people-query.js'
+import { parsePeopleRequest, peoplePaginationMetadata } from './people-pagination.js'
 import { peopleCacheHeaders } from './cache-policy.js'
 import { matchesIfNoneMatch } from './conditional-request.js'
 import { geographicDataVersion } from './geography/data-version.js'
@@ -163,18 +164,22 @@ export function buildApp(options: AppOptions = {}) {
   app.get('/people', (request, reply) => {
     try {
       const params = new URL(request.raw.url ?? '/people', 'http://localhost').searchParams
-      const query = parsePeopleQuery(params)
-      const headers = peopleCacheHeaders(200, query, params.has('asOf'), {
+      const versions = {
         dataVersion: geographicDataVersion, catalogVersion: catalog.version,
         portraitSelectionVersion: catalog.selectionVersion ?? portraitSelectionVersion,
         portraitCatalogFingerprint,
-      })
+      }
+      const page = parsePeopleRequest(params, versions)
+      const { query } = page
+      const pagination = peoplePaginationMetadata(page, versions)
+      const headers = peopleCacheHeaders(200, query, page.cacheable, versions)
       reply.header('Cache-Control', headers['Cache-Control'])
       if (headers.ETag !== undefined) {
         reply.header('ETag', headers.ETag)
         if (matchesIfNoneMatch(request.headers['if-none-match'], headers.ETag)) return reply.code(304).send()
       }
       const response = generatePeopleResponse(query, catalog)
+      if (pagination) response.meta.pagination = pagination
       generatedCounts.set(request, response.results.length)
       return projectPeopleResponse(response, query.fields)
     } catch (error) {
