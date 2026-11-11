@@ -1,0 +1,57 @@
+import { readFile } from 'node:fs/promises'
+
+// These are the default v2 fields used by the example mapping.
+// Generate full fixtures (without --fields) or adapt this contract as well.
+type PersonaPerson = {
+  name: { first: string; last: string; full: string }
+  email: string
+  dob: { date: string }
+  location: { city: string; country: { code: string } }
+  picture: { large: string } | null
+}
+
+function record(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isPerson(value: unknown): value is PersonaPerson {
+  if (!record(value) || !record(value.name) || !record(value.dob) || !record(value.location)
+    || !record(value.location.country)) return false
+  return typeof value.name.first === 'string' && typeof value.name.last === 'string'
+    && typeof value.name.full === 'string' && typeof value.email === 'string'
+    && typeof value.dob.date === 'string' && Number.isFinite(Date.parse(value.dob.date))
+    && typeof value.location.city === 'string' && typeof value.location.country.code === 'string'
+    && (value.picture === null || (record(value.picture) && typeof value.picture.large === 'string'))
+}
+
+async function readPeople(): Promise<PersonaPerson[]> {
+  // Relative to this file, so execution does not depend on the terminal's working directory.
+  const contents = await readFile(new URL('./fixtures/people.json', import.meta.url), 'utf8')
+  const envelope: unknown = JSON.parse(contents)
+  if (!record(envelope) || !record(envelope.meta) || envelope.meta.schemaVersion !== '2'
+    || !Array.isArray(envelope.results) || envelope.results.length === 0
+    || envelope.meta.count !== envelope.results.length || !envelope.results.every(isPerson)) {
+    throw new Error('Expected full Persona v2 fixtures with name, email, dob, location and picture fields.')
+  }
+  return envelope.results
+}
+
+// Adapt these fields to your model, including required values and relations.
+function mapPerson(person: PersonaPerson) {
+  return {
+    firstName: person.name.first,
+    lastName: person.name.last,
+    email: person.email,
+    birthDate: new Date(person.dob.date),
+    country: person.location.country.code,
+    city: person.location.city,
+    avatarUrl: person.picture?.large ?? null,
+  }
+}
+
+async function main() {
+  const people = await readPeople()
+  const records = people.map(mapPerson)
+  await insertPeople(records)
+  console.log(`Seeded ${records.length} people.`)
+}

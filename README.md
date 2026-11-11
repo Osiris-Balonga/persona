@@ -12,6 +12,8 @@ The [usage analytics guide](docs/analytics.md) defines private API request and p
 Start with the [developer API guide](docs/developer-api.md); the full request and response rules are in the [API contract](docs/api.md).
 See a [complete v2 response](examples/people-response-v2.json) for the current JSON structure.
 
+The [Persona CLI](packages/cli/README.md) exports v2 fixtures, lists bundled country coverage, and creates seed templates for Prisma or custom database clients. It is available from a local npm archive; it has not been published to npm. Seed mapping and database execution remain application-owned.
+
 ## Principles
 
 - Generate people, not general-purpose fake data.

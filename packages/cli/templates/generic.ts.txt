@@ -1,0 +1,12 @@
+// Import your application's database client here, if needed.
+
+async function insertPeople(people: ReturnType<typeof mapPerson>[]): Promise<void> {
+  throw new Error('Adapt mapPerson and implement insertPeople with your database client before running this seed.')
+  // Insert the mapped records here; choose idempotency and transaction rules
+  // appropriate for your application, and close your database client in finally.
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : 'Seed failed.')
+  process.exitCode = 1
+})

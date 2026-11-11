@@ -1,0 +1,16 @@
+{
+  "name": "@osiris-balonga/persona-cli",
+  "version": "0.1.0",
+  "description": "Persona profile fixtures and seed scaffolding",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "bin": { "persona": "dist/index.js" },
+  "files": ["dist", "data", "templates", "assets", "LICENSE"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Osiris-Balonga/persona.git",
+    "directory": "packages/cli"
+  }
+}
