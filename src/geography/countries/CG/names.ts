@@ -1,7 +1,45 @@
-// Source-backed local name components; coverage and limits in docs/geographic-data.md.
-// CG name sources: congo-senate-names, geonames-country-info.
+// Reviewed country name components; see docs/geographic-data.md and data/geography/sparse-name-enrichment-2026-11-11.json.
+// CG name sources: congo-senate-names, geonames-country-info, wikidata-africa-qlever-candidates.
 export const names = {
-  female: ['Pascaline', 'Simone', 'Hortense', 'Charlotte', 'Jeanne'],
-  male: ['Daniel', 'Théophile', 'Michel', 'Pascal', 'Guillaume'],
-  family: ['Adoua', 'Mahinga', 'Okoula', 'Ngoto', 'Assassa', 'Banvidi'],
+  female: [
+    "Pascaline", "Simone", "Hortense", "Charlotte", "Jeanne", "Antoinette",
+    "Micheline", "Stella", "Agathe", "Céline", "Diane", "Edith",
+    "Édith", "Germaine", "Henriette", "Inès", "Jacqueline", "Joséphine",
+    "Julienne", "Léontine", "Rosalie", "Sylvie", "Viviane", "Yvonne",
+    "Adelaide", "Adèle", "Albertine", "Aleth", "Alice", "Alima",
+    "Amélia", "Aminata", "Angèle", "Angélique", "Anne", "Annette",
+    "Arlette", "Aurèle", "Aurore", "Bernadette", "Brigitte", "Carine",
+    "Cecilia", "Cécilia", "Christelle", "Christiane", "Clarisse", "Claudia",
+    "Claudine", "Dany",
+  ],
+  male: [
+    "Daniel", "Théophile", "Michel", "Pascal", "Guillaume", "Jean",
+    "Pierre", "Joseph", "Alphonse", "Bernard", "François", "André",
+    "Charles", "Paul", "Jean-Pierre", "Albert", "Antoine", "Dominique",
+    "Emmanuel", "Gabriel", "Jean-Claude", "Serge", "Denis", "Dieudonné",
+    "Guy", "Louis", "Marcel", "Aimé", "Alain", "Christian",
+    "Claude", "Émile", "Gaston", "Henri", "Jacques", "Léon",
+    "Luc", "Maurice", "Philippe", "Prince", "Robert", "Victor",
+    "Christ", "David", "Gilbert", "Jean-Michel", "Justin", "Patrice",
+    "Raymond", "Thierry",
+  ],
+  family: [
+    "Adoua", "Mahinga", "Okoula", "Ngoto", "Assassa", "Banvidi",
+    "Itoua", "Okemba", "Samba", "Ayessa", "Makita", "Malonga",
+    "Mbemba", "Ayina", "Diawara", "Ganga", "Goma", "Ibovi",
+    "Kamba", "Kouka", "Massengo", "Matondo", "Mayela", "Menga",
+    "Nanda", "Nkounkou", "Onanga", "Ossébi", "Pongault", "Tchitchéllé",
+    "Wamba", "Yhombi-Opango", "Abia", "Abibi", "Abomangoli", "Bakale",
+    "Balla", "Ballou", "Bani", "Bassouamina", "Bayonsama", "Beka",
+    "Biayenda", "Bondo", "Bouele", "Boukaka", "Bouya", "Dambendzet",
+    "Dello", "Dembélé", "Diabatantou", "Diagouraga", "Diallo", "Diamesso",
+    "Diantete", "Dianzinga", "Dungia", "Ebata", "Ebondo", "Elion",
+    "Fila", "Fuakala", "Gambo", "Gandou", "Ganvoula", "Gotene",
+    "Goteni", "Ibacka", "Ingondo", "Kaba", "Kabasele", "Kadima",
+    "Kajima", "Kakou", "Kalina", "Kalonji", "Kando", "Kashama",
+    "Kazadi", "Kiminou", "Koka", "Kolélas", "Kombo", "Kondé",
+    "Kongo", "Koumba", "Kythouka", "Lassy", "Linganzi", "Locko",
+    "Lopes", "Louhoungou", "Loutelamio", "M'Passi", "M'Pelé", "M'Vila",
+    "Mabiala", "Maboulou", "Mafoumbi", "Makonda",
+  ],
 } as const

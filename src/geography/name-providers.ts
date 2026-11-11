@@ -59,10 +59,16 @@ const nameSourceByCountry: Record<string, GeographicSource> = {
   YT: 'insee-mayotte-given-names', ZW: 'wikidata-africa-qlever-candidates',
 }
 const nameSupplementaryByCountry: Record<string, readonly GeographicSource[]> = {
-  AD: ['andorra-civil-names'], ET: ['uk-ethiopia-names'], GE: ['geonames-country-info', 'georgia-name-statistics'],
+  AD: ['andorra-civil-names'], ET: ['uk-ethiopia-names', 'wikidata-africa-qlever-candidates'], GE: ['geonames-country-info', 'georgia-name-statistics'],
+  BW: ['geonames-country-info', 'wikidata-africa-qlever-candidates'],
+  CG: ['geonames-country-info', 'wikidata-africa-qlever-candidates'],
+  LS: ['geonames-country-info', 'wikidata-africa-qlever-candidates'],
+  NA: ['geonames-country-info', 'wikidata-africa-qlever-candidates'],
+  SC: ['geonames-country-info', 'wikidata-africa-qlever-candidates'],
+  ZA: ['geonames-country-info', 'faker', 'wikidata-africa-qlever-candidates'],
   GH: ['faker', 'ghana-parliament-names'], ID: ['geonames-country-info', 'uk-indonesia-names'],
   DJ: ['wikidata-africa-birthplace-candidates'], ER: ['wikidata-africa-birthplace-candidates'], GW: ['wikidata-africa-birthplace-candidates'],
-  KE: ['kenya-parliament-names'], KM: ['wikidata-africa-birthplace-candidates'], LY: ['wikidata-africa-birthplace-candidates'], MM: ['uk-myanmar-names'], MR: ['wikidata-africa-birthplace-candidates'], MW: ['ifla-malawi-names'],
+  KE: ['kenya-parliament-names'], KM: ['wikidata-africa-birthplace-candidates'], LY: ['wikidata-africa-birthplace-candidates'], MM: ['uk-myanmar-names'], MR: ['wikidata-africa-birthplace-candidates'], MW: ['ifla-malawi-names', 'wikidata-africa-qlever-candidates'],
   NE: ['wikidata-africa-birthplace-candidates'], SH: ['st-helena-election-names-2021'], ST: ['wikidata-africa-birthplace-candidates'], SZ: ['wikidata-africa-birthplace-candidates'], TD: ['wikidata-africa-birthplace-candidates'],
   RE: ['insee-reunion-family-names'], RW: ['rwanda-vital-names', 'rwanda-parliament-names'], SN: ['faker', 'senegal-presidency-names'],
   TZ: ['tanzania-parliament-names'], UG: ['uganda-parliament-names'],

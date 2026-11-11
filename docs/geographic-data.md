@@ -20,11 +20,64 @@ country availability, weighting, source identifiers and array order are unchange
 `npm run data:refresh:names -- <countryInfo.txt>` refreshes the generated country contexts,
 shared locale pools and their registries; it never overwrites reviewed `countries/<ISO>/names.ts`.
 
-The migration replay fixture in `test/fixtures/country-name-replay.json` was captured from
-the `sourceRevision` recorded in that file before moving any data. Its tests cover all provider
-contents, complete profiles across genders and age groups, and HTTP batch bodies and ETags.
-An intentional future data or generation-policy change must review these expectations and
-bump the relevant data or algorithm version. This file reorganization does not require a bump.
+The replay fixture in `test/fixtures/country-name-replay.json` records the current `dataVersion`.
+Its tests cover all provider contents, complete profiles across genders and age groups, and
+HTTP batch bodies and ETags. The initial migration baseline was captured before moving any
+data at revision `c29c517`; that baseline is retained in Git history. An intentional data or
+generation-policy change must review the expectations and bump the relevant version.
+
+## Name diversity review, 2026-11-11
+
+`npm run data:audit:name-diversity -- --limit 20` ranks the profile-enabled countries by
+the smaller of their female and male name capacities. Use
+`npm run --silent data:audit:name-diversity -- --json` for machine-readable component counts,
+strategies, source editions, licenses, hashes and quality issues. Whole-name pools count their stored full names;
+paired pools count distinct complete combinations; patronymic pools exclude an identical first
+and paternal name. Unicode normalization, case, whitespace and overlapping pool entries do not
+inflate counts. Capacity describes supported name strings, not a population-frequency model
+or a promise that every generated person has a different name.
+
+The first enrichment batch targets the ten countries previously below 100 combinations for
+at least one gender. The source and selection ledger is
+`data/geography/sparse-name-enrichment-2026-11-11.json`; it records input hashes, exclusions,
+retained examples, limitations and before/after counts. Existing source terms remain applicable.
+
+| Country | Female combinations before → after | Male combinations before → after |
+| --- | ---: | ---: |
+| MM | 6 → 50 | 6 → 50 |
+| BT | 12 → 84 | 12 → 84 |
+| ET | 25 → 2,500 | 20 → 2,450 |
+| MW | 20 → 300 | 20 → 300 |
+| CG | 30 → 5,000 | 30 → 5,000 |
+| LS | 40 → 360 | 40 → 1,200 |
+| BW | 42 → 5,000 | 42 → 5,000 |
+| NA | 42 → 5,000 | 42 → 5,000 |
+| SC | 48 → 5,000 | 48 → 5,000 |
+| ZA | 90 → 9,933 | 90 → 9,933 |
+
+African additions use the existing pinned [Wikidata](https://www.wikidata.org/wiki/Wikidata:Licensing)
+CC0 candidate snapshot, with country/gender review and suspect labels deferred. South Africa
+also retains the Stats SA examples and adds reviewed components from the pinned Faker `zu_ZA`
+MIT snapshot. These are bounded compatibility samples; citizenship links and language datasets
+do not establish statistical representativeness or every local community's naming conventions.
+
+Myanmar retains whole-name selection: its 50 names per gender are multiword common-name facts
+from the existing [male](https://burmesenames.wordpress.com/2014/06/07/the-100-most-popular-male-burmese-names/)
+and [female](https://burmesenames.wordpress.com/2014/06/07/the-100-most-popular-female-burmese-names/)
+frequency publications. No surname is invented by recombining arbitrary elements, and the
+original source's urban, age and gender biases remain. Bhutan expands only the two-part
+given-name convention documented by [Karma Phuntsho](https://texts.mandala.library.virginia.edu/book_pubreader/39441).
+Ethiopia keeps male given names in the paternal position, consistent with
+[HM Passport Office guidance](https://www.gov.uk/government/publications/ethiopia-knowledge-base-profile/ethiopia-knowledge-base-profile).
+Malawi retains a bounded Chichewa unisex sample: `Mavuto` is the sixth example explicitly
+described as appropriate for both girls and boys on printed page 74 of the existing
+[Peace Corps handbook](https://files.eric.ed.gov/fulltext/ED206157.pdf). It is not a broader
+review of Malawi's given names. Lesotho also remains below the broad-corpus target.
+
+This batch uses `geo-2026-11-11.1`. Seeded results and ETags intentionally change with that
+version; replay remains deterministic within the same versions. The other 239 provider
+fingerprints and both shared fallback snapshots were checked against the prior version and
+remain identical. The historical review notes below describe earlier stages of the corpus.
 
 ## Country and territory registry
 
