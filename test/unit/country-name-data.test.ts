@@ -4,16 +4,21 @@ import { listCountries } from '../../src/geography/countries.js'
 import { resolveNameProvider } from '../../src/geography/name-providers.js'
 import { nameContextData } from '../../src/geography/name-context-data.js'
 import { namePoolData } from '../../src/geography/name-pool-data.js'
+import { geographicDataVersion } from '../../src/geography/data-version.js'
 import baseline from '../fixtures/country-name-replay.json'
 import { fingerprint } from '../helpers/country-name-replay.js'
 
 describe('country name datasets', () => {
+  it('pins the reviewed replay expectations to their geographic data version', () => {
+    expect(geographicDataVersion).toBe(baseline.dataVersion)
+  })
+
   it('preserves the complete fallback snapshots, including pools overridden by reviewed providers', () => {
     expect({ nameContextData: fingerprint(nameContextData), namePoolData: fingerprint(namePoolData) })
       .toEqual(baseline.snapshots)
   })
 
-  it('preserves every provider, array order, context, strategy and source from before the move', () => {
+  it('matches the reviewed provider arrays, contexts, strategies and sources for this data version', () => {
     const providers = Object.fromEntries(listCountries().map(({ code }) => [
       code, fingerprint(resolveNameProvider(code) ?? null),
     ]))

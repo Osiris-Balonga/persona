@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-11",
+  "scope": "First ten profile-enabled countries with fewer than 100 valid name combinations for either gender. Editorial compatibility samples, not representative name-frequency distributions.",
+  "candidateSnapshot": {
+    "file": "data/geography/africa-name-candidates-2026-09-24.json",
+    "sha256": "db878f5a1f9b4b1ca9165cc3a2b9b4938e9090866410973dd5ea7a524afa89d6",
+    "license": "CC0-1.0",
+    "lineEndings": "LF"
+  },
+  "commonNameSources": [
+    {
+      "gender": "female",
+      "url": "https://burmesenames.wordpress.com/2014/06/07/the-100-most-popular-female-burmese-names/",
+      "retrievedAt": "2026-11-11",
+      "sourceHtmlSha256": "78c055f06453ec4de654884383d6de11cef7ea9ad637a25214db77ee4a53724f",
+      "selection": "50 distinct multiword common-name strings, retaining the original sample; single-word names are outside the two-display-field contract. No person records or frequency counts retained."
+    },
+    {
+      "gender": "male",
+      "url": "https://burmesenames.wordpress.com/2014/06/07/the-100-most-popular-male-burmese-names/",
+      "retrievedAt": "2026-11-11",
+      "sourceHtmlSha256": "11a80ae98b06b2a05c7aabcc0aeae76a18f12e1dca94ff2720fdbe962e71c093",
+      "selection": "50 distinct multiword common-name strings, retaining the original sample; single-word names are outside the two-display-field contract. No person records or frequency counts retained."
+    }
+  ],
+  "conventionSources": [
+    {
+      "id": "bhutan-naming-study",
+      "url": "https://texts.mandala.library.virginia.edu/shanti_texts/node_embed/39441",
+      "selection": "Only explicitly documented neutral first/second elements and gender-associated second elements; no inherited surname."
+    },
+    {
+      "id": "peace-corps-chichewa-names",
+      "url": "https://files.eric.ed.gov/fulltext/ED206157.pdf",
+      "selection": "Mavuto is the sixth example explicitly described as suitable for both girls and boys on printed page 74; keep the five existing examples."
+    }
+  ],
+  "countries": {
+    "CG": {
+      "before": {
+        "female": {
+          "given": 5,
+          "second": 6,
+          "combinations": 30
+        },
+        "male": {
+          "given": 5,
+          "second": 6,
+          "combinations": 30
+        },
+        "minimumCombinations": 30
+      },
+      "fields": {
+        "female": 50,
+        "male": 50,
+        "family": 100
+      },
+      "sourceIds": [
+        "congo-senate-names",
+        "geonames-country-info",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "5cddfb4b32e20f58d4af124688308d68e3e5f6d9c56d7dce3c83f9d361b73cee",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {
+        "female": [
+          "Bernard",
+          "Jean-Paul"
+        ],
+        "family": [
+          "forest",
+          "Mbama District"
+        ]
+      },
+      "limitations": "Country-linked compatibility examples; Wikidata citizenship candidates and small official rosters are not national population frequencies.",
+      "after": {
+        "female": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "male": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "minimumCombinations": 5000
+      }
+    },
+    "BW": {
+      "before": {
+        "female": {
+          "given": 6,
+          "second": 7,
+          "combinations": 42
+        },
+        "male": {
+          "given": 6,
+          "second": 7,
+          "combinations": 42
+        },
+        "minimumCombinations": 42
+      },
+      "fields": {
+        "female": 50,
+        "male": 50,
+        "family": 100
+      },
+      "sourceIds": [
+        "botswana-parliament-names",
+        "geonames-country-info",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "f813c97305b2ffba2ee907736aa7011a770a6b17b4116211386de468d3b3da8b",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {
+        "female": [
+          "Paul",
+          "Jose",
+          "Keotshephile Motseonageng"
+        ],
+        "male": [
+          "Helen"
+        ],
+        "family": [
+          "Michelle",
+          "Boy",
+          "German"
+        ]
+      },
+      "limitations": "Country-linked compatibility examples; Wikidata citizenship candidates and small official rosters are not national population frequencies.",
+      "after": {
+        "female": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "male": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "minimumCombinations": 5000
+      }
+    },
+    "NA": {
+      "before": {
+        "female": {
+          "given": 6,
+          "second": 7,
+          "combinations": 42
+        },
+        "male": {
+          "given": 6,
+          "second": 7,
+          "combinations": 42
+        },
+        "minimumCombinations": 42
+      },
+      "fields": {
+        "female": 50,
+        "male": 50,
+        "family": 100
+      },
+      "sourceIds": [
+        "namibia-parliament-names",
+        "geonames-country-info",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "e169dc056fb49d10fa6f24326e2dddce6732ab6adec784d743d4452e7dae4f23",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {
+        "male": [
+          "Jane"
+        ]
+      },
+      "limitations": "Country-linked compatibility examples; Wikidata citizenship candidates and small official rosters are not national population frequencies.",
+      "after": {
+        "female": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "male": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "minimumCombinations": 5000
+      }
+    },
+    "SC": {
+      "before": {
+        "female": {
+          "given": 6,
+          "second": 8,
+          "combinations": 48
+        },
+        "male": {
+          "given": 6,
+          "second": 8,
+          "combinations": 48
+        },
+        "minimumCombinations": 48
+      },
+      "fields": {
+        "female": 50,
+        "male": 50,
+        "family": 100
+      },
+      "sourceIds": [
+        "seychelles-parliament-names",
+        "geonames-country-info",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "aa9dd01282bffe037990973f7e455c2b67fefa1a578061452137e0d4605a133a",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {
+        "male": [
+          "Charmaine",
+          "Simone"
+        ]
+      },
+      "limitations": "Country-linked compatibility examples; Wikidata citizenship candidates and small official rosters are not national population frequencies.",
+      "after": {
+        "female": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "male": {
+          "given": 50,
+          "second": 100,
+          "combinations": 5000
+        },
+        "minimumCombinations": 5000
+      }
+    },
+    "ET": {
+      "before": {
+        "female": {
+          "given": 5,
+          "second": 5,
+          "combinations": 25
+        },
+        "male": {
+          "given": 5,
+          "second": 5,
+          "combinations": 20
+        },
+        "minimumCombinations": 20
+      },
+      "fields": {
+        "female": 50,
+        "male": 50
+      },
+      "sourceIds": [
+        "tesfa-ethiopian-names",
+        "uk-ethiopia-names",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "73c2bd15edbf2d0fbd33f4d3338bf6665bc16c6f9736b9b915848b4c98fd8789",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {},
+      "limitations": "Second display field remains a male given name, not an inherited family surname; samples cover a bounded mix of Ethiopian naming traditions.",
+      "after": {
+        "female": {
+          "given": 50,
+          "second": 50,
+          "combinations": 2500
+        },
+        "male": {
+          "given": 50,
+          "second": 50,
+          "combinations": 2450
+        },
+        "minimumCombinations": 2450
+      }
+    },
+    "MW": {
+      "before": {
+        "female": {
+          "given": 5,
+          "second": 4,
+          "combinations": 20
+        },
+        "male": {
+          "given": 5,
+          "second": 4,
+          "combinations": 20
+        },
+        "minimumCombinations": 20
+      },
+      "fields": {
+        "given": 6,
+        "family": 50
+      },
+      "sourceIds": [
+        "peace-corps-chichewa-names",
+        "ifla-malawi-names",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "4c66c1fce09620179412a6ca65b8f118bd33f98c4d066ff87cc9474f048368a9",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {},
+      "limitations": "Six documented Chichewa unisex given names; broader given-name coverage still needs local review.",
+      "after": {
+        "female": {
+          "given": 6,
+          "second": 50,
+          "combinations": 300
+        },
+        "male": {
+          "given": 6,
+          "second": 50,
+          "combinations": 300
+        },
+        "minimumCombinations": 300
+      }
+    },
+    "LS": {
+      "before": {
+        "female": {
+          "given": 5,
+          "second": 8,
+          "combinations": 40
+        },
+        "male": {
+          "given": 5,
+          "second": 8,
+          "combinations": 40
+        },
+        "minimumCombinations": 40
+      },
+      "fields": {
+        "female": 15,
+        "male": 50,
+        "family": 24
+      },
+      "sourceIds": [
+        "lesotho-parliament-names",
+        "geonames-country-info",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "ae001dcf973d1cefb36a8231029a80ebc4d5b530c3f22c2b386ccb50b5e1da61",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {
+        "female": [
+          "Alica",
+          "Jane",
+          "Mitchelle"
+        ],
+        "male": [
+          "Jane"
+        ]
+      },
+      "limitations": "Female given names and family components remain below the broad-corpus target; missing evidence is not padded.",
+      "after": {
+        "female": {
+          "given": 15,
+          "second": 24,
+          "combinations": 360
+        },
+        "male": {
+          "given": 50,
+          "second": 24,
+          "combinations": 1200
+        },
+        "minimumCombinations": 360
+      }
+    },
+    "BT": {
+      "before": {
+        "female": {
+          "given": 4,
+          "second": 3,
+          "combinations": 12
+        },
+        "male": {
+          "given": 4,
+          "second": 3,
+          "combinations": 12
+        },
+        "minimumCombinations": 12
+      },
+      "fields": {
+        "first": 12,
+        "femaleSecond": 7,
+        "maleSecond": 7
+      },
+      "sourceIds": [
+        "bhutan-naming-study",
+        "geonames-country-info"
+      ],
+      "selectedValuesSha256": "a90a5c44aece88c5c77695492c004bfa894603eff499148423154973035cc97f",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {},
+      "limitations": "Bounded Buddhist two-part given-name convention; not all Bhutanese communities. Neutral elements can occur in either name position.",
+      "after": {
+        "female": {
+          "given": 12,
+          "second": 7,
+          "combinations": 84
+        },
+        "male": {
+          "given": 12,
+          "second": 7,
+          "combinations": 84
+        },
+        "minimumCombinations": 84
+      }
+    },
+    "ZA": {
+      "before": {
+        "female": {
+          "given": 9,
+          "second": 10,
+          "combinations": 90
+        },
+        "male": {
+          "given": 9,
+          "second": 10,
+          "combinations": 90
+        },
+        "minimumCombinations": 90
+      },
+      "fields": {
+        "female": 77,
+        "male": 77,
+        "family": 129
+      },
+      "sourceIds": [
+        "stats-sa-birth-names",
+        "geonames-country-info",
+        "faker",
+        "wikidata-africa-qlever-candidates"
+      ],
+      "selectedValuesSha256": "29b3e0070dcea99d91be81998cb6e934291304ab49a79a3225c1e35d4e8f92f4",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {
+        "family": [
+          "Delazy",
+          "Dingiswayo",
+          "Senzangakhona"
+        ]
+      },
+      "limitations": "Country-linked compatibility examples; Wikidata citizenship candidates and small official rosters are not national population frequencies.",
+      "after": {
+        "female": {
+          "given": 77,
+          "second": 129,
+          "combinations": 9933
+        },
+        "male": {
+          "given": 77,
+          "second": 129,
+          "combinations": 9933
+        },
+        "minimumCombinations": 9933
+      }
+    },
+    "MM": {
+      "before": {
+        "female": {
+          "given": 6,
+          "second": 0,
+          "combinations": 6
+        },
+        "male": {
+          "given": 6,
+          "second": 0,
+          "combinations": 6
+        },
+        "minimumCombinations": 6
+      },
+      "fields": {
+        "female": 50,
+        "male": 50
+      },
+      "sourceIds": [
+        "burmese-name-frequencies",
+        "uk-myanmar-names"
+      ],
+      "selectedValuesSha256": "994ed9a1aafac61b65eec0774062450f1bc44e04d120195bdf0263c8d98b7793",
+      "review": "Retained all original components. Checked candidate labels, gender fields and top/middle/tail samples; excluded unresolved labels. New values retain input spelling. No source-person records retained.",
+      "exclusions": {},
+      "limitations": "Old urban telephone-directory frequency facts; gender, age, regional and ethnic bias remain. Complete common names are not randomly recombined.",
+      "after": {
+        "female": {
+          "given": 50,
+          "second": 0,
+          "combinations": 50
+        },
+        "male": {
+          "given": 50,
+          "second": 0,
+          "combinations": 50
+        },
+        "minimumCombinations": 50
+      }
+    }
+  },
+  "dataVersion": "geo-2026-11-11.1"
+}

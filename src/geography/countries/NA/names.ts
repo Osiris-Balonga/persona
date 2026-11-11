@@ -1,7 +1,45 @@
-// Source-backed local name components; coverage and limits in docs/geographic-data.md.
-// NA name sources: namibia-parliament-names, geonames-country-info.
+// Reviewed country name components; see docs/geographic-data.md and data/geography/sparse-name-enrichment-2026-11-11.json.
+// NA name sources: namibia-parliament-names, geonames-country-info, wikidata-africa-qlever-candidates.
 export const names = {
-  female: ['Saara', 'Emma', 'Alexia', 'Lucia', 'Hilma', 'Selma'],
-  male: ['Phillipus', 'Paulus', 'Immanuel', 'Veikko', 'Salomon', 'Willem'],
-  family: ['Kuugongelwa-Amadhila', 'Kantema', 'Manombe-Ncube', 'Iipumbu', 'Iita', 'Nekundi', 'Katamelo'],
+  female: [
+    "Saara", "Emma", "Alexia", "Lucia", "Hilma", "Selma",
+    "Anna", "Agnes", "Elizabeth", "Johanna", "Anita", "Barbara",
+    "Emilia", "Helena", "Jessica", "Julia", "Margaret", "Michelle",
+    "Monica", "Clara", "Ella", "Esme", "Helvi", "Hendrina",
+    "Lisa", "Martha", "Nicola", "Olivia", "Rosa", "Sylvia",
+    "Victoria", "Adele", "Adri", "Aili", "Albertina", "Aletta",
+    "Alicia", "Alina", "Ally", "Alma", "Amy", "Angelika",
+    "Angelina", "Anicia", "Anne", "Anne-Leen", "Annelise", "Anri",
+    "Beata", "Beatrice",
+  ],
+  male: [
+    "Phillipus", "Paulus", "Immanuel", "Veikko", "Salomon", "Willem",
+    "John", "Johannes", "Peter", "Joseph", "Hans", "David",
+    "Michael", "Petrus", "Johan", "Daniel", "Hendrik", "Richard",
+    "Andrew", "Bernard", "Dawid", "George", "Jan", "Lukas",
+    "Martin", "Moses", "Sam", "Samuel", "Andreas", "Ben",
+    "Cornelius", "Frans", "Gerhard", "Heinrich", "Herman", "Joel",
+    "Lazarus", "Louis", "Nico", "Oliver", "Pieter", "Simon",
+    "Abraham", "Christopher", "Danie", "Deon", "Frank", "Gideon",
+    "Hugo", "Ivan",
+  ],
+  family: [
+    "Kuugongelwa-Amadhila", "Kantema", "Manombe-Ncube", "Iipumbu", "Iita", "Nekundi",
+    "Katamelo", "Jacobs", "Burger", "Kruger", "Witbooi", "Angula",
+    "Scholtz", "Smith", "Afrikaner", "Coetzee", "Hoffmann", "Katjavivi",
+    "Lambert", "Mouton", "Nujoma", "Petrus", "Smit", "Steyn",
+    "Van Wyk", "Williams", "Woermann", "Amathila", "April", "Ashipala",
+    "Bassingthwaighte", "Bock", "Botes", "Brand", "Cloete", "Cronje",
+    "Dausab", "de Lange", "Diergaardt", "du Plessis", "Dumeni", "Fredericks",
+    "Geingob", "Green", "Hase", "Hausiku", "Hermanus", "Horn",
+    "Jacob", "Jooste", "Kloppers", "Krohne", "Louw", "Ludwig",
+    "McNab", "Mostert", "Mudge", "Mulunga", "Nandi", "Otto",
+    "Peters", "Pohamba", "Prinsloo", "Schlettwein", "Shivute", "Simataa",
+    "Simon", "Spies", "van der Merwe", "van der Westhuizen", "Visser", "Vorster",
+    "Vries", "Wessels", "Abraham", "Abrahams", "Ackermann", "Adams",
+    "Adrian", "Africa", "Ahrens", "Amutse", "Andreas", "Angermund",
+    "Armas", "Arnold", "Aschenborn", "Aston", "Auala", "Baard",
+    "Bach", "Basson", "Becker", "Bekker", "Bell", "Benjamin",
+    "Benson", "Bergem", "Berner", "Beukes",
+  ],
 } as const

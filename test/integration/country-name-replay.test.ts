@@ -3,8 +3,8 @@ import { buildApp } from '../../src/app.js'
 import baseline from '../fixtures/country-name-replay.json'
 import { batchReplayQueries, countryResponseFingerprint, fingerprint } from '../helpers/country-name-replay.js'
 
-describe('country data layout replay compatibility', () => {
-  it.each(Object.entries(baseline.responses))('preserves complete profiles for %s across both genders and every age group', (country, expected) => {
+describe('versioned country name replay', () => {
+  it.each(Object.entries(baseline.responses))('replays complete profiles for %s across both genders and every age group', (country, expected) => {
     expect(countryResponseFingerprint(country)).toBe(expected)
   })
 

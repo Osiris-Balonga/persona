@@ -136,8 +136,8 @@ describe('GET /people', () => {
       expect(new Set(people.map((person: { id: string }) => person.id)).size).toBe(100)
       const counts = new Map<string, number>()
       for (const person of people) counts.set(person.name.full, (counts.get(person.name.full) ?? 0) + 1)
-      expect(counts.size).toBe(20)
-      expect(Math.max(...counts.values())).toBeLessThanOrEqual(8)
+      expect(counts.size).toBe(100)
+      expect(Math.max(...counts.values())).toBe(1)
       const first = (await app.inject({ method: 'GET', url: `${base}&count=1` })).json().results[0]
       expect(people[0]).toEqual(first)
       const invalid = await app.inject({ method: 'GET', url: '/people?age=5' })
