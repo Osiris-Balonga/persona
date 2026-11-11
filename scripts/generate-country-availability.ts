@@ -22,7 +22,7 @@ const lines = [
   '| --- | --- | --- | ---: | --- |',
   ...rows.map((row) => `| ${row.code} | ${row.name.replaceAll('|', '\\|')} | ${row.profile} | ${row.citiesWithPostcode}/${row.cities} | ${row.phone} |`),
   '',
-  'The current API exposes `GET /people`; it does not have a country-capability endpoint. This versioned table is the discoverable coverage reference for the beta. See the [API contract](api.md) for request and response rules and the [geographic data notes](geographic-data.md) for provenance and limitations.',
+  'Use `GET /coverage` for country availability and the approved portrait summary from the deployed API. This table remains a versioned reference generated from the repository sources. See the [API contract](api.md) for request and response rules and the [geographic data notes](geographic-data.md) for provenance and limitations.',
   '',
 ]
 const content = lines.join('\n')

@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// NP name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Sita", "Asha", "Lila", "Sarita", "Anita", "Nisha",
+    "Rita", "Shanti", "Devi", "Gita", "Indira", "Lakshmi",
+    "Radha", "Rekha", "Sunita", "Amita", "Amrita", "Anju",
+    "Anu", "Chandra", "Gauri", "Manita", "Maya", "Mina",
+    "Mira", "Namrata", "Neri", "Nirmala", "Pooja", "Punam",
+    "Reema", "Rupa", "Sabina", "Sabita", "Sahana", "Sujata",
+    "Sushama", "Tara", "Uma", "Aanchal", "Aditi", "Aishwarya",
+    "Alina", "Alisha", "Annapurna", "Anuradha", "Anushka", "Arunima",
+    "Arzu", "Bandana",
+  ],
+  male: [
+    "Ram", "Krishna", "Chandra", "Prakash", "Narayan", "Prem",
+    "Deepak", "Hari", "Shyam", "Anil", "Lal", "Narendra",
+    "Raju", "Gopal", "Shiva", "Sunil", "Amar", "Indra",
+    "Ramesh", "Uday", "Bishal", "Kamal", "Kedar", "Mahendra",
+    "Mahesh", "Prasad", "Raj", "Sanjeev", "Shankar", "Sitaram",
+    "Arjun", "Arun", "Bijay", "Binod", "Govinda", "Karna",
+    "Keshav", "Kishor", "Nanda", "Pradip", "Pushpa", "Rajesh",
+    "Suresh", "Upendra", "Abhishek", "Ashok", "Baburam", "Balram",
+    "Basanta", "Bharat",
+  ],
+  family: [
+    "Shrestha", "Gurung", "Thapa", "Sharma", "Rai", "Koirala",
+    "Rana", "Shah", "Ghimire", "Kunwar", "Malla", "Singh",
+    "Acharya", "Joshi", "Karki", "Pradhan", "Adhikari", "Bajracharya",
+    "Basnet", "Maharjan", "Sherpa", "Yadav", "Bogati", "Giri",
+    "Mishra", "Regmi", "Rijal", "Shahi", "Subba", "Tamang",
+    "Teli", "Amatya", "Basnyat", "Bhandari", "Budhathoki", "Chaudhary",
+    "Kandel", "Khatri Chhetri", "Lamsal", "Magar", "Pant", "Pokhrel",
+    "Sapkota", "Subedi", "Baksi", "Bista", "Chaudhari", "Chhetri",
+    "Dangol", "Das", "Devkota", "Dhakal", "Gautam", "Gharti",
+    "Gyawali", "Kafle", "Khadka", "Kharel", "Kumar", "Lama",
+    "Limbu", "Mahato", "Neupane", "Paudel", "Pun", "Rayamajhi",
+    "Thapaliya", "Tiwari", "Uprety", "Aalam", "Agrahari", "Anand",
+    "Aryal", "Aufschnaiter", "Babu",
+  ],
+} as const

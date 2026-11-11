@@ -1,0 +1,40 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// AU name sources: wikidata-oceania-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Mary", "Margaret", "Elizabeth", "Anne", "Sarah", "Helen",
+    "Jane", "Kate", "Susan", "Ann", "Emma", "Louise",
+    "Catherine", "Emily", "Jessica", "Lisa", "Anna", "Barbara",
+    "Patricia", "Rebecca", "Michelle", "Jennifer", "Alice", "Sally",
+    "Karen", "Jean", "Christine", "Wendy", "Amanda", "Joan",
+    "Amy", "Ruth", "Rachel", "Nicole", "Alison", "Caroline",
+    "Dorothy", "Julie", "Robyn", "Jenny", "Frances", "Melissa",
+    "Sue", "Natalie", "Janet", "Lucy", "Stephanie", "Laura",
+    "Grace", "Kathleen", "Fiona", "Judith", "Sophie", "Linda",
+    "Angela", "Claire", "Julia", "May", "Samantha", "Deborah",
+  ],
+  male: [
+    "John", "William", "James", "David", "Peter", "Robert",
+    "George", "Michael", "Charles", "Thomas", "Andrew", "Paul",
+    "Richard", "Jack", "Henry", "Mark", "Arthur", "Edward",
+    "Frank", "Ian", "Bill", "Joseph", "Alan", "Tom",
+    "Chris", "Matthew", "Alexander", "Daniel", "Harry", "Anthony",
+    "Francis", "Stephen", "Ben", "Frederick", "Brian", "Tony",
+    "Jim", "Bruce", "Bob", "Alfred", "Albert", "Steve",
+    "Keith", "Scott", "Tim", "Kevin", "Adam", "Patrick",
+    "Gordon", "Luke", "Matt", "Donald", "Harold", "Colin",
+    "Ernest", "Eric", "Christopher", "Greg", "Craig", "Ken",
+  ],
+  family: [
+    "Smith", "Brown", "Jones", "Williams", "Wilson", "Anderson",
+    "Taylor", "Martin", "White", "Johnson", "Young", "Campbell",
+    "Walker", "Scott", "Thomas", "Green", "Hill", "Kelly",
+    "Thompson", "Evans", "Moore", "Hall", "Miller", "Ryan",
+    "Watson", "Wright", "Roberts", "Robinson", "Clarke", "Edwards",
+    "King", "Harris", "McDonald", "Davies", "Lewis", "Stewart",
+    "Mitchell", "Bennett", "Murphy", "Jackson", "Hughes", "Clark",
+    "Wood", "Davis", "James", "Cooper", "Allen", "Robertson",
+    "Murray", "Adams", "Bell", "Baker", "Kennedy", "Turner",
+    "Cox", "Morgan", "Cook", "O'Brien", "Richardson", "Phillips",
+  ],
+} as const

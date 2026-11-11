@@ -1,15 +1,18 @@
 import { resolveAsOf, type AgeGroup } from './age.js'
-import type { Person } from './contracts/person.js'
+import type { PublicPerson } from './contracts/public-person.js'
 import { parseFieldSelection, type FieldPath } from './field-selection.js'
 import { getCountry } from './geography/countries.js'
 import { listCities, getCity } from './geography/cities.js'
 import { hasReviewedNamePool } from './geography/profile-availability.js'
 import { continentForCountry, type Continent } from './geography/continents.js'
+import { eligibleContextAges, eligibleSelectedContextAges, isPortraitContext, portraitContextIds, type PortraitContext } from './portraits/contexts.js'
+import { maximumPeopleTotal, maximumPageLimit, type PeoplePage } from './people-limits.js'
 
 export interface PeopleQuery {
   count: number
+  pagination?: PeoplePage
   asOf: string
-  gender?: Person['gender']
+  gender?: PublicPerson['gender']
   ageGroup?: readonly AgeGroup[]
   nationality?: string
   residenceCountry?: string
@@ -18,6 +21,9 @@ export interface PeopleQuery {
   seed?: string
   fields?: readonly FieldPath[]
   emailDomain?: string
+  portraitContext?: PortraitContext
+  portraitContexts?: readonly PortraitContext[]
+  skinTone?: number | readonly number[]
 }
 
 export class PeopleQueryError extends Error {
@@ -34,8 +40,8 @@ export class PeopleQueryError extends Error {
 }
 
 const allowedParameters = new Set([
-  'count', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
-  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain',
+  'count', 'limit', 'gender', 'ageGroup', 'nationality', 'residenceCountry',
+  'continent', 'city', 'seed', 'asOf', 'fields', 'emailDomain', 'portraitContext', 'portraitContexts', 'skinTone',
 ])
 
 const ageGroups: readonly AgeGroup[] = ['child', 'teen', 'adult', 'senior']
@@ -58,6 +64,18 @@ function boundedString(value: string | null, name: string, maximum: number) {
     throw new PeopleQueryError('INVALID_QUERY', name, `${name} must contain 1 to ${maximum} characters`)
   }
   return value
+}
+
+function parseSkinTone(value: string | null): PeopleQuery['skinTone'] {
+  if (value === '') return []
+  if (value === null) return undefined
+  const values = value.split(',')
+  if (values.length > 10 || values.some(tone => !/^(?:[1-9]|10)$/.test(tone))
+    || new Set(values).size !== values.length) {
+    throw new PeopleQueryError('INVALID_QUERY', 'skinTone', 'skinTone must contain distinct integers from 1 to 10, separated by commas')
+  }
+  const tones = values.map(Number).sort((a, b) => a - b)
+  return tones.length === 1 ? tones[0] : tones
 }
 
 function countryCode(value: string | null, parameter: string, needsNames: boolean) {
@@ -101,17 +119,43 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   const seen = new Set<string>()
   for (const name of params.keys()) {
     if (!allowedParameters.has(name) || seen.has(name)) {
-      throw new PeopleQueryError('INVALID_QUERY', name, `Unknown or repeated parameter: ${name}`)
+      throw new PeopleQueryError('INVALID_QUERY', name.length <= 64 ? name : 'query',
+        'Use only documented query parameters, each at most once')
     }
     seen.add(name)
   }
 
-  const count = integerParameter(params.get('count'), 'count', 1, 100) ?? 1
+  const total = integerParameter(params.get('count'), 'count', 1, maximumPeopleTotal) ?? 1
+  const limit = integerParameter(params.get('limit'), 'limit', 1, maximumPageLimit) ?? maximumPageLimit
+  const paginated = params.has('limit') || total > maximumPageLimit
+  const count = paginated ? Math.min(total, limit) : total
+  const skinTone = parseSkinTone(params.get('skinTone'))
   const gender = params.get('gender')
   if (gender !== null && gender !== 'male' && gender !== 'female') {
     throw new PeopleQueryError('INVALID_QUERY', 'gender', 'gender must be male or female')
   }
   const ageGroup = parseAgeGroups(params.get('ageGroup'))
+  const selection = params.get('portraitContexts')
+  if (selection !== null && params.has('portraitContext')) {
+    throw new PeopleQueryError('CONFLICTING_FILTERS', 'portraitContexts', 'Use portraitContext or portraitContexts, not both')
+  }
+  let portraitContexts: readonly PortraitContext[] | undefined
+  if (selection !== null) {
+    const supplied = selection === '' ? [] : selection.split(',').map(value => value.trim())
+    if (supplied.some(value => !isPortraitContext(value)) || new Set(supplied).size !== supplied.length) {
+      throw new PeopleQueryError('INVALID_QUERY', 'portraitContexts', 'portraitContexts must contain distinct known contexts or be empty')
+    }
+    portraitContexts = portraitContextIds.filter(value => supplied.includes(value))
+  }
+  const portraitContext = params.get('portraitContext') ?? 'standard'
+  if (!isPortraitContext(portraitContext)) {
+    throw new PeopleQueryError('UNSUPPORTED_VALUE', 'portraitContext', 'Unknown portraitContext')
+  }
+  if ((portraitContexts === undefined ? eligibleContextAges(portraitContext, ageGroup)
+    : eligibleSelectedContextAges(portraitContexts, ageGroup)).length === 0) {
+    throw new PeopleQueryError('CONFLICTING_FILTERS', 'ageGroup',
+      'ageGroup has no eligible ages for the selected portrait types; change ageGroup or add a compatible portrait type')
+  }
   let nationality = countryCode(params.get('nationality'), 'nationality', true)
   let residenceCountry = countryCode(params.get('residenceCountry'), 'residenceCountry', false)
   const continentValue = params.get('continent')
@@ -142,8 +186,9 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   if (fieldsValue !== undefined) {
     try {
       fields = parseFieldSelection(fieldsValue)
-    } catch (error) {
-      throw new PeopleQueryError('INVALID_QUERY', 'fields', (error as Error).message)
+    } catch {
+      throw new PeopleQueryError('INVALID_QUERY', 'fields',
+        'fields must contain distinct public paths without parent/child overlaps; see the API field list')
     }
   }
 
@@ -151,13 +196,17 @@ export function parsePeopleQuery(params: URLSearchParams, now: Date = new Date()
   try {
     asOf = resolveAsOf(params.get('asOf') ?? undefined, now)
   } catch {
-    throw new PeopleQueryError('INVALID_QUERY', 'asOf', 'asOf must be a valid YYYY-MM-DD date')
+    throw new PeopleQueryError('INVALID_QUERY', 'asOf', 'asOf must be a valid YYYY-MM-DD date between 0102-01-01 and 9999-12-31')
   }
 
   return {
     count,
+    ...(paginated ? { pagination: { total, limit, offset: 0 } } : {}),
     asOf,
     emailDomain,
+    ...(skinTone === undefined ? {} : { skinTone }),
+    ...(params.has('portraitContext') ? { portraitContext } : {}),
+    ...(portraitContexts === undefined ? {} : { portraitContexts }),
     ...(gender === null ? {} : { gender }),
     ...(ageGroup === undefined ? {} : { ageGroup }),
     ...(nationality === undefined ? {} : { nationality }),

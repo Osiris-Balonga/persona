@@ -4,6 +4,7 @@ import { ageGroupForAge } from '../age.js'
 import { areConsecutivePortraitAgeRanges, isPortraitAgeRange, portraitAgeRanges } from '../review/age-ranges.js'
 import { areAppearanceTags, tagsMatchAppearance, type AppearanceTag } from './appearance-tags.js'
 import { isPortraitCollection, type PortraitCollection } from '../review/collections.js'
+import { contextIntersectsRange, isPortraitContext, type PortraitContext } from './contexts.js'
 
 type PortraitProfile = Pick<Person, 'age' | 'ageGroup' | 'gender' | 'appearance'>
 type PortraitGroup = Pick<Person, 'ageGroup' | 'gender' | 'appearance'>
@@ -22,6 +23,7 @@ export interface PortraitAsset {
   visualGroup: string
   appearance: Appearance
   collection?: PortraitCollection
+  portraitContext?: PortraitContext
   compatibleAppearances?: readonly Appearance[]
   appearanceTags?: readonly AppearanceTag[]
   skinToneMst?: number
@@ -33,15 +35,19 @@ export interface PortraitAsset {
 
 export interface PortraitCatalog {
   version: string
+  selectionVersion?: string
   publicBaseUrl: string | null
   assets: readonly PortraitAsset[]
 }
 
 export const minimumApprovedPortraits = 2
 
-export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
+export function validatePortraitCatalog(
+  catalog: PortraitCatalog, options: { requireSkinTone?: boolean } = {},
+): string[] {
   const errors: string[] = []
   if (!/^[a-z][a-z0-9-]*$/.test(catalog.version)) errors.push('Invalid catalog version')
+  if (catalog.selectionVersion !== undefined && !/^[a-z][a-z0-9-]*$/.test(catalog.selectionVersion)) errors.push('Invalid portrait selection version')
   if (catalog.publicBaseUrl !== null) {
     try {
       const url = new URL(catalog.publicBaseUrl)
@@ -69,6 +75,9 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
     }
     if (asset.skinToneMst !== undefined && (!Number.isInteger(asset.skinToneMst)
       || asset.skinToneMst < 1 || asset.skinToneMst > 10)) errors.push(`Invalid Monk tone ${asset.id}`)
+    if (options.requireSkinTone && asset.reviewStatus === 'approved' && asset.skinToneMst === undefined) {
+      errors.push(`${asset.id}: skin-tone annotation is required for publication`)
+    }
     if (asset.collection !== undefined && !isPortraitCollection(asset.collection)) {
       errors.push(`Invalid portrait collection ${asset.id}`)
     }
@@ -83,6 +92,11 @@ export function validatePortraitCatalog(catalog: PortraitCatalog): string[] {
       errors.push(`Invalid visual appearance tags ${asset.id}`)
     }
     const ranges = asset.apparentAgeRanges
+    const context = asset.portraitContext === undefined ? 'standard' : asset.portraitContext
+    if (!isPortraitContext(context)) errors.push(`Invalid portrait context ${asset.id}`)
+    else if (!ranges.every(([minimum, maximum]) => contextIntersectsRange(context, minimum, maximum))) {
+      errors.push(`Portrait age ranges do not match context ${asset.id}`)
+    }
     if (!areConsecutivePortraitAgeRanges(ranges)
       || !isPortraitAgeRange(asset.ageGroup, ranges[0][0], ranges[0][1])) {
       errors.push(`Invalid portrait age ranges ${asset.id}`)
@@ -129,6 +143,7 @@ export function approvedPortraitHash(catalog: PortraitCatalog, key: string): str
 function compatible(catalog: PortraitCatalog, profile: PortraitProfile) {
   if (ageGroupForAge(profile.age) !== profile.ageGroup) return []
   return catalog.assets.filter((asset) => asset.reviewStatus === 'approved'
+    && (asset.portraitContext ?? 'standard') === 'standard'
     && asset.gender === profile.gender
     && (profile.appearance === 'mixed'
       ? (asset.compatibleAppearances ?? [asset.appearance]).includes('mixed')

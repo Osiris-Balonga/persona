@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// BD name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Farida", "Selina", "Laila", "Rokeya", "Yasmin", "Dilara",
+    "Nadia", "Sabrina", "Sonia", "Sultana", "Sabina", "Sadia",
+    "Salma", "Shirin", "Anika", "Anwara", "Dolly", "Farzana",
+    "Ferdousy", "Khadija", "Nusrat", "Rozina", "Sabita", "Sahara",
+    "Sara", "Sufia", "Alina", "Anjana", "Doli", "Faraḥ",
+    "Farhana", "Jahanara", "Jasmin", "Khatun", "Lata", "Latifa",
+    "Lucy", "Mahfuza", "Maya", "Monica", "Monira", "Mumtaz",
+    "Nasima", "Nina", "Nova", "Parvin", "Rina", "Rita",
+    "Samina", "Sanjida",
+  ],
+  male: [
+    "Mohammad", "Muhammad", "Ahmed", "Mohamed", "Abdullah", "Ali",
+    "Enamul", "Asif", "Fazlur", "Hasan", "Iqbal", "Mustafa",
+    "Anwar", "Kamal", "Ziaur", "Aziz", "İmran", "Jewel",
+    "Lutfor", "Mostafa", "Nazmul", "Rahman", "Rashid", "Farid",
+    "Hossain", "Mizanur", "Quazi", "Sohel", "Abdul Mannan", "Asaduzzaman",
+    "Ayub", "Ferdous", "Habib", "Jamal", "Mahbub", "Masud",
+    "Oli", "Sadik", "Salman", "Abd al-Karīm", "Abd al-Salam", "Abdul Jabbar",
+    "Abed", "Ahmad", "Akhtar", "Ali Akbar", "Amir", "Anisul",
+    "Azad", "Barua",
+  ],
+  family: [
+    "Chowdhury", "Rahman", "Ahmed", "Hossain", "Islam", "Khan",
+    "Hasan", "Haque", "Alam", "Akhter", "Ali", "Choudhury",
+    "Khatun", "Begum", "Ghosh", "Ahmad", "Akter", "Zaman",
+    "Hoque", "Kabir", "Karim", "Sarkar", "Roy", "Saha",
+    "Sarker", "Uddin", "Das", "Dutta", "Hussein", "Imam",
+    "Mahmud", "Rashid", "Talukder", "Anwar", "Barua", "Biswas",
+    "Hussain", "Jahan", "Khondakar", "Parvin", "Rozario", "Siddique",
+    "Sultana", "Haider", "Hamid", "Haq", "Hayat", "Huq",
+    "Kaiser", "Abedin", "Alauddin", "Azam", "Bhuiyan", "Chakrabarti",
+    "Chakraborty", "Chaudhury", "Costa", "Gomes", "Kamal", "Kazi",
+    "Khaled", "Khanam", "Khandker", "Lohani", "Nahar", "Parvez",
+    "Pathan", "Russell", "Samad", "Selim", "Shah", "Singh",
+    "Abdullah", "Abed", "Adhikari",
+  ],
+} as const

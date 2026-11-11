@@ -17,6 +17,22 @@ const squarePortrait = () => sharp({ create: { width: 768, height: 768, channels
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))) })
 
 describe('portrait review storage', () => {
+  it('embeds an explicit doctor context and rejects incompatible or null contexts before review', async () => {
+    const { root, store } = await createStore()
+    const candidate = await store.ingest(await squarePortrait(), 'doctor-female-30.png')
+    const metadata = { ageGroup: 'adult' as const, apparentAgeMin: 28, apparentAgeMax: 32,
+      gender: 'female' as const, appearance: 'central-african' as const, visualGroup: 'black',
+      portraitContext: 'doctor' as const, rights: 'Synthetic portrait for Persona', rightsEvidence: 'Manual generation record' }
+    const ready = await store.setMetadata(candidate.id, metadata)
+    expect(ready.metadata?.portraitContext).toBe('doctor')
+    const embedded = (await sharp(await readFile(join(root, 'webp', `${candidate.id}.webp`))).metadata()).xmpAsString ?? ''
+    expect(embedded).toContain('portraitContext="doctor"')
+    await expect(store.setMetadata(candidate.id, { ...metadata, portraitContext: null } as unknown as typeof metadata))
+      .rejects.toThrow('context')
+    await expect(store.setMetadata(candidate.id, { ...metadata, ageGroup: 'child', apparentAgeMin: 6, apparentAgeMax: 8 }))
+      .rejects.toThrow('context')
+    expect((await store.get(candidate.id))?.status).toBe('ready-for-review')
+  })
   it('assigns a production collection without claiming a visual origin or changing approval', async () => {
     const { store } = await createStore()
     const candidate = await store.ingest(await squarePortrait(), 'european-batch.png')
@@ -37,6 +53,19 @@ describe('portrait review storage', () => {
     expect(await readdir(join(root, 'masters'))).toEqual([`${candidate.id}.png`])
     expect(await readdir(join(root, 'webp'))).toEqual([`${candidate.id}.webp`])
     expect((await store.ingest(bytes, 'the-same-image-again.png')).id).toBe(candidate.id)
+  })
+
+  it('keeps extracted tile provenance visible while leaving the tile unreviewed', async () => {
+    const { store } = await createStore()
+    const provenance = { sheetId: 'central-doctors-01', quadrant: 'TL' as const,
+      generationProvenance: 'Image generator (2026-10-06)', sourceSha256: 'b'.repeat(64),
+      rightsEvidence: 'Generation record retained privately', intendedContext: 'doctor' as const,
+      intendedGender: 'female' as const, intendedAge: 29 }
+    const candidate = await store.ingest(await squarePortrait(), 'central-doctors-01-TL.png', 'africa-central', provenance)
+    expect(candidate).toMatchObject({ status: 'needs-metadata', collection: 'africa-central', sourceProvenance: provenance })
+    expect(candidate.decision).toBeUndefined()
+    await expect(store.ingest(await squarePortrait(), 'invalid.png', undefined,
+      { ...provenance, intendedAge: 70 })).rejects.toThrow('provenance')
   })
 
   it('embeds proposed apparent age and category before review, then records a human decision', async () => {

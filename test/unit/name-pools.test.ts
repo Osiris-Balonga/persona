@@ -90,7 +90,7 @@ describe('cultural name pools', () => {
   it('uses a small local Malawian pool instead of the global English fallback', () => {
     expect(nameContextForCountry('MW')).toMatchObject({ fallback: 'local', pools: [{ locale: 'mw_MW', tier: 'local' }] })
     for (const gender of ['female', 'male'] as const) {
-      const name = selectName('MW', gender, key)
+      const name = selectName('MW', gender, '0'.repeat(64))
       expect(['Chikondi', 'Chimwemwe', 'Mtendere', 'Ufulu', 'Mphatso']).toContain(name.firstName)
       expect(['Banda', 'Phiri', 'Nkhoma', 'Chisale']).toContain(name.lastName)
       expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
@@ -100,7 +100,7 @@ describe('cultural name pools', () => {
   it('uses Ethiopian given names and a paternal given-name component', () => {
     expect(nameContextForCountry('ET')).toMatchObject({ fallback: 'local', pools: [{ locale: 'et_ET', tier: 'local' }] })
     for (const gender of ['female', 'male'] as const) {
-      const name = selectName('ET', gender, key)
+      const name = selectName('ET', gender, '0'.repeat(64))
       expect(gender === 'female'
         ? ['Abeba', 'Almaz', 'Birtukan', 'Tigist', 'Tseday']
         : ['Abebe', 'Bekele', 'Tesfaye', 'Aklilu', 'Dawit']).toContain(name.firstName)
@@ -121,7 +121,7 @@ describe('cultural name pools', () => {
     for (const [country, pool] of Object.entries(samples)) {
       expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local', pools: [{ tier: 'local' }] })
       for (const gender of ['female', 'male'] as const) {
-        const name = selectName(country, gender, key)
+        const name = selectName(country, gender, '0'.repeat(64))
         expect(pool[gender]).toContain(name.firstName)
         expect(pool.family).toContain(name.lastName)
         expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
@@ -231,10 +231,10 @@ describe('cultural name pools', () => {
     expect(pools.ZW.female).toContain('Chido')
   })
 
-  it('uses the published South African male, female, and family name sample', () => {
+  it('retains the published South African examples in the wider local pool', () => {
     expect(nameContextForCountry('ZA')).toMatchObject({ fallback: 'local', pools: [{ locale: 'za_ZA', tier: 'local' }] })
-    const female = selectName('ZA', 'female', key)
-    const male = selectName('ZA', 'male', key)
+    const female = selectName('ZA', 'female', '0'.repeat(64))
+    const male = selectName('ZA', 'male', '0'.repeat(64))
     expect(['Onalerona', 'Zanokuhle', 'Melokuhle', 'Lisakhanya', 'Lethabo', 'Nkanyezi', 'Lesedi', 'Omphile', 'Olwemihla'])
       .toContain(female.firstName)
     expect(['Lethabo', 'Lubanzi', 'Nkazimulo', 'Nkanyezi', 'Langelihle', 'Lesedi', 'Lethokuhle', 'Siphosethu', 'Leano'])
@@ -255,7 +255,7 @@ describe('cultural name pools', () => {
     for (const [country, pool] of Object.entries(samples)) {
       expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local', pools: [{ tier: 'local' }] })
       for (const gender of ['female', 'male'] as const) {
-        const name = selectName(country, gender, key)
+        const name = selectName(country, gender, '0'.repeat(64))
         expect(pool[gender]).toContain(name.firstName)
         expect(pool.family).toContain(name.lastName)
         expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
@@ -278,7 +278,7 @@ describe('cultural name pools', () => {
     for (const [country, pool] of Object.entries(samples)) {
       expect(nameContextForCountry(country)).toMatchObject({ fallback: 'local', pools: [{ tier: 'local' }] })
       for (const gender of ['female', 'male'] as const) {
-        const name = selectName(country, gender, key)
+        const name = selectName(country, gender, '0'.repeat(64))
         expect(pool[gender]).toContain(name.firstName)
         expect(pool.family).toContain(name.lastName)
         expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
@@ -308,7 +308,9 @@ describe('cultural name pools', () => {
       expect(name.firstName).toBeTruthy()
       expect(name.lastName).toBeTruthy()
       expect(name.fullName).toBe(`${name.firstName} ${name.lastName}`)
-      expect(gender === 'female' ? ['Chöden', 'Wangmo', 'Zangmo'] : ['Dorjé', 'Wangyal', 'Jamtsho'])
+      expect(gender === 'female'
+        ? ['Chöden', 'Wangmo', 'Zangmo', 'Lhamo', 'Drolma', 'Sonam', 'Phuntsho']
+        : ['Dorjé', 'Wangyal', 'Jamtsho', 'Tobgay', 'Sonam', 'Phuntsho', 'Tséring'])
         .toContain(name.lastName)
     }
   })

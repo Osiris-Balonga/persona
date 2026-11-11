@@ -1,6 +1,7 @@
 import { getCity } from './cities.js'
 import { getExampleNumber, parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js/max'
 import mobileExamples from 'libphonenumber-js/examples.mobile'
+import { maximumPeopleTotal } from '../people-limits.js'
 
 const nanpAreas: Record<string, Readonly<Record<string, string>>> = {
   US: {
@@ -35,7 +36,7 @@ function emailPart(value: string): string {
 }
 
 export function fictionalEmail(firstName: string, lastName: string, key: string, domain = 'example.test', position = 0): string {
-  if (!Number.isInteger(position) || position < 0 || position >= 36 ** 2) throw new RangeError('Invalid email position')
+  if (!Number.isInteger(position) || position < 0 || position >= maximumPeopleTotal) throw new RangeError('Invalid email position')
   const suffix = indexFromKey(key, 36 ** 3).toString(36).padStart(3, '0')
     + position.toString(36).padStart(2, '0')
   const name = `${emailPart(firstName)[0]}.${emailPart(lastName)}`

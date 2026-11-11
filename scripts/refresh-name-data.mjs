@@ -1,9 +1,10 @@
 import { createHash } from 'node:crypto'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { allLocales } from '@faker-js/faker'
 import { countryData } from '../src/geography/country-data.ts'
 import { geographicSources } from '../src/geography/sources.ts'
+import { writeNameSnapshots } from './lib/name-snapshots.mjs'
 
 const [countryInfoPath] = process.argv.slice(2)
 if (!countryInfoPath) throw new Error('Usage: node scripts/refresh-name-data.mjs <countryInfo.txt>')
@@ -95,11 +96,4 @@ for (const locale of [...usedLocales].sort()) {
   }
 }
 
-const header = `// GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.\n`
-const compactEntries = (records) => ['{',
-  ...Object.entries(records).map(([key, value]) => `  ${JSON.stringify(key)}: ${JSON.stringify(value)},`),
-  '}'].join('\n')
-writeFileSync(fileURLToPath(new URL('../src/geography/name-context-data.ts', import.meta.url)),
-  `${header}export type NameContext = { pools: readonly { locale: string; tier: 'local' | 'language' | 'global'; weight: number }[]; fallback: 'local' | 'language' | 'global' }\nexport const nameContextData: Record<string, NameContext> = ${compactEntries(contexts)}\n`)
-writeFileSync(fileURLToPath(new URL('../src/geography/name-pool-data.ts', import.meta.url)),
-  `${header}export type NamePool = { female: readonly string[]; male: readonly string[]; lastFemale: readonly string[]; lastMale: readonly string[] }\nexport const namePoolData: Record<string, NamePool> = ${compactEntries(poolData)}\n`)
+writeNameSnapshots(fileURLToPath(new URL('../src/geography/', import.meta.url)), contexts, poolData)

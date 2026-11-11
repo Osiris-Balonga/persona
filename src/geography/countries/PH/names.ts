@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// PH name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Maria", "Mary", "María", "Anna", "Ana", "Carmen",
+    "Lourdes", "Cecilia", "Cristina", "Karen", "Nicole", "Patricia",
+    "Bernadette", "Imelda", "Mae", "Michelle", "Rosa", "Teresita",
+    "Alice", "Ann", "Bianca", "Camille", "Irene", "Jennifer",
+    "Josephine", "Victoria", "Andrea", "Angela", "Aurora", "Elizabeth",
+    "Eva", "Isabel", "Jane", "Luisa", "Margarita", "Nina",
+    "Rachel", "Agnes", "Alicia", "Anne", "Bea", "Carla",
+    "Christine", "Cynthia", "Elena", "Ella", "Grace", "Janet",
+    "Kristine", "Louise",
+  ],
+  male: [
+    "Jose", "José", "Antonio", "Francisco", "Manuel", "John",
+    "Mark", "Juan", "Michael", "Vicente", "Pedro", "Carlos",
+    "Ramon", "Luis", "Miguel", "Joseph", "Eduardo", "James",
+    "Francis", "Roberto", "Mariano", "Jaime", "Paul", "Rodolfo",
+    "Victor", "Alfredo", "Paolo", "Daniel", "Rafael", "Carlo",
+    "Gabriel", "Ricardo", "Christian", "Emilio", "Eric", "Mario",
+    "Ronald", "Benjamin", "Christopher", "Oscar", "Angelo", "Enrique",
+    "Ernesto", "Fernando", "Robert", "Arturo", "David", "Edgardo",
+    "Gregorio", "Jason",
+  ],
+  family: [
+    "Reyes", "Santos", "Cruz", "García", "Bautista", "Ramos",
+    "Perez", "Lopez", "Padilla", "Villanueva", "Mendoza", "Aquino",
+    "Castro", "Fernandez", "Rodriguez", "Diaz", "Gonzales", "del Rosario",
+    "Lim", "Flores", "Tan", "Morales", "Navarro", "Santiago",
+    "Romuáldez", "Bernardo", "Hernandez", "Soriano", "Sotto", "Delgado",
+    "Francisco", "Guerrero", "Medina", "Moreno", "Rosales", "Torres",
+    "Aguilar", "de Leon", "Dizon", "Garcia", "Laurel", "Ledesma",
+    "Miranda", "Pangilinan", "Piccio", "Pineda", "Salvador", "David",
+    "Luna", "Manalo", "Marcos", "Marquez", "Revilla", "Uy",
+    "Velasco", "Vergara", "Wilson", "Yap", "Zamora", "Arellano",
+    "López", "Molina", "Romero", "Roxas", "Sanchez", "Valdez",
+    "Abad", "Alejandro", "Araneta", "Atienza", "Domingo", "Duterte",
+    "Elizalde", "Espinosa", "Estrada",
+  ],
+} as const

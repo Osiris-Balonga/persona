@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// EC name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Ana", "Rosa", "Andrea", "Diana", "Carmen",
+    "Maria", "Gabriela", "Mónica", "Paola", "Patricia", "Isabel",
+    "Alexandra", "Elizabeth", "Verónica", "Ximena", "Carolina", "Cristina",
+    "Daniela", "Fernanda", "Elena", "Karla", "Laura", "Lorena",
+    "Marcela", "Mariana", "Sandra", "Susana", "Lucía", "Mercedes",
+    "Paulina", "Sonia", "Viviana", "Adriana", "Blanca", "Cecilia",
+    "Juana", "Katherine", "Liliana", "Martha", "Mayra", "Alejandra",
+    "Ángela", "Catalina", "Erika", "Inés", "Manuela", "Marcia",
+    "Margarita", "Piedad",
+  ],
+  male: [
+    "Luis", "Carlos", "José", "Jorge", "Juan", "Diego",
+    "Francisco", "Fernando", "Eduardo", "Andrés", "Pedro", "Manuel",
+    "Antonio", "César", "Jaime", "David", "Pablo", "Rafael",
+    "Julio", "Miguel", "Enrique", "Alfredo", "Roberto", "Xavier",
+    "Alberto", "Gustavo", "Javier", "Marco", "Ángel", "Daniel",
+    "Hugo", "máximo merilio", "Raúl", "Jonathan", "Santiago", "Vicente",
+    "Patricio", "Alejandro", "Christian", "Galo", "Segundo", "Gonzalo",
+    "Oswaldo", "Víctor", "Héctor", "Jefferson", "Ricardo", "Wilson",
+    "Alfonso", "Cristian",
+  ],
+  family: [
+    "Zambrano", "Rodríguez", "González", "Valencia", "Castillo", "Caicedo",
+    "Torres", "García", "Hurtado", "Andrade", "López", "Delgado",
+    "Mina", "Moreno", "Martínez", "Mendoza", "Ortiz", "Sánchez",
+    "Romero", "Angulo", "Muñoz", "Pérez", "Borja", "Guerrero",
+    "Quiñónez", "Castro", "Palacios", "Paredes", "Arroyo", "Calderón",
+    "Gómez", "Herrera", "Mora", "Maldonado", "Nazareno", "Ponce",
+    "Rojas", "Valverde", "Aguirre", "Cabezas", "Chiriboga", "Espinoza",
+    "Estrada", "Flores", "León", "Medina", "Moncayo", "Naranjo",
+    "Velasco", "Álvarez", "Bonilla", "Escobar", "Guerra", "Guevara",
+    "Jaramillo", "Larrea", "Molina", "Preciado", "Suárez", "Cordero",
+    "Corozo", "Crespo", "Jiménez", "Lara", "Morales", "Mosquera",
+    "Ordóñez", "Peña", "Quintero", "Ramírez", "Serrano", "Vallejo",
+    "Vásquez", "Acosta", "Aguilar",
+  ],
+} as const

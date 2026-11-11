@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { ageOn } from '../../src/age.js'
 import { parsePhoneNumberFromString } from 'libphonenumber-js/max'
 import { generatePersonWithoutPortrait, resolveAbstractPerson } from '../../src/generation-core.js'
-import { appearanceCategories } from '../../src/geography/appearance.js'
+import * as appearance from '../../src/geography/appearance-distribution.js'
 import { parsePeopleQuery } from '../../src/people-query.js'
 import { createGenerationContext } from '../../src/replay.js'
 
@@ -21,6 +21,36 @@ const fixedAgeContext = (offset: number): ReturnType<typeof createGenerationCont
 })
 
 describe('generation core', () => {
+  it('generates v2 inputs without running historical appearance selection', () => {
+    const selection = vi.spyOn(appearance, 'appearanceDistributionForCountry')
+    try {
+      const result = person('nationality=CG&seed=v2&asOf=2026-01-01')
+      expect(selection).not.toHaveBeenCalled()
+      expect(result).not.toHaveProperty('appearance')
+      expect(result.locationCity.country).toBe('CG')
+    } finally { selection.mockRestore() }
+  })
+  it.each([
+    ['0102-01-01', 35, 365, '0001-12-31', 100],
+    ['0149-03-01', 0, 59, '0084-02-29', 65],
+    ['0165-03-01', 0, 59, '0100-02-28', 65],
+    ['2065-03-01', 0, 59, '2000-02-29', 65],
+    ['1965-03-01', 0, 59, '1900-02-28', 65],
+  ])('generates a calendar birthday at %s without remapping early years', (asOf, offset, birthday, dateOfBirth, age) => {
+    const query = parse(`nationality=CG&ageGroup=senior&seed=calendar&asOf=${asOf}`)
+    const context = fixedAgeContext(offset)
+    const result = generatePersonWithoutPortrait(query, {
+      componentKey(index, component) {
+        return component === 'birth-date'
+          ? `${birthday.toString(16).padStart(12, '0')}${'0'.repeat(52)}`
+          : context.componentKey(index, component)
+      },
+    }, 0)
+    expect(result.dateOfBirth).toBe(dateOfBirth)
+    expect(result.age).toBe(age)
+    expect(ageOn(result.dateOfBirth, asOf)).toBe(age)
+  })
+
   it('resolves explicit constraints before selecting details', () => {
     const query = parse('nationality=FR&residenceCountry=MW&city=Lilongwe&gender=female&ageGroup=teen&seed=school-demo&asOf=2026-09-24')
     const resolved = resolveAbstractPerson(query, createGenerationContext(query, versions), 0)
@@ -31,7 +61,7 @@ describe('generation core', () => {
     })
     expect(resolved.age).toBeGreaterThanOrEqual(13)
     expect(resolved.age).toBeLessThanOrEqual(17)
-    expect(appearanceCategories).toContain(resolved.appearance)
+    expect(resolved).not.toHaveProperty('appearance')
   })
 
   it('keeps exact ages, derived groups, birth dates, and contacts coherent', () => {

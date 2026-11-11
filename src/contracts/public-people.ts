@@ -1,4 +1,5 @@
 import { Type, type Static } from 'typebox'
+import { maximumCursorLength, maximumPageLimit, maximumPeopleTotal } from '../people-limits.js'
 import {
   PublicCoordinatesSchema, PublicCountrySchema, PublicDobSchema, PublicLocationSchema,
   PublicLoginSchema, PublicNameSchema, PublicPersonSchema, PublicPictureSchema,
@@ -11,6 +12,25 @@ const MetaSchema = Type.Object({
   schemaVersion: Type.Literal('2'),
   dataVersion: Type.String({ minLength: 1 }),
   catalogVersion: Type.String({ minLength: 1 }),
+  pagination: Type.Optional(Type.Object({
+    total: Type.Integer({ minimum: 1, maximum: maximumPeopleTotal }),
+    limit: Type.Integer({ minimum: 1, maximum: maximumPageLimit }),
+    offset: Type.Integer({ minimum: 0, maximum: maximumPeopleTotal - 1 }),
+    nextCursor: Type.Union([Type.String({ minLength: 1, maxLength: maximumCursorLength }), Type.Null()]),
+  }, { additionalProperties: false })),
+  skinTone: Type.Optional(Type.Union([
+    Type.Integer({ minimum: 1, maximum: 10 }),
+    Type.Array(Type.Integer({ minimum: 1, maximum: 10 }), { minItems: 0, maxItems: 10, uniqueItems: true }),
+  ])),
+  portraitContext: Type.Optional(Type.Union([
+    Type.Literal('standard'), Type.Literal('doctor'), Type.Literal('construction'),
+    Type.Literal('business'), Type.Literal('school-pupil'), Type.Literal('university-student'),
+  ])),
+  portraitSelectionVersion: Type.Optional(Type.String({ minLength: 1 })),
+  portraitContexts: Type.Optional(Type.Array(Type.Union([
+    Type.Literal('standard'), Type.Literal('doctor'), Type.Literal('construction'),
+    Type.Literal('business'), Type.Literal('school-pupil'), Type.Literal('university-student'),
+  ]), { maxItems: 6, uniqueItems: true })),
 }, { additionalProperties: false })
 
 export const PublicPeopleResponseSchema = Type.Object({
@@ -44,3 +64,5 @@ export const ProjectedPublicPeopleResponseSchema = Type.Object({
 }, { additionalProperties: false })
 
 export type PublicPeopleResponse = Static<typeof PublicPeopleResponseSchema>
+export type DefaultPublicPeopleResponse = Static<typeof DefaultPublicPeopleResponseSchema>
+export type ProjectedPublicPeopleResponse = Static<typeof ProjectedPublicPeopleResponseSchema>

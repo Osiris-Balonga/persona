@@ -1,0 +1,41 @@
+// Reviewed European territory name components from the pinned birth-place report and Faroese statistics.
+// IM name sources: wikidata-europe-birthplace-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Margaret", "Elizabeth", "Anna", "Jane", "Annie", "Clare",
+    "Esther", "Laura", "Sophia", "Amelia", "Amy", "Angela",
+    "Anne", "Araminta", "Becky", "Brianne", "Christine", "Cristen",
+    "Dorothy", "Edith", "Eleanor", "Emily", "Eva", "Fanny",
+    "Gwen", "Hannah", "Hazel", "Helen", "Hilary", "Isla",
+    "Jennifer", "Jessica", "Josephine", "Julie", "Kate", "Kathleen",
+    "Kimberley", "Letitia", "Louise", "Millie", "Mona", "Nelly",
+    "Nina", "Nola", "Rosamund", "Ruth", "Samantha", "Yasmin",
+    "Zoe",
+  ],
+  male: [
+    "John", "William", "David", "Robert", "Edward", "Mark",
+    "Thomas", "Charles", "James", "Hugh", "Joseph", "Peter",
+    "Arthur", "Frank", "Alan", "Harry", "Richard", "Archibald",
+    "Brian", "Chris", "Christopher", "Daniel", "Dave", "Derek",
+    "Edmund", "Ernest", "Frederick", "George", "Juan", "Kevin",
+    "Michael", "Paul", "Steve", "Stewart", "Adam", "Adrian",
+    "Agnew", "Alfred", "Allan", "Andrew", "Andy", "Arnold",
+    "Baldwin", "Barry", "Benjamin", "Bernard", "Bertram", "Bill",
+    "Bob", "Clifford",
+  ],
+  family: [
+    "Christian", "Moore", "Quayle", "Gill", "Kelly", "Brown",
+    "Faragher", "Gibb", "Kermode", "Murray", "Quine", "Walker",
+    "Adams", "Callister", "Callow", "Creer", "Crowe", "Forbes",
+    "Garrett", "Gawne", "Gell", "Higgins", "Keggin", "Lowey",
+    "Mansell", "McCombe", "Morrison", "Robinson", "Russell", "Swynnerton",
+    "Teare", "Wilks", "Anderson", "Armstrong", "Ashton", "Atherton",
+    "Bacon", "Barks", "Beecroft", "Bell", "Bellis", "Bennett",
+    "Binney", "Blackley", "Bott", "Brand", "Branford", "Brennan",
+    "Bridson", "Buchan", "Buckley", "Burke", "Burns", "Cain",
+    "Caine", "Cameron", "Cannell", "Cavendish", "Clague", "Clarke",
+    "Collister", "Cooper", "Corkill", "Corlett", "Costain", "Cowley",
+    "Craine", "Cregeen", "Crellin", "Crompton", "Cubbon", "Cummins",
+    "Curghey", "Dacre", "Davidson",
+  ],
+} as const

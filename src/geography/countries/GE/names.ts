@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// GE name sources: wikidata-asia-qlever-candidates, geonames-country-info, georgia-name-statistics.
+export const names = {
+  female: [
+    "Nino", "Mariam", "Nana", "Ana", "Ketevan", "Maia",
+    "Rusudan", "Manana", "Anna", "Tinatin", "Marina", "Irine",
+    "Eteri", "Hélène", "Tamara", "Irma", "Natela", "Tea",
+    "Eka", "Maya", "Mzia", "Irina", "Salomé", "Gvantsa",
+    "Lela", "Natalia", "Sofia", "Inga", "Khatuna", "Leila",
+    "Lia", "Medea", "Natia", "Salome", "Ekaterine", "Khatia",
+    "Lali", "Liana", "Maka", "Miriam", "Nato", "Nona",
+    "Tamar", "Anastasia", "Elene", "Tamuna", "Tsira", "Vera",
+    "Ekaterina", "Ia",
+  ],
+  male: [
+    "Giorgi", "Davit", "Levan", "Irakli", "Zurab", "David",
+    "Georgy", "Vakhtang", "Aleksandre", "Guram", "Nikoloz", "Otar",
+    "Givi", "Revaz", "Tamaz", "Alexander", "Lasha", "Mikheil",
+    "Nodar", "Zaza", "Shota", "Avtandil", "Teimuraz", "Tengiz",
+    "Gia", "Merab", "Tornike", "Aleksandr", "Archil", "Mikhail",
+    "Vladimer", "Akaki", "Ilia", "Shalva", "Mamuka", "Nika",
+    "Paata", "Beka", "Malkhaz", "Grigol", "Nugzar", "George",
+    "Konstantin", "Vazha", "Gela", "Gocha", "Roman", "Temur",
+    "Boris", "Jemal",
+  ],
+  family: [
+    "Bagrationi", "Abashidze", "Japaridze", "Asatiani", "Beridze", "Shengelia",
+    "Machavariani", "Maisuradze", "Chkheidze", "Giorgadze", "Lortkipanidze", "Abuladze",
+    "Bolkvadze", "Kapanadze", "Nadiradze", "Gelashvili", "Gotsiridze", "Ioseliani",
+    "Kalandadze", "Khutsishvili", "Lezhava", "Akhvlediani", "Bakradze", "Davitashvili",
+    "Janelidze", "Kvaratskhelia", "Kandelaki", "Kipiani", "Metreveli", "Tabatadze",
+    "Tsintsadze", "Arveladze", "Chelidze", "Dadiani", "Gabunia", "Kakabadze",
+    "Kutateladze", "Makharadze", "Nozadze", "Rekhviashvili", "Tevzadze", "Aleksidze",
+    "Chikovani", "Javakhishvili", "Kavtaradze", "Kobakhidze", "Rukhadze", "Tsereteli",
+    "Zhvania", "Dvalishvili", "Gachechiladze", "Gogoladze", "Iashvili", "Kiknadze",
+    "Mgaloblishvili", "Mgeladze", "Natsvlishvili", "Petriashvili", "Razmadze", "Sikharulidze",
+    "Antadze", "Bakhtadze", "Batonishvili", "Burjanadze", "Chavchavadze", "Cheishvili",
+    "Dolidze", "Eristavi", "Ghonghadze", "Gogichaishvili", "Janashia", "Jikia",
+    "Mikeladze", "Oniani", "Pavliashvili",
+  ],
+} as const

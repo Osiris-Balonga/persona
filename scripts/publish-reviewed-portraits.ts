@@ -3,6 +3,7 @@ import { join, resolve } from 'node:path'
 import { preparePortraitImport } from '../src/portraits/import.js'
 import { reviewedPortraitRecords } from '../src/review/export.js'
 import type { ReviewItem } from '../src/review/store.js'
+import { portraitSelectionVersion } from '../src/portraits/contexts.js'
 
 const reviewRoot = resolve(process.env.PERSONA_REVIEW_ROOT ?? 'staging/portraits/review')
 const uploadOrigin = process.env.PERSONA_UPLOAD_ORIGIN ?? 'http://127.0.0.1:8788'
@@ -39,7 +40,7 @@ if (errors.length) throw new Error(`Publication incomplete:\n${errors.join('\n')
 
 await writeFile(resolve('src/portraits/manifest.ts'),
   `import type { PortraitCatalog } from './catalog.js'\n\nexport const portraitCatalog: PortraitCatalog = {\n`
-  + `  version: 'v1',\n  publicBaseUrl: '${publicBaseUrl}',\n  assets: [\n`
+  + `  version: 'v1',\n  selectionVersion: '${portraitSelectionVersion}',\n  publicBaseUrl: '${publicBaseUrl}',\n  assets: [\n`
   + proposal.approved.map((asset) => `    ${JSON.stringify(asset)},`).join('\n')
   + '\n  ],\n}\n')
 console.log(`R2: ${uploaded} uploaded, ${existing} already present; manifest updated`)

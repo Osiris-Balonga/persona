@@ -1,0 +1,41 @@
+// Reviewed country-linked Wikidata candidate components; see docs/geographic-data.md.
+// IL name sources: wikidata-asia-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Yael", "Michal", "Rachel", "Ruth", "Tamar", "Miriam",
+    "Maya", "Anat", "Esther", "Dana", "Sharon", "Adi",
+    "Naomi", "Noa", "Sarah", "Efrat", "Rivka", "Anna",
+    "Dalia", "Leah", "Sara", "Nurit", "Shoshana", "Hanna",
+    "Ilana", "Orly", "Ronit", "Orit", "Rina", "Dafna",
+    "Iris", "Ayelet", "Hana", "Hila", "Irit", "Judith",
+    "Tali", "Dorit", "Keren", "Roni", "Tal", "Edna",
+    "Einat", "Moran", "Hadas", "Aliza", "Ella", "Orna",
+    "Yehudit", "Aviva",
+  ],
+  male: [
+    "Moshe", "David", "Michael", "Avraham", "Zvi", "Shlomo",
+    "Daniel", "Yitzhak", "Israel", "Chaim", "Shmuel", "Yosef",
+    "Avi", "Mordecai", "Uri", "Yehuda", "Yossi", "Dan",
+    "Yaakov", "Guy", "Jacob", "Abraham", "Shimon", "Amir",
+    "Eli", "Aharon", "Arie", "Haim", "Menachem", "Yuval",
+    "Joseph", "Dov", "Baruch", "Eliezer", "Gideon", "Yaacov",
+    "Itzhak", "Alon", "Amos", "Ron", "Noam", "Yair",
+    "Yoav", "Dávid", "Eyal", "Alexander", "Jonathan", "Danny",
+    "Doron", "Ilan",
+  ],
+  family: [
+    "Cohen", "Levy", "Katz", "Levi", "Friedman", "Shapira",
+    "Goldberg", "Segal", "Klein", "Schwartz", "Weiss", "Levin",
+    "Golan", "Rosen", "Goldstein", "Kaplan", "Landau", "Tal",
+    "Adler", "Stern", "Bar", "Peretz", "Gross", "Berger",
+    "Epstein", "Feldman", "Peled", "Shamir", "Zohar", "Dayan",
+    "Gal", "Sharon", "Gordon", "Peleg", "Arad", "Lev",
+    "Mizrahi", "Tamir", "Miller", "Alon", "Amir", "Harel",
+    "Rubinstein", "Shavit", "Berman", "Meir", "Rosenberg", "Almog",
+    "Navon", "Rabinovich", "David", "Goldman", "Raz", "Roth",
+    "Sela", "Aharoni", "Dagan", "Goren", "Israeli", "Lavi",
+    "Amit", "Ben-David", "Bergman", "Koren", "Ronen", "Rubin",
+    "Sagi", "Segev", "Shalev", "Aloni", "Ben-Zvi", "Biton",
+    "Halperin", "Harari", "Horowitz",
+  ],
+} as const

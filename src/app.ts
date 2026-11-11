@@ -1,16 +1,21 @@
 import Fastify from 'fastify'
+import { createHash } from 'node:crypto'
 import { isIP } from 'node:net'
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from 'typebox'
-import { PeopleQueryError, parsePeopleQuery } from './people-query.js'
+import { PeopleQueryError } from './people-query.js'
+import { parsePeopleRequest, peoplePaginationMetadata } from './people-pagination.js'
 import { peopleCacheHeaders } from './cache-policy.js'
+import { matchesIfNoneMatch } from './conditional-request.js'
 import { geographicDataVersion } from './geography/data-version.js'
 import { projectPeopleResponse } from './field-selection.js'
 import { generatePeopleResponse } from './generate-people.js'
 import { validatePortraitCatalog, type PortraitCatalog } from './portraits/catalog.js'
 import { portraitCatalog } from './portraits/manifest.js'
+import { portraitSelectionVersion } from './portraits/contexts.js'
+import { createPublicCoverage } from './public-coverage.js'
 import type { AnalyticsSink } from './analytics/client.js'
 
 export interface AppOptions {
@@ -28,6 +33,7 @@ export function buildApp(options: AppOptions = {}) {
   const catalog = options.portraitCatalog ?? portraitCatalog
   const catalogErrors = validatePortraitCatalog(catalog)
   if (catalogErrors.length) throw new Error(`Invalid portrait catalog: ${catalogErrors.join('; ')}`)
+  const portraitCatalogFingerprint = createHash('sha256').update(JSON.stringify(catalog)).digest('hex')
   const app = Fastify({
     logger: options.logger ? { serializers: { req: (request) => ({ method: request.method }),
       res: (reply) => ({ statusCode: reply.statusCode }) } } : false,
@@ -35,14 +41,22 @@ export function buildApp(options: AppOptions = {}) {
     bodyLimit: 1_024,
   }).withTypeProvider<TypeBoxTypeProvider>()
   const generatedCounts = new WeakMap<object, number>()
+  let draining = false
+  app.addHook('preClose', async () => { draining = true })
+  const pendingAnalytics = new Set<Promise<void>>()
+  app.addHook('onClose', async () => {
+    await Promise.allSettled(pendingAnalytics)
+  })
 
   app.addHook('onResponse', async (request, reply) => {
     if (!options.analytics || request.method !== 'GET' ||
       new URL(request.raw.url ?? '/', 'http://localhost').pathname !== '/people') return
     try {
-      await options.analytics.record({ statusCode: reply.statusCode,
+      const recording = options.analytics.record({ statusCode: reply.statusCode,
         profileCount: reply.statusCode === 200 ? (generatedCounts.get(request) ?? 0) : 0,
         durationMs: Math.max(0, reply.elapsedTime) })
+      pendingAnalytics.add(recording)
+      try { await recording } finally { pendingAnalytics.delete(recording) }
     } catch {
       request.log.warn('Analytics recording failed')
     }
@@ -76,18 +90,24 @@ export function buildApp(options: AppOptions = {}) {
     if (statusCode === 413) {
       return reply.code(413).send({ error: { code: 'REQUEST_TOO_LARGE', message: 'Request body is too large' } })
     }
+    if (Number.isInteger(statusCode) && statusCode >= 400 && statusCode < 500) {
+      const code = statusCode === 400 ? 'BAD_REQUEST' : statusCode === 415 ? 'UNSUPPORTED_MEDIA_TYPE' : 'REQUEST_REJECTED'
+      const message = statusCode === 400 ? 'Invalid request' : statusCode === 415 ? 'Unsupported media type' : 'Request rejected'
+      return reply.code(statusCode).send({ error: { code, message } })
+    }
     request.log.error({ err: error }, 'Request failed')
     return reply.code(500).send({ error: { code: 'INTERNAL_ERROR', message: 'Unable to process request' } })
   })
 
   app.setNotFoundHandler((request, reply) => {
-    if (request.url.split('?')[0] === '/people' || request.url.split('?')[0] === '/health') {
+    if (request.url.split('?')[0] === '/people' || request.url.split('?')[0] === '/health' || request.url.split('?')[0] === '/coverage') {
       return reply.code(405).header('Allow', 'GET, HEAD, OPTIONS').send({ error: { code: 'METHOD_NOT_ALLOWED', message: 'Method not allowed' } })
     }
     return reply.code(404).send({ error: { code: 'NOT_FOUND', message: 'Route not found' } })
   })
 
   app.addHook('onSend', async (_request, reply, payload) => {
+    if (draining) reply.header('Connection', 'close')
     if (reply.statusCode < 400 && (typeof payload === 'string' || Buffer.isBuffer(payload)) &&
       Buffer.byteLength(payload) > (options.maxResponseBytes ?? 256 * 1_024)) {
       reply.code(503).header('Cache-Control', 'no-store').removeHeader('ETag')
@@ -109,20 +129,57 @@ export function buildApp(options: AppOptions = {}) {
     return { status: 'ok' as const }
   })
 
+  app.get('/coverage', {
+    schema: {
+      response: {
+        200: Type.Object({
+          meta: Type.Object({ dataVersion: Type.String(), catalogVersion: Type.String(), portraitSelectionVersion: Type.String() }),
+          countries: Type.Array(Type.Object({
+            code: Type.String(), name: Type.String(), status: Type.Union([
+              Type.Literal('available'), Type.Literal('pending-name-review'), Type.Literal('unavailable'),
+            ]), sampledCities: Type.Number(), postcodeCities: Type.Number(), phone: Type.String(),
+            continent: Type.Union([Type.String(), Type.Null()]), subregion: Type.Union([Type.String(), Type.Null()]),
+          })),
+          portraits: Type.Object({
+            total: Type.Number(), annotatedSkinTone: Type.Number(),
+            contexts: Type.Array(Type.Object({ id: Type.String(), minAge: Type.Number(), maxAge: Type.Number(), count: Type.Number(), weight: Type.Number() })),
+            skinTones: Type.Array(Type.Object({ value: Type.Number(), count: Type.Number() })),
+          }),
+        }),
+        304: Type.Null(),
+        400: Type.Object({ error: Type.Object({ code: Type.String(), message: Type.String() }) }),
+      },
+    },
+  }, (request, reply) => {
+    const params = new URL(request.raw.url ?? '/coverage', 'http://localhost').searchParams
+    if ([...params.keys()].length) {
+      return reply.code(400).send({ error: { code: 'UNKNOWN_QUERY_PARAMETER', message: 'Coverage does not accept query parameters' } }) as never
+    }
+    const { body, etag } = createPublicCoverage(catalog)
+    reply.header('Cache-Control', 'public, max-age=300').header('ETag', etag)
+    if (matchesIfNoneMatch(request.headers['if-none-match'], etag)) return reply.code(304).send(null) as never
+    return body
+  })
+
   app.get('/people', (request, reply) => {
     try {
       const params = new URL(request.raw.url ?? '/people', 'http://localhost').searchParams
-      const query = parsePeopleQuery(params)
-      const headers = peopleCacheHeaders(200, query, params.has('asOf'), {
+      const versions = {
         dataVersion: geographicDataVersion, catalogVersion: catalog.version,
-      })
+        portraitSelectionVersion: catalog.selectionVersion ?? portraitSelectionVersion,
+        portraitCatalogFingerprint,
+      }
+      const page = parsePeopleRequest(params, versions)
+      const { query } = page
+      const pagination = peoplePaginationMetadata(page, versions)
+      const headers = peopleCacheHeaders(200, query, page.cacheable, versions)
       reply.header('Cache-Control', headers['Cache-Control'])
       if (headers.ETag !== undefined) {
         reply.header('ETag', headers.ETag)
-        const validators = request.headers['if-none-match']?.split(',').map((value) => value.trim()) ?? []
-        if (validators.includes(headers.ETag) || validators.includes('*')) return reply.code(304).send()
+        if (matchesIfNoneMatch(request.headers['if-none-match'], headers.ETag)) return reply.code(304).send()
       }
       const response = generatePeopleResponse(query, catalog)
+      if (pagination) response.meta.pagination = pagination
       generatedCounts.set(request, response.results.length)
       return projectPeopleResponse(response, query.fields)
     } catch (error) {

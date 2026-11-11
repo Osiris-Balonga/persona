@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// VE name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Ana", "Carolina", "Carmen", "Gabriela", "Patricia",
+    "Maria", "Adriana", "Daniela", "Elizabeth", "Mariana", "Vanessa",
+    "Alejandra", "Andrea", "Gladys", "Mercedes", "Andreína", "Elena",
+    "Luisa", "Claudia", "Laura", "Paola", "Valentina", "Alexandra",
+    "Bárbara", "Isabel", "Olga", "Teresa", "Beatriz", "Diana",
+    "Elisa", "Gloria", "Mary", "Michelle", "Milagros", "Cecilia",
+    "Cristina", "Fabiola", "Karina", "Rosa", "Sandra", "Victoria",
+    "Virginia", "Alicia", "Blanca", "Carla", "Dayana", "Génesis",
+    "Jessica", "Luz",
+  ],
+  male: [
+    "José", "Luis", "Carlos", "Rafael", "Jesús", "Juan",
+    "Antonio", "Pedro", "Francisco", "Manuel", "Alejandro", "Enrique",
+    "Jorge", "Miguel", "Eduardo", "Ricardo", "Daniel", "Ramón",
+    "Alberto", "Fernando", "Andrés", "César", "Gustavo", "David",
+    "Alfredo", "Guillermo", "Ángel", "Gabriel", "Julio", "Diego",
+    "Juan Carlos", "Alexander", "Héctor", "Víctor", "Roberto", "Vicente",
+    "Oliver", "Freddy", "Oscar", "Ernesto", "Javier", "máximo merilio",
+    "Raúl", "Edgar", "Henry", "Oswaldo", "Tomás", "Félix",
+    "Jose", "Nelson",
+  ],
+  family: [
+    "González", "Pérez", "Rodríguez", "Martínez", "Díaz", "López",
+    "García", "Castillo", "Romero", "Fernández", "Hernández", "Torres",
+    "Medina", "Sánchez", "Álvarez", "Blanco", "Herrera", "Rivas",
+    "Ramírez", "Rojas", "Gómez", "Mendoza", "Moreno", "Salazar",
+    "Márquez", "Silva", "Delgado", "Ruiz", "Suárez", "Castro",
+    "Jiménez", "Machado", "Palacios", "Ramos", "Flores", "Parra",
+    "Reyes", "Marcano", "Contreras", "Peña", "Méndez", "Ortega",
+    "Zambrano", "Acosta", "Barrios", "Diaz", "Guevara", "León",
+    "Mata", "Pinto", "Quintero", "Guerra", "Guzmán", "Andrade",
+    "Mora", "Rodriguez", "Tovar", "Alvarado", "Morales", "Navarro",
+    "Camacho", "Escobar", "Muñoz", "Ochoa", "Rosales", "Barreto",
+    "Bravo", "Campos", "Gil", "Maldonado", "Martinez", "Rivero",
+    "Vásquez", "Abreu", "Aguilar",
+  ],
+} as const
