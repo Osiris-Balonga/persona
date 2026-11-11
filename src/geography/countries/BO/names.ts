@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// BO name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Ana", "Paola", "Claudia", "Ximena", "Carmen",
+    "Gabriela", "Julia", "Carla", "Mariana", "Mónica", "Alejandra",
+    "Beatriz", "Cecilia", "Gladys", "Sandra", "Adriana", "Carolina",
+    "Daniela", "Isabel", "Marcela", "Maria", "Rosario", "Sonia",
+    "Teresa", "Verónica", "Virginia", "Blanca", "Camila", "Elizabeth",
+    "Erika", "Esther", "Fernanda", "Karen", "Martha", "Natalia",
+    "Rosa", "Susana", "Vivian", "Amparo", "Angélica", "Cristina",
+    "Elsa", "Graciela", "Hilda", "Iris", "Jessica", "Julieta",
+    "Kimberly", "Lidia",
+  ],
+  male: [
+    "José", "Carlos", "Luis", "Juan", "Jorge", "Mario",
+    "Jaime", "Juan Carlos", "Manuel", "Eduardo", "Pedro", "Roberto",
+    "Fernando", "Daniel", "Hugo", "Miguel", "Diego", "Alberto",
+    "Óscar", "Gustavo", "Víctor", "Marcelo", "Pablo", "René",
+    "Ricardo", "Alejandro", "David", "Javier", "Julio", "Oscar",
+    "Edgar", "Ronald", "Antonio", "Mauricio", "máximo merilio", "Raúl",
+    "César", "Francisco", "Sergio", "Alfredo", "Enrique", "Gonzalo",
+    "Guillermo", "Rodrigo", "Andrés", "Leonardo", "Marco", "Félix",
+    "Freddy", "Jesús",
+  ],
+  family: [
+    "Rojas", "Fernández", "Suárez", "Sánchez", "Morales", "Paz",
+    "Camacho", "López", "Peña", "Arce", "Ballivián", "Flores",
+    "García", "Mamani", "Mendoza", "Quispe", "Ramos", "Saavedra",
+    "Vaca", "Álvarez", "Pérez", "Quiroga", "Méndez", "Rodríguez",
+    "Cárdenas", "Choque", "Galindo", "Navarro", "Rivero", "Salazar",
+    "Áñez", "Borda", "Cajías", "Castro", "Chávez", "Cruz",
+    "Herrera", "Maldonado", "Medina", "Melgar", "Miranda", "Paniagua",
+    "Pinto", "Reyes", "Ríos", "Romero", "Velasco", "Zapata",
+    "Aguilar", "Alfaro", "Antezana", "Bejarano", "Castillo", "Durán",
+    "Guzmán", "Jiménez", "Justiniano", "Lopez", "Loza", "Mercado",
+    "Montes", "Pinedo", "Prado", "Rocha", "Sandoval", "Torres",
+    "Veizaga", "Acosta", "Aguirre", "Alandia", "Alanoca", "Angulo",
+    "Arze", "Cabrera", "Campero",
+  ],
+} as const

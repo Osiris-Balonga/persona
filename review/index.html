@@ -57,6 +57,7 @@
               </button>
             </div>
             <div class="gallery-filters" aria-label="Filtres des portraits">
+              <label>Contexte<select id="filterContext"><option value="all">Tous</option></select></label>
               <label>Catégorie d’âge<select id="filterAgeGroup">
                 <option value="all">Toutes</option>
                 <option value="child">Enfant</option>
@@ -82,6 +83,11 @@
               <button type="button" id="selectionToggle" aria-pressed="false">Sélection multiple</button>
               <button type="button" id="selectVisible" aria-pressed="false" title="Cocher tous les portraits à valider affichés">Tout cocher</button>
             </div>
+            <details class="coverage-report">
+              <summary>Couverture des portraits approuvés</summary>
+              <p>Seules les décisions humaines approuvées sont comptées. Les intervalles sont limités à l’éligibilité de chaque contexte.</p>
+              <div id="coverageReport" class="coverage-table-wrap"></div>
+            </details>
             <div id="selectionBar" class="selection-bar" hidden>
               <strong id="selectionCount">0 sélectionné</strong>
               <button type="button" id="clearSelection">Désélectionner</button>
@@ -189,6 +195,7 @@
           </div>
           <form id="metadataForm">
             <div class="form-grid">
+              <label>Contexte du portrait<select name="portraitContext" required></select></label>
               <div class="age-picker-field">
                 <span id="agePickerLabel">Âges apparents</span>
                 <div class="age-picker" id="agePicker">

@@ -24,11 +24,13 @@ jobs:
       - run: npm run typecheck
       - run: npm run typecheck:cli
       - run: npm run check:cli-package
+      - run: npm run typecheck:contracts
       - run: npm run typecheck:worker
       - run: npm run check:analytics-storage
       - run: npm run build:analytics-worker
       - run: npm run test:unit
       - run: npm run test:integration
+      - run: npm run test:worker-integration
       - run: npm run test:e2e
       - run: npm run build
       - run: npm run build:worker

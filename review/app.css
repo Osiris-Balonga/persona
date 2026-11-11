@@ -1385,3 +1385,15 @@ body:has(#serialDialog[open]) {
     transition: none;
   }
 }
+.coverage-report {
+  margin: 0.75rem 0;
+  border: 1px solid var(--line, #d8d5ce);
+  border-radius: 0.75rem;
+  background: var(--surface, #fff);
+}
+.coverage-report summary { cursor: pointer; padding: 0.75rem 1rem; font-weight: 650; }
+.coverage-report > p { margin: 0 1rem 0.75rem; color: var(--muted, #68665f); font-size: 0.875rem; }
+.coverage-table-wrap { max-height: 24rem; overflow: auto; padding: 0 1rem 1rem; }
+.coverage-table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.coverage-table-wrap th, .coverage-table-wrap td { padding: 0.45rem; border-bottom: 1px solid var(--line, #d8d5ce); text-align: left; vertical-align: top; }
+.coverage-table-wrap th { position: sticky; top: 0; background: var(--surface, #fff); }

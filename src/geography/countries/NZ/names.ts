@@ -1,0 +1,40 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// NZ name sources: wikidata-oceania-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Mary", "Margaret", "Elizabeth", "Anne", "Jane", "Helen",
+    "Ann", "Sarah", "Frances", "Catherine", "Louise", "Jean",
+    "Susan", "Joan", "Anna", "Patricia", "Ruth", "Emma",
+    "Kate", "Rachel", "Rebecca", "Alison", "Barbara", "Judith",
+    "Janet", "Christine", "Dorothy", "Alice", "Jennifer", "Karen",
+    "Emily", "Maria", "Michelle", "Joy", "Rose", "Lisa",
+    "Heather", "Nicola", "Edith", "Fiona", "May", "Claire",
+    "Grace", "Amy", "Angela", "Kathleen", "Linda", "Sue",
+    "Ellen", "Julia", "Annie", "Jenny", "Joyce", "Lucy",
+    "Victoria", "Caroline", "Hannah", "Laura", "Rosemary", "Charlotte",
+  ],
+  male: [
+    "John", "William", "James", "David", "George", "Robert",
+    "Peter", "Charles", "Thomas", "Michael", "Richard", "Henry",
+    "Edward", "Arthur", "Paul", "Andrew", "Ian", "Mark",
+    "Alexander", "Joseph", "Frederick", "Alan", "Bruce", "Francis",
+    "Brian", "Frank", "Anthony", "Alfred", "Jack", "Donald",
+    "Gordon", "Graham", "Patrick", "Bill", "Chris", "Daniel",
+    "Matthew", "Stephen", "Douglas", "Christopher", "Ross", "Simon",
+    "Keith", "Murray", "Albert", "Kevin", "Ernest", "Colin",
+    "Philip", "Kenneth", "Harry", "Hugh", "Mike", "Tom",
+    "Ronald", "Craig", "Martin", "Tony", "Ben", "Neil",
+  ],
+  family: [
+    "Smith", "Wilson", "Williams", "Brown", "Taylor", "Jones",
+    "Anderson", "Scott", "Campbell", "Clark", "White", "Wright",
+    "Walker", "Harris", "Robinson", "Stewart", "Thompson", "King",
+    "Young", "Bell", "Robertson", "Baker", "Watson", "Hall",
+    "Johnson", "Marshall", "Martin", "Turner", "Hill", "Jackson",
+    "Thomas", "Bennett", "Cooper", "Miller", "Mitchell", "Moore",
+    "Wood", "Reid", "Cameron", "McKenzie", "Edwards", "Ross",
+    "Allen", "Roberts", "Clarke", "Davis", "Murray", "Thomson",
+    "Kelly", "Carter", "Hunter", "Mason", "Ward", "Collins",
+    "Graham", "Adams", "Evans", "Morgan", "Parker", "Simpson",
+  ],
+} as const

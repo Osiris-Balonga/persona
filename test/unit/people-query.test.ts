@@ -29,7 +29,7 @@ describe('GET /people query contract', () => {
   })
 
   it('rejects exact ages, unknown age groups, and excessive counts', () => {
-    for (const query of ['age=14', 'ageGroup=unknown', 'count=0', 'count=101']) {
+    for (const query of ['age=14', 'ageGroup=unknown', 'count=0', 'count=10001']) {
       expect(() => parse(query)).toThrow(PeopleQueryError)
     }
     expect(() => parse('age=14')).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'age' }))
@@ -43,7 +43,7 @@ describe('GET /people query contract', () => {
   })
 
   it('rejects unknown or repeated parameters and bounded strings', () => {
-    for (const query of ['limit=2', 'count=1&count=2', `seed=${'s'.repeat(129)}`]) {
+    for (const query of ['pageSize=2', 'count=1&count=2', `seed=${'s'.repeat(129)}`]) {
       expect(() => parse(query)).toThrow(PeopleQueryError)
     }
     expect(() => parse('appearance=martian')).toThrow(expect.objectContaining({ code: 'INVALID_QUERY', parameter: 'appearance' }))

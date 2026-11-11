@@ -1,0 +1,41 @@
+// Reviewed European territory name components from the pinned birth-place report and Faroese statistics.
+// DK name sources: wikidata-europe-birthplace-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Anna", "Anne", "Karen", "Mette", "Louise", "Kirsten",
+    "Elisabeth", "Julie", "Charlotte", "Maria", "Ellen", "Sophie",
+    "Johanne", "Else", "Caroline", "Sofie", "Ingeborg", "Margrethe",
+    "Hanne", "Birgitte", "Christine", "Inger", "Lene", "Bodil",
+    "Lise", "Ida", "Amalie", "Mathilde", "Emilie", "Eva",
+    "Lone", "Vibeke", "Camilla", "Christina", "Helle", "Signe",
+    "Ulla", "Astrid", "Susanne", "Inge", "Pernille", "Frederikke",
+    "Rikke", "Agnete", "Marianne", "Grethe", "Henriette", "Line",
+    "Gerda", "Katrine",
+  ],
+  male: [
+    "Christian", "Peter", "Hans", "Carl", "Frederik", "Niels",
+    "Jens", "Jørgen", "Johan", "Erik", "Henrik", "Johannes",
+    "Andreas", "Søren", "Poul", "Anders", "Knud", "Jacob",
+    "Thomas", "Michael", "Ole", "Emil", "Lars", "Vilhelm",
+    "Martin", "Otto", "Morten", "Rasmus", "Georg", "Aage",
+    "Svend", "Mads", "Axel", "Valdemar", "Peder", "Ludvig",
+    "Jesper", "Harald", "Mogens", "Per", "Julius", "Kristian",
+    "John", "August", "Henning", "Theodor", "Holger", "Nicolai",
+    "Jan", "Wilhelm",
+  ],
+  family: [
+    "Hansen", "Nielsen", "Jensen", "Andersen", "Pedersen", "Christensen",
+    "Larsen", "Sørensen", "Rasmussen", "Jørgensen", "Møller", "Madsen",
+    "Olsen", "Thomsen", "Jacobsen", "Lund", "Knudsen", "Christiansen",
+    "Poulsen", "Kristensen", "Johansen", "Schmidt", "Bang", "Mortensen",
+    "Frederiksen", "Clausen", "Dahl", "Jakobsen", "Meyer", "Müller",
+    "Bruun", "Lange", "Koch", "Lassen", "Mikkelsen", "Friis",
+    "Simonsen", "Fischer", "Kjær", "Olesen", "Holst", "Eriksen",
+    "Iversen", "Schou", "Svendsen", "Carlsen", "Jessen", "Andreasen",
+    "Berg", "Henriksen", "Nissen", "Winther", "Nørgaard", "Østergaard",
+    "Søndergaard", "Bech", "Lind", "Ussing", "Jespersen", "Mogensen",
+    "Moltke", "Bertelsen", "Laursen", "Melchior", "Aagaard", "Fenger",
+    "Fabricius", "Munk", "Skeel", "Andresen", "Bloch", "Brandt",
+    "Jeppesen", "Kristiansen", "Ravn",
+  ],
+} as const

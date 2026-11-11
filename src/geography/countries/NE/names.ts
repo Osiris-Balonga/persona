@@ -1,0 +1,40 @@
+// Source-backed local name components; coverage and limits in docs/geographic-data.md.
+// NE name sources: wikidata-africa-qlever-candidates, wikidata-africa-birthplace-candidates.
+export const names = {
+  female: [
+    'Mariama', 'Aïchatou', 'Amina', 'Fatima', 'Hadiza',
+    'Zara', 'Aïssa', 'Aïssata', 'Djamila', 'Fatimata',
+    'Nafissa', 'Samira', 'Antoinette', 'Biba', 'Binta',
+    'Camille', 'Clémence', 'Fatou', 'Fatoumata', 'Hassana',
+    'Hélène', 'Hussaina', 'Jeannette', 'Kadidiatou', 'Kadidja',
+    'Kadri', 'Lala', 'Lalla', 'Latifa',
+    'Maïmouna', 'Malika', 'Mari', 'Mariam', 'Mireille',
+    'Miriam', 'Nana', 'Ousseina', 'Rachida', 'Ramatou',
+    'Sakina', 'Salima', 'Sarah', 'Saratou', 'Zarah',
+    'Aida', 'Celia', 'Chloé', 'Michèle', 'Sophie',
+  ],
+  male: [
+    'Amadou', 'Moussa', 'Ibrahim', 'Mohamed', 'Mahamane',
+    'Abdoulaye', 'Ali', 'Mamadou', 'Abdoul', 'Boubacar',
+    'Mahamadou', 'Abdou', 'Boureima', 'Djibo', 'Harouna',
+    'Ousmane', 'Issa', 'Issoufou', 'Moustapha', 'Muhammad',
+    'Sani', 'Souleymane', 'Abd al-Rahman', 'Abdourahmane', 'Aboubacar',
+    'Daouda', 'Elhadji', 'Hamani', 'Issaka', 'Abdallah',
+    'Adamou', 'Ahmed', 'Idrissa', 'Karim', 'Mahaman',
+    'Oumarou', 'Salou', 'Seini', 'Seyni', 'Souley',
+    'Yacouba', 'Abass', 'Abd al-Karīm', 'Abdelaziz', 'Abderrahmane',
+    'Abdoulbaki', 'Abdoulmoumoni', 'Abdul', 'Abdulkadir', 'Abdullah',
+  ],
+  family: [
+    'Gado', 'Garba', 'Amadou', 'Adamou', 'Daouda',
+    'Djibo', 'Ibrahim', 'Moussa', 'Abdou', 'Cissé',
+    'Diallo', 'Harouna', 'Hassane', 'Issa', 'Moumouni',
+    'Souley', 'Abdoulaye', 'Aboubacar', 'Alidou', 'Ba',
+    'Bakary', 'Boubacar', 'Coulibaly', 'Hamani', 'Kamara',
+    'Keïta', 'Mamani', 'Moutari', 'Sidibé', 'Souleymane',
+    'Tondi', 'Traoré', 'Wahid', 'Zakari', 'Abani',
+    'Abba', 'Abdo', 'Abdou-Saleye', 'Abdramane', 'Abiboulaye',
+    'Abou', 'Abubakar', 'Adamu', 'Adeola', 'Ado',
+    'Ahmed', 'Ahou', 'Akawala', 'Alassane', 'Alio Maidoukia',
+  ],
+} as const

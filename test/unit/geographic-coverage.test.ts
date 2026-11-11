@@ -82,10 +82,10 @@ describe('geographic source coverage', () => {
       source: 'bhutan-naming-study', fallback: null,
     })
     expect(rows.find((row) => row.country === 'MW')?.names).toMatchObject({
-      source: 'peace-corps-chichewa-names', fallback: null, supplementarySources: ['ifla-malawi-names'],
+      source: 'peace-corps-chichewa-names', fallback: null, supplementarySources: ['ifla-malawi-names', 'wikidata-africa-qlever-candidates'],
     })
     expect(rows.find((row) => row.country === 'ET')?.names).toMatchObject({
-      source: 'tesfa-ethiopian-names', fallback: null, supplementarySources: ['uk-ethiopia-names'],
+      source: 'tesfa-ethiopian-names', fallback: null, supplementarySources: ['uk-ethiopia-names', 'wikidata-africa-qlever-candidates'],
     })
     expect(rows.find((row) => row.country === 'MW')).toMatchObject({
       profileGeneration: 'available', names: { review: 'reviewed' },

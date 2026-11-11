@@ -1,5 +1,2 @@
-// Small Amharic name sample; see docs/geographic-data.md.
-export const ethiopiaGivenNames = {
-  female: ['Abeba', 'Almaz', 'Birtukan', 'Tigist', 'Tseday'],
-  male: ['Abebe', 'Bekele', 'Tesfaye', 'Aklilu', 'Dawit'],
-} as const
+// Edit country datasets in countries/<ISO>/names.ts.
+export { names as ethiopiaGivenNames } from './countries/ET/names.js'

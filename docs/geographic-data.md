@@ -2,6 +2,83 @@
 
 This document records the current data sources and the sequence of regional reviews. The [v2 API contract](api.md) is authoritative for public fields and filters; older paragraphs below describe the internal V1 data pipeline. For a current, generated per-country summary of profile, postcode, and phone availability, see [country data availability](country-availability.md).
 
+## Name dataset layout
+
+Country-specific reviewed name components live in `src/geography/countries/<ISO>/names.ts`,
+for example `countries/CG/names.ts`. Edit that country's file to maintain its given names,
+family names, gendered forms or two-part name samples. The file records the existing source
+identifiers; the full source and usage-right declarations remain in `sources.ts` and this guide.
+
+Generated fallback language contexts live alongside them in `countries/<ISO>/name-context.ts`.
+These are the GeoNames/Faker fallback contexts; the reviewed providers in `name-providers.ts`
+continue to take precedence. Shared locale datasets live in `src/geography/name-pools/<locale>.ts`
+so countries that use the same language do not acquire separate copies of its name arrays.
+
+The continental `*-names.ts` modules, `name-context-data.ts` and `name-pool-data.ts` are
+registries that retain the existing imports and registration order. Runtime selection rules,
+country availability, weighting, source identifiers and array order are unchanged by this layout.
+`npm run data:refresh:names -- <countryInfo.txt>` refreshes the generated country contexts,
+shared locale pools and their registries; it never overwrites reviewed `countries/<ISO>/names.ts`.
+
+The replay fixture in `test/fixtures/country-name-replay.json` records the current `dataVersion`.
+Its tests cover all provider contents, complete profiles across genders and age groups, and
+HTTP batch bodies and ETags. The initial migration baseline was captured before moving any
+data at revision `c29c517`; that baseline is retained in Git history. An intentional data or
+generation-policy change must review the expectations and bump the relevant version.
+
+## Name diversity review, 2026-11-11
+
+`npm run data:audit:name-diversity -- --limit 20` ranks the profile-enabled countries by
+the smaller of their female and male name capacities. Use
+`npm run --silent data:audit:name-diversity -- --json` for machine-readable component counts,
+strategies, source editions, licenses, hashes and quality issues. Whole-name pools count their stored full names;
+paired pools count distinct complete combinations; patronymic pools exclude an identical first
+and paternal name. Unicode normalization, case, whitespace and overlapping pool entries do not
+inflate counts. Capacity describes supported name strings, not a population-frequency model
+or a promise that every generated person has a different name.
+
+The first enrichment batch targets the ten countries previously below 100 combinations for
+at least one gender. The source and selection ledger is
+`data/geography/sparse-name-enrichment-2026-11-11.json`; it records input hashes, exclusions,
+retained examples, limitations and before/after counts. Existing source terms remain applicable.
+
+| Country | Female combinations before → after | Male combinations before → after |
+| --- | ---: | ---: |
+| MM | 6 → 50 | 6 → 50 |
+| BT | 12 → 84 | 12 → 84 |
+| ET | 25 → 2,500 | 20 → 2,450 |
+| MW | 20 → 300 | 20 → 300 |
+| CG | 30 → 5,000 | 30 → 5,000 |
+| LS | 40 → 360 | 40 → 1,200 |
+| BW | 42 → 5,000 | 42 → 5,000 |
+| NA | 42 → 5,000 | 42 → 5,000 |
+| SC | 48 → 5,000 | 48 → 5,000 |
+| ZA | 90 → 9,933 | 90 → 9,933 |
+
+African additions use the existing pinned [Wikidata](https://www.wikidata.org/wiki/Wikidata:Licensing)
+CC0 candidate snapshot, with country/gender review and suspect labels deferred. South Africa
+also retains the Stats SA examples and adds reviewed components from the pinned Faker `zu_ZA`
+MIT snapshot. These are bounded compatibility samples; citizenship links and language datasets
+do not establish statistical representativeness or every local community's naming conventions.
+
+Myanmar retains whole-name selection: its 50 names per gender are multiword common-name facts
+from the existing [male](https://burmesenames.wordpress.com/2014/06/07/the-100-most-popular-male-burmese-names/)
+and [female](https://burmesenames.wordpress.com/2014/06/07/the-100-most-popular-female-burmese-names/)
+frequency publications. No surname is invented by recombining arbitrary elements, and the
+original source's urban, age and gender biases remain. Bhutan expands only the two-part
+given-name convention documented by [Karma Phuntsho](https://texts.mandala.library.virginia.edu/book_pubreader/39441).
+Ethiopia keeps male given names in the paternal position, consistent with
+[HM Passport Office guidance](https://www.gov.uk/government/publications/ethiopia-knowledge-base-profile/ethiopia-knowledge-base-profile).
+Malawi retains a bounded Chichewa unisex sample: `Mavuto` is the sixth example explicitly
+described as appropriate for both girls and boys on printed page 74 of the existing
+[Peace Corps handbook](https://files.eric.ed.gov/fulltext/ED206157.pdf). It is not a broader
+review of Malawi's given names. Lesotho also remains below the broad-corpus target.
+
+This batch uses `geo-2026-11-11.1`. Seeded results and ETags intentionally change with that
+version; replay remains deterministic within the same versions. The other 239 provider
+fingerprints and both shared fallback snapshots were checked against the prior version and
+remain identical. The historical review notes below describe earlier stages of the corpus.
+
 ## Country and territory registry
 
 The V1 registry is a snapshot dated 2026-09-24 of the 249 assigned ISO 3166-1 alpha-2 codes. It also records the alpha-3 and numeric codes, an English name, a generation eligibility flag, and a telephone calling code when the source has one. The snapshot is regenerated with `npm run data:refresh:countries`; the two pinned source packages are development dependencies, so the API does not depend on a live external country service.
@@ -175,7 +252,7 @@ Kenya, Tanzania, Uganda, Zambia, and Zimbabwe now use the pinned QLever candidat
 
 Botswana uses components from the [Parliament's public member roster](https://parliament.gov.bw/members.php). Lesotho uses selected components from an [official Assembly member listing](https://nationalassembly.parliament.ls/members/); this source includes earlier mandates and does not establish name frequencies. Seychelles uses the [8th Assembly roster](https://www.nationalassembly.sc/members-8th-assembly), with the [Women's Parliamentary Caucus list](https://www.nationalassembly.sc/committees/standing-committees/womens-parliamentary-caucus) supporting the female examples. As with the other parliamentary samples, combining name components is only a narrow compatibility choice and does not assert demographic coverage.
 
-Unfiltered nationality choice gives each profile-available code equal editorial weight. Internal appearance defaults use country-linked relative weights: the UN [M49 region and subregion registry](https://unstats.un.org/unsd/methodology/m49/overview/) gives every resident-eligible ISO code a documented geographic starting point, and reviewed country profiles replace it where useful national evidence exists. The initial country reviews cover `BR`, `CA`, `FR`, `GB`, `GY`, `MU`, `QA`, `SG`, `US`, and `ZA`; each profile retains its source URL in `src/geography/appearance-distribution.ts`. The France review uses [INSEE migration and descendants data](https://www.insee.fr/fr/statistiques/8612512) only as evidence that the European default should include diverse appearance possibilities; those data do not measure skin colour. Congo, Morocco, Cameroon, Algeria, and other codes still use explicit regional inference pending country review. These integer weights are editorial sampling weights, never population percentages or measured skin-tone frequencies. Census categories, nationality, migration history, and visual appearance are different measures; a source informs a review but is not mechanically converted into a portrait label. The 14 internal appearance labels remain broad and imperfect, so this distribution is `partial`, not a claim of statistical representativeness. Within a country, city choice uses the square root of the GeoNames population, rounded to a minimum weight of one. Country-to-name-pool choices use the language weights above. Public v2 requests can constrain nationality, residence, continent, and city, but cannot filter by appearance. Portrait selection uses the nationality-linked production collection, gender, and apparent age.
+Unfiltered nationality choice gives each profile-available code equal editorial weight. Internal appearance defaults use country-linked relative weights: the UN [M49 region and subregion registry](https://unstats.un.org/unsd/methodology/m49/overview/) gives every resident-eligible ISO code a documented geographic starting point, and reviewed country profiles replace it where useful national evidence exists. The initial country reviews cover `BR`, `CA`, `FR`, `GB`, `GY`, `MU`, `QA`, `SG`, `US`, and `ZA`; each profile retains its source URL in `src/geography/appearance-distribution.ts`. The France review uses [INSEE migration and descendants data](https://www.insee.fr/fr/statistiques/8612512) only as evidence that the European default should include diverse appearance possibilities; those data do not measure skin colour. Congo, Morocco, Cameroon, Algeria, and other codes still use explicit regional inference pending country review. These integer weights are editorial sampling weights, never population percentages or measured skin-tone frequencies. Census categories, nationality, migration history, and visual appearance are different measures; a source informs a review but is not mechanically converted into a portrait label. The 14 internal appearance labels remain broad and imperfect, so this distribution is `partial`, not a claim of statistical representativeness. Within a country, city choice uses the square root of the GeoNames population, rounded to a minimum weight of one. Country-to-name-pool choices use the language weights above. Public v2 requests can constrain nationality, residence, continent, and city, but cannot filter by appearance. Portrait selection uses gender and apparent age, plus the nationality-linked production collection when `skinTone` is omitted. An explicit tone searches all production collections for the photo only; names, nationality and residence retain their geographic constraints.
 
 ## Fictional addresses
 

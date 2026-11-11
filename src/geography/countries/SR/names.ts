@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// SR name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Jennifer", "Lilian", "Naomi", "Patricia", "Ruth", "Carla",
+    "Diana", "Gloria", "Joan", "Maria", "Nisha", "Xaviera",
+    "Astrid", "Audrey", "Christine", "Conchita", "Helen", "Ilse",
+    "Ingrid", "Loes", "Marlène", "Melissa", "Monique", "Yvonne",
+    "Agnes", "Alice", "Ann", "Annemarie", "Annie", "Carolyn",
+    "Chayenne", "Cheryl", "Cornelly", "Cynthia", "Danielle", "Dorothy",
+    "Elfriede", "Ellen", "Evita", "Gerda", "Henna", "Irene",
+    "Jacqueline", "Jenny", "Joanna", "Johanna", "Joyce", "Karin",
+    "Liesbeth", "Lucretia",
+  ],
+  male: [
+    "John", "Eddy", "Henk", "André", "Humphrey", "Kenneth",
+    "Albert", "Glenn", "Johan", "Ronald", "Stanley", "Harold",
+    "Iwan", "Jules", "Roy", "George", "Hugo", "Leo",
+    "René", "Armand", "Frank", "Paul", "Robby", "Siegfried",
+    "Wilfred", "Alexander", "Cornelis", "Edgar", "Edmund", "Eugène",
+    "Harry", "Herman", "Julius", "Louis", "Patrick", "Rudi",
+    "Shaquille", "Theo", "Walther", "August", "Dennis", "Eduard",
+    "Eric", "Hendrik", "Henry", "Johannes", "Jozef", "Lesley",
+    "Lucien", "Marcel",
+  ],
+  family: [
+    "Pinas", "Bouterse", "Breeveld", "Esajas", "Mook", "Sabajo",
+    "Sardjoe", "Sjauw", "Ahmadali", "Cairo", "Comvalius", "Ferrier",
+    "Jones", "Lichtveld", "Muringen", "Simons", "van Dijk", "Verwey",
+    "Aloema", "Amatstam", "Artist", "Boldewijn", "Brunings", "Chin",
+    "de la Fuente", "Demon", "Faerber", "Fernandes", "Haynes", "Helstone",
+    "Illes", "Ishaak", "Jadnanansing", "Jameson", "Jessurun", "Kamperveen",
+    "Leerdam", "Lewis", "Malone", "Mijnals", "Miranda", "Misiedjan",
+    "Mungra", "Pollack", "Radhakishun", "Ramcharan", "Sedoc", "Snijders",
+    "Telting", "Toney", "van Vliet", "Waal", "Wong Loi Sing", "Abdoelrahman",
+    "Abrahams", "Agerkop", "Ajodhia", "Alberga", "Alexander", "Alfaisie",
+    "Amafo", "Asin", "Asinga", "Axwijk", "Bakas", "Biervliet",
+    "Bonjaski", "Brand Flu", "Brandon", "Bueno", "Burleson", "Chen",
+    "Cheng A June", "Clemens", "Dawson",
+  ],
+} as const

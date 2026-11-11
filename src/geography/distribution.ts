@@ -21,9 +21,9 @@ export function chooseWeighted<T>(items: readonly { value: T; weight: number }[]
   throw new RangeError('Unreachable weighted choice')
 }
 
-export function resolveGeographicContext(
+export function resolveLocationContext(
   query: Pick<PeopleQuery, 'nationality' | 'residenceCountry' | 'continent' | 'city'>
-    & { country?: string; appearance?: string },
+    & { country?: string },
   key: string,
 ) {
   if (!/^[0-9a-f]{64}$/.test(key)) throw new RangeError('Invalid generation key')
@@ -53,10 +53,20 @@ export function resolveGeographicContext(
     : getCity(residenceCountry.code, query.city)
   if (!city) throw new RangeError('City is not in the selected country')
 
+  return { nationality, residenceCountry, country: nationality, city }
+}
+
+// Historical visual research and review still use this explicit extension.
+export function resolveGeographicContext(
+  query: Parameters<typeof resolveLocationContext>[0] & { appearance?: string }, key: string,
+) {
+  const geography = resolveLocationContext(query, key)
+
   if (query.appearance !== undefined && !isAppearance(query.appearance)) {
     throw new RangeError('Unknown appearance category')
   }
-  const appearance = query.appearance ?? chooseWeighted(appearanceDistributionForCountry(nationality.code).weights, draw(24))
+  const appearance = query.appearance ?? chooseWeighted(appearanceDistributionForCountry(geography.nationality.code).weights,
+    Number.parseInt(key.slice(24, 36), 16))
 
-  return { nationality, residenceCountry, country: nationality, city, appearance }
+  return { ...geography, appearance }
 }

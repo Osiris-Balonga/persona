@@ -47,4 +47,23 @@ describe('portrait gallery filters', () => {
     expect(matchesPortraitFilters(item, { ...filters, collection: 'europe-east' })).toBe(false)
     expect(matchesPortraitFilters(portrait, { ...filters, collection: 'unassigned' })).toBe(true)
   })
+
+  it('filters contextual portraits and treats a missing legacy context as standard', () => {
+    const filters = { status: 'all', region: 'all', appearance: 'all', collection: 'all', ageGroup: 'all', ageRange: 'all', gender: 'all', quality: 'all' }
+    expect(matchesPortraitFilters(portrait, { ...filters, portraitContext: 'standard' })).toBe(true)
+    expect(matchesPortraitFilters(portrait, { ...filters, portraitContext: 'doctor' })).toBe(false)
+    expect(matchesPortraitFilters({ ...portrait, metadata: { ...portrait.metadata, portraitContext: 'doctor' } },
+      { ...filters, portraitContext: 'doctor' })).toBe(true)
+  })
+
+  it('finds undocumented extracted candidates by their source context until reviewed metadata replaces it', () => {
+    const filters = { status: 'all', region: 'all', appearance: 'all', collection: 'all', ageGroup: 'all', ageRange: 'all', gender: 'all', quality: 'all' }
+    const candidate = { status: 'needs-metadata', sourceProvenance: { intendedContext: 'doctor' } }
+    expect(matchesPortraitFilters(candidate, { ...filters, portraitContext: 'doctor' })).toBe(true)
+    expect(matchesPortraitFilters(candidate, { ...filters, portraitContext: 'standard' })).toBe(false)
+    expect(matchesPortraitFilters({ ...candidate, metadata: { ...portrait.metadata, portraitContext: 'construction' } },
+      { ...filters, portraitContext: 'doctor' })).toBe(false)
+    expect(matchesPortraitFilters({ ...candidate, metadata: portrait.metadata },
+      { ...filters, portraitContext: 'standard' })).toBe(true)
+  })
 })

@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// PY name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Maria", "Ana", "Gabriela", "Gloria", "Margarita",
+    "Alicia", "Carmen", "Diana", "Jessica", "Liz", "Mabel",
+    "Natalia", "Ramona", "Rosa", "Andrea", "Claudia", "Cristina",
+    "Juana", "Julia", "Karen", "Marta", "Olga", "Sandra",
+    "Teresa", "Alma", "Camila", "Cecilia", "Cynthia", "Fabiola",
+    "Gladys", "Guadalupe", "Isabel", "Larissa", "Laura", "Lourdes",
+    "Mercedes", "Paola", "Patricia", "Raquel", "Rocio", "Sara",
+    "Silvia", "Sofia", "Sofía", "Susana", "Verónica", "Adela",
+    "Alice", "Analia",
+  ],
+  male: [
+    "Carlos", "Juan", "José", "Luis", "Jorge", "Francisco",
+    "Antonio", "Diego", "Pedro", "Gustavo", "Manuel", "Ramón",
+    "Pablo", "César", "Fernando", "Julio", "Miguel", "Roberto",
+    "Daniel", "Enrique", "Hugo", "Marcos", "Ángel", "Arnaldo",
+    "Oscar", "Óscar", "Ricardo", "Mario", "Rodrigo", "Rubén",
+    "Víctor", "Alejandro", "Alfredo", "David", "Félix", "Héctor",
+    "Javier", "máximo merilio", "Raúl", "Derlis", "Edgar", "Ignacio",
+    "Juan Carlos", "Adolfo", "Julio César", "Marcelo", "Richard", "Alberto",
+    "Celso", "Cristian",
+  ],
+  family: [
+    "González", "Martínez", "López", "Benítez", "Fernández", "Franco",
+    "Caballero", "Romero", "Ferreira", "Giménez", "Ortiz", "Escobar",
+    "Rojas", "Acosta", "Ayala", "Bogado", "Gómez", "Peralta",
+    "Ramírez", "Díaz", "Rodríguez", "Duarte", "Martinez", "Torres",
+    "Barrios", "Centurión", "Godoy", "Miranda", "Paredes", "Pérez",
+    "Acuña", "Báez", "Cáceres", "Mendoza", "Riveros", "Aquino",
+    "Bareiro", "Cabrera", "Coronel", "García", "Medina", "Mora",
+    "Ruiz", "Sánchez", "Yegros", "Aguilar", "Arce", "Cardozo",
+    "Domínguez", "Florentín", "Gamarra", "Jara", "Morel", "Olmedo",
+    "Santacruz", "Aguilera", "Aranda", "Barreto", "Benitez", "Bobadilla",
+    "Brizuela", "Caceres", "Chamorro", "Colmán", "Delgado", "Espínola",
+    "Garay", "Gimenez", "Lezcano", "Montiel", "Núñez", "Pereira",
+    "Riquelme", "Rivarola", "Rodas",
+  ],
+} as const

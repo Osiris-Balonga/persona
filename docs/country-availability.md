@@ -1,6 +1,6 @@
 # Country data availability
 
-Data version: `geo-2026-09-26.1`. This table is generated from the checked-in country, city, postal, name-review, and phone catalogues. Run `npm run data:availability` after changing those sources; it also refreshes the [CLI](../packages/cli/README.md) country snapshot. `npm run data:availability:check` detects a stale table or snapshot.
+Data version: `geo-2026-11-11.1`. This table is generated from the checked-in country, city, postal, name-review, and phone catalogues. Run `npm run data:availability` after changing those sources; it also refreshes the [CLI](../packages/cli/README.md) country snapshot. `npm run data:availability:check` detects a stale table or snapshot.
 
 209 of 249 assigned country and territory codes can generate profiles; 33 await local name review and 7 have no permanent resident profile. Among available codes, 531 of 2454 sampled cities across 73 countries have a city-linked postcode.
 
@@ -258,4 +258,4 @@ A postcode count applies only to the sampled cities, not every address in a coun
 | ZM | Zambia | available | 0/12 | format-valid |
 | ZW | Zimbabwe | available | 0/12 | format-valid |
 
-The current API exposes `GET /people`; it does not have a country-capability endpoint. This versioned table is the discoverable coverage reference for the beta. See the [API contract](api.md) for request and response rules and the [geographic data notes](geographic-data.md) for provenance and limitations.
+Use `GET /coverage` for country availability and the approved portrait summary from the deployed API. This table remains a versioned reference generated from the repository sources. See the [API contract](api.md) for request and response rules and the [geographic data notes](geographic-data.md) for provenance and limitations.

@@ -1,0 +1,41 @@
+// Reviewed Wikidata name components; see docs/geographic-data.md.
+// UY name sources: wikidata-south-america-qlever-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "María", "Ana", "Laura", "Graciela", "Alicia", "Susana",
+    "Raquel", "Carmen", "Silvia", "Mariana", "Gabriela", "Beatriz",
+    "Cecilia", "Cristina", "Elena", "Lucía", "Patricia", "Carolina",
+    "Mónica", "Adriana", "Margarita", "Martha", "Teresa", "Inés",
+    "Blanca", "Marta", "Mercedes", "Rosa", "Olga", "Andrea",
+    "Isabel", "Virginia", "Gloria", "Sara", "Elsa", "Gladys",
+    "Rosario", "Celia", "Claudia", "Florencia", "Sofía", "Mary",
+    "Nelly", "Victoria", "Alba", "Delia", "Julia", "Nora",
+    "Alejandra", "Camila",
+  ],
+  male: [
+    "Carlos", "José", "Juan", "Luis", "Jorge", "Eduardo",
+    "Julio", "Daniel", "Alberto", "Pablo", "Enrique", "Héctor",
+    "Pedro", "Diego", "Fernando", "Francisco", "Mario", "Roberto",
+    "Miguel", "Alejandro", "Ricardo", "máximo merilio", "Raúl", "Alfredo",
+    "Gustavo", "Federico", "Martín", "Hugo", "Manuel", "Santiago",
+    "Antonio", "Juan Carlos", "Nicolás", "Guillermo", "Álvaro", "Andrés",
+    "Gabriel", "Gonzalo", "Marcelo", "Sergio", "Sebastián", "Nelson",
+    "Rafael", "Rodrigo", "Ignacio", "Ernesto", "Víctor", "Javier",
+    "Washington", "Agustín",
+  ],
+  family: [
+    "Martínez", "González", "Rodríguez", "Pérez", "Fernández", "Silva",
+    "García", "López", "Gómez", "Castro", "Díaz", "Pereira",
+    "Álvarez", "Medina", "Alonso", "Cabrera", "Méndez", "Acosta",
+    "Núñez", "Suárez", "Ramos", "Viera", "Olivera", "Pereyra",
+    "Machado", "Vidal", "Blanco", "Barrios", "Costa", "Romero",
+    "Aguirre", "Cardozo", "Delgado", "Guerra", "Ramírez", "Duarte",
+    "Ferreira", "Pintos", "Torres", "Herrera", "Varela", "Aguiar",
+    "Gil", "Muñoz", "Reyes", "Santos", "Da Silva", "Flores",
+    "Miranda", "Morales", "Moreira", "Rivero", "Silveira", "Arocena",
+    "Barboza", "Cardoso", "Castellanos", "Castillo", "Hernández", "Lima",
+    "Peralta", "Rodriguez", "Araújo", "Márquez", "Montero", "Ribeiro",
+    "Rossi", "Barreto", "Bianchi", "Curbelo", "Figueroa", "Prieto",
+    "Puig", "Risso", "Sanguinetti",
+  ],
+} as const

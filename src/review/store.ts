@@ -8,9 +8,11 @@ import { optimizePortraitCandidate } from '../portraits/optimize.js'
 import { areConsecutivePortraitAgeRanges, isAdjacentPortraitAgeRange, isPortraitAgeRange } from './age-ranges.js'
 import { isPortraitCollection, type PortraitCollection } from './collections.js'
 import { areAppearanceTags, type AppearanceTag } from '../portraits/appearance-tags.js'
+import { contextAllowsAge, contextIntersectsRange, isPortraitContext, type PortraitContext } from '../portraits/contexts.js'
 
 export type ReviewStatus = 'processing-error' | 'needs-metadata' | 'ready-for-review' | 'approved' | 'rejected'
 export interface PortraitMetadata {
+  portraitContext?: PortraitContext
   ageGroup: 'child' | 'teen' | 'adult' | 'senior'
   apparentAgeMin: number
   apparentAgeMax: number
@@ -36,9 +38,32 @@ export interface ReviewItem {
   status: ReviewStatus
   createdAt: string
   technical?: PortraitFileInfo
+  sourceProvenance?: PortraitSourceProvenance
   metadata?: PortraitMetadata
   decision?: ReviewDecision
   error?: string
+}
+
+export interface PortraitSourceProvenance {
+  sheetId: string
+  quadrant: 'TL' | 'TR' | 'BL' | 'BR'
+  generationProvenance: string
+  sourceSha256: string
+  rightsEvidence: string
+  intendedContext: PortraitContext
+  intendedGender: 'female' | 'male'
+  intendedAge: number
+}
+
+function validateSourceProvenance(value: PortraitSourceProvenance): void {
+  if (!value || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(value.sheetId)
+    || !['TL', 'TR', 'BL', 'BR'].includes(value.quadrant)
+    || !value.generationProvenance?.trim() || !/^[a-f0-9]{64}$/.test(value.sourceSha256)
+    || !value.rightsEvidence?.trim() || !isPortraitContext(value.intendedContext)
+    || !['female', 'male'].includes(value.intendedGender)
+    || !contextAllowsAge(value.intendedContext, value.intendedAge)) {
+    throw new RangeError('Invalid extracted portrait provenance')
+  }
 }
 
 const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex')
@@ -59,6 +84,12 @@ function validateMetadata(input: PortraitMetadata): void {
       input.secondaryAgeMin as number, input.secondaryAgeMax as number)) {
     throw new RangeError('Secondary age range must be adjacent to the primary range')
   }
+  const context = input.portraitContext === undefined ? 'standard' : input.portraitContext
+  const ranges = input.apparentAgeRanges ?? [[input.apparentAgeMin, input.apparentAgeMax],
+    ...(input.secondaryAgeMin === undefined ? [] : [[input.secondaryAgeMin, input.secondaryAgeMax!]])]
+  if (!isPortraitContext(context) || !ranges.every(([minimum, maximum]) => contextIntersectsRange(context, minimum, maximum))) {
+    throw new RangeError('Portrait age ranges do not match context')
+  }
   if (!['female', 'male'].includes(input.gender) || !isAppearance(input.appearance)
     || !/^[a-z]+(?:-[a-z]+)*$/.test(input.visualGroup)
     || (input.appearanceTags !== undefined && !areAppearanceTags(input.appearanceTags))
@@ -68,6 +99,7 @@ function validateMetadata(input: PortraitMetadata): void {
 }
 function xmp(input: PortraitMetadata): string {
   const fields = {
+    portraitContext: input.portraitContext,
     ageGroup: input.ageGroup, apparentAgeMin: input.apparentAgeMin, apparentAgeMax: input.apparentAgeMax,
     apparentAgeRanges: input.apparentAgeRanges?.map(([min, max]) => `${min}-${max}`).join(','),
     gender: input.gender, appearance: input.appearance, visualGroup: input.visualGroup,
@@ -108,9 +140,11 @@ export class PortraitReviewStore {
     if (!/^p_\d{4,}$/.test(id) || !(await this.get(id))) throw new RangeError('Unknown portrait')
     return readFile(join(this.root, 'webp', `${id}.webp`))
   }
-  async ingest(bytes: Buffer, originalName: string, collection?: PortraitCollection): Promise<ReviewItem> {
+  async ingest(bytes: Buffer, originalName: string, collection?: PortraitCollection,
+    sourceProvenance?: PortraitSourceProvenance): Promise<ReviewItem> {
     return this.serialize(async () => {
       if (collection !== undefined && !isPortraitCollection(collection)) throw new RangeError('Unknown portrait collection')
+      if (sourceProvenance !== undefined) validateSourceProvenance(sourceProvenance)
       if (!bytes.length || bytes.length > 20_000_000) throw new RangeError('Upload must be between 1 and 20 MB')
       const items = await this.load()
       const sourceSha256 = hash(bytes)
@@ -119,7 +153,8 @@ export class PortraitReviewStore {
       const id = `p_${String(Math.max(0, ...items.map((item) => Number(item.id.slice(2)))) + 1).padStart(4, '0')}`
       const ext = extname(originalName).toLowerCase()
       const sourceExtension = ['.png', '.jpg', '.jpeg', '.webp'].includes(ext) ? ext : '.img'
-      const item: ReviewItem = { id, originalName: originalName.slice(0, 180), ...(collection ? { collection } : {}), sourceSha256,
+      const item: ReviewItem = { id, originalName: originalName.slice(0, 180), ...(collection ? { collection } : {}),
+        ...(sourceProvenance ? { sourceProvenance } : {}), sourceSha256,
         sourceExtension, status: 'needs-metadata', createdAt: new Date().toISOString() }
       const inbox = join(this.root, 'inbox', `${id}${sourceExtension}`)
       await writeFile(inbox, bytes)

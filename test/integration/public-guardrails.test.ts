@@ -1,7 +1,43 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../../src/app.js'
 
 describe('public API guardrails', () => {
+  it('reports malformed and empty JSON as client errors without exposing parser details', async () => {
+    const app = buildApp()
+    try {
+      for (const payload of ['{', '']) {
+        const response = await app.inject({ method: 'POST', url: '/people',
+          headers: { 'content-type': 'application/json' }, payload })
+        expect(response.statusCode).toBe(400)
+        expect(response.headers['cache-control']).toBe('no-store')
+        expect(response.json()).toEqual({ error: { code: 'BAD_REQUEST', message: 'Invalid request' } })
+      }
+      const valid = await app.inject({ method: 'POST', url: '/people',
+        headers: { 'content-type': 'application/json' }, payload: '{}' })
+      expect(valid.statusCode).toBe(405)
+      expect(valid.headers.allow).toBe('GET, HEAD, OPTIONS')
+    } finally { await app.close() }
+  })
+
+  it('preserves parser media-type errors and masks unexpected server errors', async () => {
+    const app = buildApp()
+    app.post('/parser-check', () => ({ ok: true }))
+    app.get('/failure-check', () => { throw new Error('private implementation detail') })
+    const logError = vi.spyOn(app.log, 'error')
+    try {
+      const unsupported = await app.inject({ method: 'POST', url: '/parser-check',
+        headers: { 'content-type': 'application/xml' }, payload: '<request/>' })
+      expect(unsupported.statusCode).toBe(415)
+      expect(unsupported.headers['cache-control']).toBe('no-store')
+      expect(unsupported.json()).toEqual({ error: { code: 'UNSUPPORTED_MEDIA_TYPE', message: 'Unsupported media type' } })
+      expect(logError).not.toHaveBeenCalled()
+      const failure = await app.inject({ method: 'GET', url: '/failure-check' })
+      expect(failure.statusCode).toBe(500)
+      expect(failure.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'Unable to process request' } })
+      expect(logError).toHaveBeenCalledWith({ err: expect.any(Error) }, 'Request failed')
+    } finally { logError.mockRestore(); await app.close() }
+  })
+
   it('isolates clients by socket IP and ignores spoofed forwarding headers', async () => {
     const app = buildApp({ rateLimitMax: 2 })
     try {

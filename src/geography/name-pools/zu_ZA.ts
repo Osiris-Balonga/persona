@@ -1,0 +1,50 @@
+// GeoNames countryInfo.txt (CC BY 4.0), @faker-js/faker 10.6.0 (MIT), and reviewed Georgian given-name statistics; see docs/geographic-data.md.
+import type { NamePool } from '../name-pool-data.js'
+
+export const names: NamePool = {
+  female: [
+    "Amahle", "Ayanda", "Ayize", "Buhle", "Busisiwe", "Duduzile", "Hlengiwe", "Inyoni",
+    "Isisa", "Jabulile", "Khanyisile", "Khethiwe", "Khulekani", "Lerato", "Liyana", "Lukhona",
+    "Mbalienhle", "Mhambi", "Nandi", "Ndondoloza", "Nhlakanipho", "Nkosingiphile", "Nofoto", "Nokuthula",
+    "Nolwazi", "Nomvula", "Nonhlanhla", "Nonjabulo", "Nonkululeko", "Nozipho", "Ntokozo", "Ntombizodwa",
+    "Samukelisiwe", "Sibongile", "Sindisiwe", "Sinenhlanhla", "Siphephelo", "Sizakele", "Sizani", "Thabisa",
+    "Thadie", "Thobeka", "Thulisile", "Uluthando", "Ulwazi", "Yibanathi", "Zanele", "Zobuhle",
+  ],
+  male: [
+    "Anele", "Bafana", "Bangizwe", "Bhekimuzi", "Bhekizizwe", "Bhekumbuso", "Bonginkosi", "Dumisani",
+    "Fanyana", "Funani", "Gatsha", "Kagiso", "Kgabu", "Langa", "Linda", "Lungelo",
+    "Lwandle", "Mandla", "Maphikelela", "Mpilo", "Mpumelelo", "Msizi", "Musawenkosi", "Ndleleni",
+    "Nkanyezi", "Nkosenye", "Nkosinhle", "Nkosiyabo", "Phila", "Philani", "Phiwokwakhe", "Sanele",
+    "Sfiso", "Shaka", "Sibusiso", "Sifiso", "Siphiwe", "Sipho", "Sithembiso", "Siyanda",
+    "Solomon", "Thamsanqa", "Thando", "Themba", "Thulani", "Velaphi", "Vusumuzi", "Zenzele",
+    "Zithulele",
+  ],
+  lastFemale: [
+    "Bayeni", "Bengu", "Bhembe", "Bhengani", "Bhengu", "Bhuyeni", "Biyela", "Buthelezi",
+    "Cebekhulu", "Cele", "Chiliza", "Delazy", "Dhlomo", "Dingiswayo", "Dlamini", "Dube",
+    "Fuze", "Gabhezi", "Gama", "Gigaba", "Guliwe", "Gumede", "Gwacela", "Gwala",
+    "Hlongwa", "Khawula", "Khumalo", "Khuzwayo", "Kunene", "Lamula", "Lembede", "Luthuli",
+    "Mabhida", "Mabizela", "Maduma", "Magoza", "Malinga", "Maphisa", "Mashinini", "Mavundla",
+    "Mbatha", "Mbende", "Mbuso", "Mehloluhlaza", "Mfeka", "Mfumu", "Mgenge", "Mkhatshwa",
+    "Moseley", "Mqwebu", "Msibi", "Mthembu", "Mthethwa", "Mtolo", "Musi", "Ncusi",
+    "Ndandali", "Ndebele", "Ngcolosi", "Ngema", "Ngubane", "Ngwazi", "Nhleko", "Nomvethe",
+    "Nondlela", "Nonyana", "Nozulu", "Nsele", "Ntanzi", "Ntombela", "Nyanda", "Nzimande",
+    "Radebe", "Seme", "Senzangakhona", "Shezi", "Sibiya", "Sithuli", "Siwele", "Siyaya",
+    "Sokhela", "Sondisa", "Sothole", "Thoyana", "Thumbeza", "Thusi", "Tshabalala", "Vezi",
+    "Vilakazi", "Wosiyane", "Yengwa", "Zondi", "Zondo", "Zubane", "Zuma", "Zungu",
+  ],
+  lastMale: [
+    "Bayeni", "Bengu", "Bhembe", "Bhengani", "Bhengu", "Bhuyeni", "Biyela", "Buthelezi",
+    "Cebekhulu", "Cele", "Chiliza", "Delazy", "Dhlomo", "Dingiswayo", "Dlamini", "Dube",
+    "Fuze", "Gabhezi", "Gama", "Gigaba", "Guliwe", "Gumede", "Gwacela", "Gwala",
+    "Hlongwa", "Khawula", "Khumalo", "Khuzwayo", "Kunene", "Lamula", "Lembede", "Luthuli",
+    "Mabhida", "Mabizela", "Maduma", "Magoza", "Malinga", "Maphisa", "Mashinini", "Mavundla",
+    "Mbatha", "Mbende", "Mbuso", "Mehloluhlaza", "Mfeka", "Mfumu", "Mgenge", "Mkhatshwa",
+    "Moseley", "Mqwebu", "Msibi", "Mthembu", "Mthethwa", "Mtolo", "Musi", "Ncusi",
+    "Ndandali", "Ndebele", "Ngcolosi", "Ngema", "Ngubane", "Ngwazi", "Nhleko", "Nomvethe",
+    "Nondlela", "Nonyana", "Nozulu", "Nsele", "Ntanzi", "Ntombela", "Nyanda", "Nzimande",
+    "Radebe", "Seme", "Senzangakhona", "Shezi", "Sibiya", "Sithuli", "Siwele", "Siyaya",
+    "Sokhela", "Sondisa", "Sothole", "Thoyana", "Thumbeza", "Thusi", "Tshabalala", "Vezi",
+    "Vilakazi", "Wosiyane", "Yengwa", "Zondi", "Zondo", "Zubane", "Zuma", "Zungu",
+  ],
+}

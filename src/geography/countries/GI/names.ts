@@ -1,0 +1,41 @@
+// Reviewed European territory name components from the pinned birth-place report and Faroese statistics.
+// GI name sources: wikidata-europe-birthplace-candidates, geonames-country-info.
+export const names = {
+  female: [
+    "Elizabeth", "Charlotte", "Helen", "Susan", "Alexandra", "Alison",
+    "Amanda", "Amy", "Annie", "Aurelia", "Ava", "Carolina",
+    "Caroline", "Catalina", "Christine", "Daniella", "Davina", "Eliza",
+    "Emily", "Eva", "Geraldine", "Isobel", "Jane", "Jessica",
+    "Kaiane", "Lauren", "Lenka", "Loise", "Lucy", "Margaret",
+    "Marion", "Marjorie", "Marlene", "Mary", "May", "Megan",
+    "Michelle", "Niamh", "Nikki", "Nina", "Olga", "Raquel",
+    "Rosaleen", "Rosalind", "Samantha", "Tiffany", "Viola", "Willa",
+    "Yanira", "Yvette",
+  ],
+  male: [
+    "John", "Charles", "Joseph", "Juan", "Thomas", "Albert",
+    "Edward", "George", "Nicholas", "Peter", "Anthony", "Francisco",
+    "James", "Robert", "William", "Aaron", "Dylan", "Ethan",
+    "Francis", "Henry", "Kyle", "Michael", "Paul", "Adam",
+    "Andrew", "Antonio", "Arthur", "Daniel", "Frederick", "Gerard",
+    "Gonzalo", "Jack", "Jamie", "Joe", "José", "Justin",
+    "Lee", "Philip", "Abraham", "Adrian", "Aidan", "Al",
+    "Alain", "Alfred", "Alfredo", "Allen", "Alonso", "Álvaro",
+    "Ambrose", "Andres",
+  ],
+  family: [
+    "Casciaro", "Edwards", "Finlayson", "Levy", "Caruana", "Chipolina",
+    "Creswell", "Cruz", "Duarte", "Forbes", "Galliano", "García",
+    "Hernandez", "Isola", "Macpherson", "Parody", "Pérez", "Santos",
+    "Adams-Ray", "Addams", "Alcantara", "Aldorino", "Allen", "Amigo",
+    "Asensio", "Avellano", "Azopardi", "Azzopardi", "Bacarisas", "Balban",
+    "Baldachino", "Barbara", "Barnett", "Belchem", "Bell", "Bellairs",
+    "Bellocq", "Borge", "Bosio", "Bossano", "Bossino", "Boulton",
+    "Bowen", "Bowlby", "Bowles", "Bradburn", "Britto", "Browne",
+    "Bruzon", "Buhagiar", "Bunbury", "Camacho", "Campbell", "Cardwell",
+    "Carneiro", "Carreras", "Cartwright", "Cary", "Castle", "Chiappe",
+    "Clinton", "Cook", "Coombes", "Cortes", "Costa", "Cowper",
+    "Craig", "Dacres", "Del Agua", "Dignan", "Donnet", "Dudley",
+    "Ellul-Hammond", "Feetham", "Felice",
+  ],
+} as const
