@@ -49,7 +49,7 @@ describe('CLI subprocess workflow', () => {
         country: 'CG', city: fixture.results[0].location.city, avatarUrl: fixture.results[0].picture?.large ?? null,
       })
       await expect(run(['people', '--count', '10001', '--api-url', address])).rejects.toMatchObject({
-        code: 1, stdout: '', stderr: expect.stringContaining('400'),
+        code: 1, stdout: '', stderr: expect.stringContaining('--count must be an integer from 1 to 10000'),
       })
     } finally {
       await app.close()
