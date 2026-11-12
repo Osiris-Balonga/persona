@@ -1,188 +1,211 @@
-# Persona CLI
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Osiris-Balonga/persona/dev/packages/cli/artwork/persona-mark.png" width="80" alt="Persona logo">
+</p>
 
-Request contextual imagery with `persona people --nationality CG --portrait-context doctor --age-group adult --seed doctor-demo --as-of 2026-10-06`. Supported contexts are `standard`, `doctor`, `construction`, `business`, `school-pupil` and `university-student`. The API intersects age groups with editorial eligibility; incompatible groups return a structured error. Valid requests without matching approved images return `picture: null`, without substituting standard portraits. Keep the requested context and returned `meta.portraitSelectionVersion` for replay. This option requires an API deployment supporting `portraitContext`; introducing the flag does not publish the API or this npm package.
+<h1 align="center">Persona CLI</h1>
+<p align="center"><strong>People for your next prototype.</strong><br>Coherent fictional profiles, contextual portraits, JSON fixtures and seed templates.</p>
 
-A non-interactive Node.js 24 CLI for public v2 profile fixtures and developer-owned seeders. The executable is `persona`. It does not include the API server or require an API key.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@osiris_balonga/persona-cli"><img src="https://img.shields.io/npm/v/%40osiris_balonga%2Fpersona-cli" alt="npm version"></a>
+  <img src="https://img.shields.io/badge/Node.js-24-339933" alt="Node.js 24">
+  <a href="https://github.com/Osiris-Balonga/persona/blob/dev/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a>
+</p>
 
-The registry package name is `@osiris_balonga/persona-cli`. This checkout prepares the first public release, version `0.1.0`; registry installation is available after the release is published. See [the release procedure](../../docs/cli-release.md).
-
-## Install from source
-
-From the Persona repository:
+<p align="center">
+  <a href="https://github.com/Osiris-Balonga/persona/blob/dev/docs/developer-api.md">Quickstart</a> ·
+  <a href="https://github.com/Osiris-Balonga/persona/blob/dev/docs/api.md">API reference</a> ·
+  <a href="https://github.com/Osiris-Balonga/persona/issues">Issues</a>
+</p>
 
 ```sh
-npm ci
-npm run build:cli
-npm pack ./packages/cli --pack-destination <directory-outside-the-repository>
+npm install --save-dev @osiris_balonga/persona-cli
+npx persona people --count 20 --nationality CG --output fixtures/people.json
 ```
 
-From your application directory, install the resulting archive:
+Build a directory, populate a dashboard, prototype an onboarding flow or prepare a database seeder. Persona gives you structured names, locations, ages and contact details, with reviewed synthetic portraits when a matching image is available. No account or API key is needed.
+
+## A face for the context
+
+Everyday profiles, medical teams, construction crews, business directories and school demos can use different portrait collections.
+
+| Everyday | Healthcare | Construction | Business | School |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/medium/p_0001.webp" width="128" alt="Approved everyday synthetic portrait"> | <img src="https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/medium/p_1984.webp" width="128" alt="Approved synthetic doctor portrait"> | <img src="https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/medium/p_2892.webp" width="128" alt="Approved synthetic construction portrait"> | <img src="https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/medium/p_3732.webp" width="128" alt="Approved synthetic business portrait"> | <img src="https://persona-portraits.osirisbalonga.workers.dev/portraits/v1/medium/p_3972.webp" width="128" alt="Approved synthetic school pupil portrait"> |
+| `standard` | `doctor` | `construction` | `business` | `school-pupil` |
+
+These are approved synthetic portraits from Persona's versioned public catalog. They illustrate the collections; an individual request may select another portrait or return `picture: null`. A portrait context controls eligible ages and imagery, not a person's occupation or qualifications.
 
 ```sh
-npm install --save-dev /absolute/path/osiris_balonga-persona-cli-0.1.0.tgz
-npx persona
+# A medical directory
+npx persona people --count 12 --portrait-context doctor --age-group adult
+
+# A construction crew
+npx persona people --count 12 --portrait-context construction --age-group adult
+
+# A school demo
+npx persona people --count 12 --portrait-context school-pupil --age-group child
+```
+
+The CLI also accepts `business`, `standard` and `university-student`. Context support and portrait availability depend on the API deployment. `university-student` is accepted but has no released portrait collection. Omit `--portrait-context` to use the API's default selection. An incompatible context/age combination returns an error; missing imagery returns `picture: null`.
+
+## What you get
+
+- **Coherent profiles:** nationality, residence, city and age filters work together.
+- **Structured JSON:** names, dates of birth, illustrative addresses, contacts and image URLs.
+- **Repeatable fixtures:** pin a seed and reference date for tests and demos.
+- **Larger collections:** export up to 10,000 people through bounded API pages.
+- **Useful seed templates:** start a Prisma or generic seeder that you adapt to your application.
+- **Script-friendly output:** JSON on stdout, messages on stderr, exit code 0 on success and 1 on failure.
+
+## Install
+
+Requires **Node.js 24**. Install in your project:
+
+```sh
+npm install --save-dev @osiris_balonga/persona-cli
 npx persona --help
+npx persona --version
 ```
 
-An optional global installation of that archive enables `persona` directly. For repository development, use `npm run cli -- <arguments>`. No installation hook, first-run marker, login, or prompt is created. The existing Persona mark is rendered with terminal block characters on bare invocation and help. Color is used only on a terminal; `--no-color` and `NO_COLOR` disable it.
-
-## Generate fixtures
+Or install globally:
 
 ```sh
-npx persona people --count 20 --nationality CG --age-group adult --seed demo --as-of 2026-09-30 --output prisma/fixtures/people.json
+npm install --global @osiris_balonga/persona-cli
+persona --help
 ```
 
-Without `--output`, stdout contains only the v2 JSON envelope, including `results` and replay `meta`. Progress and errors go to stderr. Parent directories are created for file output. Existing files are preserved unless `people --force` is supplied; forced replacement is written to a temporary sibling first, so a failed write does not truncate existing fixtures. Exit status is 0 on success and 1 on failure.
+The CLI calls the public Persona HTTP API. **The default endpoint is Render staging:** `https://persona-dev.onrender.com`. New pagination or portrait features require a compatible server. Override it with `--api-url` or `PERSONA_API_URL`; the explicit flag takes precedence:
 
 ```sh
-npx persona people --count 10 > people.json
+npx persona people --api-url http://localhost:3000 --count 3
+```
+
+Supply a base URL without `/people`. HTTP(S) URLs cannot include credentials, query strings or fragments. Redirects are rejected. The CLI does not generate profiles offline.
+
+## Start with your use case
+
+### Create a fixture file
+
+```sh
+npx persona people --count 20 --nationality CG --age-group adult \
+  --seed dashboard-demo --as-of 2026-11-12 --output fixtures/people.json
+```
+
+Parent directories are created automatically. Existing files are preserved unless you add `--force`. File exports stream to a temporary sibling and publish the final file only after every page succeeds; a failed export preserves the original even with `--force`.
+
+### Choose the fields you need
+
+```sh
+npx persona people --count 3 --fields name,email,picture.thumbnail
+```
+
+Responses contain a `results` array and replay `meta`. A projected person has this shape (illustrative values):
+
+```json
+{
+  "name": { "first": "Marie", "last": "Martin", "full": "Marie Martin" },
+  "email": "m.martin.abc00@example.test",
+  "picture": null
+}
+```
+
+Without projection, profiles also include `id`, `gender`, `nationality`, `dob`, `location` and `phone`. A matching `picture` contains `large`, `medium` and `thumbnail` WebP URLs. `login` is opt-in through `--fields`. See the [complete v2 JSON example](https://github.com/Osiris-Balonga/persona/blob/dev/examples/people-response-v2.json).
+
+### Separate nationality from residence
+
+```sh
 npx persona people --nationality FR --residence-country CG --city Brazzaville
-npx persona people --fields name.first,email,picture.thumbnail
 ```
 
-| Option | API parameter / purpose |
-| --- | --- |
-| `--count` | `count`: total 1–10,000, default 1 |
-| `--limit` | `limit`: page size 1–100, default 100; enables pagination |
-| `--gender` | `gender`: male or female |
-| `--age-group` | `ageGroup`: child, teen, adult, senior; comma-separated |
-| `--nationality` | `nationality`: uppercase reviewed two-letter code |
-| `--residence-country` | `residenceCountry`: uppercase residence code |
-| `--continent` | `continent`: africa, americas, asia, europe, oceania |
-| `--city` | `city`: city in the selected residence country |
-| `--email-domain` | `emailDomain`: default example.test |
-| `--seed` | `seed`: replay seed |
-| `--as-of` | `asOf`: YYYY-MM-DD reference date |
-| `--fields` | `fields`: comma-separated public field paths |
-| `--output` | Save the entire response to a file |
-| `--force` | Replace an existing output file; requires --output |
-| `--api-url` | API base URL override |
+Nationality selects the reviewed name pool; residence selects the city and phone numbering country. `--continent` restricts nationality. A recognized country code does not guarantee an available name pool; inspect coverage before choosing your filters.
 
-The [API contract](https://github.com/Osiris-Balonga/persona/blob/dev/docs/api.md) defines filter validation, projection and replay semantics. Unknown or repeated CLI options are rejected; the API validates filter values. There are no numeric-age or appearance filters or offline person generation. Pagination follows server cursors; every page counts toward the API quota. Requests time out after 30 seconds; responses exceeding the API's 256 KiB limit are rejected. Errors include HTTP status, API code and retry hints when supplied.
-
-**The default API is Render staging**, `https://persona-dev.onrender.com`, while production preparation remains open. Override it with `--api-url http://localhost:3000` or the `PERSONA_API_URL` environment variable; the explicit option takes precedence. Supply a base URL, not `/people`. HTTP(S) URLs cannot include credentials, query strings or fragments; redirects are rejected.
-
-For replay, keep both `--seed` and `--as-of` and retain metadata. The same input only repeats against unchanged data, catalogue and generation algorithm versions. Contacts are test data; never contact them. Some phones may belong to real subscribers. City coordinates do not identify the synthetic street.
-
-## Paginated exports
+### Export more than 100 people
 
 ```sh
-npx persona people --count 1000 --limit 100 --seed bulk-demo --as-of 2026-11-12 --output fixtures/people.json
+npx persona people --count 1000 --limit 100 --seed bulk-demo \
+  --as-of 2026-11-12 --output fixtures/people.json
 ```
 
-`--count` is the total; `--limit` controls each API page. Totals above 100, or an explicit `--limit`, require an API with cursor pagination support. The CLI sends initial filters once, then follows each `meta.pagination.nextCursor` until the total is complete. A cursor fixes the seed and UTC reference date, including for initially unseeded collections. Missing pages, repeated cursors, offset drift or changing generation metadata fail the command.
+`--count` is the total; `--limit` is the maximum page size. The CLI follows API cursors automatically, preserving seed, reference date, order and generation metadata. The final envelope contains all people, `meta.count` equal to the total and no per-page `meta.pagination`.
 
-The exported envelope has all results, `meta.count` equal to the total and no per-page `meta.pagination`; other replay metadata is retained. The 256 KiB download cap applies per API response. Stdout is emitted only after every page succeeds. For `--output`, pages stream to a temporary sibling and are published atomically after success. Existing destinations are preserved without `--force`; even with `--force`, a later-page failure leaves the original file intact.
+Every page consumes an API request. Paginated 429 responses get at most three retries per page, respecting integer `Retry-After` delays of 0–120 seconds. Other errors stop the export. Legacy single requests without pagination are not retried. Requests time out after 30 seconds, and each response is capped at 256 KiB. Missing pages, repeated cursors or changing generation metadata fail the command. Stdout is emitted only after the full collection succeeds.
 
-Paginated requests retry HTTP 429 at most three times per page, waiting the integer `Retry-After` delay when it is between 0 and 120 seconds. Missing, invalid or longer delays, or an exhausted retry budget, stop the export with a retry hint. Single requests without pagination keep their existing no-retry behavior. Other HTTP errors are not retried. An incompatible cursor after a server update requires a new export; partial collections are not combined across versions.
-
-## Inspect country coverage
+### Inspect country coverage
 
 ```sh
-npx persona countries
 npx persona countries --available
 npx persona countries --country CG
 npx persona countries --json
 ```
 
-The bundled JSON snapshot contains `dataVersion` and `countries`, generated from the same catalogues as the repository country table. It is not a live server capability endpoint and may differ from an API using another data version. Each row reports code, name, profile readiness, sampled cities, cities with postcodes, and phone source. A recognized code is not necessarily profile-available. Pending name review does not imply that residence cities are unavailable. `--available` filters profile readiness, not complete field coverage. Postcodes cover only sampled cities, and format-valid phones are not reserved.
+Coverage is a bundled snapshot tied to the CLI's data version, rather than a live server query. It reports profile readiness, sampled cities, postcode coverage and phone sources. Country data may differ from another API deployment. The [country availability table](https://github.com/Osiris-Balonga/persona/blob/dev/docs/country-availability.md) explains the statuses.
 
-Maintainers regenerate both outputs with `npm run data:availability`. CI runs `npm run data:availability:check` to detect drift.
-
-## Prepare a Prisma seeder
+## From fixtures to a database seeder
 
 ```sh
 npx persona seed init --adapter prisma
-```
-
-This creates `prisma/seed.ts` only. It reads `fixtures/people.json` relative to the seed file, validates the fields required by its example mapping, transforms profiles and exposes an insertion function. It does not generate fixtures, modify your schema/configuration/package.json, install Prisma, discover your database credentials or connect to a database. It refuses to overwrite an existing file.
-
-Before executing it:
-
-1. Adapt `mapPerson` to your schema, including required fields and relations.
-2. Import your application's configured Prisma client using the correct path. Prisma 7 requires a driver adapter; the template does not guess your provider or initialization.
-3. Replace the explicit error in `insertPeople` with the commented insertion example, adapting the model and unique key. The example uses an upsert inside a transaction and disconnects in `finally`.
-4. Generate **full** fixtures without `--fields`, or adapt the reader contract to your projection.
-
-```sh
-npx persona people --count 20 --nationality CG --age-group adult --seed demo --as-of 2026-09-30 --output prisma/fixtures/people.json
-```
-
-The template intentionally stops until insertion is adapted. There is no automatic schema mapping. An agent can read your schema and adapt the generated file, but application rules remain yours to review.
-
-In an existing Prisma 7 project, add the seed command to the existing `migrations` configuration in `prisma.config.ts`, preserving its other settings:
-
-```ts
-migrations: {
-  // Keep your existing migration settings here.
-  seed: 'tsx prisma/seed.ts',
-},
-```
-
-If your project does not already have `tsx`, install it as a development dependency. After checking the target database, explicitly run:
-
-```sh
-npx prisma db seed
-```
-
-This is the application seeder execution step, separate from `persona seed init`. Use the configuration appropriate for your installed Prisma version. See the [Prisma seeding guide](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/seeding) for current configuration and client adapter requirements.
-
-Alternatively, add application-owned npm scripts:
-
-```json
-{
-  "scripts": {
-    "fixtures:people": "persona people --count 20 --nationality CG --age-group adult --seed demo --as-of 2026-09-30 --output prisma/fixtures/people.json --force",
-    "db:seed": "tsx prisma/seed.ts"
-  }
-}
-```
-
-Then use `npm run fixtures:people` and `npm run db:seed`. For repeated insertion, choose an idempotency key appropriate for your model; changing seeds or email domains may create additional rows.
-
-## Other database tools
-
-```sh
+# Or use your own database client:
 npx persona seed init --adapter generic
 ```
 
-This creates `scripts/seed.ts` with the same fixture reader and example mapping. Implement `insertPeople` with Drizzle, another ORM or your own database client, including cleanup and transaction rules. Fixtures belong in `scripts/fixtures/people.json` by default. Use `--output <file>` with either adapter to choose the seed file location; fixtures remain relative to that file. Existing seed files are never overwritten.
+Prisma creates `prisma/seed.ts`; generic creates `scripts/seed.ts`. Templates read `fixtures/people.json` relative to the generated seed file. Use `--output <file>` to choose another location. Existing seed files are never overwritten.
 
-## Maintainer checks
+The template deliberately stops until you adapt `mapPerson` and implement `insertPeople`. It does not inspect a database, change schema/configuration, install an ORM or perform inserts. Generate full fixtures without `--fields`, or adapt the reader to your projection.
 
-### Terminal logo
+For an existing Prisma project, reuse its configured client, choose the appropriate adapter and register the seed command for your installed Prisma version. Read the [Prisma seeding guide](https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding). Execute the seeder only after reviewing its mapping, insertion logic and target database.
 
-Discovery help uses a Chafa character-art conversion of the original Persona logo. Its 40-column
-rendering is made entirely of Unicode `█`, `▀`, `▄` and spaces, colored with ANSI foreground sequences.
-White source areas become transparent negative space, so the terminal's own background stays visible.
-The source is sampled onto a 40 × 32 pixel grid using nearest-neighbor scaling, without smoothing.
-No bitmap image protocol or image is displayed at runtime.
+## Command reference
 
-```powershell
-npx.cmd --no-install persona
-```
+| Command | Purpose |
+| --- | --- |
+| `persona people` | Generate JSON profiles or export a fixture file |
+| `persona countries` | Inspect bundled coverage; supports `--country`, `--available`, `--json` |
+| `persona seed init` | Create a template with `--adapter prisma` or `--adapter generic` |
+| `persona --help` | Show help and the terminal brand mark |
+| `persona --version` | Print the installed version |
 
-`--no-color`, `NO_COLOR`, and redirected output always use an escape-free monochrome
-rendering; profile JSON never contains branding or image sequences. Logo display is part of discovery
-help (`persona` or `persona --help`); creating a seed template prints only its result.
+| `people` option | Meaning |
+| --- | --- |
+| `--count <1-10000>` | Total profiles; default 1 |
+| `--limit <1-100>` | Maximum page size; default 100; explicitly enables pagination |
+| `--gender <male\|female>` | Gender filter |
+| `--age-group <groups>` | `child`, `teen`, `adult`, `senior`; comma-separated |
+| `--portrait-context <context>` | One supported portrait context |
+| `--nationality <code>` | Reviewed uppercase two-letter nationality |
+| `--residence-country <code>` | Residence country |
+| `--continent <name>` | `africa`, `americas`, `asia`, `europe`, `oceania` |
+| `--city <name>` | City in the selected residence country |
+| `--email-domain <domain>` | Generated email domain; default `example.test` |
+| `--seed <value>` | Replay seed |
+| `--as-of <YYYY-MM-DD>` | Reference date; default current UTC date |
+| `--fields <paths>` | Comma-separated v2 field paths |
+| `--output <file>` | Export the complete envelope |
+| `--force` | Replace an existing output after successful generation |
+| `--api-url <base-url>` | Override `PERSONA_API_URL` and the default API |
 
-`artwork/persona-mark.png` is the owner's supplied Persona brand image, cropped to its mark without
-redrawing. It is retained as the regeneration source and excluded from the npm archive. Persona branding
-belongs to the project owner. Generated terminal assets are bundled; users need neither Chafa nor an
-image library. To regenerate them, install [Chafa](https://hpjansson.org/chafa/) 1.18.3 and run
-`node scripts/generate-cli-logo.mjs` from the repository root. Set `CHAFA_BIN` to its executable path if
-it is not on PATH. The generator snaps JPEG edge noise to the original brand palette, removes white,
-and uses Chafa's `symbols` mode with `--fg-only --symbols space+solid+vhalf`.
+Unknown or repeated options are rejected. Use `persona <command> --help` for command help. `--no-color` and `NO_COLOR` disable terminal colors; redirected output has no ANSI escapes.
 
-### Package validation
+## Replay and data use
+
+Keep both `--seed` and `--as-of`, the applied filters and returned version metadata. Reproducibility depends on unchanged data, portrait catalog and generation algorithms. New server versions can invalidate cursors; start a fresh export instead of combining versions.
+
+Profiles and portraits are synthetic. Addresses are illustrative, coordinates identify a city rather than a person, and some format-valid phone numbers may belong to real subscribers. Never contact generated email addresses or phone numbers. Finite name and portrait pools can repeat; a larger collection does not guarantee unique names or pictures.
+
+## Development and contributing
 
 ```sh
-npm run typecheck:cli
+git clone https://github.com/Osiris-Balonga/persona.git
+cd persona
+npm ci
 npm run build:cli
 npm run check:cli-package
-npm run test:unit
-npm run test:integration
-npm run test:e2e
+npm run cli -- --help
 ```
 
-The package check installs a local npm archive into a temporary application, verifies the executable and packaged resources, and removes the temporary files. It never publishes a package. E2E tests require a built CLI (`npm run build:cli`) and use a local HTTP API; they do not insert into an external database.
+The package check installs an archive in a temporary application and verifies its executable, country data and seed resources. Contributor workflow, test suites and release steps live in [CONTRIBUTING.md](https://github.com/Osiris-Balonga/persona/blob/dev/CONTRIBUTING.md) and the [CLI release guide](https://github.com/Osiris-Balonga/persona/blob/dev/docs/cli-release.md).
+
+The terminal brand mark is bundled; no image renderer or image library is required at runtime. Maintainers can regenerate it with `node scripts/generate-cli-logo.mjs` using Chafa. Source artwork is excluded from the npm archive. Persona branding belongs to the project owner; the gallery uses the approved synthetic portrait catalog.
+
+## License
+
+[MIT](https://github.com/Osiris-Balonga/persona/blob/dev/LICENSE).
