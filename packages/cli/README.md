@@ -4,7 +4,7 @@ Request contextual imagery with `persona people --nationality CG --portrait-cont
 
 A non-interactive Node.js 24 CLI for public v2 profile fixtures and developer-owned seeders. The executable is `persona`. It does not include the API server or require an API key.
 
-The package is not published to npm yet. Its provisional name is `@osiris-balonga/persona-cli`, and `private: true` prevents accidental publication until registry ownership and release configuration are confirmed. Commands such as `npm install @osiris-balonga/persona-cli` are **not available** at this stage.
+The registry package name is `@osiris_balonga/persona-cli`. This checkout prepares the first public release, version `0.1.0`; registry installation is available after the release is published. See [the release procedure](../../docs/cli-release.md).
 
 ## Install from source
 
@@ -19,7 +19,7 @@ npm pack ./packages/cli --pack-destination <directory-outside-the-repository>
 From your application directory, install the resulting archive:
 
 ```sh
-npm install --save-dev /absolute/path/osiris-balonga-persona-cli-0.1.0.tgz
+npm install --save-dev /absolute/path/osiris_balonga-persona-cli-0.1.0.tgz
 npx persona
 npx persona --help
 ```
