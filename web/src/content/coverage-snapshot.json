@@ -1,0 +1,2498 @@
+{
+  "dataVersion": "geo-2026-09-26.1",
+  "sourceCommit": "81a058ffca1fc8753fb3f0bd6ec861cb0210dcc1",
+  "sourceDate": "2026-09-28",
+  "sourcePath": "docs/country-availability.md",
+  "countries": [
+    {
+      "code": "AD",
+      "name": "Andorra",
+      "status": "available",
+      "postcodeCities": 6,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "AE",
+      "name": "United Arab Emirates",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "AF",
+      "name": "Afghanistan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "AG",
+      "name": "Antigua and Barbuda",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "AI",
+      "name": "Anguilla",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "AL",
+      "name": "Albania",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "AM",
+      "name": "Armenia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "AO",
+      "name": "Angola",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "AQ",
+      "name": "Antarctica",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": null,
+      "subregion": null
+    },
+    {
+      "code": "AR",
+      "name": "Argentina",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "AS",
+      "name": "American Samoa",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "AT",
+      "name": "Austria",
+      "status": "available",
+      "postcodeCities": 5,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "009",
+      "subregion": "053"
+    },
+    {
+      "code": "AW",
+      "name": "Aruba",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "AX",
+      "name": "Åland Islands",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "AZ",
+      "name": "Azerbaijan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "BA",
+      "name": "Bosnia and Herzegovina",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "BB",
+      "name": "Barbados",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "BD",
+      "name": "Bangladesh",
+      "status": "available",
+      "postcodeCities": 2,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "BE",
+      "name": "Belgium",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "BF",
+      "name": "Burkina Faso",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "BG",
+      "name": "Bulgaria",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "BH",
+      "name": "Bahrain",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "BI",
+      "name": "Burundi",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "BJ",
+      "name": "Benin",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "BL",
+      "name": "Saint Barthélemy",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "BM",
+      "name": "Bermuda",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 11,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "021"
+    },
+    {
+      "code": "BN",
+      "name": "Brunei Darussalam",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "BO",
+      "name": "Bolivia, Plurinational State of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "BQ",
+      "name": "Bonaire, Sint Eustatius and Saba",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 8,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "BR",
+      "name": "Brazil",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "BS",
+      "name": "Bahamas",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "BT",
+      "name": "Bhutan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "BV",
+      "name": "Bouvet Island",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "BW",
+      "name": "Botswana",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "018"
+    },
+    {
+      "code": "BY",
+      "name": "Belarus",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "BZ",
+      "name": "Belize",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "021"
+    },
+    {
+      "code": "CC",
+      "name": "Cocos (Keeling) Islands",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "053"
+    },
+    {
+      "code": "CD",
+      "name": "Congo, Democratic Republic of the",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "CF",
+      "name": "Central African Republic",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "CG",
+      "name": "Congo",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "CH",
+      "name": "Switzerland",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "CI",
+      "name": "Côte d'Ivoire",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "CK",
+      "name": "Cook Islands",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 2,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "CL",
+      "name": "Chile",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "CM",
+      "name": "Cameroon",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "CN",
+      "name": "China",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "CO",
+      "name": "Colombia",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "CR",
+      "name": "Costa Rica",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 11,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "CU",
+      "name": "Cuba",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "CV",
+      "name": "Cabo Verde",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "CW",
+      "name": "Curaçao",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "CX",
+      "name": "Christmas Island",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "053"
+    },
+    {
+      "code": "CY",
+      "name": "Cyprus",
+      "status": "available",
+      "postcodeCities": 5,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "CZ",
+      "name": "Czechia",
+      "status": "available",
+      "postcodeCities": 3,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "DJ",
+      "name": "Djibouti",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "DK",
+      "name": "Denmark",
+      "status": "available",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "DM",
+      "name": "Dominica",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "DO",
+      "name": "Dominican Republic",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "DZ",
+      "name": "Algeria",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "EC",
+      "name": "Ecuador",
+      "status": "available",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "EE",
+      "name": "Estonia",
+      "status": "available",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "EG",
+      "name": "Egypt",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "EH",
+      "name": "Western Sahara",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "ER",
+      "name": "Eritrea",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "ES",
+      "name": "Spain",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "ET",
+      "name": "Ethiopia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "FI",
+      "name": "Finland",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "FJ",
+      "name": "Fiji",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "054"
+    },
+    {
+      "code": "FK",
+      "name": "Falkland Islands (Malvinas)",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "FM",
+      "name": "Micronesia, Federated States of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "FO",
+      "name": "Faroe Islands",
+      "status": "available",
+      "postcodeCities": 9,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "FR",
+      "name": "France",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "GA",
+      "name": "Gabon",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom of Great Britain and Northern Ireland",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "GD",
+      "name": "Grenada",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 9,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "GE",
+      "name": "Georgia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "GF",
+      "name": "French Guiana",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "GG",
+      "name": "Guernsey",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 11,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "GH",
+      "name": "Ghana",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "GI",
+      "name": "Gibraltar",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 6,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "GL",
+      "name": "Greenland",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "021"
+    },
+    {
+      "code": "GM",
+      "name": "Gambia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "GN",
+      "name": "Guinea",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "GP",
+      "name": "Guadeloupe",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "GQ",
+      "name": "Equatorial Guinea",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 13,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "GR",
+      "name": "Greece",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "GS",
+      "name": "South Georgia and the South Sandwich Islands",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "GT",
+      "name": "Guatemala",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "GU",
+      "name": "Guam",
+      "status": "available",
+      "postcodeCities": 2,
+      "sampledCities": 13,
+      "phone": "reserved-range",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "GW",
+      "name": "Guinea-Bissau",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "GY",
+      "name": "Guyana",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "HK",
+      "name": "Hong Kong",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "HM",
+      "name": "Heard Island and McDonald Islands",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": "009",
+      "subregion": "053"
+    },
+    {
+      "code": "HN",
+      "name": "Honduras",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 11,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "HR",
+      "name": "Croatia",
+      "status": "available",
+      "postcodeCities": 9,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "HT",
+      "name": "Haiti",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "HU",
+      "name": "Hungary",
+      "status": "available",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "ID",
+      "name": "Indonesia",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "IE",
+      "name": "Ireland",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "IL",
+      "name": "Israel",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "IM",
+      "name": "Isle of Man",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "IN",
+      "name": "India",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 13,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "IO",
+      "name": "British Indian Ocean Territory",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "IQ",
+      "name": "Iraq",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "IR",
+      "name": "Iran, Islamic Republic of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "IS",
+      "name": "Iceland",
+      "status": "available",
+      "postcodeCities": 5,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "IT",
+      "name": "Italy",
+      "status": "available",
+      "postcodeCities": 6,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "JE",
+      "name": "Jersey",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 6,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "JM",
+      "name": "Jamaica",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "JO",
+      "name": "Jordan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "JP",
+      "name": "Japan",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "KE",
+      "name": "Kenya",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 11,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "KG",
+      "name": "Kyrgyzstan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "143"
+    },
+    {
+      "code": "KH",
+      "name": "Cambodia",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "KI",
+      "name": "Kiribati",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "KM",
+      "name": "Comoros",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "KN",
+      "name": "Saint Kitts and Nevis",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "KP",
+      "name": "Korea, Democratic People's Republic of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "KR",
+      "name": "Korea, Republic of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "KW",
+      "name": "Kuwait",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "KY",
+      "name": "Cayman Islands",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "KZ",
+      "name": "Kazakhstan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "143"
+    },
+    {
+      "code": "LA",
+      "name": "Lao People's Democratic Republic",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "LB",
+      "name": "Lebanon",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "LC",
+      "name": "Saint Lucia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "LI",
+      "name": "Liechtenstein",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "LK",
+      "name": "Sri Lanka",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "LR",
+      "name": "Liberia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "LS",
+      "name": "Lesotho",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "018"
+    },
+    {
+      "code": "LT",
+      "name": "Lithuania",
+      "status": "available",
+      "postcodeCities": 6,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "LU",
+      "name": "Luxembourg",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "LV",
+      "name": "Latvia",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "LY",
+      "name": "Libya",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "MA",
+      "name": "Morocco",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "MC",
+      "name": "Monaco",
+      "status": "available",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "MD",
+      "name": "Moldova, Republic of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "ME",
+      "name": "Montenegro",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "MF",
+      "name": "Saint Martin (French part)",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 9,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "MG",
+      "name": "Madagascar",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "MH",
+      "name": "Marshall Islands",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "MK",
+      "name": "North Macedonia",
+      "status": "available",
+      "postcodeCities": 8,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "ML",
+      "name": "Mali",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "MM",
+      "name": "Myanmar",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "MN",
+      "name": "Mongolia",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "MO",
+      "name": "Macao",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 7,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "MP",
+      "name": "Northern Mariana Islands",
+      "status": "pending-name-review",
+      "postcodeCities": 1,
+      "sampledCities": 6,
+      "phone": "reserved-range",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "MQ",
+      "name": "Martinique",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "MR",
+      "name": "Mauritania",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "MS",
+      "name": "Montserrat",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 3,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "MT",
+      "name": "Malta",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 13,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "MU",
+      "name": "Mauritius",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "MV",
+      "name": "Maldives",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "MW",
+      "name": "Malawi",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "MX",
+      "name": "Mexico",
+      "status": "available",
+      "postcodeCities": 2,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "MY",
+      "name": "Malaysia",
+      "status": "pending-name-review",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "MZ",
+      "name": "Mozambique",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "NA",
+      "name": "Namibia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "018"
+    },
+    {
+      "code": "NC",
+      "name": "New Caledonia",
+      "status": "available",
+      "postcodeCities": 9,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "054"
+    },
+    {
+      "code": "NE",
+      "name": "Niger",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "NF",
+      "name": "Norfolk Island",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "053"
+    },
+    {
+      "code": "NG",
+      "name": "Nigeria",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "NI",
+      "name": "Nicaragua",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands, Kingdom of the",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "155"
+    },
+    {
+      "code": "NO",
+      "name": "Norway",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "NP",
+      "name": "Nepal",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "NR",
+      "name": "Nauru",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 10,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "NU",
+      "name": "Niue",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "053"
+    },
+    {
+      "code": "OM",
+      "name": "Oman",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "PA",
+      "name": "Panama",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "PE",
+      "name": "Peru",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "PF",
+      "name": "French Polynesia",
+      "status": "available",
+      "postcodeCities": 9,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "PG",
+      "name": "Papua New Guinea",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "054"
+    },
+    {
+      "code": "PH",
+      "name": "Philippines",
+      "status": "available",
+      "postcodeCities": 2,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "PK",
+      "name": "Pakistan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 13,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "034"
+    },
+    {
+      "code": "PL",
+      "name": "Poland",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "PM",
+      "name": "Saint Pierre and Miquelon",
+      "status": "pending-name-review",
+      "postcodeCities": 2,
+      "sampledCities": 2,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "021"
+    },
+    {
+      "code": "PN",
+      "name": "Pitcairn",
+      "status": "pending-name-review",
+      "postcodeCities": 1,
+      "sampledCities": 1,
+      "phone": "unavailable",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "PR",
+      "name": "Puerto Rico",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "PS",
+      "name": "Palestine, State of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "PT",
+      "name": "Portugal",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "PW",
+      "name": "Palau",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 13,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "PY",
+      "name": "Paraguay",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "QA",
+      "name": "Qatar",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "RE",
+      "name": "Réunion",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "RO",
+      "name": "Romania",
+      "status": "available",
+      "postcodeCities": 6,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "RS",
+      "name": "Serbia",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "RU",
+      "name": "Russian Federation",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "RW",
+      "name": "Rwanda",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "SA",
+      "name": "Saudi Arabia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "SB",
+      "name": "Solomon Islands",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 11,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "054"
+    },
+    {
+      "code": "SC",
+      "name": "Seychelles",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "SD",
+      "name": "Sudan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "SE",
+      "name": "Sweden",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "SG",
+      "name": "Singapore",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "SH",
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 4,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "SI",
+      "name": "Slovenia",
+      "status": "available",
+      "postcodeCities": 12,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "SJ",
+      "name": "Svalbard and Jan Mayen",
+      "status": "pending-name-review",
+      "postcodeCities": 1,
+      "sampledCities": 2,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "154"
+    },
+    {
+      "code": "SK",
+      "name": "Slovakia",
+      "status": "available",
+      "postcodeCities": 10,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "SL",
+      "name": "Sierra Leone",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "SM",
+      "name": "San Marino",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "SN",
+      "name": "Senegal",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "SO",
+      "name": "Somalia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "SR",
+      "name": "Suriname",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "SS",
+      "name": "South Sudan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "ST",
+      "name": "Sao Tome and Principe",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "SV",
+      "name": "El Salvador",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "013"
+    },
+    {
+      "code": "SX",
+      "name": "Sint Maarten (Dutch part)",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 6,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "SY",
+      "name": "Syrian Arab Republic",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "SZ",
+      "name": "Eswatini",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "018"
+    },
+    {
+      "code": "TC",
+      "name": "Turks and Caicos Islands",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 7,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "TD",
+      "name": "Chad",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "017"
+    },
+    {
+      "code": "TF",
+      "name": "French Southern Territories",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "TG",
+      "name": "Togo",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "011"
+    },
+    {
+      "code": "TH",
+      "name": "Thailand",
+      "status": "available",
+      "postcodeCities": 6,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "TJ",
+      "name": "Tajikistan",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "143"
+    },
+    {
+      "code": "TK",
+      "name": "Tokelau",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 3,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "TL",
+      "name": "Timor-Leste",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "TM",
+      "name": "Turkmenistan",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "143"
+    },
+    {
+      "code": "TN",
+      "name": "Tunisia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "015"
+    },
+    {
+      "code": "TO",
+      "name": "Tonga",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "TR",
+      "name": "Türkiye",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "TT",
+      "name": "Trinidad and Tobago",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "TV",
+      "name": "Tuvalu",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 9,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "TW",
+      "name": "Taiwan, Province of China",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "030"
+    },
+    {
+      "code": "TZ",
+      "name": "Tanzania, United Republic of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "UA",
+      "name": "Ukraine",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "151"
+    },
+    {
+      "code": "UG",
+      "name": "Uganda",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "UM",
+      "name": "United States Minor Outlying Islands",
+      "status": "unavailable",
+      "postcodeCities": 0,
+      "sampledCities": 0,
+      "phone": "not-applicable",
+      "continent": "009",
+      "subregion": "057"
+    },
+    {
+      "code": "US",
+      "name": "United States of America",
+      "status": "available",
+      "postcodeCities": 9,
+      "sampledCities": 13,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "021"
+    },
+    {
+      "code": "UY",
+      "name": "Uruguay",
+      "status": "available",
+      "postcodeCities": 11,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "UZ",
+      "name": "Uzbekistan",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "143"
+    },
+    {
+      "code": "VA",
+      "name": "Holy See",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 1,
+      "phone": "format-valid",
+      "continent": "150",
+      "subregion": "039"
+    },
+    {
+      "code": "VC",
+      "name": "Saint Vincent and the Grenadines",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "VE",
+      "name": "Venezuela, Bolivarian Republic of",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "019",
+      "subregion": "005"
+    },
+    {
+      "code": "VG",
+      "name": "Virgin Islands (British)",
+      "status": "pending-name-review",
+      "postcodeCities": 0,
+      "sampledCities": 2,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "VI",
+      "name": "Virgin Islands (U.S.)",
+      "status": "available",
+      "postcodeCities": 1,
+      "sampledCities": 6,
+      "phone": "reserved-range",
+      "continent": "019",
+      "subregion": "029"
+    },
+    {
+      "code": "VN",
+      "name": "Viet Nam",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "035"
+    },
+    {
+      "code": "VU",
+      "name": "Vanuatu",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 9,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "054"
+    },
+    {
+      "code": "WF",
+      "name": "Wallis and Futuna",
+      "status": "pending-name-review",
+      "postcodeCities": 1,
+      "sampledCities": 3,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "WS",
+      "name": "Samoa",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "009",
+      "subregion": "061"
+    },
+    {
+      "code": "YE",
+      "name": "Yemen",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "142",
+      "subregion": "145"
+    },
+    {
+      "code": "YT",
+      "name": "Mayotte",
+      "status": "available",
+      "postcodeCities": 7,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "ZA",
+      "name": "South Africa",
+      "status": "available",
+      "postcodeCities": 9,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "018"
+    },
+    {
+      "code": "ZM",
+      "name": "Zambia",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    },
+    {
+      "code": "ZW",
+      "name": "Zimbabwe",
+      "status": "available",
+      "postcodeCities": 0,
+      "sampledCities": 12,
+      "phone": "format-valid",
+      "continent": "002",
+      "subregion": "014"
+    }
+  ]
+}

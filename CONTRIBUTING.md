@@ -1,5 +1,9 @@
 # Contributing to Persona
 
+The repository contains independently installed applications in `api/` and `web/`. Run API commands from `api/` and website commands from `web/`, or use the delegating root scripts. Preserve each application's lockfile. The CLI remains under `api/packages/cli/`. Website behavior and copy must stay aligned with Persona v1 in both English and French; existing serialization revision markers are not product release numbers.
+
+For changes crossing the public entry, verify website routing through `/api` and legacy `/people` calls, including CORS, seeded validators, rate limits and errors. Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` from `web/` as well as the API checks below. Required server-side protections must retain `api-checks` and `source-policy`; add `web-checks` to both protected branches when enabling the consolidated release. Workflow files alone do not configure required checks.
+
 ## Branches and pull requests
 
 Create a short-lived branch from `dev` and open a focused pull request back to `dev`. Use `feature/`, `fix/`, `chore/`, `docs/`, `refactor/`, or `test/` followed by a short descriptive name.

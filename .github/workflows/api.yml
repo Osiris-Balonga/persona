@@ -11,6 +11,9 @@ jobs:
   api-checks:
     name: api-checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
     steps:
       - uses: actions/checkout@v7
         with:
@@ -19,6 +22,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: api/package-lock.json
       - run: npm ci
       - run: npm run data:availability:check
       - run: npm run typecheck

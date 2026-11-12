@@ -3,6 +3,7 @@ dist/
 coverage/
 .env
 .env.*
+!.env.example
 *.log
-staging/portraits/
+api/staging/portraits/
 .wrangler/
