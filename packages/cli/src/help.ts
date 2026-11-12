@@ -12,6 +12,8 @@ export function help(command: string | undefined, color: boolean): string {
   --count <1-100>                  Number of people (default: 1)
   --gender <male|female>           Gender
   --age-group <groups>             child,teen,adult,senior (comma-separated)
+  --portrait-context <context>     standard (default), doctor, construction, business,
+                                  school-pupil, university-student
   --nationality <code>             Reviewed two-letter nationality
   --residence-country <code>       Residence country
   --continent <name>              Nationality continent
@@ -28,6 +30,10 @@ Without --output, stdout is JSON only. Messages and errors go to stderr.
 Default API: https://persona-dev.onrender.com (STAGING, not production).
 Use both --seed and --as-of for replay against the same data/catalog/algorithm versions.
 Requests are limited to 100 people; no batching or automatic retries.
+Contexts restrict eligible ages. An incompatible age group returns an API error.
+Missing approved context coverage returns picture:null; no standard substitution.
+Replay includes the context and portrait selection version. Older API deployments
+may reject the new filter; use an API with contextual portrait support.
 `,
     countries: `Usage: persona countries [options]
 
