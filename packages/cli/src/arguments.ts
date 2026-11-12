@@ -1,7 +1,7 @@
 import { parseArgs } from 'node:util'
 
 const queryOptions = {
-  count: 'count', gender: 'gender', 'age-group': 'ageGroup', nationality: 'nationality',
+  count: 'count', limit: 'limit', gender: 'gender', 'age-group': 'ageGroup', nationality: 'nationality',
   'residence-country': 'residenceCountry', continent: 'continent', city: 'city',
   'email-domain': 'emailDomain', seed: 'seed', 'as-of': 'asOf', fields: 'fields',
   'portrait-context': 'portraitContext',
@@ -53,6 +53,12 @@ export function parseCommand(args: string[]): Command {
   }
   const string = (name: string) => values[name] as string | undefined
   if (command === 'people') {
+    for (const [name, maximum] of [['count', 10_000], ['limit', 100]] as const) {
+      const value = string(name)
+      if (value !== undefined && (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) > maximum)) {
+        throw new Error(`--${name} must be an integer from 1 to ${maximum}.`)
+      }
+    }
     const context = string('portrait-context')
     if (context !== undefined && !['standard', 'doctor', 'construction', 'business', 'school-pupil', 'university-student'].includes(context)) {
       throw new Error('Unknown portrait context. Use standard, doctor, construction, business, school-pupil or university-student.')

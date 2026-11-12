@@ -9,10 +9,11 @@ export function help(command: string | undefined, color: boolean): string {
   const commands: Record<string, string> = {
     people: `Usage: persona people [options]
 
-  --count <1-100>                  Number of people (default: 1)
+  --count <1-10000>                Total people (default: 1)
+  --limit <1-100>                  Maximum people per page (default: 100)
   --gender <male|female>           Gender
   --age-group <groups>             child,teen,adult,senior (comma-separated)
-  --portrait-context <context>     standard (default), doctor, construction, business,
+  --portrait-context <context>     standard, doctor, construction, business,
                                   school-pupil, university-student
   --nationality <code>             Reviewed two-letter nationality
   --residence-country <code>       Residence country
@@ -29,8 +30,12 @@ export function help(command: string | undefined, color: boolean): string {
 Without --output, stdout is JSON only. Messages and errors go to stderr.
 Default API: https://persona-dev.onrender.com (STAGING, not production).
 Use both --seed and --as-of for replay against the same data/catalog/algorithm versions.
-Requests are limited to 100 people; no batching or automatic retries.
+Larger collections follow API cursors automatically (requires pagination support).
+File exports stream to a temporary file and replace the destination only on success.
+Paginated requests retry 429 at most three times per page, respecting an integer
+Retry-After from 0 to 120 seconds. Single legacy requests are not retried.
 Contexts restrict eligible ages. An incompatible age group returns an API error.
+Omitting --portrait-context uses the API deployment's default selection.
 Missing approved context coverage returns picture:null; no standard substitution.
 Replay includes the context and portrait selection version. Older API deployments
 may reject the new filter; use an API with contextual portrait support.

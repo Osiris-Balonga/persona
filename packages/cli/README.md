@@ -1,6 +1,6 @@
 # Persona CLI
 
-Request contextual imagery with `persona people --nationality CG --portrait-context doctor --age-group adult --seed doctor-demo --as-of 2026-10-06`. Supported contexts are `standard` (default), `doctor`, `construction`, `business`, `school-pupil` and `university-student`. The API intersects age groups with editorial eligibility; incompatible groups return a structured error. Valid requests without matching approved images return `picture: null`, without substituting standard portraits. Keep the requested context and returned `meta.portraitSelectionVersion` for replay. This option requires an API deployment supporting `portraitContext`; introducing the flag does not publish the API or this npm package.
+Request contextual imagery with `persona people --nationality CG --portrait-context doctor --age-group adult --seed doctor-demo --as-of 2026-10-06`. Supported contexts are `standard`, `doctor`, `construction`, `business`, `school-pupil` and `university-student`. The API intersects age groups with editorial eligibility; incompatible groups return a structured error. Valid requests without matching approved images return `picture: null`, without substituting standard portraits. Keep the requested context and returned `meta.portraitSelectionVersion` for replay. This option requires an API deployment supporting `portraitContext`; introducing the flag does not publish the API or this npm package.
 
 A non-interactive Node.js 24 CLI for public v2 profile fixtures and developer-owned seeders. The executable is `persona`. It does not include the API server or require an API key.
 
@@ -42,7 +42,8 @@ npx persona people --fields name.first,email,picture.thumbnail
 
 | Option | API parameter / purpose |
 | --- | --- |
-| `--count` | `count`: 1–100, default 1 |
+| `--count` | `count`: total 1–10,000, default 1 |
+| `--limit` | `limit`: page size 1–100, default 100; enables pagination |
 | `--gender` | `gender`: male or female |
 | `--age-group` | `ageGroup`: child, teen, adult, senior; comma-separated |
 | `--nationality` | `nationality`: uppercase reviewed two-letter code |
@@ -57,11 +58,23 @@ npx persona people --fields name.first,email,picture.thumbnail
 | `--force` | Replace an existing output file; requires --output |
 | `--api-url` | API base URL override |
 
-The [API contract](https://github.com/Osiris-Balonga/persona/blob/dev/docs/api.md) defines filter validation, projection and replay semantics. Unknown or repeated CLI options are rejected; the API validates filter values. There are no numeric-age or appearance filters, automatic batches, automatic retries, or offline person generation. Requests time out after 30 seconds; responses exceeding the API's 256 KiB limit are rejected. Errors include HTTP status, API code and retry hints when supplied.
+The [API contract](https://github.com/Osiris-Balonga/persona/blob/dev/docs/api.md) defines filter validation, projection and replay semantics. Unknown or repeated CLI options are rejected; the API validates filter values. There are no numeric-age or appearance filters or offline person generation. Pagination follows server cursors; every page counts toward the API quota. Requests time out after 30 seconds; responses exceeding the API's 256 KiB limit are rejected. Errors include HTTP status, API code and retry hints when supplied.
 
 **The default API is Render staging**, `https://persona-dev.onrender.com`, while production preparation remains open. Override it with `--api-url http://localhost:3000` or the `PERSONA_API_URL` environment variable; the explicit option takes precedence. Supply a base URL, not `/people`. HTTP(S) URLs cannot include credentials, query strings or fragments; redirects are rejected.
 
 For replay, keep both `--seed` and `--as-of` and retain metadata. The same input only repeats against unchanged data, catalogue and generation algorithm versions. Contacts are test data; never contact them. Some phones may belong to real subscribers. City coordinates do not identify the synthetic street.
+
+## Paginated exports
+
+```sh
+npx persona people --count 1000 --limit 100 --seed bulk-demo --as-of 2026-11-12 --output fixtures/people.json
+```
+
+`--count` is the total; `--limit` controls each API page. Totals above 100, or an explicit `--limit`, require an API with cursor pagination support. The CLI sends initial filters once, then follows each `meta.pagination.nextCursor` until the total is complete. A cursor fixes the seed and UTC reference date, including for initially unseeded collections. Missing pages, repeated cursors, offset drift or changing generation metadata fail the command.
+
+The exported envelope has all results, `meta.count` equal to the total and no per-page `meta.pagination`; other replay metadata is retained. The 256 KiB download cap applies per API response. Stdout is emitted only after every page succeeds. For `--output`, pages stream to a temporary sibling and are published atomically after success. Existing destinations are preserved without `--force`; even with `--force`, a later-page failure leaves the original file intact.
+
+Paginated requests retry HTTP 429 at most three times per page, waiting the integer `Retry-After` delay when it is between 0 and 120 seconds. Missing, invalid or longer delays, or an exhausted retry budget, stop the export with a retry hint. Single requests without pagination keep their existing no-retry behavior. Other HTTP errors are not retried. An incompatible cursor after a server update requires a new export; partial collections are not combined across versions.
 
 ## Inspect country coverage
 
