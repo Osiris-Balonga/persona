@@ -1,6 +1,6 @@
 {
   "name": "@osiris_balonga/persona-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Persona profile fixtures and seed scaffolding",
   "private": false,
   "license": "MIT",
